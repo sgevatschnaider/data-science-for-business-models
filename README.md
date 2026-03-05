@@ -1,122 +1,101 @@
-Data Science for Business Models
-Decision-centric analytics: forecasting, ML, optimization — and the road to autonomy
-A practical repository connecting business model strategy with data science engineering:
-prediction → decision value → prescriptive optimization → autonomy.
+# Data Science for Business Models
+
+### Decision-centric analytics: forecasting, ML, optimization — and the road to autonomy
+
+> Un repositorio práctico que conecta la **estrategia de modelos de negocio** con la **ingeniería de datos**:
+> **predicción → valor de decisión → optimización prescriptiva → autonomía**.
 
 <p align="center">
 <img src="assets/portada.gif" alt="Business Models & Data Science" width="100%">
-
-
-<sub style="font-size: 14px;">
-🔵 <b>M1: EDA & Data Quality</b> &nbsp;|&nbsp;
-🟢 <b>M2: Time Series & APIs</b> &nbsp;|&nbsp;
-🟠 <b>M3: ML & Expected Value</b>
-
-
-🔴 <b>M4: DL & Causal Inference</b> &nbsp;|&nbsp;
-🟣 <b>M5: Optimization</b> &nbsp;|&nbsp;
-🟤 <b>M6: Agentic AI & Autonomy</b>
-</sub>
 </p>
 
-🔗 Quick access
-<p align="center">
-<a href="./src/classroom/business_ds/module_01_eda/">
-<img src="https://img.shields.io/badge/M1-EDA_&_Quality-0366d6?style=for-the-badge" alt="M1">
-</a>
-<a href="./src/classroom/business_ds/module_02_time_series/">
-<img src="https://img.shields.io/badge/M2-Time_Series-0366d6?style=for-the-badge" alt="M2">
-</a>
-<a href="./src/classroom/business_ds/module_03_ml_value/">
-<img src="https://img.shields.io/badge/M3-ML_&_Value-0366d6?style=for-the-badge" alt="M3">
-</a>
-<a href="./src/classroom/business_ds/module_04_dl_causal/">
-<img src="https://img.shields.io/badge/M4-DL_&_Causal-0366d6?style=for-the-badge" alt="M4">
-</a>
-<a href="./src/classroom/business_ds/module_05_optimization/">
-<img src="https://img.shields.io/badge/M5-Optimization-0366d6?style=for-the-badge" alt="M5">
-</a>
-<a href="./src/classroom/business_ds/module_06_autonomy/">
-<img src="https://img.shields.io/badge/M6-Agentic_AI-634439?style=for-the-badge" alt="M6">
-</a>
+---
+
+## 🔗 Quick Navigation
+
+| Módulo | Enfoque Técnico | Impacto Estratégico | Acceso Directo |
+| --- | --- | --- | --- |
+| **M1** | EDA & Data Quality | Diagnóstico de Salud de Datos | [Ver Módulo](https://www.google.com/search?q=./src/classroom/business_ds/module_01_eda/) |
+| **M2** | Time Series & APIs | Forecasting de Demanda y Caja | [Ver Módulo](https://www.google.com/search?q=./src/classroom/business_ds/module_02_ts/) |
+| **M3** | ML & Expected Value | Optimización de Rentabilidad | [Ver Módulo](https://www.google.com/search?q=./src/classroom/business_ds/module_03_ml/) |
+| **M4** | DL & Causal Inference | Identificación de Drivers Reales | [Ver Módulo](https://www.google.com/search?q=./src/classroom/business_ds/module_04_dl/) |
+| **M5** | Prescriptive Opt. | Asignación Eficiente de Recursos | [Ver Módulo](https://www.google.com/search?q=./src/classroom/business_ds/module_05_opt/) |
+| **M6** | Agentic AI & Autonomy | Modelos de Negocio Autónomos | [Ver Módulo](https://www.google.com/search?q=./src/classroom/business_ds/module_06_agentic/) |
+
+---
+
+## 🎯 The Vision: From Prediction to Action
+
+Este repositorio no busca solo "entrenar modelos", sino resolver la ecuación económica de la IA:
+
+| Pilar | Concepto Clave | Autor de Referencia |
+| --- | --- | --- |
+| **Economía de la IA** | La IA reduce el costo de predicción; el valor sube en el **Juicio**. | *Agrawal (Prediction Machines)* |
+| **Valor Esperado** | Decisiones basadas en $P(x) \cdot Value(x)$ (Matrices de Confusión Económicas). | *Provost (DS for Business)* |
+| **Causalidad** | Diferenciar correlación de causalidad para intervenciones reales. | *Matt Taddy (Business DS)* |
+| **Agencia** | El paso del software pasivo a agentes que ejecutan flujos de valor. | *Socio-Economic AI Models* |
+
+---
+
+## 🗺️ Syllabus Detallado e Integrado
+
+### 🛠️ Core Engineering (M1 - M3)
+
+| Tema | Técnica | Aplicación en Negocios |
+| --- | --- | --- |
+| **Ingeniería de Datos** | ETL, Limpieza, Outliers, Feature Scaling. | Asegurar la integridad del reporte forense/empresarial. |
+| **Forecasting** | Estacionalidad, APIs Financieras, Suavizado. | Predicción de ingresos y planificación de inventarios. |
+| **ML Supervisado** | XGBoost, Random Forest, Regresión Logística. | Lead Scoring, Churn Prevention y Credit Scoring. |
+
+### 🚀 Advanced Strategy (M4 - M6)
+
+| Tema | Técnica | Aplicación en Negocios |
+| --- | --- | --- |
+| **Deep Learning** | Backpropagation, CNNs, MLP. | Reconocimiento de patrones en alta dimensionalidad. |
+| **Optimización** | Programación Lineal, Simplex, Dualidad. | Maximización de márgenes bajo restricciones de recursos. |
+| **IA Agéntica** | Reasoning Loops, Tool-use, Autonomous Agents. | Creación de flujos de trabajo que operan sin intervención humana. |
+
+---
+
+## 🧱 Repository Structure
+
+```mermaid
+graph TD
+    A[Root] --> B[assets: Visuals & Gifs]
+    A --> C[docs: Strategic Frameworks]
+    A --> D[src/classroom: Educational Path]
+    D --> D1[module_01_eda]
+    D --> D2[module_02_ts]
+    D --> D3[module_03_ml]
+    D --> D4[module_04_dl]
+    D --> D5[module_05_opt]
+    D --> D6[module_06_agentic]
+    A --> E[data: Forensic & Business Datasets]
+    A --> F[requirements.txt: Tech Stack]
+
+```
+
+---
+
+## 🛠️ Tech Stack & Requirements
+
+<p align="left">
+<img src="[https://img.shields.io/badge/Python-3.10+-3776AB?style=flat&logo=python&logoColor=white](https://www.google.com/search?q=https://img.shields.io/badge/Python-3.10%2B-3776AB%3Fstyle%3Dflat%26logo%3Dpython%26logoColor%3Dwhite)" />
+<img src="[https://img.shields.io/badge/Scikit--Learn-F7931E?style=flat&logo=scikit-learn&logoColor=white](https://www.google.com/search?q=https://img.shields.io/badge/Scikit--Learn-F7931E%3Fstyle%3Dflat%26logo%3Dscikit-learn%26logoColor%3Dwhite)" />
+<img src="[https://img.shields.io/badge/XGBoost-LTM?style=flat&logo=target&logoColor=white](https://www.google.com/search?q=https://img.shields.io/badge/XGBoost-LTM%3Fstyle%3Dflat%26logo%3Dtarget%26logoColor%3Dwhite)" />
+<img src="[https://img.shields.io/badge/Optimization-PuLP/Simplex-blue](https://www.google.com/search?q=https://img.shields.io/badge/Optimization-PuLP/Simplex-blue)" />
+<img src="[https://img.shields.io/badge/Agentic-LangGraph/OpenAI-brown](https://www.google.com/search?q=https://img.shields.io/badge/Agentic-LangGraph/OpenAI-brown)" />
 </p>
 
-<p align="center">
-<a href="https://tu-usuario.github.io/repo-name/" target="_blank">
-<img alt="Live docs" src="https://img.shields.io/badge/Live%20docs-GitHub%20Pages-2b3137?style=for-the-badge&logo=github" />
-</a>
-&nbsp;
-<a href="https://colab.research.google.com/github/tu-usuario/repo-name/" target="_blank">
-<img alt="Open in Colab" src="https://img.shields.io/badge/Open%20in-Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white" />
-</a>
-</p>
+* **Nivel:** Intermedio - Avanzado.
+* **Entorno:** VS Code + Jupyter / Google Colab.
+* **Dependencias:** Ejecutar `pip install -r requirements.txt` para configurar el entorno estratégico.
 
-🎯 What you’ll find here
-Este repositorio integra la ingeniería de datos con la teoría económica de la IA. La premisa es simple: la IA reduce el costo de la predicción, lo que desplaza el valor hacia el juicio humano y la capacidad de construir sistemas autónomos.
+---
 
-Engineering Core: Desde el tratamiento de outliers y calidad de datos hasta arquitecturas de Deep Learning.
+## 🤝 Contribuciones y Contacto
 
-Business Model Layer: Aplicación del Expected Value Framework y Inferencia Causal para entender cómo los datos mueven la aguja del negocio.
+Este espacio es una bitácora profesional y pedagógica. Si eres alumno o colega, te invito a explorar los notebooks interactivos.
 
-Agentic Frontier: El paso final del "Software as a Service" (SaaS) al "Agent as a Service" (AaaS), donde los modelos no solo predicen, sino que actúan.
-
-📚 Strategic Bibliography
-El contenido se estructura siguiendo el pensamiento de los líderes en la intersección de datos y economía:
-
-[Agrawal et al.] — Prediction Machines: La economía de la decisión y modelos socio-económicos de agentes.
-
-[Provost & Fawcett] — Data Science for Business: El marco del valor esperado y pensamiento analítico.
-
-[Matt Taddy] — Business Data Science: Inferencia causal y ML de alta dimensionalidad para optimización.
-
-[Reis & Housley] — Fundamentals of Data Engineering: El ciclo de vida y la robustez del dato.
-
-🗺️ Detailed Syllabus
-M1: EDA & Business Intelligence
-Análisis de calidad de datos, tratamiento de nulos/outliers y visualización efectiva. El objetivo es transformar datos crudos en un diagnóstico de negocio.
-
-M2: Time Series & Financial APIs
-Forecasting dinámico. Uso de APIs financieras (Yahoo Finance), manejo de estacionalidad y desestacionalización para predicción de demanda y flujo de caja.
-
-M3: Machine Learning & Decision Value
-Clasificación y Regresión (XGBoost, Random Forest). Aquí implementamos el Expected Value Framework: evaluamos modelos por su rentabilidad económica, no solo por su precisión técnica.
-
-M4: Deep Learning & Causal Inference
-Redes neuronales y retropropagación. Introducción a la causalidad: usar modelos de regularización (Lasso) para identificar qué variables realmente causan un impacto en el modelo de negocio.
-
-M5: Prescriptive Optimization
-Investigación operativa aplicada. Programación lineal, método Simplex y análisis de sensibilidad para optimizar la asignación de recursos limitados.
-
-M6: Agentic AI & Autonomy
-La frontera actual. Diseño de Agentes Autónomos que razonan, planifican y ejecutan acciones. Exploración de los Autonomous Business Models y la economía de los agentes.
-
-🧱 Repository Structure
-Plaintext
-assets/                # Visual resources & portadas
-docs/                  # Strategic frameworks & Decision Canvas templates
-src/classroom/         # The core educational path
-  module_01_eda/       # Notebooks & Interactive HTML
-  module_02_ts/        # API connections & Smoothing techniques
-  module_03_ml/        # Classification & Expected Value matrices
-  module_04_dl/        # Neural nets & Causal drivers
-  module_05_opt/       # Simplex & Optimization solvers
-  module_06_agentic/   # Agentic workflows & Autonomy demos
-data/                  # Sample datasets (Finance, Retail, Forensic)
-requirements.txt       # Python dependencies (Scikit-Learn, XGBoost, PyRit, etc.)
-🛠️ Getting Started
-Bash
-# Clone the repository
-git clone https://github.com/tu-usuario/business-data-science.git
-cd business-data-science
-
-# Setup environment
-python -m venv .venv
-source .venv/bin/activate  # or .venv\Scripts\activate on Windows
-
-# Install strategic stack
-pip install -r requirements.txt
-🤝 Contributions
-Este material es un recurso vivo para profesionales y estudiantes. Si tienes ideas para mejorar la conexión entre la técnica y la estrategia de negocio, los Pull Requests son bienvenidos.
-
-Sergio Gevatschnaider
-Data Scientist | Business Model Strategist 
+**Sergio Gevatschnaider**
+*Data Scientist | Business Strategist |
