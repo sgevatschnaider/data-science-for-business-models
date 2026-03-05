@@ -97,5 +97,4 @@ graph TD
 
 Este espacio es una bitácora profesional y pedagógica. Si eres alumno o colega, te invito a explorar los notebooks interactivos.
 
-**Sergio Gevatschnaider**
-*Data Scientist | Business Strategist |
+
