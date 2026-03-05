@@ -67,27 +67,3 @@ src/classroom/business_ds/       # modules and resources
     html/
 data/                            # datasets policy + scripts (optional)
 requirements.txt                 # python deps (to be added)
-🛠️ Run (local)
-python -m venv .venv
-# Windows: .venv\Scripts\activate
-# macOS/Linux: source .venv/bin/activate
-pip install -r requirements.txt
-jupyter lab
-🌐 Run HTML demos (recommended)
-python -m http.server 8000
-# open: http://localhost:8000/
-📚 Canon (base bibliography)
-
-Agrawal, Gans & Goldfarb — Prediction Machines
-
-Provost & Fawcett — Data Science for Business
-
-Operations Research: Hillier & Lieberman / Taha
-
-Deep Learning: Chollet
-
-Time Series: Peña / Nielsen
-
-⚖️ License
-
-MIT License.
