@@ -52,48 +52,172 @@ Haz clic en los botones de cada módulo para acceder al material teórico, noteb
 
 ---
 
-## 🧱 Repository Structure
+## 🧱 Repository Structure<div align="center">
+
+# 📊 Business Data Science & Strategic AI
+
+### *Del dato crudo a la decisión de alto impacto*
+
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=for-the-badge)]()
+
+---
+
+> **Principio rector:** Los modelos predictivos son herramientas. El pensamiento causal es la estrategia.
+> Este repositorio integra rigor técnico con marcos de inferencia causal aplicados a decisiones reales de negocio.
+
+</div>
+
+---
+
+## 🧭 Marco Conceptual: De la Correlación a la Causalidad
+
+> La distinción más crítica en Data Science aplicado no es técnica — es epistemológica.
+
+```
+OBSERVAR          PREDECIR           INTERVENIR           DECIDIR
+    │                 │                   │                   │
+Correlación  →  Modelo Predictivo  →  Inferencia Causal  →  Política de Negocio
+(¿qué pasó?)   (¿qué pasará?)      (¿qué pasa si...?)   (¿qué debemos hacer?)
+```
+
+| Nivel | Pregunta | Herramienta | Referencia |
+|-------|----------|-------------|------------|
+| **Descripción** | ¿Qué ocurrió? | EDA, Estadística Descriptiva | *Tukey — Exploratory Data Analysis* |
+| **Predicción** | ¿Qué ocurrirá? | ML Supervisado, Series de Tiempo | *Hastie et al. — ESL* |
+| **Causalidad** | ¿Por qué ocurrió? ¿Qué pasa si intervengo? | DoWhy, A/B Testing, DiD, RDD | *Pearl — The Book of Why* |
+| **Decisión** | ¿Qué debemos hacer? | Optimización, Agentes, RL | *Matt Taddy — Business DS* |
+| **Agencia** | ¿Cómo escalar la ejecución? | Agentic AI, Tool-use Loops | *Socio-Economic AI Models* |
+
+> 💡 **Nota metodológica:** Cada módulo de este repositorio está diseñado para que el alumno pueda responder no solo *"¿qué predice el modelo?"* sino *"¿qué ocurre si intervengo activamente sobre la variable X?"*. Esa es la diferencia entre un analista y un estratega.
+
+---
+
+## 🗺️ Syllabus Detallado e Integrado
+
+Haz clic en los badges de cada módulo para acceder al material teórico, notebooks y ejercicios prácticos.
+
+### 🛠️ Core Engineering — Construir la base de datos confiable `M1 → M3`
+
+> Antes de causalidad, necesitas datos limpios y estructuras que resistan el escrutinio forense.
+
+---
+
+[![Módulo 1](https://img.shields.io/badge/M01-EDA_%26_Data_Engineering-005288?style=for-the-badge&logo=github)](src/classroom/module_01_eda)
+
+**Técnica:** ETL · Limpieza · Outliers · Feature Scaling
+**Aplicación:** Auditoría forense de datos e integridad de reportes empresariales
+**Enlace causal:** *Sin datos íntegros, cualquier inferencia — predictiva o causal — es espuria.*
+
+---
+
+[![Módulo 2](https://img.shields.io/badge/M02-Forecasting_%26_Time_Series-005288?style=for-the-badge&logo=github)](src/classroom/module_02_ts)
+
+**Técnica:** Estacionalidad · APIs Financieras · Suavizado Exponencial · ARIMA
+**Aplicación:** Predicción de ingresos y planificación de inventarios
+**Enlace causal:** *El forecasting mide tendencias. El análisis de intervención (CausalImpact) mide si tu acción cambió la trayectoria.*
+
+---
+
+[![Módulo 3](https://img.shields.io/badge/M03-Supervised_ML-005288?style=for-the-badge&logo=github)](src/classroom/module_03_ml)
+
+**Técnica:** XGBoost · Random Forest · Regresión Logística · SHAP
+**Aplicación:** Lead Scoring · Churn Prevention · Credit Scoring
+**Enlace causal:** *SHAP explica el modelo. DoWhy explica el mundo. Aquí aprendemos a no confundirlos.*
+
+---
+
+### 🚀 Advanced Strategy — Causalidad, optimización y agencia `M4 → M6`
+
+> Con modelos sólidos, el siguiente paso es intervenir inteligentemente y escalar decisiones.
+
+---
+
+[![Módulo 4](https://img.shields.io/badge/M04-Deep_Learning-5B2C6F?style=for-the-badge&logo=github)](src/classroom/module_04_dl)
+
+**Técnica:** Backpropagation · CNNs · MLP · Transformers
+**Aplicación:** Reconocimiento de patrones en alta dimensionalidad
+**Enlace causal:** *Modelos de alta capacidad predicen bien. Técnicas como IRM (Invariant Risk Minimization) los hacen causalmente robustos.*
+
+---
+
+[![Módulo 5](https://img.shields.io/badge/M05-Optimización_&_Decisión-5B2C6F?style=for-the-badge&logo=github)](src/classroom/module_05_opt)
+
+**Técnica:** Programación Lineal · Simplex · Dualidad · Stochastic Optimization
+**Aplicación:** Maximización de márgenes bajo restricciones de recursos reales
+**Enlace causal:** *La optimización ejecuta la política óptima una vez que el modelo causal define el objetivo correcto.*
+
+---
+
+[![Módulo 6](https://img.shields.io/badge/M06-IA_Agéntica-5B2C6F?style=for-the-badge&logo=github)](src/classroom/module_06_agentic)
+
+**Técnica:** Reasoning Loops · Tool-use · Autonomous Agents · LangGraph
+**Aplicación:** Flujos de trabajo que operan y deciden sin intervención humana constante
+**Enlace causal:** *El agente no solo predice — actúa, observa consecuencias y ajusta. Es causalidad aplicada en tiempo real.*
+
+---
+
+## 🧱 Estructura del Repositorio
 
 ```mermaid
 graph TD
-    A[Root] --> B[assets: Visuals & Gifs]
-    A --> C[docs: Strategic Frameworks]
-    A --> D[src/classroom: Educational Path]
-    D --> D1[module_01_eda]
-    D --> D2[module_02_ts]
-    D --> D3[module_03_ml]
-    D --> D4[module_04_dl]
-    D --> D5[module_05_opt]
-    D --> D6[module_06_agentic]
-    A --> E[data: Forensic & Business Datasets]
-    A --> F[requirements.txt: Tech Stack]
+    A["📁 Root"] --> B["🎨 assets/\nVisuals & Gifs"]
+    A --> C["📚 docs/\nStrategic Frameworks"]
+    A --> D["🎓 src/classroom/\nEducational Path"]
+    A --> E["🗄️ data/\nForensic & Business Datasets"]
+    A --> F["⚙️ requirements.txt\nTech Stack"]
+
+    D --> D1["M01 · EDA & Engineering"]
+    D --> D2["M02 · Forecasting & TS"]
+    D --> D3["M03 · Supervised ML"]
+    D --> D4["M04 · Deep Learning"]
+    D --> D5["M05 · Optimización"]
+    D --> D6["M06 · IA Agéntica"]
+
+    style A fill:#1a1a2e,color:#fff
+    style D fill:#005288,color:#fff
+    style D1 fill:#003f6b,color:#fff
+    style D2 fill:#003f6b,color:#fff
+    style D3 fill:#003f6b,color:#fff
+    style D4 fill:#3d1a6e,color:#fff
+    style D5 fill:#3d1a6e,color:#fff
+    style D6 fill:#3d1a6e,color:#fff
 ```
 
 ---
 
-## 🛠️ Tech Stack & Requirements
+## 🛠️ Tech Stack
 
 <p align="left">
-  <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat&logo=python&logoColor=white" alt="Python 3.10+" />
-  <img src="https://img.shields.io/badge/Scikit--Learn-F7931E?style=flat&logo=scikit-learn&logoColor=white" alt="Scikit-Learn" />
-  <img src="https://img.shields.io/badge/XGBoost-17A2B8?style=flat&logo=xgboost&logoColor=white" alt="XGBoost" />
-  <img src="https://img.shields.io/badge/Optimization-PuLP_/_Simplex-blue?style=flat" alt="Optimization" />
-  <img src="https://img.shields.io/badge/Agentic-LangGraph_/_OpenAI-brown?style=flat" alt="Agentic" />
+  <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/Scikit--Learn-F7931E?style=flat&logo=scikit-learn&logoColor=white" />
+  <img src="https://img.shields.io/badge/XGBoost-17A2B8?style=flat" />
+  <img src="https://img.shields.io/badge/DoWhy-Causal_Inference-8B0000?style=flat" />
+  <img src="https://img.shields.io/badge/Optimization-PuLP_/_Simplex-1f6feb?style=flat" />
+  <img src="https://img.shields.io/badge/Agentic-LangGraph_/_OpenAI-6e3f1f?style=flat" />
 </p>
 
-* **Nivel:** Intermedio - Avanzado.
-* **Entorno:** VS Code + Jupyter / Google Colab.
-* **Dependencias:** Ejecutar `pip install -r requirements.txt` para configurar el entorno estratégico.
+| Parámetro | Detalle |
+|-----------|---------|
+| **Nivel** | Intermedio — Avanzado |
+| **Entorno** | VS Code + Jupyter / Google Colab |
+| **Setup** | `pip install -r requirements.txt` |
 
 ---
 
 ## 🤝 Contribuciones y Contacto
 
-Este espacio es una bitácora profesional y pedagógica. Si eres alumno o colega, te invito a explorar los notebooks interactivos y el material documentado.
+Este repositorio es una **bitácora profesional y pedagógica**. Si eres alumno o colega, te invito a explorar los notebooks interactivos y el material documentado.
+
+> *"All models are wrong, but some are useful. All correlations are suspect, but some are causal."*
+> — adaptado de G.E.P. Box
+
 ---
 
-## 🤝 Contribuciones y Contacto
+<div align="center">
 
-Este espacio es una bitácora profesional y pedagógica. Si eres alumno o colega, te invito a explorar los notebooks interactivos.
+*Construido con rigor técnico y pensamiento estratégico.*
 
+</div>
 
