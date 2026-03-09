@@ -215,9 +215,5 @@ Este repositorio es una **bitácora profesional y pedagógica**. Si eres alumno 
 
 ---
 
-<div align="center">
 
-*Construido con rigor técnico y pensamiento estratégico.*
-
-</div>
 
