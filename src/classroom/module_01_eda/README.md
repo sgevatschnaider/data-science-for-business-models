@@ -347,7 +347,6 @@ Este material forma parte del repositorio principal y se distribuye bajo licenci
 **EDA no es decorar datos antes del modelo.
 EDA es el proceso mediante el cual el dato empieza a contar su historia.**
 
-```
 | 📄 Recurso | 📥 Acceso |
 | --- | --- |
 | **Business EDA Lab (Dashboard Interactivo)** <br><br> <details><summary><strong>Resumen:</strong> <em>(haz clic para expandir/colapsar)</em></summary><p>Dashboard interactivo orientado al análisis exploratorio de datos aplicado a negocio, marketing y comportamiento del cliente. Complementa el trabajo en notebook y permite explorar visualmente segmentación, gasto, canales de compra, respuesta a campañas y correlaciones con fines pedagógicos.</p></details> | [![Ver Simulación Interactiva](https://img.shields.io/badge/Ver%20Dashboard-Interactivo-green?style=for-the-badge&logo=google-chrome)](https://business-eda-dashboard.lovable.app) |
