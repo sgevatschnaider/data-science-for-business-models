@@ -93,10 +93,6 @@ En esta sección encontrarás dashboards, simulaciones y recursos aplicados para
 | --- | --- |
 | **EDA Dashboard (Business EDA Lab)** <br><br> <details><summary><strong>Resumen:</strong> <em>(haz clic para expandir/colapsar)</em></summary><p>Dashboard interactivo orientado al análisis exploratorio de datos aplicado a negocio, marketing y comportamiento del cliente. Complementa el trabajo en notebook y permite explorar visualmente segmentación, gasto, canales de compra, respuesta a campañas y correlaciones con fines pedagógicos.</p><p><strong>Fuente de datos:</strong> dataset público <em>Customer Personality Analysis</em>, disponible en Kaggle y utilizado aquí con fines educativos para EDA orientado a negocio.</p></details> | [![Ver en GitHub](https://img.shields.io/badge/Ver%20en-GitHub-blue?style=for-the-badge&logo=github)](https://github.com/sgevatschnaider/data-science-for-business-models/blob/d9966fa4b9bf9086c3b5cf20510b7d476aa9c7ed/src/classroom/module_01_eda/html/EDA_Dashboard.html) <br><br> [![Ver Dashboard Interactivo](https://img.shields.io/badge/Ver%20Dashboard-Interactivo-green?style=for-the-badge&logo=google-chrome)](https://business-eda-dashboard.lovable.app) |
 
-| 📄 Recurso | 📥 Acceso |
-| :--- | :--- |
-| **Business EDA Lab (Dashboard Interactivo)** <br><br> <details><summary><strong>Resumen:</strong> <em>(haz clic para expandir)</em></summary><p>Dashboard interactivo orientado al análisis exploratorio de datos aplicado a negocio, marketing y comportamiento del cliente. Complementa el trabajo en notebook y permite explorar visualmente segmentación, gasto, canales de compra, respuesta a campañas y correlaciones con fines pedagógicos.</p></details> | [![Ver Simulación Interactiva](https://img.shields.io/badge/Ver%20Dashboard-Interactivo-green?style=for-the-badge&logo=google-chrome)](https://business-eda-dashboard.lovable.app) |
----
 
 | 📄 Recurso | 📥 Acceso |
 | :--- | :--- |
