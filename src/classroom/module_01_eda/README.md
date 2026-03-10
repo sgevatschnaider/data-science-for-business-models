@@ -6,7 +6,7 @@
 
 ---
 
-## 🎯 Propósito del módulo
+##  Propósito del módulo
 
 Este módulo introduce el **Paradigma EDA (Exploratory Data Analysis)** como la primera capa de trabajo en ciencia de datos aplicada a negocios. La idea central no es solamente producir gráficos o estadísticas descriptivas, sino aprender a mirar un dataset como un sistema con estructura, sesgos, anomalías, segmentos y señales relevantes para la toma de decisiones.
 
@@ -16,7 +16,7 @@ En resumen: **antes de predecir, optimizar o automatizar, hay que comprender**.
 
 ---
 
-## 🧠 ¿Qué significa “Paradigma EDA”?
+##  ¿Qué significa “Paradigma EDA”?
 
 En este repositorio, EDA se entiende como un paradigma porque no se limita a una lista de técnicas; es una forma de pensar el análisis. Implica asumir que un dataset no es una tabla neutra lista para un algoritmo, sino una representación parcial e imperfecta de un proceso real. 
 
@@ -30,7 +30,7 @@ Este enfoque se apoya en cinco preguntas rectoras:
 
 ---
 
-## 📚 Objetivos de aprendizaje
+##  Objetivos de aprendizaje
 
 Al finalizar este módulo, el estudiante debería poder:
 
@@ -45,7 +45,7 @@ Al finalizar este módulo, el estudiante debería poder:
 
 ---
 
-## 🧭 Enfoque del módulo
+## Enfoque del módulo
 
 Este módulo combina tres niveles de lectura de datos para construir un puente entre el dato bruto y la inteligencia accionable:
 
@@ -55,7 +55,7 @@ Este módulo combina tres niveles de lectura de datos para construir un puente e
 
 ---
 
-## 🧱 Estructura conceptual del módulo
+## Estructura conceptual del módulo
 
 ### 1. El dato como representación de un proceso
 Los datos son el resultado de un proceso de captura y medición. Entender el dataset exige entender el proceso que lo genera (unidad de observación, sesgos de selección, representación de eventos vs. estados).
@@ -80,7 +80,7 @@ El objetivo final: formular mejores preguntas. ¿Por qué un segmento tiene más
 
 ---
 
-## 🚀 Recursos y Material Interactivo
+## Recursos y Material Interactivo
 
 En esta sección encontrarás dashboards, simulaciones y recursos aplicados para experimentar visualmente con los conceptos del módulo.
 
