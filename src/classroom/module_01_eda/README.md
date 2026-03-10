@@ -92,7 +92,8 @@ En esta sección encontrarás dashboards, simulaciones y recursos aplicados para
 
 | 📄 Recurso | 📥 Acceso |
 | :--- | :--- |
-| **Business EDA Lab (Dashboard Interactivo)** <br><br> <details><summary><strong>Resumen:</strong> <em>(haz clic para expandir)</em></summary><p>Dashboard interactivo orientado al análisis exploratorio de datos aplicado a negocio, marketing y comportamiento del cliente. Complementa el trabajo en notebook y permite explorar visualmente segmentación, gasto, canales de compra, respuesta a campañas y correlaciones con fines pedagógicos.</p></details> | [![Ver en GitHub](https://img.shields.io/badge/Ver%20en-GitHub-blue?style=for-the-badge&logo=github)](https://github.com/sgevatschnaider/data-science-for-business-models/blob/e42a37c258b2dcada16f822a891f27c127e78906/src/classroom/module_01_eda/html/EDA_Dashboard.html) |
+| **Business EDA Lab (Dashboard Interactivo)** <br><br> <details><summary><strong>Resumen:</strong> <em>(haz clic para expandir)</em></summary><p>Dashboard interactivo orientado al análisis exploratorio de datos aplicado a negocio, marketing y comportamiento del cliente. Complementa el trabajo en notebook y permite explorar visualmente segmentación, gasto, canales de compra, respuesta a campañas y correlaciones con fines pedagógicos.</p></details> | [![Ver HTML Interactivo](https://img.shields.io/badge/Ver%20HTML-Interactivo-green?style=for-the-badge&logo=google-chrome)](https://sgevatschnaider.github.io/data-science-for-business-models/src/classroom/module_01_eda/html/EDA_Dashboard.html) <br><br> [![Abrir Dashboard Lovable](https://img.shields.io/badge/Abrir%20Dashboard-Lovable-blueviolet?style=for-the-badge&logo=google-chrome)](https://business-eda-dashboard.lovable.app) |
+---
 ---
 | 📄 Recurso | 📥 Acceso |
 | --- | --- |
