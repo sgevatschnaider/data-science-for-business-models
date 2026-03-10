@@ -1,0 +1,1901 @@
+from IPython.display import display, HTML
+
+html_content = r"""
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glosario del Paradigma EDA</title>
+
+  <style>
+    :root{
+      --bg:#0f172a;
+      --bg-soft:#111c34;
+      --panel:#13213d;
+      --panel-2:#17294b;
+      --card:#182b4d;
+      --text:#e8eef8;
+      --muted:#b8c4d9;
+      --accent:#7cc5ff;
+      --accent-2:#3fa7ff;
+      --border:rgba(255,255,255,0.10);
+      --success:#6ee7b7;
+      --warn:#f6d365;
+      --danger:#fca5a5;
+      --shadow:0 12px 28px rgba(0,0,0,.22);
+      --radius:18px;
+      --radius-sm:12px;
+      --maxw:1220px;
+    }
+
+    html[data-theme="light"]{
+      --bg:#f6f9fc;
+      --bg-soft:#eef4fb;
+      --panel:#ffffff;
+      --panel-2:#f8fbff;
+      --card:#ffffff;
+      --text:#1d2a3a;
+      --muted:#5b6676;
+      --accent:#1d78d6;
+      --accent-2:#0f5fb7;
+      --border:rgba(20,40,80,0.10);
+      --success:#198754;
+      --warn:#a26b00;
+      --danger:#c0392b;
+      --shadow:0 10px 24px rgba(29,42,58,.08);
+    }
+
+    html[data-theme="sepia"]{
+      --bg:#f4efe6;
+      --bg-soft:#efe7da;
+      --panel:#fbf6ee;
+      --panel-2:#f7f0e5;
+      --card:#fffaf2;
+      --text:#47392c;
+      --muted:#7b6a59;
+      --accent:#8f5c2c;
+      --accent-2:#6e431e;
+      --border:rgba(80,50,20,0.12);
+      --success:#4f7a42;
+      --warn:#936300;
+      --danger:#a64935;
+      --shadow:0 10px 22px rgba(70,50,30,.10);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(124,197,255,.10), transparent 28%),
+        radial-gradient(circle at top right, rgba(63,167,255,.07), transparent 24%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.72;
+    }
+
+    .grain{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.05;
+      background-image:
+        radial-gradient(circle at 20% 30%, #fff 0.6px, transparent 0.7px),
+        radial-gradient(circle at 80% 70%, #fff 0.6px, transparent 0.7px),
+        radial-gradient(circle at 40% 80%, #fff 0.6px, transparent 0.7px);
+      background-size: 160px 160px, 210px 210px, 180px 180px;
+      z-index:0;
+    }
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      max-width:var(--maxw);
+      margin:0 auto;
+      padding:24px 20px 60px;
+    }
+
+    .theme-switch{
+      position:fixed;
+      top:16px;
+      right:16px;
+      z-index:30;
+      display:flex;
+      gap:8px;
+      background:rgba(0,0,0,.18);
+      backdrop-filter: blur(10px);
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:8px;
+      box-shadow:var(--shadow);
+    }
+    html[data-theme="light"] .theme-switch,
+    html[data-theme="sepia"] .theme-switch{
+      background:rgba(255,255,255,.75);
+    }
+    .theme-btn{
+      border:none;
+      border-radius:999px;
+      padding:8px 12px;
+      background:transparent;
+      color:var(--text);
+      cursor:pointer;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+    .theme-btn.active{
+      background:var(--accent);
+      color:#082032;
+    }
+
+    header.hero{
+      background:linear-gradient(135deg, rgba(124,197,255,.16), rgba(63,167,255,.08));
+      border:1px solid var(--border);
+      border-radius:28px;
+      padding:34px 28px 26px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    header.hero:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(120deg, transparent 0%, rgba(255,255,255,.06) 30%, transparent 60%);
+      pointer-events:none;
+    }
+    .eyebrow{
+      display:inline-block;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--accent);
+      margin-bottom:10px;
+    }
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(2rem, 4vw, 3.2rem);
+      line-height:1.08;
+      letter-spacing:-.02em;
+    }
+    .hero p{
+      margin:0;
+      max-width:920px;
+      color:var(--muted);
+      font-size:1.05rem;
+    }
+    .hero-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+    .chip{
+      padding:8px 12px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      border-radius:999px;
+      font-size:.88rem;
+      color:var(--muted);
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:20;
+      margin-top:18px;
+      backdrop-filter: blur(14px);
+      background:color-mix(in srgb, var(--bg) 72%, transparent);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:14px;
+    }
+    .topbar-grid{
+      display:grid;
+      grid-template-columns: 1.3fr .9fr;
+      gap:12px;
+      align-items:center;
+    }
+    @media (max-width: 880px){
+      .topbar-grid{grid-template-columns:1fr}
+    }
+
+    .search-wrap{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .search{
+      flex:1;
+      min-width:220px;
+      border:1px solid var(--border);
+      background:var(--panel);
+      color:var(--text);
+      border-radius:14px;
+      padding:14px 16px;
+      outline:none;
+      font-size:15px;
+    }
+    .search::placeholder{color:var(--muted)}
+
+    .tool-btn{
+      border:none;
+      background:var(--panel-2);
+      color:var(--text);
+      border:1px solid var(--border);
+      padding:12px 14px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:700;
+      font-size:13px;
+      letter-spacing:.02em;
+    }
+    .tool-btn:hover{transform:translateY(-1px)}
+
+    .progress-wrap{
+      display:grid;
+      gap:8px;
+    }
+    .progress-meta{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+    .progress-bar{
+      height:12px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .progress-inner{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition:width .25s ease;
+    }
+
+    .alpha{
+      margin-top:16px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      padding:14px;
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:var(--panel);
+      box-shadow:var(--shadow);
+    }
+    .alpha-btn{
+      min-width:38px;
+      height:38px;
+      border:none;
+      border-radius:12px;
+      background:var(--panel-2);
+      color:var(--text);
+      border:1px solid var(--border);
+      font-weight:800;
+      cursor:pointer;
+    }
+    .alpha-btn.dimmed{
+      opacity:.35;
+      cursor:not-allowed;
+    }
+    .alpha-btn.has-terms:hover{
+      background:var(--accent);
+      color:#062038;
+    }
+
+    main{
+      margin-top:18px;
+      display:grid;
+      gap:18px;
+    }
+
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:16px;
+      flex-wrap:wrap;
+      padding:20px 22px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:20px;
+      box-shadow:var(--shadow);
+    }
+    .section-head h2{
+      margin:0;
+      font-size:1.45rem;
+      letter-spacing:-.01em;
+    }
+    .section-head p{
+      margin:6px 0 0;
+      color:var(--muted);
+      max-width:860px;
+    }
+
+    .letter-group{
+      display:grid;
+      gap:14px;
+      scroll-margin-top:170px;
+    }
+    .letter-title{
+      position:sticky;
+      top:120px;
+      z-index:5;
+      width:max-content;
+      padding:8px 12px;
+      border-radius:999px;
+      background:var(--panel-2);
+      border:1px solid var(--border);
+      color:var(--accent);
+      font-weight:900;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      box-shadow:var(--shadow);
+    }
+
+    .card{
+      border:1px solid var(--border);
+      border-radius:22px;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), transparent), var(--card);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      opacity:0;
+      transform:translateY(12px);
+      animation:fadeUp .5s ease forwards;
+    }
+    .card.hidden{display:none}
+    .card:nth-child(2){animation-delay:.03s}
+    .card:nth-child(3){animation-delay:.05s}
+    .card:nth-child(4){animation-delay:.07s}
+
+    @keyframes fadeUp{
+      to{opacity:1; transform:none}
+    }
+
+    .t-btn{
+      width:100%;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      text-align:left;
+      border:none;
+      background:transparent;
+      color:inherit;
+      padding:22px 22px 18px;
+      cursor:pointer;
+    }
+    .t-main{
+      min-width:0;
+    }
+    .term{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:10px;
+      margin-bottom:6px;
+    }
+    .term h3{
+      margin:0;
+      font-size:1.28rem;
+      line-height:1.2;
+      letter-spacing:-.01em;
+    }
+    .badge{
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      border:1px solid var(--border);
+      color:var(--accent);
+      background:rgba(124,197,255,.08);
+      white-space:nowrap;
+    }
+    .subtitle{
+      margin:0;
+      color:var(--muted);
+      font-size:.98rem;
+      max-width:900px;
+    }
+    .chev{
+      flex:0 0 auto;
+      width:40px;
+      height:40px;
+      display:grid;
+      place-items:center;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:var(--panel-2);
+      font-size:18px;
+      transition:transform .2s ease;
+    }
+    .card.open .chev{transform:rotate(90deg)}
+
+    .a-wrap{
+      display:grid;
+      grid-template-rows:0fr;
+      transition:grid-template-rows .26s ease;
+    }
+    .card.open .a-wrap{
+      grid-template-rows:1fr;
+    }
+    .a-inner{
+      overflow:hidden;
+    }
+    .a-body{
+      padding:0 22px 22px;
+      border-top:1px solid var(--border);
+    }
+
+    .def-block{
+      margin-top:18px;
+      display:grid;
+      gap:14px;
+    }
+    .row{
+      display:grid;
+      grid-template-columns: 180px 1fr;
+      gap:14px;
+      align-items:start;
+      padding:14px 16px;
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--border);
+      border-radius:16px;
+    }
+    @media (max-width: 740px){
+      .row{grid-template-columns:1fr}
+    }
+    .row .k{
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.11em;
+      text-transform:uppercase;
+      color:var(--accent);
+    }
+    .row .v{
+      color:var(--text);
+    }
+
+    .example{
+      margin-top:10px;
+      padding:14px 16px;
+      border-radius:16px;
+      background:rgba(124,197,255,.06);
+      border:1px dashed rgba(124,197,255,.35);
+    }
+    .example strong{color:var(--accent)}
+
+    .tagline{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .micro{
+      padding:7px 10px;
+      border-radius:999px;
+      background:var(--panel-2);
+      border:1px solid var(--border);
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .empty{
+      display:none;
+      padding:24px;
+      border:1px dashed var(--border);
+      border-radius:18px;
+      background:var(--panel);
+      color:var(--muted);
+      text-align:center;
+      font-weight:700;
+    }
+
+    footer{
+      margin-top:34px;
+      padding:24px 12px 8px;
+      text-align:center;
+      color:var(--muted);
+      border-top:1px solid var(--border);
+      font-size:.95rem;
+    }
+
+    .math{
+      font-family: "Cambria Math", "Times New Roman", serif;
+      font-style:italic;
+    }
+  </style>
+</head>
+
+<body>
+<div class="grain"></div>
+
+<div class="theme-switch" aria-label="Selector de tema">
+  <button class="theme-btn active" data-theme-value="dark">Dark</button>
+  <button class="theme-btn" data-theme-value="light">Light</button>
+  <button class="theme-btn" data-theme-value="sepia">Sepia</button>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Paradigma EDA</div>
+    <h1>Glosario interactivo completo de Análisis Exploratorio de Datos</h1>
+    <p>
+      Este glosario reúne los conceptos centrales del paradigma EDA con un enfoque didáctico y aplicado.
+      Cada término está desarrollado para servir como material de estudio, consulta y apoyo de clase:
+      definición, propósito analítico, señales que busca el analista y ejemplo de uso.
+    </p>
+    <div class="hero-meta">
+      <span class="chip">Exploración</span>
+      <span class="chip">Visualización</span>
+      <span class="chip">Calidad de datos</span>
+      <span class="chip">Distribuciones</span>
+      <span class="chip">Relaciones</span>
+      <span class="chip">Preparación para modelado</span>
+    </div>
+  </header>
+
+  <section class="topbar">
+    <div class="topbar-grid">
+      <div class="search-wrap">
+        <input id="search" class="search" type="text" placeholder="Buscar término, idea o palabra clave..." />
+        <button class="tool-btn" id="expandAllBtn">Expandir todo</button>
+        <button class="tool-btn" id="collapseAllBtn">Colapsar todo</button>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span id="openCount">0 / 0 abiertos</span>
+          <span id="pctText">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-inner" id="progInner"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="alpha" id="alphaNav" aria-label="Índice alfabético"></nav>
+
+  <main>
+    <section class="section-head">
+      <div>
+        <h2>Cómo leer este glosario</h2>
+        <p>
+          La lógica del EDA parte de una idea simple: antes de modelar, primero hay que comprender los datos.
+          Por eso los términos aquí no están pensados como un listado aislado, sino como una red conceptual:
+          tipo de variable, distribución, outliers, missing values, relación entre variables, transformación,
+          sesgo, leakage, visualización y calidad del dato.
+        </p>
+      </div>
+    </section>
+
+    <div id="emptyState" class="empty">Ningún término coincide con la búsqueda.</div>
+
+    <section class="letter-group" id="letter-A" data-letter="A">
+      <div class="letter-title">A</div>
+
+      <article class="card" id="t-analisis-bivariado" data-term="Análisis bivariado">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Análisis bivariado</h3>
+              <span class="badge">Relaciones</span>
+            </div>
+            <p class="subtitle">Estudio conjunto de dos variables para detectar asociación, dependencia o contraste entre grupos.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Es la parte del EDA en la que se explora cómo se vinculan dos variables. Puede tratarse de dos variables numéricas, una numérica y una categórica, o dos categóricas.</div></div>
+            <div class="row"><div class="k">Propósito</div><div class="v">Pasar de la descripción aislada de cada variable a la comprensión de sus relaciones. Permite ver si cambian juntas, si una segmenta a la otra o si parecen independientes.</div></div>
+            <div class="row"><div class="k">Qué busca</div><div class="v">Tendencias, asociaciones lineales o no lineales, diferencias entre grupos, patrones de dispersión, concentración y posibles relaciones espurias.</div></div>
+            <div class="row"><div class="k">Gráficos típicos</div><div class="v">Scatter plot, boxplot agrupado, violin plot, barras agrupadas, tabla de contingencia, mosaic plot.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> analizar la relación entre <em>total_bill</em> y <em>tip</em> en el dataset <em>tips</em>, o comparar la distribución de una variable numérica según categorías.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-analisis-multivariado" data-term="Análisis multivariado">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Análisis multivariado</h3>
+              <span class="badge">Estructura global</span>
+            </div>
+            <p class="subtitle">Exploración simultánea de varias variables para detectar estructura, redundancia y patrones complejos.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Es la etapa del EDA en la que se analiza el comportamiento conjunto de múltiples variables, no solo de a pares.</div></div>
+            <div class="row"><div class="k">Propósito</div><div class="v">Detectar estructuras más complejas: redundancia, alta correlación, clusters, combinaciones lineales, relaciones latentes o efectos que no aparecen en el análisis bivariado.</div></div>
+            <div class="row"><div class="k">Herramientas</div><div class="v">Pair plots, matrices de correlación, PCA exploratorio, heatmaps, proyecciones bidimensionales, análisis por subgrupos.</div></div>
+            <div class="row"><div class="k">Señales útiles</div><div class="v">Variables que casi duplican información, estructuras de bloque, relaciones dominadas por pocos factores y posibles problemas de multicolinealidad.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> revisar todas las variables numéricas de un dataset para detectar cuáles se mueven juntas antes de entrenar un modelo.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-analisis-univariado" data-term="Análisis univariado">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Análisis univariado</h3>
+              <span class="badge">Punto de partida</span>
+            </div>
+            <p class="subtitle">Estudio de una variable por separado para comprender distribución, rango, centro y dispersión.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Consiste en examinar una sola variable a la vez, sin considerar todavía su relación con otras.</div></div>
+            <div class="row"><div class="k">Propósito</div><div class="v">Construir una primera lectura del dato: forma de la distribución, rango, valores frecuentes, asimetría, dispersión, faltantes y posibles outliers.</div></div>
+            <div class="row"><div class="k">Herramientas</div><div class="v">Histogramas, boxplots, curvas de densidad, tablas de frecuencia, gráficos de barras, percentiles y medidas descriptivas.</div></div>
+            <div class="row"><div class="k">Importancia</div><div class="v">Es el primer filtro de calidad y comprensión. Un análisis univariado sólido evita interpretar mal relaciones posteriores.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> estudiar la distribución de la edad de clientes antes de cruzarla con ingresos o comportamiento de compra.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-asimetria" data-term="Asimetría">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Asimetría</h3>
+              <span class="badge">Distribución</span>
+            </div>
+            <p class="subtitle">Desbalance entre la cola izquierda y la cola derecha de una distribución.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Una distribución es asimétrica cuando no presenta equilibrio alrededor de su centro. Puede tener cola más larga hacia la derecha o hacia la izquierda.</div></div>
+            <div class="row"><div class="k">Propósito analítico</div><div class="v">Detectar si una variable se aleja de una forma aproximadamente simétrica y si conviene usar transformaciones, medidas robustas o escalas logarítmicas.</div></div>
+            <div class="row"><div class="k">Señales</div><div class="v">Media y mediana alejadas, histogramas sesgados, boxplots con bigotes muy distintos, acumulación de valores en un extremo.</div></div>
+            <div class="row"><div class="k">Implicancia</div><div class="v">Afecta interpretación, modelado y elección de estadísticas descriptivas. En presencia de fuerte asimetría, la mediana suele ser más representativa que la media.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> ingresos, montos de compra y tiempos de espera suelen presentar asimetría positiva.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-B" data-letter="B">
+      <div class="letter-title">B</div>
+
+      <article class="card" id="t-balance-de-clases" data-term="Balance de clases">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Balance de clases</h3>
+              <span class="badge">Calidad del target</span>
+            </div>
+            <p class="subtitle">Relación entre la frecuencia de las categorías en una variable objetivo o categórica.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Describe si las clases de una variable categórica aparecen con proporciones relativamente similares o si una domina ampliamente a las demás.</div></div>
+            <div class="row"><div class="k">Propósito</div><div class="v">Evaluar si el dataset puede inducir sesgos en el modelado y si ciertas métricas serán engañosas.</div></div>
+            <div class="row"><div class="k">Qué revisar</div><div class="v">Frecuencias absolutas, porcentajes, presencia de clases raras, categorías casi vacías y estabilidad por segmento temporal o geográfico.</div></div>
+            <div class="row"><div class="k">Visualizaciones</div><div class="v">Gráfico de barras, proporciones, tablas de frecuencia, barras apiladas por subgrupo.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> en fraude, churn o morosidad suele haber fuerte desbalance, y el EDA debe dejarlo explícito antes del entrenamiento.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-barras" data-term="Gráfico de barras barras">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Gráfico de barras</h3>
+              <span class="badge">Visualización</span>
+            </div>
+            <p class="subtitle">Representación estándar para frecuencias o proporciones de categorías.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Es un gráfico donde cada barra representa una categoría y su altura indica conteo o proporción.</div></div>
+            <div class="row"><div class="k">Uso en EDA</div><div class="v">Permite ver la moda, el desbalance entre categorías, la rareza de ciertos grupos y la composición general de una variable cualitativa.</div></div>
+            <div class="row"><div class="k">Diferencia clave</div><div class="v">No debe confundirse con el histograma. En barras las categorías son separadas; en histogramas los intervalos son contiguos porque representan continuidad numérica.</div></div>
+            <div class="row"><div class="k">Buenas prácticas</div><div class="v">Ordenar categorías cuando tiene sentido, rotular porcentajes si son pocos grupos y evitar exceso de etiquetas si la cardinalidad es alta.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> distribución de clientes por canal, región, método de pago o categoría de producto.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-boxplot" data-term="Boxplot box plot">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Boxplot</h3>
+              <span class="badge">Visualización</span>
+            </div>
+            <p class="subtitle">Resumen visual de mediana, cuartiles, dispersión central y posibles outliers.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Gráfico que resume una variable cuantitativa mediante Q1, mediana, Q3, rango intercuartílico y puntos extremos.</div></div>
+            <div class="row"><div class="k">Propósito</div><div class="v">Condensar mucha información en poco espacio y facilitar comparaciones entre grupos.</div></div>
+            <div class="row"><div class="k">Qué muestra</div><div class="v">Posición central, amplitud del 50% central de los datos, asimetría aproximada y observaciones alejadas.</div></div>
+            <div class="row"><div class="k">Cuándo conviene</div><div class="v">Cuando se quiere comparar una variable numérica entre varias categorías o revisar rápidamente si hay valores atípicos.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> boxplots de salario por área, gasto por segmento o edad por tipo de cliente.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-C" data-letter="C">
+      <div class="letter-title">C</div>
+
+      <article class="card" id="t-cardinalidad" data-term="Cardinalidad">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Cardinalidad</h3>
+              <span class="badge">Variables categóricas</span>
+            </div>
+            <p class="subtitle">Cantidad de categorías distintas que puede tomar una variable categórica.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Es el número de valores únicos de una variable. En categóricas puede ser baja, media o muy alta.</div></div>
+            <div class="row"><div class="k">Por qué importa</div><div class="v">Condiciona visualización, codificación y modelado. Variables con cardinalidad muy alta pueden producir sparsity o sobreajuste si se codifican sin criterio.</div></div>
+            <div class="row"><div class="k">Qué revisar</div><div class="v">Cantidad de niveles, frecuencia de categorías raras, presencia de errores de escritura y consistencia semántica.</div></div>
+            <div class="row"><div class="k">Señal típica</div><div class="v">Una variable como ciudad, SKU o usuario puede tener cientos o miles de valores únicos, y no siempre es conveniente usarla tal cual.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> una columna “provincia” tiene cardinalidad baja; una columna “email” suele ser prácticamente identificadora.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-calidad-dato" data-term="Calidad del dato">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Calidad del dato</h3>
+              <span class="badge">Diagnóstico</span>
+            </div>
+            <p class="subtitle">Evaluación de completitud, consistencia, validez y plausibilidad de la información.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Es el conjunto de criterios que permiten determinar si los datos son confiables para analizar y modelar.</div></div>
+            <div class="row"><div class="k">Dimensiones</div><div class="v">Completitud, consistencia interna, unicidad, exactitud aparente, coherencia temporal, plausibilidad y formato.</div></div>
+            <div class="row"><div class="k">Qué busca el EDA</div><div class="v">Missing values, duplicados, categorías mal escritas, fechas imposibles, magnitudes absurdas, registros contradictorios y outliers potencialmente erróneos.</div></div>
+            <div class="row"><div class="k">Razón pedagógica</div><div class="v">El EDA no solo describe variables: también detecta problemas que, si se ignoran, contaminan todo el pipeline analítico.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> edades negativas, ventas con fecha futura o un mismo cliente repetido múltiples veces sin justificación.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-correlacion" data-term="Correlación">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Correlación</h3>
+              <span class="badge">Asociación</span>
+            </div>
+            <p class="subtitle">Medida de asociación entre variables, especialmente útil para variables numéricas.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Resume la fuerza y dirección de una asociación, usualmente lineal, entre dos variables numéricas.</div></div>
+            <div class="row"><div class="k">Propósito en EDA</div><div class="v">Detectar variables que se mueven juntas, redundancia informativa y posibles señales para el modelado o la reducción de dimensión.</div></div>
+            <div class="row"><div class="k">Precaución</div><div class="v">Correlación no implica causalidad. Además, una correlación baja no descarta una relación no lineal, y una correlación alta puede estar dominada por outliers o por subgrupos.</div></div>
+            <div class="row"><div class="k">Visualización complementaria</div><div class="v">Siempre conviene acompañarla con scatter plots, pair plots o segmentaciones por grupo.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> ingreso y gasto mensual pueden correlacionar positivamente, pero la relación puede variar si se segmenta por edad o región.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-correlacion-espuria" data-term="Correlación espuria">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Correlación espuria</h3>
+              <span class="badge">Cuidado interpretativo</span>
+            </div>
+            <p class="subtitle">Asociación aparente que no refleja una relación sustantiva estable o causal.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Se produce cuando dos variables parecen relacionadas, pero la asociación surge por azar, por una tercera variable o por una tendencia compartida que no expresa vínculo real.</div></div>
+            <div class="row"><div class="k">Importancia</div><div class="v">Es uno de los riesgos clásicos del EDA: ver patrones donde no hay relación sustantiva o interpretar como causal algo meramente coincidente.</div></div>
+            <div class="row"><div class="k">Cómo detectarla</div><div class="v">Segmentando, incorporando contexto, revisando temporalidad, controlando variables de confusión y verificando estabilidad en distintos subconjuntos.</div></div>
+            <div class="row"><div class="k">Lección</div><div class="v">EDA descubre patrones, pero no debe convertir toda asociación en explicación causal.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> dos series que crecen juntas con el tiempo pueden parecer correlacionadas solo porque ambas siguen una tendencia ascendente.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-curtosis" data-term="Curtosis">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Curtosis</h3>
+              <span class="badge">Forma distribucional</span>
+            </div>
+            <p class="subtitle">Indicador relacionado con la concentración central y el peso de las colas de una distribución.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Describe, de manera resumida, si una distribución presenta colas relativamente pesadas o livianas y cómo se concentra la masa de datos alrededor del centro.</div></div>
+            <div class="row"><div class="k">Uso práctico</div><div class="v">En EDA suele ser secundaria respecto de histogramas y boxplots, pero puede ayudar a detectar presencia de colas pesadas o valores extremos frecuentes.</div></div>
+            <div class="row"><div class="k">Cuidado</div><div class="v">No conviene interpretarla aislada. Es más útil como complemento de la visualización que como diagnóstico autónomo.</div></div>
+            <div class="row"><div class="k">Lectura prudente</div><div class="v">Una curtosis alta sugiere distribución con mayor peso en colas o eventos extremos relativamente frecuentes.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> retornos financieros o tiempos de falla pueden exhibir curtosis elevada por presencia de observaciones extremas.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-D" data-letter="D">
+      <div class="letter-title">D</div>
+
+      <article class="card" id="t-datos-faltantes" data-term="Datos faltantes missing values">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Datos faltantes</h3>
+              <span class="badge">Calidad del dato</span>
+            </div>
+            <p class="subtitle">Ausencia de información en una o más observaciones de una variable.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Son celdas sin valor, vacías o codificadas como nulas. En EDA no se consideran un detalle técnico menor, sino una fuente potencial de sesgo.</div></div>
+            <div class="row"><div class="k">Qué importa revisar</div><div class="v">Cantidad de faltantes, patrón de aparición, concentración por variable, fila, segmento, fecha o grupo de interés.</div></div>
+            <div class="row"><div class="k">Pregunta central</div><div class="v">No solo cuánto falta, sino <strong>cómo falta</strong>. Si la ausencia no es aleatoria, puede distorsionar inferencias y modelos.</div></div>
+            <div class="row"><div class="k">Tratamientos</div><div class="v">Eliminar, imputar, crear indicador de ausencia o rediseñar el análisis, según contexto y objetivo.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> si faltan ingresos principalmente en clientes de cierto segmento, la ausencia ya contiene información y no debería ignorarse sin más.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-densidad" data-term="Densidad KDE kernel density">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Densidad (KDE)</h3>
+              <span class="badge">Visualización</span>
+            </div>
+            <p class="subtitle">Curva suave que aproxima la forma de una distribución cuantitativa.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Es una estimación continua de la distribución de una variable, construida a partir de funciones kernel y un parámetro de suavizado.</div></div>
+            <div class="row"><div class="k">Ventaja</div><div class="v">Muestra la forma global de la distribución de manera más suave que un histograma y facilita comparar varias curvas en el mismo eje.</div></div>
+            <div class="row"><div class="k">Precaución</div><div class="v">Su apariencia depende del ancho de banda. Demasiado suavizado oculta estructura; muy poco suavizado exagera irregularidades.</div></div>
+            <div class="row"><div class="k">Cuándo conviene</div><div class="v">Especialmente en variables continuas o cuando interesa comparar distribuciones entre grupos.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> comparar la densidad de una variable entre hombres y mujeres, o entre clientes activos e inactivos.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-distribucion" data-term="Distribución">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Distribución</h3>
+              <span class="badge">Concepto central</span>
+            </div>
+            <p class="subtitle">Forma en que los valores de una variable se reparten a lo largo de su rango posible u observado.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Describe cómo se ubican y concentran las observaciones: dónde se agrupan, qué tan dispersas están, si son simétricas, si tienen colas largas o varios picos.</div></div>
+            <div class="row"><div class="k">Por qué importa</div><div class="v">Entender la distribución es una de las metas principales del EDA, porque condiciona las decisiones sobre estadística descriptiva, transformaciones y modelado.</div></div>
+            <div class="row"><div class="k">Elementos</div><div class="v">Centro, dispersión, forma, simetría, multimodalidad, extremos y densidad relativa en distintos rangos.</div></div>
+            <div class="row"><div class="k">Herramientas</div><div class="v">Histograma, KDE, boxplot, percentiles, tablas de frecuencia y resúmenes numéricos.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> una variable puede tener la misma media que otra y, sin embargo, una distribución totalmente distinta.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-duplicados" data-term="Duplicados">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Duplicados</h3>
+              <span class="badge">Calidad del dato</span>
+            </div>
+            <p class="subtitle">Registros repetidos total o parcialmente que pueden inflar frecuencias o distorsionar análisis.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Son observaciones repetidas exactamente o con pequeñas variaciones que representan la misma entidad o evento.</div></div>
+            <div class="row"><div class="k">Riesgo</div><div class="v">Pueden sobreestimar conteos, modificar proporciones, alterar medias y sesgar relaciones entre variables.</div></div>
+            <div class="row"><div class="k">Qué revisar</div><div class="v">Duplicados exactos, duplicados por clave, repetición temporal legítima versus repetición errónea y consistencia entre columnas identificadoras.</div></div>
+            <div class="row"><div class="k">Decisión</div><div class="v">No todo duplicado debe eliminarse: primero hay que entender si representa un error, una actualización o una transacción repetida legítima.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> un cliente repetido por error en la tabla maestra no es lo mismo que varias compras reales del mismo cliente.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-E" data-letter="E">
+      <div class="letter-title">E</div>
+
+      <article class="card" id="t-eda" data-term="EDA exploratory data analysis análisis exploratorio de datos">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>EDA</h3>
+              <span class="badge">Concepto eje</span>
+            </div>
+            <p class="subtitle">Análisis Exploratorio de Datos: etapa inicial destinada a comprender la estructura real del dataset.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Es la fase inicial del trabajo con datos en la que se describen variables, se visualizan distribuciones, se detectan problemas de calidad y se formulan hipótesis preliminares.</div></div>
+            <div class="row"><div class="k">Idea rectora</div><div class="v">Antes de modelar, primero hay que mirar, resumir, graficar y cuestionar los datos. El EDA reduce el riesgo de aplicar técnicas a ciegas.</div></div>
+            <div class="row"><div class="k">Objetivos</div><div class="v">Comprender estructura, identificar outliers, revisar missing values, estudiar relaciones, detectar sesgos, anticipar transformaciones y elegir mejor las técnicas posteriores.</div></div>
+            <div class="row"><div class="k">Naturaleza</div><div class="v">Es descriptivo, diagnóstico y orientador. No reemplaza la inferencia ni el modelado, pero los prepara.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> revisar un dataset nuevo con resúmenes, gráficos, filtros y segmentaciones antes de construir un modelo predictivo.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-escalado" data-term="Escalado scaling">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Escalado</h3>
+              <span class="badge">Preparación</span>
+            </div>
+            <p class="subtitle">Transformación de la escala de variables numéricas para hacerlas comparables o estabilizar algoritmos.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Consiste en modificar la escala numérica de una variable sin cambiar su información sustantiva principal.</div></div>
+            <div class="row"><div class="k">Propósito</div><div class="v">Evitar que variables con gran magnitud dominen a otras y mejorar el comportamiento de métodos sensibles a distancia o magnitud.</div></div>
+            <div class="row"><div class="k">Conexión con EDA</div><div class="v">El EDA ayuda a decidir si el escalado es necesario al detectar escalas muy diferentes, asimetrías severas o amplitudes extremas.</div></div>
+            <div class="row"><div class="k">Ejemplos</div><div class="v">Standardization, min-max scaling, transformaciones robustas basadas en mediana e IQR.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> combinar edad en años con ingresos anuales sin escalado puede ser problemático en métodos como kNN o k-means.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-estadistica-descriptiva" data-term="Estadística descriptiva">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Estadística descriptiva</h3>
+              <span class="badge">Base cuantitativa</span>
+            </div>
+            <p class="subtitle">Conjunto de medidas que resumen centro, dispersión y posición de una variable.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Incluye medidas como media, mediana, desvío estándar, mínimo, máximo, percentiles y rango intercuartílico.</div></div>
+            <div class="row"><div class="k">Rol en EDA</div><div class="v">Brinda una primera lectura numérica de la variable y sirve de complemento a la inspección visual.</div></div>
+            <div class="row"><div class="k">Limitación</div><div class="v">No alcanza por sí sola. Dos distribuciones distintas pueden compartir estadísticas descriptivas similares.</div></div>
+            <div class="row"><div class="k">Uso correcto</div><div class="v">Debe leerse junto con gráficos y contexto del negocio o fenómeno analizado.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> media y mediana cercanas sugieren menor asimetría que cuando están muy separadas.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-F" data-letter="F">
+      <div class="letter-title">F</div>
+
+      <article class="card" id="t-feature-engineering" data-term="Feature engineering ingeniería de variables">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Feature engineering</h3>
+              <span class="badge">Derivación de variables</span>
+            </div>
+            <p class="subtitle">Construcción de nuevas variables a partir de las existentes para capturar mejor la señal del fenómeno.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Consiste en crear nuevas representaciones de los datos: ratios, agregados, indicadores binarios, variables temporales, interacciones o transformaciones.</div></div>
+            <div class="row"><div class="k">Relación con EDA</div><div class="v">El EDA sugiere oportunidades de feature engineering al revelar asimetrías, relaciones no lineales, segmentaciones o variables poco informativas en su forma original.</div></div>
+            <div class="row"><div class="k">Cuidado</div><div class="v">Debe evitarse introducir leakage o variables artificiales sin sentido sustantivo.</div></div>
+            <div class="row"><div class="k">Pregunta útil</div><div class="v">¿La variable original ya expresa bien el fenómeno o conviene derivar otra que lo represente mejor?</div></div>
+            <div class="example"><strong>Ejemplo:</strong> transformar fecha en día de semana, mes o antigüedad; calcular gasto por cliente o tasa de conversión.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-frecuencia" data-term="Frecuencia">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Frecuencia</h3>
+              <span class="badge">Distribución categórica</span>
+            </div>
+            <p class="subtitle">Número de veces que aparece un valor o categoría en una variable.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Puede expresarse como conteo absoluto o como proporción relativa respecto del total.</div></div>
+            <div class="row"><div class="k">Uso en EDA</div><div class="v">Es la base para entender cómo se distribuyen categorías, detectar modas, rarezas y desbalances.</div></div>
+            <div class="row"><div class="k">Visualización</div><div class="v">Tablas de frecuencia, gráficos de barras y barras apiladas cuando se comparan grupos.</div></div>
+            <div class="row"><div class="k">Importancia</div><div class="v">Una categoría muy infrecuente puede ser ruido, error, nicho importante o señal de segmentación relevante.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> frecuencia de métodos de pago, provincias, diagnóstico clínico o clases de churn.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-H" data-letter="H">
+      <div class="letter-title">H</div>
+
+      <article class="card" id="t-heatmap" data-term="Heatmap mapa de calor">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Heatmap</h3>
+              <span class="badge">Visualización multivariada</span>
+            </div>
+            <p class="subtitle">Mapa de color para resumir matrices de relación o intensidad entre variables o categorías.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Representa magnitudes mediante color. En EDA suele usarse para matrices de correlación, tablas pivote o patrones de missing values.</div></div>
+            <div class="row"><div class="k">Propósito</div><div class="v">Hacer visible de un vistazo dónde hay bloques, asociaciones fuertes, estructuras repetidas o vacíos sistemáticos.</div></div>
+            <div class="row"><div class="k">Cuidado</div><div class="v">Debe acompañarse de escala clara, orden adecuado y, si es posible, clustering o reorganización lógica de filas y columnas.</div></div>
+            <div class="row"><div class="k">Ventaja</div><div class="v">Sintetiza matrices grandes mejor que una tabla numérica densa.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> heatmap de correlaciones entre variables numéricas o mapa de faltantes por columna y registro.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-histograma" data-term="Histograma">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Histograma</h3>
+              <span class="badge">Visualización univariada</span>
+            </div>
+            <p class="subtitle">Gráfico de intervalos que permite ver la forma de una distribución cuantitativa.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Agrupa observaciones en intervalos o bins y muestra cuántas caen en cada uno.</div></div>
+            <div class="row"><div class="k">Qué aporta</div><div class="v">Permite detectar sesgo, multimodalidad, acumulaciones, colas largas, vacíos y rango efectivo de la variable.</div></div>
+            <div class="row"><div class="k">Limitación</div><div class="v">La forma observada depende del número y ancho de bins. Por eso conviene probar más de una configuración.</div></div>
+            <div class="row"><div class="k">Lectura correcta</div><div class="v">Sirve para describir forma, no solo para “contar barras”.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> histograma de ingresos, edades, montos de compra, tiempo de sesión o puntajes.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-I" data-letter="I">
+      <div class="letter-title">I</div>
+
+      <article class="card" id="t-iqr" data-term="IQR rango intercuartílico">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>IQR (Rango intercuartílico)</h3>
+              <span class="badge">Dispersión robusta</span>
+            </div>
+            <p class="subtitle">Diferencia entre el tercer y el primer cuartil: <span class="math">IQR = Q3 - Q1</span>.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Mide la amplitud del 50% central de los datos y es menos sensible a valores extremos que el rango total.</div></div>
+            <div class="row"><div class="k">Uso en EDA</div><div class="v">Sirve para describir dispersión robusta y para reglas simples de detección de outliers, como la regla de 1.5 × IQR.</div></div>
+            <div class="row"><div class="k">Ventaja</div><div class="v">Permite resumir variabilidad sin quedar dominado por unos pocos extremos.</div></div>
+            <div class="row"><div class="k">Dónde aparece</div><div class="v">Boxplots, resúmenes descriptivos robustos y análisis de dispersión en distribuciones asimétricas.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> si Q1 = 10 y Q3 = 18, el IQR es 8, que resume la amplitud del corazón de la distribución.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-imputacion" data-term="Imputación">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Imputación</h3>
+              <span class="badge">Tratamiento de faltantes</span>
+            </div>
+            <p class="subtitle">Sustitución de datos faltantes por valores estimados o reglas definidas.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Consiste en completar celdas faltantes usando un criterio explícito: media, mediana, moda, valor constante, interpolación o modelos específicos.</div></div>
+            <div class="row"><div class="k">Relación con EDA</div><div class="v">El EDA ayuda a decidir si imputar, cómo hacerlo y qué riesgos implica según el patrón de ausencia.</div></div>
+            <div class="row"><div class="k">Peligro</div><div class="v">Una imputación mal elegida puede aplanar la variabilidad, introducir sesgo o ocultar un patrón informativo de ausencia.</div></div>
+            <div class="row"><div class="k">Criterio</div><div class="v">La imputación debe depender del contexto, la variable y el objetivo, no de una receta automática.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> imputar con mediana puede ser razonable en variables con outliers; imputar con media puede ser problemático si hay asimetría fuerte.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-L" data-letter="L">
+      <div class="letter-title">L</div>
+
+      <article class="card" id="t-leakage" data-term="Leakage data leakage filtración de información">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Leakage</h3>
+              <span class="badge">Riesgo metodológico</span>
+            </div>
+            <p class="subtitle">Filtración de información del futuro o de la variable objetivo hacia el proceso de modelado.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Ocurre cuando una variable o transformación incorpora información que no estaría disponible en el momento real de predicción.</div></div>
+            <div class="row"><div class="k">Lugar del EDA</div><div class="v">El EDA puede detectar variables sospechosamente “demasiado buenas”, relaciones imposibles temporalmente o columnas derivadas del target.</div></div>
+            <div class="row"><div class="k">Consecuencia</div><div class="v">Produce modelos artificialmente exitosos durante entrenamiento y evaluación, pero inservibles en producción.</div></div>
+            <div class="row"><div class="k">Regla</div><div class="v">Siempre preguntarse si la variable estaría disponible en el instante en que se necesita predecir.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> usar fecha de cancelación para predecir churn antes de que ocurra la cancelación es leakage.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-M" data-letter="M">
+      <div class="letter-title">M</div>
+
+      <article class="card" id="t-media" data-term="Media">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Media</h3>
+              <span class="badge">Tendencia central</span>
+            </div>
+            <p class="subtitle">Promedio aritmético de los valores de una variable cuantitativa.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Se obtiene sumando los valores y dividiendo por la cantidad de observaciones. Resume el centro de gravedad numérico de la distribución.</div></div>
+            <div class="row"><div class="k">Fortaleza</div><div class="v">Es una medida muy conocida, interpretable y útil cuando la distribución no está dominada por outliers extremos.</div></div>
+            <div class="row"><div class="k">Limitación</div><div class="v">Es sensible a valores atípicos y a distribuciones muy sesgadas.</div></div>
+            <div class="row"><div class="k">Relación útil</div><div class="v">Comparar media con mediana ayuda a detectar asimetría.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> si unos pocos clientes gastan muchísimo, la media de gasto puede quedar muy por encima del valor “típico”.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-mediana" data-term="Mediana">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Mediana</h3>
+              <span class="badge">Tendencia central robusta</span>
+            </div>
+            <p class="subtitle">Valor central de los datos ordenados; deja 50% por debajo y 50% por encima.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Es el percentil 50. En variables con asimetría o outliers, suele representar mejor el centro típico que la media.</div></div>
+            <div class="row"><div class="k">Ventaja</div><div class="v">Es robusta frente a extremos y permite una lectura más estable del centro en distribuciones sesgadas.</div></div>
+            <div class="row"><div class="k">Uso en EDA</div><div class="v">Sirve junto con media, boxplots y percentiles para interpretar forma y sesgo de la distribución.</div></div>
+            <div class="row"><div class="k">Señal útil</div><div class="v">Si media y mediana difieren mucho, suele haber asimetría o valores extremos influyentes.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> en ingresos, la mediana suele describir mejor el valor típico que la media.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-missing-pattern" data-term="Patrón de faltantes missing pattern">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Patrón de faltantes</h3>
+              <span class="badge">Ausencia informativa</span>
+            </div>
+            <p class="subtitle">Estructura según la cual se distribuyen los valores faltantes en el dataset.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">No solo importa la cantidad de missing values, sino si aparecen al azar o concentrados en ciertas columnas, filas, grupos o momentos.</div></div>
+            <div class="row"><div class="k">Por qué importa</div><div class="v">Un patrón sistemático puede indicar sesgo de medición, limitación operativa, diseño de captura o incluso información latente relevante.</div></div>
+            <div class="row"><div class="k">Herramientas</div><div class="v">Mapas de faltantes, proporciones por grupo, tablas cruzadas y análisis temporal de ausencia.</div></div>
+            <div class="row"><div class="k">Decisión analítica</div><div class="v">El tratamiento correcto depende tanto del porcentaje faltante como del patrón observado.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> si faltan ingresos sobre todo en clientes premium, la ausencia no es aleatoria y merece interpretación sustantiva.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-modalidad" data-term="Moda">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Moda</h3>
+              <span class="badge">Frecuencia máxima</span>
+            </div>
+            <p class="subtitle">Valor o categoría que aparece con mayor frecuencia en la variable.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Es la categoría o valor con mayor frecuencia observada. En variables categóricas suele ser especialmente relevante.</div></div>
+            <div class="row"><div class="k">Uso</div><div class="v">Permite identificar el valor predominante y ayuda a resumir variables cualitativas o discretas.</div></div>
+            <div class="row"><div class="k">Matiz</div><div class="v">Una distribución puede ser unimodal, bimodal o multimodal. La existencia de varias modas puede señalar subpoblaciones distintas.</div></div>
+            <div class="row"><div class="k">Herramienta</div><div class="v">Tablas de frecuencia, barras e histogramas son la forma más directa de detectarla.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> el método de pago más usado, la categoría más vendida o la edad más frecuente en una muestra discreta.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-multicolinealidad" data-term="Multicolinealidad">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Multicolinealidad</h3>
+              <span class="badge">Redundancia</span>
+            </div>
+            <p class="subtitle">Dependencia fuerte entre variables explicativas o predictoras.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Aparece cuando varias variables contienen información muy parecida o combinaciones casi lineales entre sí.</div></div>
+            <div class="row"><div class="k">Por qué importa</div><div class="v">Puede volver inestables ciertos modelos, dificultar la interpretación de coeficientes y aumentar sensibilidad al ruido.</div></div>
+            <div class="row"><div class="k">Detección en EDA</div><div class="v">Matrices de correlación, pair plots, redundancia conceptual y revisión de variables derivadas o duplicadas.</div></div>
+            <div class="row"><div class="k">No siempre es “mala”</div><div class="v">A veces no afecta predicción, pero sí interpretación. La decisión depende del objetivo.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> superficie en metros y superficie en pies cuadrados transportan prácticamente la misma información.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-O" data-letter="O">
+      <div class="letter-title">O</div>
+
+      <article class="card" id="t-outlier" data-term="Outlier valor atípico">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Outlier</h3>
+              <span class="badge">Valor atípico</span>
+            </div>
+            <p class="subtitle">Observación alejada del patrón general de la variable o del conjunto de datos.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Es una observación que aparece muy separada del resto según magnitud, posición o comportamiento relativo.</div></div>
+            <div class="row"><div class="k">Error común</div><div class="v">No todo outlier es un error. Puede ser un dato mal cargado, pero también un caso raro real y analíticamente importante.</div></div>
+            <div class="row"><div class="k">Cómo se revisa</div><div class="v">Boxplots, percentiles extremos, reglas con IQR, scatter plots y validación contra contexto de negocio o dominio.</div></div>
+            <div class="row"><div class="k">Pregunta correcta</div><div class="v">No “¿lo elimino?”, sino “¿qué representa y cómo afecta el análisis?”.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> una compra 100 veces mayor que la media puede ser fraude, error o cliente corporativo extraordinario.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-P" data-letter="P">
+      <div class="letter-title">P</div>
+
+      <article class="card" id="t-pairplot" data-term="Pairplot pair plot">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Pair plot</h3>
+              <span class="badge">Exploración multivariada</span>
+            </div>
+            <p class="subtitle">Matriz de gráficos que muestra distribuciones univariadas y relaciones bivariadas entre variables numéricas.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Es una cuadrícula en la que la diagonal suele mostrar distribuciones univariadas y el resto scatter plots para cada par de variables.</div></div>
+            <div class="row"><div class="k">Utilidad</div><div class="v">Permite detectar rápidamente asociaciones, clusters, patrones lineales o no lineales y redundancias entre múltiples variables.</div></div>
+            <div class="row"><div class="k">Limitación</div><div class="v">Pierde eficacia cuando el número de variables es muy grande. En esos casos conviene seleccionar subconjuntos relevantes.</div></div>
+            <div class="row"><div class="k">Valor didáctico</div><div class="v">Es una síntesis muy poderosa del paso entre análisis univariado, bivariado y multivariado.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> revisar 4 o 5 variables numéricas clave al inicio de un proyecto para detectar relaciones antes del modelado.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-percentiles" data-term="Percentiles">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Percentiles</h3>
+              <span class="badge">Posición</span>
+            </div>
+            <p class="subtitle">Valores que dividen la distribución ordenada en puntos de referencia porcentuales.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">El percentil <span class="math">p</span> indica el valor por debajo del cual cae aproximadamente el <span class="math">p%</span> de las observaciones.</div></div>
+            <div class="row"><div class="k">Uso en EDA</div><div class="v">Ayudan a describir posición, colas, amplitud y extremos relativos. Son clave para boxplots e interpretación robusta.</div></div>
+            <div class="row"><div class="k">Ejemplos importantes</div><div class="v">P25, P50 (mediana), P75, P90, P95 o P99, según el tipo de análisis y sensibilidad deseada.</div></div>
+            <div class="row"><div class="k">Ventaja</div><div class="v">Son menos sensibles a extremos que medidas basadas exclusivamente en media y desvío.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> usar P95 para definir un umbral alto sin depender de un valor máximo aislado.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-pca" data-term="PCA análisis de componentes principales">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>PCA</h3>
+              <span class="badge">Reducción de dimensión</span>
+            </div>
+            <p class="subtitle">Técnica que proyecta los datos en nuevas direcciones que concentran mayor varianza.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">El Análisis de Componentes Principales construye combinaciones lineales ortogonales de las variables originales para resumir la estructura del dataset.</div></div>
+            <div class="row"><div class="k">Uso exploratorio</div><div class="v">Sirve para visualizar datos de alta dimensión, detectar agrupamientos, redundancia y direcciones dominantes de variabilidad.</div></div>
+            <div class="row"><div class="k">Qué no hace</div><div class="v">No reemplaza la interpretación sustantiva ni garantiza que las nuevas componentes sean fáciles de explicar.</div></div>
+            <div class="row"><div class="k">Conexión con EDA</div><div class="v">Es un paso exploratorio avanzado, útil cuando las relaciones multivariadas son difíciles de ver en tablas o gráficos simples.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> proyectar decenas de variables numéricas a dos dimensiones para detectar clusters o redundancias.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-preprocesamiento" data-term="Preprocesamiento">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Preprocesamiento</h3>
+              <span class="badge">Preparación</span>
+            </div>
+            <p class="subtitle">Conjunto de operaciones para dejar los datos en condiciones analíticas o de modelado.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Incluye limpieza, imputación, codificación, escalado, filtrado, agregación y construcción de variables derivadas.</div></div>
+            <div class="row"><div class="k">Rol del EDA</div><div class="v">El EDA no es idéntico al preprocesamiento, pero lo orienta. Primero diagnostica; luego sugiere qué transformaciones son razonables.</div></div>
+            <div class="row"><div class="k">Error frecuente</div><div class="v">Preprocesar automáticamente sin haber entendido antes la estructura del dato.</div></div>
+            <div class="row"><div class="k">Principio</div><div class="v">Toda transformación debería responder a una necesidad detectada, no a una rutina aplicada ciegamente.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> si el EDA muestra asimetría fuerte, quizá convenga una transformación logarítmica antes del modelado.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-Q" data-letter="Q">
+      <div class="letter-title">Q</div>
+
+      <article class="card" id="t-cuartiles" data-term="Cuartiles">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Cuartiles</h3>
+              <span class="badge">Posición robusta</span>
+            </div>
+            <p class="subtitle">Puntos que dividen los datos ordenados en cuatro partes de igual tamaño aproximado.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Q1 es el percentil 25, Q2 la mediana y Q3 el percentil 75.</div></div>
+            <div class="row"><div class="k">Uso en EDA</div><div class="v">Permiten describir la estructura posicional de la distribución y son la base del IQR y del boxplot.</div></div>
+            <div class="row"><div class="k">Ventaja</div><div class="v">Son más robustos que el mínimo, máximo o la media frente a observaciones extremas.</div></div>
+            <div class="row"><div class="k">Interpretación</div><div class="v">Ayudan a entender dónde cae el 25%, 50% y 75% de la variable, y cómo se distribuye el grueso de los datos.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> si Q1 y Q3 están muy alejados, la dispersión central de la variable es amplia.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-R" data-letter="R">
+      <div class="letter-title">R</div>
+
+      <article class="card" id="t-rango" data-term="Rango">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Rango</h3>
+              <span class="badge">Dispersión</span>
+            </div>
+            <p class="subtitle">Diferencia entre el valor máximo y el valor mínimo observados.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Resume la amplitud total del conjunto de datos: <span class="math">Rango = Máximo - Mínimo</span>.</div></div>
+            <div class="row"><div class="k">Ventaja</div><div class="v">Es simple e intuitivo como referencia rápida del alcance observado de la variable.</div></div>
+            <div class="row"><div class="k">Limitación</div><div class="v">Es extremadamente sensible a outliers y no describe la estructura interna de la distribución.</div></div>
+            <div class="row"><div class="k">Uso correcto</div><div class="v">Conviene complementarlo con IQR, percentiles o desvío estándar.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> dos variables pueden tener el mismo rango, pero una estar muy concentrada y otra muy dispersa.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-regla-iqr" data-term="Regla IQR 1.5 IQR">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Regla de 1.5 × IQR</h3>
+              <span class="badge">Detección simple</span>
+            </div>
+            <p class="subtitle">Criterio clásico para marcar observaciones potencialmente atípicas.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Marca como posibles outliers a los valores menores que <span class="math">Q1 - 1.5·IQR</span> o mayores que <span class="math">Q3 + 1.5·IQR</span>.</div></div>
+            <div class="row"><div class="k">Ventaja</div><div class="v">Es un criterio simple, robusto y fácil de aplicar en boxplots y resúmenes exploratorios.</div></div>
+            <div class="row"><div class="k">Precaución</div><div class="v">Es una regla heurística, no una verdad absoluta. Puede marcar observaciones reales valiosas o pasar por alto patrones multivariados raros.</div></div>
+            <div class="row"><div class="k">Buena práctica</div><div class="v">Usarla como disparador de inspección, no como criterio automático de eliminación.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> en ventas o ingresos, valores por encima del umbral pueden ser anómalos o simplemente clientes extraordinarios.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-redundancia" data-term="Redundancia">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Redundancia</h3>
+              <span class="badge">Estructura informativa</span>
+            </div>
+            <p class="subtitle">Presencia de variables que repiten o duplican información ya contenida en otras.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Se da cuando varias columnas expresan casi lo mismo, ya sea por unidades distintas, derivaciones triviales o alta correlación estructural.</div></div>
+            <div class="row"><div class="k">Importancia</div><div class="v">Puede complicar interpretación, aumentar complejidad innecesaria y en algunos modelos generar multicolinealidad.</div></div>
+            <div class="row"><div class="k">Detección</div><div class="v">Correlación alta, inspección semántica, análisis de fórmula, pair plots y revisión del origen de las variables.</div></div>
+            <div class="row"><div class="k">Decisión</div><div class="v">No siempre debe eliminarse: depende de si el objetivo es predicción, interpretación o documentación del sistema.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> tener “monto en dólares” y “monto en moneda local” calculados uno a partir del otro.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-S" data-letter="S">
+      <div class="letter-title">S</div>
+
+      <article class="card" id="t-scatter" data-term="Scatter plot gráfico de dispersión">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Scatter plot</h3>
+              <span class="badge">Visualización bivariada</span>
+            </div>
+            <p class="subtitle">Gráfico de puntos para observar la relación entre dos variables numéricas.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Cada observación se representa como un punto ubicado por sus coordenadas en dos ejes numéricos.</div></div>
+            <div class="row"><div class="k">Qué permite ver</div><div class="v">Tendencias, relaciones lineales o no lineales, heterocedasticidad, clusters y outliers bivariados.</div></div>
+            <div class="row"><div class="k">Valor en EDA</div><div class="v">Es el complemento natural de la correlación, porque revela estructura que un solo coeficiente puede ocultar.</div></div>
+            <div class="row"><div class="k">Extensión</div><div class="v">Puede enriquecerse con color, tamaño o facetas para incorporar una tercera o cuarta dimensión.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> relación entre gasto y antigüedad, edad e ingreso, o total de cuenta y propina.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-sesgo" data-term="Sesgo bias">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Sesgo</h3>
+              <span class="badge">Riesgo analítico</span>
+            </div>
+            <p class="subtitle">Desviación sistemática que distorsiona la representación o interpretación del fenómeno.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Es una distorsión sistemática que hace que los datos observados no representen adecuadamente la realidad de interés.</div></div>
+            <div class="row"><div class="k">Dónde aparece</div><div class="v">Muestreo, medición, registros incompletos, faltantes no aleatorios, variables mal definidas o procesos históricos de selección.</div></div>
+            <div class="row"><div class="k">Rol del EDA</div><div class="v">No siempre puede “corregir” el sesgo, pero sí puede descubrir señales tempranas de que el dataset no es neutral ni representativo.</div></div>
+            <div class="row"><div class="k">Preguntas clave</div><div class="v">¿Quiénes están sobre-representados? ¿Quiénes faltan? ¿Qué proceso generó estos datos?</div></div>
+            <div class="example"><strong>Ejemplo:</strong> entrenar con datos de clientes activos solamente y luego querer generalizar al total de la población.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-sesgo-seleccion" data-term="Sesgo de selección">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Sesgo de selección</h3>
+              <span class="badge">Representatividad</span>
+            </div>
+            <p class="subtitle">Distorsión causada por una muestra o conjunto de datos que no representa bien a la población objetivo.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Ocurre cuando el mecanismo de inclusión de casos favorece sistemáticamente ciertos perfiles y excluye otros.</div></div>
+            <div class="row"><div class="k">Impacto</div><div class="v">Las conclusiones del análisis pueden ser válidas solo para la muestra observada y no para la población a la que se quiere generalizar.</div></div>
+            <div class="row"><div class="k">Detección</div><div class="v">Comparar distribución de variables clave con referencias externas, revisar cobertura geográfica, temporal y operativa, e inspeccionar subgrupos ausentes.</div></div>
+            <div class="row"><div class="k">Lección metodológica</div><div class="v">No todo dataset grande es representativo. El volumen no reemplaza la calidad del proceso de selección.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> estudiar satisfacción solo con respuestas voluntarias suele sobre-representar perfiles muy satisfechos o muy insatisfechos.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-T" data-letter="T">
+      <div class="letter-title">T</div>
+
+      <article class="card" id="t-transformacion" data-term="Transformación">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Transformación</h3>
+              <span class="badge">Ajuste de variable</span>
+            </div>
+            <p class="subtitle">Cambio matemático o lógico aplicado a una variable para mejorar su comportamiento analítico.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Incluye operaciones como logaritmos, raíces, winsorización, recodificación, binning, estandarización o combinación con otras variables.</div></div>
+            <div class="row"><div class="k">Cuándo surge</div><div class="v">Cuando el EDA detecta asimetría fuerte, outliers, escalas incompatibles, no linealidad o una representación poco útil de la variable.</div></div>
+            <div class="row"><div class="k">Criterio</div><div class="v">Toda transformación debe estar justificada por un problema o una necesidad de interpretación, no aplicarse automáticamente.</div></div>
+            <div class="row"><div class="k">Riesgo</div><div class="v">Transformar sin criterio puede hacer perder interpretabilidad o introducir artificios innecesarios.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> aplicar log a ingresos o ventas cuando la distribución presenta cola muy larga.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-trend" data-term="Tendencia trend">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Tendencia</h3>
+              <span class="badge">Patrón</span>
+            </div>
+            <p class="subtitle">Dirección general del comportamiento de una variable o relación al avanzar en otra dimensión.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Es un patrón global de aumento, disminución o cambio sistemático, especialmente visible en relaciones bivariadas o series temporales.</div></div>
+            <div class="row"><div class="k">Importancia</div><div class="v">Ayuda a distinguir estructura de ruido y orienta hipótesis sobre comportamiento del fenómeno.</div></div>
+            <div class="row"><div class="k">Dónde verla</div><div class="v">Scatter plots, líneas temporales, agregaciones por grupo, suavizados locales y gráficos por tramo.</div></div>
+            <div class="row"><div class="k">Precaución</div><div class="v">Una tendencia global puede ocultar patrones distintos por subgrupo o cambiar de sentido según el segmento analizado.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> mayor antigüedad puede asociarse con menor churn, pero solo en ciertos segmentos de clientes.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-V" data-letter="V">
+      <div class="letter-title">V</div>
+
+      <article class="card" id="t-variable" data-term="Variable">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Variable</h3>
+              <span class="badge">Unidad básica</span>
+            </div>
+            <p class="subtitle">Característica observada, medida o categorizada en los datos.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Es un atributo que puede tomar distintos valores entre observaciones: numéricos, categóricos, ordinales, binarios, temporales, etc.</div></div>
+            <div class="row"><div class="k">Rol en EDA</div><div class="v">Todo el análisis parte de reconocer qué tipo de variable se tiene delante y cómo debe describirse o visualizarse.</div></div>
+            <div class="row"><div class="k">Clasificación útil</div><div class="v">Cuantitativa o cualitativa, continua o discreta, nominal u ordinal, explicativa, objetivo, temporal, identificadora.</div></div>
+            <div class="row"><div class="k">Pregunta inicial</div><div class="v">¿Qué representa exactamente esta variable y qué tipo de valores puede tomar?</div></div>
+            <div class="example"><strong>Ejemplo:</strong> edad, género, fecha de compra, provincia, saldo, número de hijos o nivel de satisfacción.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-variable-objetivo" data-term="Variable objetivo target">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Variable objetivo</h3>
+              <span class="badge">Target</span>
+            </div>
+            <p class="subtitle">Variable que se desea explicar, predecir o clasificar en un problema supervisado.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Es la salida o resultado de interés: churn, fraude, precio, diagnóstico, conversión, morosidad, etc.</div></div>
+            <div class="row"><div class="k">Rol del EDA</div><div class="v">Antes de modelar, conviene describir su distribución, balance de clases, variabilidad, presencia de valores extremos y coherencia temporal.</div></div>
+            <div class="row"><div class="k">Importancia</div><div class="v">Comprender bien el target evita elegir métricas inadecuadas o estrategias erróneas de entrenamiento.</div></div>
+            <div class="row"><div class="k">Cuidado</div><div class="v">Muchas fugas de información se detectan revisando qué variables parecen construidas a partir del target.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> si el target es churn, importa saber si está desbalanceado y si cambia de comportamiento según el período.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-varianza" data-term="Varianza">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Varianza</h3>
+              <span class="badge">Dispersión</span>
+            </div>
+            <p class="subtitle">Medida que resume el promedio de los cuadrados de las desviaciones respecto de la media.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Cuantifica cuánto se dispersan los valores respecto de la media. Su raíz cuadrada es el desvío estándar.</div></div>
+            <div class="row"><div class="k">Uso en EDA</div><div class="v">Ayuda a evaluar heterogeneidad de una variable y a detectar si algunas columnas casi no varían o, por el contrario, fluctúan mucho.</div></div>
+            <div class="row"><div class="k">Precaución</div><div class="v">Compararla entre variables con escalas muy distintas puede ser engañoso sin estandarización o contexto.</div></div>
+            <div class="row"><div class="k">Relación</div><div class="v">Más que una medida “intuitiva” para comunicar, suele ser una base técnica para otras herramientas.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> una variable con varianza casi nula puede aportar muy poca señal para modelado.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="t-visualizacion" data-term="Visualización">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Visualización</h3>
+              <span class="badge">Lenguaje del EDA</span>
+            </div>
+            <p class="subtitle">Uso de gráficos como herramienta principal para descubrir y comunicar patrones en los datos.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">Consiste en representar los datos de forma gráfica para facilitar la detección de estructura, relaciones, anomalías y variaciones relevantes.</div></div>
+            <div class="row"><div class="k">Lugar central</div><div class="v">En EDA, visualizar no es adornar. Es una forma de pensar y de descubrir cosas que una tabla numérica puede ocultar.</div></div>
+            <div class="row"><div class="k">Principio</div><div class="v">Cada gráfico debe responder una pregunta clara: distribución, comparación, asociación, composición, evolución, faltantes o incertidumbre.</div></div>
+            <div class="row"><div class="k">Buena práctica</div><div class="v">Elegir el gráfico en función de la variable y la pregunta, no por costumbre o estética.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> histogramas para forma, boxplots para dispersión robusta, scatter plots para relación y heatmaps para estructura global.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+
+    <section class="letter-group" id="letter-W" data-letter="W">
+      <div class="letter-title">W</div>
+
+      <article class="card" id="t-winsorizacion" data-term="Winsorización winsorization">
+        <button class="t-btn">
+          <div class="t-main">
+            <div class="term">
+              <h3>Winsorización</h3>
+              <span class="badge">Tratamiento de extremos</span>
+            </div>
+            <p class="subtitle">Recorte controlado de valores extremos reemplazándolos por umbrales definidos.</p>
+          </div>
+          <div class="chev">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="def-block">
+            <div class="row"><div class="k">Definición</div><div class="v">En lugar de eliminar outliers, se los reemplaza por valores límite como percentiles bajos y altos.</div></div>
+            <div class="row"><div class="k">Cuándo aparece</div><div class="v">Cuando el EDA muestra colas extremas que afectan fuertemente ciertos métodos, pero no se desea descartar observaciones completas.</div></div>
+            <div class="row"><div class="k">Ventaja</div><div class="v">Reduce sensibilidad a extremos sin perder tamaño muestral.</div></div>
+            <div class="row"><div class="k">Cuidado</div><div class="v">Debe usarse con criterio y documentarse, porque modifica la distribución original.</div></div>
+            <div class="example"><strong>Ejemplo:</strong> reemplazar valores por encima del percentil 99 por el propio valor del P99.</div>
+          </div>
+        </div></div></div>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    Material elaborado por el profesor Sergio Gevatschnaider
+  </footer>
+</div>
+
+<script>
+(function(){
+  const root = document.documentElement;
+  const cards = [...document.querySelectorAll('.card')];
+  const searchInput = document.getElementById('search');
+  const emptyState = document.getElementById('emptyState');
+  const openCount = document.getElementById('openCount');
+  const pctText = document.getElementById('pctText');
+  const progInner = document.getElementById('progInner');
+  const alphaNav = document.getElementById('alphaNav');
+  const expandAllBtn = document.getElementById('expandAllBtn');
+  const collapseAllBtn = document.getElementById('collapseAllBtn');
+  const themeBtns = [...document.querySelectorAll('.theme-btn')];
+
+  const TOTAL = cards.length;
+  const openSet = new Set();
+
+  function setTheme(theme){
+    root.setAttribute('data-theme', theme);
+    themeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.themeValue === theme));
+    localStorage.setItem('eda-glossary-theme', theme);
+  }
+
+  const savedTheme = localStorage.getItem('eda-glossary-theme') || 'dark';
+  setTheme(savedTheme);
+
+  themeBtns.forEach(btn => {
+    btn.addEventListener('click', () => setTheme(btn.dataset.themeValue));
+  });
+
+  function updateProgress(){
+    const visibleCards = cards.filter(c => !c.classList.contains('hidden'));
+    const visibleOpen = visibleCards.filter(c => c.classList.contains('open')).length;
+    const denom = TOTAL || 1;
+    const pct = Math.round((openSet.size / denom) * 100);
+    openCount.textContent = `${openSet.size} / ${TOTAL} abiertos`;
+    pctText.textContent = `${pct}%`;
+    progInner.style.width = `${pct}%`;
+  }
+
+  function toggleCard(card){
+    const id = card.id;
+    card.classList.toggle('open');
+    if(card.classList.contains('open')){
+      openSet.add(id);
+    } else {
+      openSet.delete(id);
+    }
+    updateProgress();
+  }
+
+  cards.forEach(card => {
+    const btn = card.querySelector('.t-btn');
+    btn.addEventListener('click', () => toggleCard(card));
+    btn.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        toggleCard(card);
+      }
+    });
+    btn.setAttribute('tabindex', '0');
+  });
+
+  expandAllBtn.addEventListener('click', () => {
+    cards.filter(c => !c.classList.contains('hidden')).forEach(card => {
+      card.classList.add('open');
+      openSet.add(card.id);
+    });
+    updateProgress();
+  });
+
+  collapseAllBtn.addEventListener('click', () => {
+    cards.forEach(card => card.classList.remove('open'));
+    openSet.clear();
+    updateProgress();
+  });
+
+  function buildAlphabet(){
+    const groups = [...document.querySelectorAll('.letter-group')];
+    const letters = groups.map(g => g.dataset.letter);
+    const all = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    alphaNav.innerHTML = '';
+    all.forEach(letter => {
+      const btn = document.createElement('button');
+      btn.className = 'alpha-btn';
+      btn.textContent = letter;
+      btn.setAttribute('aria-label', `Ir a la letra ${letter}`);
+      if(letters.includes(letter)){
+        btn.classList.add('has-terms');
+        btn.addEventListener('click', () => {
+          document.getElementById(`letter-${letter}`).scrollIntoView({behavior:'smooth', block:'start'});
+        });
+      } else {
+        btn.classList.add('dimmed');
+        btn.disabled = true;
+      }
+      alphaNav.appendChild(btn);
+    });
+  }
+
+  function filterTerms(){
+    const q = searchInput.value.trim().toLowerCase();
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const term = (card.dataset.term || '').toLowerCase();
+      const bodyText = card.innerText.toLowerCase();
+      const match = !q || term.includes(q) || bodyText.includes(q);
+      card.classList.toggle('hidden', !match);
+      if(match) visibleCount++;
+    });
+
+    document.querySelectorAll('.letter-group').forEach(group => {
+      const anyVisible = [...group.querySelectorAll('.card')].some(c => !c.classList.contains('hidden'));
+      group.style.display = anyVisible ? 'grid' : 'none';
+    });
+
+    emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+  }
+
+  searchInput.addEventListener('input', filterTerms);
+
+  buildAlphabet();
+  updateProgress();
+})();
+</script>
+</body>
+</html>
+"""
+
+display(HTML(html_content))

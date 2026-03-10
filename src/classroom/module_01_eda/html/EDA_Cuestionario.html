@@ -1,0 +1,1085 @@
+from IPython.display import display, HTML
+
+html_content = r"""
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cuestionario - Paradigma EDA</title>
+
+  <style>
+    :root{
+      --bg:#0f172a;
+      --bg-soft:#111c34;
+      --panel:#13213d;
+      --panel-2:#17294b;
+      --card:#182b4d;
+      --text:#e8eef8;
+      --muted:#b8c4d9;
+      --accent:#7cc5ff;
+      --accent-2:#3fa7ff;
+      --border:rgba(255,255,255,0.10);
+      --success:#6ee7b7;
+      --warn:#f6d365;
+      --danger:#fca5a5;
+      --shadow:0 12px 28px rgba(0,0,0,.22);
+      --radius:18px;
+      --radius-sm:12px;
+      --maxw:1200px;
+    }
+
+    html[data-theme="light"]{
+      --bg:#f6f9fc;
+      --bg-soft:#eef4fb;
+      --panel:#ffffff;
+      --panel-2:#f8fbff;
+      --card:#ffffff;
+      --text:#1d2a3a;
+      --muted:#5b6676;
+      --accent:#1d78d6;
+      --accent-2:#0f5fb7;
+      --border:rgba(20,40,80,0.10);
+      --success:#198754;
+      --warn:#a26b00;
+      --danger:#c0392b;
+      --shadow:0 10px 24px rgba(29,42,58,.08);
+    }
+
+    html[data-theme="sepia"]{
+      --bg:#f4efe6;
+      --bg-soft:#efe7da;
+      --panel:#fbf6ee;
+      --panel-2:#f7f0e5;
+      --card:#fffaf2;
+      --text:#47392c;
+      --muted:#7b6a59;
+      --accent:#8f5c2c;
+      --accent-2:#6e431e;
+      --border:rgba(80,50,20,0.12);
+      --success:#4f7a42;
+      --warn:#936300;
+      --danger:#a64935;
+      --shadow:0 10px 22px rgba(70,50,30,.10);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+
+    body{
+      margin:0;
+      font-family:"Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(124,197,255,.10), transparent 28%),
+        radial-gradient(circle at top right, rgba(63,167,255,.07), transparent 24%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.72;
+    }
+
+    .grain{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.05;
+      background-image:
+        radial-gradient(circle at 20% 30%, #fff 0.6px, transparent 0.7px),
+        radial-gradient(circle at 80% 70%, #fff 0.6px, transparent 0.7px),
+        radial-gradient(circle at 40% 80%, #fff 0.6px, transparent 0.7px);
+      background-size:160px 160px, 210px 210px, 180px 180px;
+      z-index:0;
+    }
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      max-width:var(--maxw);
+      margin:0 auto;
+      padding:24px 20px 60px;
+    }
+
+    .theme-switch{
+      position:fixed;
+      top:16px;
+      right:16px;
+      z-index:30;
+      display:flex;
+      gap:8px;
+      background:rgba(0,0,0,.18);
+      backdrop-filter: blur(10px);
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:8px;
+      box-shadow:var(--shadow);
+    }
+
+    html[data-theme="light"] .theme-switch,
+    html[data-theme="sepia"] .theme-switch{
+      background:rgba(255,255,255,.75);
+    }
+
+    .theme-btn{
+      border:none;
+      border-radius:999px;
+      padding:8px 12px;
+      background:transparent;
+      color:var(--text);
+      cursor:pointer;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+
+    .theme-btn.active{
+      background:var(--accent);
+      color:#082032;
+    }
+
+    header.hero{
+      background:linear-gradient(135deg, rgba(124,197,255,.16), rgba(63,167,255,.08));
+      border:1px solid var(--border);
+      border-radius:28px;
+      padding:34px 28px 26px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+
+    header.hero:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,.06) 30%, transparent 60%);
+      pointer-events:none;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--accent);
+      margin-bottom:10px;
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(2rem, 4vw, 3.1rem);
+      line-height:1.08;
+      letter-spacing:-.02em;
+    }
+
+    .hero p{
+      margin:0;
+      max-width:940px;
+      color:var(--muted);
+      font-size:1.05rem;
+    }
+
+    .hero-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .chip{
+      padding:8px 12px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      border-radius:999px;
+      font-size:.88rem;
+      color:var(--muted);
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:20;
+      margin-top:18px;
+      backdrop-filter: blur(14px);
+      background:color-mix(in srgb, var(--bg) 72%, transparent);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:14px;
+    }
+
+    .topbar-grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:12px;
+      align-items:center;
+    }
+
+    @media (max-width: 880px){
+      .topbar-grid{grid-template-columns:1fr}
+    }
+
+    .tools{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .tool-btn{
+      border:none;
+      background:var(--panel-2);
+      color:var(--text);
+      border:1px solid var(--border);
+      padding:12px 14px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:700;
+      font-size:13px;
+      letter-spacing:.02em;
+    }
+
+    .tool-btn:hover{transform:translateY(-1px)}
+
+    .progress-wrap{
+      display:grid;
+      gap:8px;
+    }
+
+    .progress-meta{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+
+    .progress-bar{
+      height:12px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:999px;
+      overflow:hidden;
+    }
+
+    .progress-inner{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition:width .25s ease;
+    }
+
+    main{
+      margin-top:18px;
+      display:grid;
+      gap:18px;
+    }
+
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:16px;
+      flex-wrap:wrap;
+      padding:20px 22px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:20px;
+      box-shadow:var(--shadow);
+    }
+
+    .section-head h2{
+      margin:0;
+      font-size:1.45rem;
+      letter-spacing:-.01em;
+    }
+
+    .section-head p{
+      margin:6px 0 0;
+      color:var(--muted);
+      max-width:900px;
+    }
+
+    .question-list{
+      display:grid;
+      gap:14px;
+    }
+
+    .card{
+      border:1px solid var(--border);
+      border-radius:22px;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), transparent), var(--card);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      opacity:0;
+      transform:translateY(12px);
+      animation:fadeUp .5s ease forwards;
+    }
+
+    .card:nth-child(2){animation-delay:.03s}
+    .card:nth-child(3){animation-delay:.05s}
+    .card:nth-child(4){animation-delay:.07s}
+    .card:nth-child(5){animation-delay:.09s}
+    .card:nth-child(6){animation-delay:.11s}
+    .card:nth-child(7){animation-delay:.13s}
+    .card:nth-child(8){animation-delay:.15s}
+    .card:nth-child(9){animation-delay:.17s}
+    .card:nth-child(10){animation-delay:.19s}
+
+    @keyframes fadeUp{
+      to{opacity:1; transform:none}
+    }
+
+    .q-trigger{
+      width:100%;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      text-align:left;
+      border:none;
+      background:transparent;
+      color:inherit;
+      padding:22px 22px 18px;
+      cursor:pointer;
+    }
+
+    .q-main{
+      min-width:0;
+      display:flex;
+      gap:16px;
+      align-items:flex-start;
+    }
+
+    .q-num{
+      flex:0 0 auto;
+      min-width:48px;
+      height:48px;
+      display:grid;
+      place-items:center;
+      border-radius:14px;
+      background:rgba(124,197,255,.08);
+      border:1px solid var(--border);
+      color:var(--accent);
+      font-weight:900;
+      font-size:15px;
+      letter-spacing:.05em;
+    }
+
+    .q-content h3{
+      margin:0 0 6px;
+      font-size:1.22rem;
+      line-height:1.24;
+      letter-spacing:-.01em;
+    }
+
+    .q-subtitle{
+      margin:0;
+      color:var(--muted);
+      font-size:.98rem;
+      max-width:900px;
+    }
+
+    .q-icon{
+      flex:0 0 auto;
+      width:40px;
+      height:40px;
+      display:grid;
+      place-items:center;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:var(--panel-2);
+      font-size:18px;
+      transition:transform .2s ease;
+    }
+
+    .card.open .q-icon{
+      transform:rotate(90deg);
+    }
+
+    .a-wrap{
+      display:grid;
+      grid-template-rows:0fr;
+      transition:grid-template-rows .26s ease;
+    }
+
+    .card.open .a-wrap{
+      grid-template-rows:1fr;
+    }
+
+    .a-inner{
+      overflow:hidden;
+    }
+
+    .a-body{
+      padding:0 22px 22px;
+      border-top:1px solid var(--border);
+    }
+
+    .answer-grid{
+      margin-top:18px;
+      display:grid;
+      gap:14px;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns: 190px 1fr;
+      gap:14px;
+      align-items:start;
+      padding:14px 16px;
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--border);
+      border-radius:16px;
+    }
+
+    @media (max-width: 760px){
+      .row{grid-template-columns:1fr}
+    }
+
+    .k{
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.11em;
+      text-transform:uppercase;
+      color:var(--accent);
+    }
+
+    .v{
+      color:var(--text);
+    }
+
+    .math-block{
+      margin-top:10px;
+      padding:14px 16px;
+      border-radius:16px;
+      background:rgba(124,197,255,.06);
+      border:1px dashed rgba(124,197,255,.35);
+      font-family:"Cambria Math","Times New Roman",serif;
+      font-size:1.02rem;
+    }
+
+    .highlight{
+      margin-top:10px;
+      padding:14px 16px;
+      border-radius:16px;
+      background:rgba(110,231,183,.08);
+      border-left:4px solid var(--success);
+    }
+
+    .warn{
+      margin-top:10px;
+      padding:14px 16px;
+      border-radius:16px;
+      background:rgba(246,211,101,.08);
+      border-left:4px solid var(--warn);
+    }
+
+    .tagline{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .micro{
+      padding:7px 10px;
+      border-radius:999px;
+      background:var(--panel-2);
+      border:1px solid var(--border);
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    footer{
+      margin-top:34px;
+      padding:24px 12px 8px;
+      text-align:center;
+      color:var(--muted);
+      border-top:1px solid var(--border);
+      font-size:.95rem;
+    }
+  </style>
+</head>
+
+<body>
+<div class="grain"></div>
+
+<div class="theme-switch" aria-label="Selector de tema">
+  <button class="theme-btn active" data-theme-value="dark">Dark</button>
+  <button class="theme-btn" data-theme-value="light">Light</button>
+  <button class="theme-btn" data-theme-value="sepia">Sepia</button>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Cuestionario académico</div>
+    <h1>Cuestionario completo sobre Paradigma EDA</h1>
+    <p>
+      Este material está diseñado para estudiar, repasar y consolidar los conceptos centrales del Análisis Exploratorio de Datos.
+      Cada pregunta está desarrollada con explicación conceptual, propósito analítico, errores frecuentes y aplicación práctica,
+      de modo que el cuestionario funcione tanto como guía de estudio como material de cátedra.
+    </p>
+    <div class="hero-meta">
+      <span class="chip">EDA</span>
+      <span class="chip">Distribuciones</span>
+      <span class="chip">Outliers</span>
+      <span class="chip">Missing Values</span>
+      <span class="chip">Visualización</span>
+      <span class="chip">Preprocesamiento</span>
+    </div>
+  </header>
+
+  <section class="topbar">
+    <div class="topbar-grid">
+      <div class="tools">
+        <button class="tool-btn" id="expandAllBtn">Expandir todo</button>
+        <button class="tool-btn" id="collapseAllBtn">Colapsar todo</button>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span id="openCount">0 / 20 abiertas</span>
+          <span id="pctText">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-inner" id="progInner"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <section class="section-head">
+      <div>
+        <h2>Propósito del cuestionario</h2>
+        <p>
+          El cuestionario sigue la lógica natural del EDA: primero comprender qué es y para qué sirve, después estudiar variables,
+          distribuciones y visualizaciones, y finalmente revisar problemas de calidad del dato, sesgos, leakage y decisiones de preparación.
+          La idea rectora es simple: <strong>antes de modelar, primero hay que entender los datos</strong>.
+        </p>
+      </div>
+    </section>
+
+    <section class="question-list">
+
+      <article class="card" id="c1">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">01</div>
+            <div class="q-content">
+              <h3>¿Qué es el EDA y por qué se considera una etapa fundamental antes del modelado?</h3>
+              <p class="q-subtitle">Concepto central, sentido metodológico y lugar del EDA dentro del proceso analítico.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Respuesta</div><div class="v">El EDA, o Análisis Exploratorio de Datos, es la fase inicial del trabajo con datos en la que el analista observa, resume, visualiza y cuestiona el dataset antes de aplicar modelos estadísticos o de machine learning. Su finalidad es comprender la estructura real de los datos, detectar patrones, identificar anomalías, revisar calidad y formular primeras hipótesis.</div></div>
+            <div class="row"><div class="k">Por qué es fundamental</div><div class="v">Porque evita trabajar a ciegas. Modelar sin haber explorado puede llevar a usar variables mal definidas, ignorar missing values, interpretar mal distribuciones o confiar en relaciones artificiales. El EDA permite detectar problemas y oportunidades antes de que esos problemas contaminen todo el pipeline.</div></div>
+            <div class="row"><div class="k">Idea clave</div><div class="v">El EDA no reemplaza al modelado ni a la inferencia, pero los prepara. Su valor está en convertir una tabla de datos en un objeto comprensible desde el punto de vista analítico.</div></div>
+            <div class="highlight"><strong>Resumen:</strong> el EDA es diagnóstico, descriptivo y orientador. Es la etapa en la que el analista aprende a leer los datos antes de intentar explicarlos o predecirlos.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c2">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">02</div>
+            <div class="q-content">
+              <h3>¿Cuál es la diferencia entre análisis univariado, bivariado y multivariado dentro del EDA?</h3>
+              <p class="q-subtitle">Secuencia natural de exploración y lógica de complejidad creciente.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Análisis univariado</div><div class="v">Estudia una sola variable por vez. Permite observar distribución, rango, tendencia central, dispersión, sesgo, outliers y frecuencia de categorías.</div></div>
+            <div class="row"><div class="k">Análisis bivariado</div><div class="v">Examina la relación entre dos variables. Puede revelar asociación, dependencia, contraste entre grupos, tendencia lineal o no lineal y posibles relaciones espurias.</div></div>
+            <div class="row"><div class="k">Análisis multivariado</div><div class="v">Analiza varias variables al mismo tiempo. Busca estructuras más complejas como redundancia, bloques de correlación, clustering, componentes latentes o interacciones entre múltiples dimensiones.</div></div>
+            <div class="row"><div class="k">Lógica metodológica</div><div class="v">La progresión suele ir de lo univariado a lo multivariado, porque primero conviene entender cada variable en sí misma y recién después interpretar relaciones más complejas.</div></div>
+            <div class="highlight"><strong>Resumen:</strong> univariado describe una variable, bivariado estudia vínculos entre dos y multivariado examina la estructura global del conjunto.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c3">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">03</div>
+            <div class="q-content">
+              <h3>¿Por qué es importante identificar correctamente el tipo de variable antes de elegir gráficos o estadísticas descriptivas?</h3>
+              <p class="q-subtitle">Relación entre naturaleza de la variable y herramientas analíticas adecuadas.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Respuesta</div><div class="v">Porque el tipo de variable condiciona la forma correcta de resumirla y visualizarla. No se analiza igual una variable cuantitativa continua, una discreta, una nominal o una ordinal.</div></div>
+            <div class="row"><div class="k">Ejemplos</div><div class="v">Una variable categórica se resume con frecuencias y gráficos de barras; una cuantitativa continua suele explorarse con histogramas, densidades, boxplots y percentiles. En variables ordinales también importa el orden de las categorías.</div></div>
+            <div class="row"><div class="k">Riesgo de no hacerlo</div><div class="v">Elegir gráficos o estadísticas inadecuadas puede producir interpretaciones erróneas. Por ejemplo, calcular una media sobre categorías codificadas numéricamente pero sin significado cuantitativo real.</div></div>
+            <div class="highlight"><strong>Idea central:</strong> la clasificación correcta de variables es uno de los primeros pasos del EDA, porque organiza casi todas las decisiones posteriores.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c4">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">04</div>
+            <div class="q-content">
+              <h3>¿Qué información aporta una tabla de estadística descriptiva y cuáles son sus limitaciones?</h3>
+              <p class="q-subtitle">Lectura de medidas resumen y necesidad de complementarlas con visualización.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Qué aporta</div><div class="v">Resume cantidad de observaciones, media, desvío estándar, mínimo, percentiles, mediana, máximo y otras medidas de posición o dispersión. Permite obtener una primera visión cuantitativa del comportamiento de una variable.</div></div>
+            <div class="row"><div class="k">Qué permite detectar</div><div class="v">Diferencia entre media y mediana, amplitud del rango, dispersión central, escalas muy distintas entre variables y presencia posible de valores extremos.</div></div>
+            <div class="row"><div class="k">Limitaciones</div><div class="v">No muestra forma completa de la distribución. Dos variables muy distintas pueden compartir estadísticas descriptivas parecidas. Tampoco revela multimodalidad, vacíos o estructura fina.</div></div>
+            <div class="warn"><strong>Conclusión:</strong> la estadística descriptiva es necesaria, pero no suficiente. Debe leerse siempre junto con gráficos y contexto.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c5">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">05</div>
+            <div class="q-content">
+              <h3>¿Qué diferencias existen entre media y mediana, y en qué situaciones conviene priorizar una u otra?</h3>
+              <p class="q-subtitle">Medidas de tendencia central y sensibilidad a la forma de la distribución.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Media</div><div class="v">Es el promedio aritmético. Resume el centro de gravedad numérico de la distribución, pero es sensible a outliers y asimetrías.</div></div>
+            <div class="row"><div class="k">Mediana</div><div class="v">Es el valor central de los datos ordenados. Divide a la muestra en dos mitades y es robusta frente a valores extremos.</div></div>
+            <div class="row"><div class="k">Cuándo priorizar media</div><div class="v">Cuando la distribución es razonablemente simétrica y no está dominada por observaciones extremas.</div></div>
+            <div class="row"><div class="k">Cuándo priorizar mediana</div><div class="v">Cuando hay asimetría fuerte, colas largas o outliers que desplazan artificialmente el promedio.</div></div>
+            <div class="highlight"><strong>Señal útil:</strong> si media y mediana se separan mucho, suele haber asimetría o extremos influyentes.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c6">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">06</div>
+            <div class="q-content">
+              <h3>¿Qué significa que una distribución sea asimétrica y qué implicancias tiene para el análisis exploratorio?</h3>
+              <p class="q-subtitle">Forma distribucional, sesgo y decisiones metodológicas.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Definición</div><div class="v">Una distribución es asimétrica cuando no presenta equilibrio alrededor de su centro. Puede tener cola más larga hacia la derecha o hacia la izquierda.</div></div>
+            <div class="row"><div class="k">Señales en EDA</div><div class="v">Histogramas inclinados, boxplots con bigotes desbalanceados, media y mediana alejadas, concentración de observaciones en un extremo y pocos valores muy grandes o muy pequeños.</div></div>
+            <div class="row"><div class="k">Implicancias</div><div class="v">Afecta qué medida resume mejor el centro, puede justificar transformaciones, y obliga a interpretar con cuidado la dispersión y los outliers.</div></div>
+            <div class="row"><div class="k">Ejemplos típicos</div><div class="v">Ingresos, ventas, tiempos de espera, consumo energético y montos de transacción suelen tener asimetría positiva.</div></div>
+            <div class="highlight"><strong>Idea clave:</strong> la forma de la distribución no es un detalle visual; condiciona las decisiones analíticas.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c7">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">07</div>
+            <div class="q-content">
+              <h3>¿Qué papel cumplen el histograma, la curva de densidad y el boxplot en el análisis univariado?</h3>
+              <p class="q-subtitle">Tres herramientas complementarias para estudiar una variable cuantitativa.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Histograma</div><div class="v">Muestra frecuencias por intervalos y ayuda a ver forma, concentración, colas, sesgo y multimodalidad. Su apariencia depende del número y ancho de bins.</div></div>
+            <div class="row"><div class="k">Curva de densidad</div><div class="v">Ofrece una visión suave de la distribución. Es útil para comparar grupos y para percibir la forma sin depender tanto de intervalos discretos, aunque depende del suavizado elegido.</div></div>
+            <div class="row"><div class="k">Boxplot</div><div class="v">Resume mediana, cuartiles, IQR y posibles outliers. Es muy eficiente para comparar distribuciones entre grupos y detectar extremos.</div></div>
+            <div class="row"><div class="k">Relación entre ellos</div><div class="v">No compiten, se complementan. El histograma y la densidad muestran forma; el boxplot resume posición y dispersión robusta.</div></div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c8">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">08</div>
+            <div class="q-content">
+              <h3>¿Qué es un outlier y por qué no debe asumirse automáticamente que se trata de un error?</h3>
+              <p class="q-subtitle">Interpretación de valores atípicos y criterio analítico.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Definición</div><div class="v">Un outlier es una observación muy alejada del patrón general de la variable o del conjunto de datos. Puede aparecer como extremo univariado o como punto raro en una relación bivariada.</div></div>
+            <div class="row"><div class="k">Razón de prudencia</div><div class="v">Porque un outlier puede ser error de carga, medición incorrecta o registro inconsistente, pero también puede representar un caso raro real, valioso e incluso central para el problema.</div></div>
+            <div class="row"><div class="k">Qué hacer</div><div class="v">Investigar su origen, revisar contexto, comparar con otras variables, validar con expertos del dominio y analizar impacto antes de eliminar o transformar.</div></div>
+            <div class="row"><div class="k">Regla práctica</div><div class="v">El outlier no se elimina por reflejo. Primero se interpreta, luego se decide.</div></div>
+            <div class="warn"><strong>Ejemplo:</strong> una compra extraordinariamente alta puede ser fraude, error o cliente premium. El gráfico solo marca la rareza; la interpretación requiere contexto.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c9">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">09</div>
+            <div class="q-content">
+              <h3>¿Qué son los datos faltantes y por qué no alcanza con medir solamente su porcentaje?</h3>
+              <p class="q-subtitle">Missing values, patrón de ausencia y sesgo potencial.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Definición</div><div class="v">Son celdas vacías, nulas o sin información observada en una variable.</div></div>
+            <div class="row"><div class="k">Por qué no basta el porcentaje</div><div class="v">Porque no solo importa cuánto falta, sino cómo falta. Un 5% de missing values puede ser irrelevante o gravísimo según su patrón de aparición.</div></div>
+            <div class="row"><div class="k">Qué debe revisar el EDA</div><div class="v">Concentración por variable, por grupo, por fila, por tiempo y por segmento. También si la ausencia parece aleatoria o sistemática.</div></div>
+            <div class="row"><div class="k">Consecuencia</div><div class="v">Los faltantes pueden introducir sesgo, afectar representatividad o incluso contener información útil sobre el proceso que generó los datos.</div></div>
+            <div class="highlight"><strong>Idea central:</strong> los missing values no son solo ausencia; muchas veces son señal.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c10">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">10</div>
+            <div class="q-content">
+              <h3>¿Cuál es la diferencia entre imputar datos faltantes, eliminar registros o crear un indicador de ausencia?</h3>
+              <p class="q-subtitle">Decisiones de tratamiento y su relación con la estructura del problema.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Imputar</div><div class="v">Consiste en reemplazar el valor faltante por un valor estimado o definido, como media, mediana, moda o una imputación basada en modelos. Mantiene tamaño de muestra, pero puede distorsionar distribución si se usa mal.</div></div>
+            <div class="row"><div class="k">Eliminar</div><div class="v">Supone descartar registros o columnas con faltantes. Es simple, pero puede reducir mucho la muestra o introducir sesgo si la ausencia no es aleatoria.</div></div>
+            <div class="row"><div class="k">Crear indicador</div><div class="v">Consiste en agregar una variable binaria que marque si faltaba el dato. Es útil cuando la ausencia en sí misma puede ser informativa.</div></div>
+            <div class="row"><div class="k">Criterio correcto</div><div class="v">La decisión debe depender del patrón de faltantes, del tipo de variable, del porcentaje, del objetivo del análisis y del significado sustantivo de la ausencia.</div></div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c11">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">11</div>
+            <div class="q-content">
+              <h3>¿Qué información aporta una matriz de correlación y cuáles son sus límites interpretativos?</h3>
+              <p class="q-subtitle">Correlación, redundancia y necesidad de apoyo visual.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Qué aporta</div><div class="v">Resume, mediante coeficientes, la fuerza y dirección de la asociación entre pares de variables numéricas. Permite detectar variables que se mueven juntas y posibles redundancias.</div></div>
+            <div class="row"><div class="k">Utilidad en EDA</div><div class="v">Sirve para detectar bloques de variables similares, anticipar multicolinealidad y seleccionar subgrupos de variables para explorar con más detalle.</div></div>
+            <div class="row"><div class="k">Límites</div><div class="v">No detecta bien relaciones no lineales, puede estar afectada por outliers y jamás debe interpretarse como prueba de causalidad.</div></div>
+            <div class="row"><div class="k">Buena práctica</div><div class="v">Acompañar la matriz con scatter plots, pair plots y segmentaciones por grupo para no depender de un único número.</div></div>
+            <div class="warn"><strong>Resumen:</strong> la matriz de correlación orienta, pero no reemplaza la inspección visual ni el criterio causal.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c12">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">12</div>
+            <div class="q-content">
+              <h3>¿Qué es una correlación espuria y por qué representa un riesgo en la exploración de datos?</h3>
+              <p class="q-subtitle">Asociaciones aparentes y errores de interpretación.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Definición</div><div class="v">Es una asociación aparente entre variables que no refleja un vínculo sustantivo estable, sino coincidencia, efecto de una tercera variable o tendencia compartida.</div></div>
+            <div class="row"><div class="k">Riesgo en EDA</div><div class="v">El EDA busca patrones, pero eso puede llevar a encontrar relaciones visualmente sugestivas que no tienen interpretación válida si no se contrastan con contexto y segmentación.</div></div>
+            <div class="row"><div class="k">Cómo reducir el riesgo</div><div class="v">Revisar subgrupos, incorporar temporalidad, pensar variables de confusión, contrastar con lógica sustantiva y evitar conclusiones causales apresuradas.</div></div>
+            <div class="highlight"><strong>Lección:</strong> detectar una asociación es el comienzo de una pregunta, no el final de una explicación.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c13">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">13</div>
+            <div class="q-content">
+              <h3>¿Qué significa que un dataset tenga problemas de calidad del dato y qué aspectos debe revisar el analista?</h3>
+              <p class="q-subtitle">Completitud, consistencia, validez y plausibilidad.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Definición</div><div class="v">Un dataset tiene problemas de calidad cuando su información presenta faltantes, duplicados, errores de formato, inconsistencias internas, valores imposibles o registros poco plausibles.</div></div>
+            <div class="row"><div class="k">Qué revisar</div><div class="v">Completitud, coherencia entre columnas, formato correcto, duplicación, plausibilidad de rangos, categorías mal escritas, fechas imposibles y estabilidad temporal.</div></div>
+            <div class="row"><div class="k">Por qué importa</div><div class="v">Porque un modelo sofisticado no compensa datos defectuosos. Si la calidad es baja, las conclusiones también serán débiles o engañosas.</div></div>
+            <div class="row"><div class="k">Rol del EDA</div><div class="v">Funciona como diagnóstico temprano de estas fallas y orienta decisiones de limpieza y preprocesamiento.</div></div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c14">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">14</div>
+            <div class="q-content">
+              <h3>¿Qué es el sesgo de selección y por qué puede invalidar conclusiones aparentemente correctas?</h3>
+              <p class="q-subtitle">Representatividad, cobertura y validez externa.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Definición</div><div class="v">Es la distorsión que aparece cuando los datos disponibles no representan bien a la población o fenómeno que se quiere estudiar, porque el mecanismo de inclusión favorece ciertos perfiles y excluye otros.</div></div>
+            <div class="row"><div class="k">Consecuencia</div><div class="v">El análisis puede ser internamente coherente y aun así no generalizar. Es decir, se obtienen conclusiones válidas solo para la muestra observada, no para el universo de interés.</div></div>
+            <div class="row"><div class="k">Cómo sospecharlo</div><div class="v">Observando subgrupos ausentes, cobertura geográfica o temporal sesgada, respuestas voluntarias muy desequilibradas o un proceso de captura sesgado por diseño.</div></div>
+            <div class="highlight"><strong>Lección:</strong> un dataset grande no necesariamente es representativo. El tamaño no reemplaza la calidad del proceso de selección.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c15">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">15</div>
+            <div class="q-content">
+              <h3>¿Qué es leakage y cómo puede detectarse en una etapa exploratoria?</h3>
+              <p class="q-subtitle">Filtración de información y falsa performance predictiva.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Definición</div><div class="v">Leakage es la filtración de información del futuro o del target hacia variables o procesos que el modelo usa durante entrenamiento, aunque esa información no estaría disponible al momento real de predecir.</div></div>
+            <div class="row"><div class="k">Por qué es grave</div><div class="v">Produce modelos que parecen excelentes en validación, pero fallan en producción porque aprendieron información indebida.</div></div>
+            <div class="row"><div class="k">Cómo detectarlo en EDA</div><div class="v">Revisando temporalidad de variables, preguntando cuándo estaría disponible cada dato, identificando columnas derivadas del target y observando relaciones sospechosamente perfectas.</div></div>
+            <div class="warn"><strong>Regla de oro:</strong> si una variable contiene información que solo se conoce después del evento a predecir, probablemente hay leakage.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c16">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">16</div>
+            <div class="q-content">
+              <h3>¿Por qué el EDA orienta el preprocesamiento, pero no debe confundirse con él?</h3>
+              <p class="q-subtitle">Diagnóstico primero, transformación después.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">EDA</div><div class="v">Diagnostica: describe variables, detecta problemas, revela patrones, sugiere hipótesis y ayuda a decidir qué transformaciones pueden ser necesarias.</div></div>
+            <div class="row"><div class="k">Preprocesamiento</div><div class="v">Actúa sobre los datos: limpia, imputa, transforma, codifica, escala o deriva variables.</div></div>
+            <div class="row"><div class="k">Relación correcta</div><div class="v">El EDA debe preceder y orientar al preprocesamiento. Primero se entiende el problema, luego se decide qué operación aplicar.</div></div>
+            <div class="row"><div class="k">Error frecuente</div><div class="v">Aplicar recetas estándar de limpieza o transformación sin haber entendido antes si realmente son necesarias o si destruyen información valiosa.</div></div>
+            <div class="highlight"><strong>Principio:</strong> no transformar por rutina; transformar por diagnóstico.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c17">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">17</div>
+            <div class="q-content">
+              <h3>¿Qué significa que una variable tenga alta cardinalidad y qué desafíos plantea en EDA?</h3>
+              <p class="q-subtitle">Categorías numerosas, ruido y representaciones problemáticas.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Definición</div><div class="v">Una variable tiene alta cardinalidad cuando posee una gran cantidad de valores únicos o categorías distintas.</div></div>
+            <div class="row"><div class="k">Problemas que plantea</div><div class="v">Dificulta visualización, produce tablas extensas, puede esconder errores de escritura y complica codificación para modelado.</div></div>
+            <div class="row"><div class="k">Qué debe revisar el EDA</div><div class="v">Frecuencia de categorías raras, consistencia semántica, posible carácter identificador y conveniencia de agrupar, truncar o redefinir niveles.</div></div>
+            <div class="row"><div class="k">Ejemplo típico</div><div class="v">Ciudad, SKU, email, nombre de producto o identificador de cliente.</div></div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c18">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">18</div>
+            <div class="q-content">
+              <h3>¿Cómo puede ayudar el EDA a decidir si conviene escalar o transformar una variable?</h3>
+              <p class="q-subtitle">Escalas distintas, asimetría y sensibilidad de métodos posteriores.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Escalado</div><div class="v">Suele ser necesario cuando variables numéricas tienen magnitudes muy distintas y luego se usarán algoritmos sensibles a distancia o escala, como kNN o k-means.</div></div>
+            <div class="row"><div class="k">Transformación</div><div class="v">Puede ser útil cuando una variable tiene cola muy larga, asimetría extrema o relación no lineal que conviene estabilizar. Ejemplo clásico: logaritmo.</div></div>
+            <div class="row"><div class="k">Rol del EDA</div><div class="v">Detecta esas necesidades mediante histogramas, boxplots, percentiles, dispersión y comparación de escalas entre columnas.</div></div>
+            <div class="row"><div class="k">Advertencia</div><div class="v">No toda variable debe escalarse o transformarse. La decisión depende del objetivo, el algoritmo y el significado sustantivo de la variable.</div></div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c19">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">19</div>
+            <div class="q-content">
+              <h3>¿Qué significa que una visualización sea adecuada en EDA y por qué no se trata solo de estética?</h3>
+              <p class="q-subtitle">Elección de gráficos y relación con la pregunta analítica.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Visualización adecuada</div><div class="v">Es aquella que representa correctamente la estructura de la variable o relación y que ayuda a responder una pregunta analítica concreta.</div></div>
+            <div class="row"><div class="k">No es solo estética</div><div class="v">Un gráfico puede ser atractivo y, sin embargo, inducir a error si no corresponde al tipo de variable o si oculta aspectos relevantes como escalas, extremos o distribución real.</div></div>
+            <div class="row"><div class="k">Criterio de elección</div><div class="v">Depende del tipo de variable, del objetivo de la exploración y de qué se quiere mostrar: distribución, frecuencia, comparación, asociación o evolución.</div></div>
+            <div class="highlight"><strong>Idea clave:</strong> en EDA, visualizar es pensar. El gráfico correcto es parte del razonamiento, no un adorno final.</div>
+          </div>
+        </div></div></div>
+      </article>
+
+      <article class="card" id="c20">
+        <button class="q-trigger">
+          <div class="q-main">
+            <div class="q-num">20</div>
+            <div class="q-content">
+              <h3>¿Cuál sería una síntesis conceptual del paradigma EDA que un estudiante debería recordar al cerrar el tema?</h3>
+              <p class="q-subtitle">Integración final de principios, objetivos y actitud analítica.</p>
+            </div>
+          </div>
+          <div class="q-icon">▸</div>
+        </button>
+        <div class="a-wrap"><div class="a-inner"><div class="a-body">
+          <div class="answer-grid">
+            <div class="row"><div class="k">Síntesis</div><div class="v">El EDA es la etapa en la que los datos dejan de ser una tabla y comienzan a convertirse en información interpretable. Su propósito es comprender antes de modelar, detectar problemas antes de automatizar y formular preguntas mejores antes de sacar conclusiones.</div></div>
+            <div class="row"><div class="k">Tres funciones</div><div class="v">Comprender estructura, diagnosticar calidad del dato y orientar decisiones posteriores de análisis o modelado.</div></div>
+            <div class="row"><div class="k">Actitud correcta</div><div class="v">Mirar, resumir, graficar, comparar, cuestionar y contextualizar. No asumir que los datos “hablan solos”, sino aprender a interrogarlos con criterio.</div></div>
+            <div class="highlight"><strong>Frase de cierre:</strong> primero entender los datos, después transformarlos, y solo entonces modelar con fundamento.</div>
+            <div class="tagline">
+              <span class="micro">Explorar antes de modelar</span>
+              <span class="micro">Diagnosticar antes de decidir</span>
+              <span class="micro">Visualizar antes de concluir</span>
+            </div>
+          </div>
+        </div></div></div>
+      </article>
+
+    </section>
+  </main>
+
+  <footer>
+    Material elaborado por el profesor Sergio Gevatschnaider
+  </footer>
+</div>
+
+<script>
+(function(){
+  const root = document.documentElement;
+  const cards = [...document.querySelectorAll('.card')];
+  const TOTAL = cards.length;
+  const openSet = new Set();
+
+  const openCount = document.getElementById('openCount');
+  const pctText = document.getElementById('pctText');
+  const progInner = document.getElementById('progInner');
+  const expandAllBtn = document.getElementById('expandAllBtn');
+  const collapseAllBtn = document.getElementById('collapseAllBtn');
+  const themeBtns = [...document.querySelectorAll('.theme-btn')];
+
+  function setTheme(theme){
+    root.setAttribute('data-theme', theme);
+    themeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.themeValue === theme));
+    localStorage.setItem('eda-questionnaire-theme', theme);
+  }
+
+  const savedTheme = localStorage.getItem('eda-questionnaire-theme') || 'dark';
+  setTheme(savedTheme);
+
+  themeBtns.forEach(btn => {
+    btn.addEventListener('click', () => setTheme(btn.dataset.themeValue));
+  });
+
+  function updateProgress(){
+    const pct = Math.round((openSet.size / TOTAL) * 100);
+    openCount.textContent = `${openSet.size} / ${TOTAL} abiertas`;
+    pctText.textContent = `${pct}%`;
+    progInner.style.width = `${pct}%`;
+  }
+
+  function toggleCard(card){
+    card.classList.toggle('open');
+    if(card.classList.contains('open')){
+      openSet.add(card.id);
+    } else {
+      openSet.delete(card.id);
+    }
+    updateProgress();
+  }
+
+  cards.forEach(card => {
+    const btn = card.querySelector('.q-trigger');
+    btn.addEventListener('click', () => toggleCard(card));
+    btn.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        toggleCard(card);
+      }
+    });
+    btn.setAttribute('tabindex', '0');
+  });
+
+  expandAllBtn.addEventListener('click', () => {
+    cards.forEach(card => {
+      card.classList.add('open');
+      openSet.add(card.id);
+    });
+    updateProgress();
+  });
+
+  collapseAllBtn.addEventListener('click', () => {
+    cards.forEach(card => card.classList.remove('open'));
+    openSet.clear();
+    updateProgress();
+  });
+
+  updateProgress();
+})();
+</script>
+</body>
+</html>
+"""
+
+display(HTML(html_content))
