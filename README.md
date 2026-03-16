@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="assets/Data_Science_for_Business_Models-ezgif.com-video-to-gif-converter.gif" alt="Data Science for Business Models demo" width="1000">
+  <img src="assets/Data_Science_for_Business_Models-ezgif.com-video-to-gif-converter.gif" alt="Data Science for Business Models demo" width="700">
 </p>
 
 # 📊 Data Science for Business Models
