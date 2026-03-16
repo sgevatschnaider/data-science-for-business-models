@@ -1,3 +1,10 @@
+
+<p align="center">
+  <img src="assets/Data_Science_for_Business_Models-ezgif.com-video-to-gif-converter.gif" alt="Data Science for Business Models demo" width="1000">
+</p>
+
+# 📊 Data Science for Business Models
+> **Applied Statistics, Machine Learning & Agentic AI for Strategic Decision Making**
 # 📊 Data Science for Business Models
 > **Applied Statistics, Machine Learning & Agentic AI for Strategic Decision Making**
 
