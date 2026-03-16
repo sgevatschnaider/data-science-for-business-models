@@ -5,8 +5,6 @@
 
 # 📊 Data Science for Business Models
 > **Applied Statistics, Machine Learning & Agentic AI for Strategic Decision Making**
-# 📊 Data Science for Business Models
-> **Applied Statistics, Machine Learning & Agentic AI for Strategic Decision Making**
 
 Bienvenido a este repositorio pedagógico y profesional. Aquí no solo escribimos código: construimos puentes entre el rigor analítico y el impacto real en los negocios. Este espacio está diseñado para entender cómo los datos estructuran la realidad de una organización y cómo los algoritmos pueden optimizar la toma de decisiones.
 
