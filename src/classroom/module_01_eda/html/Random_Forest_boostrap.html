@@ -1,0 +1,1737 @@
+# ============================================================
+# RANDOM FOREST INTERACTIVO - VERSIÓN 3.0
+# Construcción dinámica del árbol + construcción dinámica del bosque
+# Bootstrap + selección aleatoria de variables + Gini + votación final
+# Para Google Colab
+# Profesor Sergio Gevatschnaider
+# ============================================================
+
+from IPython.display import display, HTML
+
+html = """
+<div id="rf3-app">
+
+<style>
+    #rf3-app {
+        --bg: #f4f7fb;
+        --card: #ffffff;
+        --text: #1f2937;
+        --muted: #64748b;
+        --primary: #1f4e79;
+        --secondary: #2563eb;
+        --accent: #0ea5e9;
+        --accent-soft: #e0f2fe;
+        --success: #16a34a;
+        --danger: #dc2626;
+        --warning: #f59e0b;
+        --border: #d8e2ef;
+        --shadow: rgba(15, 23, 42, 0.12);
+        --code: #f8fafc;
+        --table-row: #ffffff;
+        --table-row-alt: #f8fafc;
+        font-family: Arial, Helvetica, sans-serif;
+        max-width: 1220px;
+        margin: auto;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.65;
+        padding: 24px;
+        border-radius: 22px;
+    }
+
+    #rf3-app.dark {
+        --bg: #0f172a;
+        --card: #111827;
+        --text: #e5e7eb;
+        --muted: #cbd5e1;
+        --primary: #93c5fd;
+        --secondary: #60a5fa;
+        --accent: #38bdf8;
+        --accent-soft: #1e293b;
+        --border: #334155;
+        --shadow: rgba(0, 0, 0, 0.35);
+        --code: #020617;
+        --table-row: #111827;
+        --table-row-alt: #0f172a;
+    }
+
+    #rf3-app * {
+        box-sizing: border-box;
+    }
+
+    #rf3-app p,
+    #rf3-app li,
+    #rf3-app td,
+    #rf3-app div,
+    #rf3-app span,
+    #rf3-app label {
+        color: inherit;
+    }
+
+    .rf3-header {
+        background: linear-gradient(135deg, #1f4e79, #0f766e);
+        color: white !important;
+        padding: 34px;
+        border-radius: 24px;
+        box-shadow: 0 18px 35px var(--shadow);
+        margin-bottom: 22px;
+    }
+
+    .rf3-header h1,
+    .rf3-header p {
+        color: white !important;
+    }
+
+    .rf3-header h1 {
+        margin: 0 0 10px 0;
+        font-size: 35px;
+        line-height: 1.15;
+    }
+
+    .rf3-header p {
+        margin: 0;
+        max-width: 980px;
+        font-size: 18px;
+    }
+
+    .rf3-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 18px 0 24px 0;
+    }
+
+    .rf3-btn {
+        border: none;
+        padding: 11px 16px;
+        border-radius: 999px;
+        color: white !important;
+        background: var(--primary);
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 8px 20px var(--shadow);
+        transition: transform .2s ease, opacity .2s ease;
+    }
+
+    .rf3-btn:hover {
+        transform: translateY(-2px);
+        opacity: .92;
+    }
+
+    .rf3-btn.secondary {
+        background: var(--secondary);
+    }
+
+    .rf3-btn.success {
+        background: var(--success);
+    }
+
+    .rf3-btn.warning {
+        background: var(--warning);
+    }
+
+    .rf3-btn.danger {
+        background: var(--danger);
+    }
+
+    .rf3-card {
+        background: var(--card);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 24px;
+        margin: 18px 0;
+        box-shadow: 0 14px 28px var(--shadow);
+    }
+
+    .rf3-card h2 {
+        margin-top: 0;
+        color: var(--primary) !important;
+        border-bottom: 2px solid var(--border);
+        padding-bottom: 8px;
+    }
+
+    .rf3-card h3 {
+        color: var(--secondary) !important;
+        margin-bottom: 8px;
+    }
+
+    .rf3-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+    }
+
+    .rf3-grid-2 {
+        display: grid;
+        grid-template-columns: 1.15fr 1.85fr;
+        gap: 18px;
+        margin-top: 16px;
+    }
+
+    @media (max-width: 980px) {
+        .rf3-grid-2 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .rf3-mini {
+        background: var(--card);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px;
+    }
+
+    .rf3-note {
+        background: var(--accent-soft);
+        color: var(--text);
+        border-left: 6px solid var(--accent);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .rf3-warning {
+        background: rgba(245, 158, 11, 0.16);
+        color: var(--text);
+        border-left: 6px solid var(--warning);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .rf3-success {
+        background: rgba(22, 163, 74, 0.16);
+        color: var(--text);
+        border-left: 6px solid var(--success);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .rf3-danger {
+        background: rgba(220, 38, 38, 0.16);
+        color: var(--text);
+        border-left: 6px solid var(--danger);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .rf3-flow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        margin: 16px 0;
+    }
+
+    .rf3-step {
+        background: var(--accent-soft);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px 14px;
+        font-weight: 800;
+        color: var(--text);
+    }
+
+    .rf3-arrow {
+        font-weight: 900;
+        color: var(--secondary);
+    }
+
+    .rf3-controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 14px;
+        margin: 16px 0;
+    }
+
+    .rf3-select,
+    .rf3-range {
+        padding: 9px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text) !important;
+        font-weight: 700;
+    }
+
+    .rf3-pill {
+        display: inline-block;
+        border: 1px solid var(--border);
+        background: var(--accent-soft);
+        color: var(--primary) !important;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 800;
+        margin: 3px;
+    }
+
+    .rf3-pill-ok {
+        display: inline-block;
+        background: var(--success);
+        color: white !important;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 800;
+        margin: 3px;
+    }
+
+    .rf3-pill-no {
+        display: inline-block;
+        background: var(--danger);
+        color: white !important;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 800;
+        margin: 3px;
+    }
+
+    .rf3-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 14px;
+        font-size: 15px;
+        color: var(--text) !important;
+        background: var(--card);
+    }
+
+    .rf3-table th {
+        background: var(--primary);
+        color: white !important;
+        text-align: left;
+        border: 1px solid var(--border);
+        padding: 10px;
+        vertical-align: top;
+    }
+
+    .rf3-table td {
+        border: 1px solid var(--border);
+        padding: 10px;
+        vertical-align: top;
+        color: var(--text) !important;
+        background: var(--table-row);
+    }
+
+    .rf3-table tbody tr:nth-child(even) td {
+        background: var(--table-row-alt);
+        color: var(--text) !important;
+    }
+
+    .rf3-table td strong,
+    .rf3-table td span,
+    .rf3-table td div {
+        color: var(--text) !important;
+    }
+
+    .rf3-code {
+        background: var(--code);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+        white-space: pre-wrap;
+        font-family: Consolas, Monaco, monospace;
+        font-size: 14px;
+        overflow-x: auto;
+    }
+
+    .rf3-population,
+    .rf3-bootstrap {
+        min-height: 150px;
+        border: 2px dashed var(--border);
+        background: var(--code);
+        border-radius: 18px;
+        padding: 14px;
+    }
+
+    .rf3-sample-item {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 46px;
+        height: 36px;
+        border-radius: 12px;
+        margin: 4px;
+        color: white !important;
+        font-weight: 800;
+        font-size: 13px;
+        box-shadow: 0 6px 12px var(--shadow);
+        transition: transform .25s ease, outline .25s ease;
+    }
+
+    .rf3-sample-item.flash {
+        transform: scale(1.18);
+        outline: 4px solid rgba(255,255,255,.85);
+    }
+
+    .rf3-panel-title {
+        font-weight: 900;
+        color: var(--primary) !important;
+        margin: 6px 0 10px 0;
+        font-size: 18px;
+    }
+
+    .rf3-log {
+        max-height: 310px;
+        overflow-y: auto;
+        background: var(--code);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 12px;
+        font-family: Consolas, Monaco, monospace;
+        font-size: 13px;
+    }
+
+    .rf3-log-entry {
+        padding: 7px 8px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .rf3-log-entry:last-child {
+        border-bottom: none;
+    }
+
+    .rf3-tree-area {
+        min-height: 280px;
+        background: var(--code);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 16px;
+        overflow-x: auto;
+    }
+
+    .rf3-tree-diagram {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-width: 700px;
+    }
+
+    .rf3-tree-node-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .rf3-node {
+        min-width: 185px;
+        max-width: 230px;
+        border-radius: 16px;
+        padding: 12px;
+        text-align: center;
+        border: 2px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+        box-shadow: 0 8px 18px var(--shadow);
+        margin: 8px;
+        position: relative;
+    }
+
+    .rf3-node.split {
+        border-color: var(--accent);
+    }
+
+    .rf3-node.leaf-ok {
+        border-color: var(--success);
+        background: rgba(22, 163, 74, 0.12);
+    }
+
+    .rf3-node.leaf-no {
+        border-color: var(--danger);
+        background: rgba(220, 38, 38, 0.12);
+    }
+
+    .rf3-node.pending {
+        border-style: dashed;
+        opacity: 0.65;
+    }
+
+    .rf3-node.active {
+        outline: 4px solid rgba(245, 158, 11, 0.65);
+        transform: scale(1.03);
+    }
+
+    .rf3-node-title {
+        font-weight: 900;
+        color: var(--primary) !important;
+        margin-bottom: 4px;
+    }
+
+    .rf3-node-small {
+        font-size: 12px;
+        color: var(--muted) !important;
+        margin-top: 4px;
+    }
+
+    .rf3-children {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 18px;
+        margin-top: 6px;
+    }
+
+    .rf3-child-branch {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .rf3-branch-label {
+        font-size: 12px;
+        font-weight: 900;
+        background: var(--accent-soft);
+        border: 1px solid var(--border);
+        color: var(--primary) !important;
+        border-radius: 999px;
+        padding: 4px 9px;
+        margin: 4px;
+    }
+
+    .rf3-forest {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+        gap: 14px;
+        margin-top: 16px;
+    }
+
+    .rf3-tree-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 14px;
+        box-shadow: 0 10px 22px var(--shadow);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .rf3-tree-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 5px;
+        width: 100%;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .rf3-vote-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+    }
+
+    .rf3-vote-card {
+        text-align: center;
+        padding: 18px;
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        background: var(--card);
+    }
+
+    .rf3-big-result {
+        font-size: 30px;
+        font-weight: 900;
+        margin: 8px 0;
+    }
+
+    .rf3-bar-wrap {
+        width: 100%;
+        height: 18px;
+        background: var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+        margin: 8px 0 16px 0;
+    }
+
+    .rf3-bar-ok {
+        height: 18px;
+        background: var(--success);
+        width: 0%;
+        transition: width .5s ease;
+    }
+
+    .rf3-bar-no {
+        height: 18px;
+        background: var(--danger);
+        width: 0%;
+        transition: width .5s ease;
+    }
+
+    .rf3-accordion {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        margin: 10px 0;
+    }
+
+    .rf3-accordion button {
+        width: 100%;
+        text-align: left;
+        border: none;
+        padding: 14px 16px;
+        background: var(--accent-soft);
+        color: var(--text) !important;
+        cursor: pointer;
+        font-weight: 800;
+        font-size: 15px;
+    }
+
+    .rf3-accordion-content {
+        display: none;
+        padding: 16px;
+        background: var(--card);
+        color: var(--text);
+        border-top: 1px solid var(--border);
+    }
+
+    .rf3-accordion.open .rf3-accordion-content {
+        display: block;
+    }
+
+    .rf3-footer {
+        text-align: center;
+        color: var(--muted) !important;
+        font-size: 14px;
+        margin-top: 28px;
+        padding-top: 18px;
+        border-top: 1px solid var(--border);
+    }
+</style>
+
+<div class="rf3-header">
+    <h1>Random Forest 3.0: construcción dinámica del árbol y del bosque</h1>
+    <p>
+        Esta simulación muestra, paso a paso, cómo Random Forest toma muestras bootstrap, construye árboles con divisiones
+        basadas en Gini, predice con cada árbol y combina los votos para obtener la decisión final del bosque.
+    </p>
+</div>
+
+<div class="rf3-toolbar">
+    <button class="rf3-btn" onclick="rf3ToggleTheme()">Cambiar tema claro / oscuro</button>
+    <button class="rf3-btn secondary" onclick="rf3ToggleTheory()">Mostrar / ocultar teoría</button>
+    <button class="rf3-btn warning" onclick="rf3NextStep()">Siguiente paso</button>
+    <button class="rf3-btn success" onclick="rf3RunAnimatedForest()">Construir bosque animado</button>
+    <button class="rf3-btn danger" onclick="rf3ResetAll()">Reiniciar</button>
+</div>
+
+<div class="rf3-card" id="rf3Theory">
+    <h2>1. Qué se quiere mostrar</h2>
+
+    <p>
+        En un Random Forest no se construye un único árbol. Se construyen muchos árboles y cada uno aprende desde una
+        muestra bootstrap distinta. Luego, cada árbol emite una predicción y el bosque combina esas predicciones.
+    </p>
+
+    <div class="rf3-flow">
+        <div class="rf3-step">Dataset original</div>
+        <div class="rf3-arrow">→</div>
+        <div class="rf3-step">Bootstrap</div>
+        <div class="rf3-arrow">→</div>
+        <div class="rf3-step">Árbol individual</div>
+        <div class="rf3-arrow">→</div>
+        <div class="rf3-step">Predicción</div>
+        <div class="rf3-arrow">→</div>
+        <div class="rf3-step">Votación del bosque</div>
+    </div>
+
+    <div class="rf3-grid">
+        <div class="rf3-mini">
+            <h3>Bootstrap</h3>
+            <p>
+                Cada árbol recibe una muestra tomada con reemplazo. Por eso algunos casos pueden repetirse y otros pueden
+                quedar afuera.
+            </p>
+        </div>
+
+        <div class="rf3-mini">
+            <h3>Selección aleatoria de variables</h3>
+            <p>
+                En cada nodo, el árbol no evalúa todas las variables, sino un subconjunto aleatorio. Esto aumenta la diversidad
+                entre árboles.
+            </p>
+        </div>
+
+        <div class="rf3-mini">
+            <h3>Impureza Gini</h3>
+            <p>
+                Para dividir un nodo, el árbol busca una separación que deje grupos más puros, es decir, con menos mezcla entre
+                “Aprueba” y “No aprueba”.
+            </p>
+        </div>
+    </div>
+
+    <div class="rf3-note">
+        <strong>Idea docente:</strong> Random Forest reduce la dependencia de un único árbol. En lugar de buscar una decisión
+        perfecta, combina muchas decisiones parciales, construidas sobre datos y variables ligeramente diferentes.
+    </div>
+</div>
+
+<div class="rf3-card">
+    <h2>2. Dataset didáctico</h2>
+
+    <p>
+        El objetivo es clasificar a un estudiante nuevo como <strong>Aprueba</strong> o <strong>No aprueba</strong>.
+        El dataset es artificial y está diseñado para explicar el mecanismo del algoritmo.
+    </p>
+
+    <table class="rf3-table">
+        <thead>
+            <tr>
+                <th>Estudiante</th>
+                <th>Horas</th>
+                <th>Asistencia</th>
+                <th>Promedio</th>
+                <th>Participación</th>
+                <th>Clase real</th>
+            </tr>
+        </thead>
+        <tbody id="rf3DatasetTable"></tbody>
+    </table>
+
+    <div class="rf3-warning">
+        <strong>Estudiante nuevo a clasificar:</strong>
+        horas = <strong>6</strong>,
+        asistencia = <strong>82</strong>,
+        promedio = <strong>7</strong>,
+        participación = <strong>6</strong>.
+    </div>
+</div>
+
+<div class="rf3-card">
+    <h2>3. Configuración de la simulación</h2>
+
+    <div class="rf3-controls">
+        <label><strong>Cantidad de árboles:</strong></label>
+        <input id="rf3NumTrees" class="rf3-range" type="range" min="3" max="9" value="5" oninput="rf3UpdateLabels()">
+        <span id="rf3NumTreesLabel" class="rf3-pill">5 árboles</span>
+
+        <label><strong>Tamaño bootstrap:</strong></label>
+        <input id="rf3SampleSize" class="rf3-range" type="range" min="4" max="10" value="8" oninput="rf3UpdateLabels()">
+        <span id="rf3SampleSizeLabel" class="rf3-pill">8 casos</span>
+
+        <label><strong>Variables por nodo:</strong></label>
+        <input id="rf3MaxFeatures" class="rf3-range" type="range" min="1" max="4" value="2" oninput="rf3UpdateLabels()">
+        <span id="rf3MaxFeaturesLabel" class="rf3-pill">2 variables</span>
+
+        <label><strong>Profundidad máxima:</strong></label>
+        <input id="rf3MaxDepth" class="rf3-range" type="range" min="1" max="3" value="2" oninput="rf3UpdateLabels()">
+        <span id="rf3MaxDepthLabel" class="rf3-pill">profundidad 2</span>
+
+        <label><strong>Velocidad:</strong></label>
+        <select id="rf3Speed" class="rf3-select">
+            <option value="900">Lenta</option>
+            <option value="550" selected>Media</option>
+            <option value="250">Rápida</option>
+        </select>
+    </div>
+
+    <div class="rf3-note">
+        La simulación usa árboles pequeños para que la construcción pueda verse en clase. El mecanismo conceptual es el mismo:
+        muestra bootstrap, división de nodos, predicción individual y votación final.
+    </div>
+</div>
+
+<div class="rf3-card">
+    <h2>4. Construcción dinámica del árbol actual</h2>
+
+    <div id="rf3Status" class="rf3-success">
+        Presioná “Siguiente paso” para construir manualmente el bosque, o “Construir bosque animado” para ver todo el proceso.
+    </div>
+
+    <div class="rf3-grid-2">
+        <div>
+            <div class="rf3-panel-title">Población original</div>
+            <div id="rf3Population" class="rf3-population"></div>
+
+            <div class="rf3-panel-title">Muestra bootstrap del árbol actual</div>
+            <div id="rf3BootstrapSample" class="rf3-bootstrap">
+                Todavía no se generó ninguna muestra.
+            </div>
+
+            <div class="rf3-panel-title">Registro de construcción</div>
+            <div id="rf3Log" class="rf3-log">
+                <div class="rf3-log-entry">Esperando inicio de simulación.</div>
+            </div>
+        </div>
+
+        <div>
+            <div class="rf3-panel-title">Árbol en construcción</div>
+            <div id="rf3TreeArea" class="rf3-tree-area">
+                El árbol aparecerá aquí.
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="rf3-card">
+    <h2>5. Bosque construido</h2>
+
+    <p>
+        Cada tarjeta representa un árbol ya construido. Cada árbol tiene su propia muestra bootstrap, sus propias divisiones
+        y su propio voto.
+    </p>
+
+    <div id="rf3Forest" class="rf3-forest"></div>
+</div>
+
+<div class="rf3-card">
+    <h2>6. Votación final del bosque</h2>
+
+    <div class="rf3-vote-grid">
+        <div class="rf3-vote-card">
+            <h3>Votos por “Aprueba”</h3>
+            <div id="rf3OkVotes" class="rf3-big-result">0</div>
+            <div class="rf3-bar-wrap"><div id="rf3OkBar" class="rf3-bar-ok"></div></div>
+        </div>
+
+        <div class="rf3-vote-card">
+            <h3>Votos por “No aprueba”</h3>
+            <div id="rf3NoVotes" class="rf3-big-result">0</div>
+            <div class="rf3-bar-wrap"><div id="rf3NoBar" class="rf3-bar-no"></div></div>
+        </div>
+    </div>
+
+    <div id="rf3FinalResult" class="rf3-warning">
+        Todavía no hay votación final.
+    </div>
+</div>
+
+<div class="rf3-card">
+    <h2>7. Frecuencia de uso de casos en bootstrap</h2>
+
+    <p>
+        Esta tabla muestra cuántas veces apareció cada estudiante en las muestras bootstrap de los árboles ya construidos.
+    </p>
+
+    <table class="rf3-table">
+        <thead>
+            <tr>
+                <th>Estudiante</th>
+                <th>Clase real</th>
+                <th>Veces usado</th>
+                <th>Interpretación</th>
+            </tr>
+        </thead>
+        <tbody id="rf3FrequencyTable"></tbody>
+    </table>
+</div>
+
+<div class="rf3-card">
+    <h2>8. Explicaciones para acompañar la simulación</h2>
+
+    <div class="rf3-accordion">
+        <button onclick="rf3Accordion(this)">¿Qué ocurre cuando se construye un árbol?</button>
+        <div class="rf3-accordion-content">
+            Primero se toma una muestra bootstrap. Luego, en cada nodo, el árbol selecciona aleatoriamente algunas variables
+            candidatas. Entre esas variables, busca la división que reduce mejor la impureza. El proceso se repite hasta llegar
+            a una profundidad máxima o a una hoja.
+        </div>
+    </div>
+
+    <div class="rf3-accordion">
+        <button onclick="rf3Accordion(this)">¿Qué representa la impureza Gini?</button>
+        <div class="rf3-accordion-content">
+            La impureza Gini mide qué tan mezcladas están las clases dentro de un nodo. Si un nodo tiene solo estudiantes que
+            aprueban, su impureza es baja. Si tiene una mezcla equilibrada de “Aprueba” y “No aprueba”, su impureza es mayor.
+        </div>
+    </div>
+
+    <div class="rf3-accordion">
+        <button onclick="rf3Accordion(this)">¿Por qué no todos los árboles son iguales?</button>
+        <div class="rf3-accordion-content">
+            Porque cada árbol recibe una muestra bootstrap diferente y, además, en cada nodo evalúa un subconjunto aleatorio
+            de variables. Esa diversidad es fundamental para que el bosque sea más robusto que un árbol individual.
+        </div>
+    </div>
+
+    <div class="rf3-accordion">
+        <button onclick="rf3Accordion(this)">¿Cómo se obtiene la predicción final?</button>
+        <div class="rf3-accordion-content">
+            Cada árbol vota una clase para el estudiante nuevo. Si la mayoría de los árboles vota “Aprueba”, el bosque predice
+            “Aprueba”. Si la mayoría vota “No aprueba”, el bosque predice “No aprueba”.
+        </div>
+    </div>
+</div>
+
+<div class="rf3-card">
+    <h2>9. Mini explicación para decir en clase</h2>
+
+    <div class="rf3-code">Random Forest construye muchos árboles de decisión.
+
+Cada árbol se entrena con una muestra bootstrap distinta, tomada con reemplazo desde el dataset original.
+
+Luego, en cada nodo, el árbol no evalúa todas las variables, sino un subconjunto aleatorio de variables candidatas.
+
+Entre esas variables candidatas, elige la división que mejora la pureza de los nodos, por ejemplo reduciendo la impureza Gini.
+
+Después, el estudiante nuevo recorre cada árbol y cada árbol emite un voto.
+
+La predicción final del bosque surge por votación mayoritaria.
+
+La clave no es construir un árbol perfecto, sino muchos árboles distintos y combinar sus decisiones.</div>
+</div>
+
+<div class="rf3-footer">
+    Material elaborado por el profesor Sergio Gevatschnaider.
+</div>
+
+<script>
+    const rf3PopulationData = [
+        {id: "E1", horas: 8, asistencia: 92, promedio: 8, participacion: 9, clase: "Aprueba", color: "#2563eb"},
+        {id: "E2", horas: 6, asistencia: 85, promedio: 7, participacion: 7, clase: "Aprueba", color: "#16a34a"},
+        {id: "E3", horas: 3, asistencia: 60, promedio: 5, participacion: 4, clase: "No aprueba", color: "#dc2626"},
+        {id: "E4", horas: 4, asistencia: 70, promedio: 6, participacion: 5, clase: "No aprueba", color: "#ea580c"},
+        {id: "E5", horas: 9, asistencia: 95, promedio: 9, participacion: 8, clase: "Aprueba", color: "#7c3aed"},
+        {id: "E6", horas: 2, asistencia: 55, promedio: 4, participacion: 3, clase: "No aprueba", color: "#be123c"},
+        {id: "E7", horas: 7, asistencia: 88, promedio: 8, participacion: 6, clase: "Aprueba", color: "#0f766e"},
+        {id: "E8", horas: 5, asistencia: 78, promedio: 6, participacion: 5, clase: "No aprueba", color: "#9333ea"},
+        {id: "E9", horas: 6, asistencia: 80, promedio: 7, participacion: 8, clase: "Aprueba", color: "#0284c7"},
+        {id: "E10", horas: 3, asistencia: 65, promedio: 5, participacion: 4, clase: "No aprueba", color: "#b45309"}
+    ];
+
+    const rf3TestStudent = {
+        horas: 6,
+        asistencia: 82,
+        promedio: 7,
+        participacion: 6
+    };
+
+    const rf3FeatureList = ["horas", "asistencia", "promedio", "participacion"];
+
+    const rf3FeatureNames = {
+        horas: "Horas de estudio",
+        asistencia: "Asistencia",
+        promedio: "Promedio previo",
+        participacion: "Participación"
+    };
+
+    let rf3TreeNodeCounter = 0;
+
+    let rf3State = {
+        forest: [],
+        current: null,
+        queue: [],
+        running: false
+    };
+
+    function rf3ToggleTheme() {
+        document.getElementById("rf3-app").classList.toggle("dark");
+    }
+
+    function rf3ToggleTheory() {
+        const theory = document.getElementById("rf3Theory");
+        theory.style.display = theory.style.display === "none" ? "block" : "none";
+    }
+
+    function rf3Accordion(button) {
+        button.parentElement.classList.toggle("open");
+    }
+
+    function rf3Sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function rf3Delay() {
+        return parseInt(document.getElementById("rf3Speed").value);
+    }
+
+    function rf3ClassBadge(clase) {
+        if (clase === "Aprueba") {
+            return '<span class="rf3-pill-ok">Aprueba</span>';
+        }
+        return '<span class="rf3-pill-no">No aprueba</span>';
+    }
+
+    function rf3UpdateLabels() {
+        const nTrees = document.getElementById("rf3NumTrees").value;
+        const sampleSize = document.getElementById("rf3SampleSize").value;
+        const maxFeatures = document.getElementById("rf3MaxFeatures").value;
+        const maxDepth = document.getElementById("rf3MaxDepth").value;
+
+        document.getElementById("rf3NumTreesLabel").textContent = nTrees + " árboles";
+        document.getElementById("rf3SampleSizeLabel").textContent = sampleSize + " casos";
+        document.getElementById("rf3MaxFeaturesLabel").textContent = maxFeatures + " variables";
+        document.getElementById("rf3MaxDepthLabel").textContent = "profundidad " + maxDepth;
+    }
+
+    function rf3RenderDataset() {
+        const tbody = document.getElementById("rf3DatasetTable");
+
+        tbody.innerHTML = rf3PopulationData.map(row => {
+            return `
+                <tr>
+                    <td><strong>${row.id}</strong></td>
+                    <td>${row.horas}</td>
+                    <td>${row.asistencia}%</td>
+                    <td>${row.promedio}</td>
+                    <td>${row.participacion}</td>
+                    <td>${rf3ClassBadge(row.clase)}</td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    function rf3RenderPopulation() {
+        const container = document.getElementById("rf3Population");
+
+        container.innerHTML = rf3PopulationData.map(row => {
+            return `
+                <span id="rf3-pop-${row.id}" class="rf3-sample-item" style="background:${row.color};">
+                    ${row.id}
+                </span>
+            `;
+        }).join("");
+    }
+
+    function rf3FlashPopulation(id) {
+        const el = document.getElementById("rf3-pop-" + id);
+        if (!el) return;
+
+        el.classList.add("flash");
+
+        setTimeout(() => {
+            el.classList.remove("flash");
+        }, 360);
+    }
+
+    function rf3Shuffle(array) {
+        const copy = array.slice();
+
+        for (let i = copy.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = copy[i];
+            copy[i] = copy[j];
+            copy[j] = temp;
+        }
+
+        return copy;
+    }
+
+    function rf3BootstrapSample(size) {
+        let sample = [];
+
+        for (let i = 0; i < size; i++) {
+            const index = Math.floor(Math.random() * rf3PopulationData.length);
+            sample.push(rf3PopulationData[index]);
+        }
+
+        return sample;
+    }
+
+    function rf3Gini(rows) {
+        if (rows.length === 0) {
+            return 0;
+        }
+
+        const total = rows.length;
+        const ok = rows.filter(r => r.clase === "Aprueba").length;
+        const no = total - ok;
+
+        const pOk = ok / total;
+        const pNo = no / total;
+
+        return 1 - (pOk * pOk + pNo * pNo);
+    }
+
+    function rf3Counts(rows) {
+        const ok = rows.filter(r => r.clase === "Aprueba").length;
+        const no = rows.length - ok;
+
+        return {ok: ok, no: no};
+    }
+
+    function rf3Majority(rows) {
+        const c = rf3Counts(rows);
+
+        if (c.ok >= c.no) {
+            return "Aprueba";
+        }
+
+        return "No aprueba";
+    }
+
+    function rf3BestSplit(rows, features) {
+        const parentGini = rf3Gini(rows);
+        let best = null;
+
+        features.forEach(feature => {
+            const values = Array.from(new Set(rows.map(r => r[feature]))).sort((a, b) => a - b);
+
+            for (let i = 0; i < values.length - 1; i++) {
+                const threshold = (values[i] + values[i + 1]) / 2;
+
+                const left = rows.filter(r => r[feature] <= threshold);
+                const right = rows.filter(r => r[feature] > threshold);
+
+                if (left.length === 0 || right.length === 0) {
+                    continue;
+                }
+
+                const weightedGini =
+                    (left.length / rows.length) * rf3Gini(left) +
+                    (right.length / rows.length) * rf3Gini(right);
+
+                const gain = parentGini - weightedGini;
+
+                if (best === null || gain > best.gain) {
+                    best = {
+                        feature: feature,
+                        threshold: threshold,
+                        left: left,
+                        right: right,
+                        parentGini: parentGini,
+                        weightedGini: weightedGini,
+                        gain: gain
+                    };
+                }
+            }
+        });
+
+        return best;
+    }
+
+    function rf3BuildTreeRecursive(rows, depth, maxDepth, maxFeatures, trace) {
+        rf3TreeNodeCounter += 1;
+
+        const nodeId = "N" + rf3TreeNodeCounter;
+        const counts = rf3Counts(rows);
+        const prediction = rf3Majority(rows);
+        const currentGini = rf3Gini(rows);
+
+        const pure = counts.ok === 0 || counts.no === 0;
+        const stopByDepth = depth >= maxDepth;
+        const stopBySize = rows.length <= 1;
+
+        if (pure || stopByDepth || stopBySize) {
+            const leaf = {
+                id: nodeId,
+                type: "leaf",
+                depth: depth,
+                rows: rows,
+                counts: counts,
+                gini: currentGini,
+                prediction: prediction
+            };
+
+            trace.push({
+                action: "leaf",
+                node: leaf,
+                reason: pure ? "nodo puro" : (stopByDepth ? "profundidad máxima" : "muy pocos casos")
+            });
+
+            return leaf;
+        }
+
+        const selectedFeatures = rf3Shuffle(rf3FeatureList).slice(0, maxFeatures);
+        const split = rf3BestSplit(rows, selectedFeatures);
+
+        if (split === null || split.gain <= 0.00001) {
+            const leaf = {
+                id: nodeId,
+                type: "leaf",
+                depth: depth,
+                rows: rows,
+                counts: counts,
+                gini: currentGini,
+                prediction: prediction
+            };
+
+            trace.push({
+                action: "leaf",
+                node: leaf,
+                reason: "no mejora la impureza"
+            });
+
+            return leaf;
+        }
+
+        const node = {
+            id: nodeId,
+            type: "split",
+            depth: depth,
+            rows: rows,
+            counts: counts,
+            gini: currentGini,
+            selectedFeatures: selectedFeatures,
+            feature: split.feature,
+            threshold: split.threshold,
+            gain: split.gain,
+            weightedGini: split.weightedGini,
+            left: null,
+            right: null
+        };
+
+        trace.push({
+            action: "split",
+            node: node,
+            selectedFeatures: selectedFeatures,
+            split: split
+        });
+
+        node.left = rf3BuildTreeRecursive(split.left, depth + 1, maxDepth, maxFeatures, trace);
+        node.right = rf3BuildTreeRecursive(split.right, depth + 1, maxDepth, maxFeatures, trace);
+
+        return node;
+    }
+
+    function rf3PredictPath(tree, student) {
+        let path = [];
+        let node = tree;
+
+        while (node.type === "split") {
+            const value = student[node.feature];
+            const goLeft = value <= node.threshold;
+
+            path.push({
+                action: "decision",
+                node: node,
+                feature: node.feature,
+                value: value,
+                threshold: node.threshold,
+                direction: goLeft ? "izquierda" : "derecha"
+            });
+
+            node = goLeft ? node.left : node.right;
+        }
+
+        path.push({
+            action: "leafPrediction",
+            node: node,
+            prediction: node.prediction
+        });
+
+        return {
+            prediction: node.prediction,
+            path: path
+        };
+    }
+
+    function rf3PrepareNextTree() {
+        const maxTrees = parseInt(document.getElementById("rf3NumTrees").value);
+
+        if (rf3State.forest.length >= maxTrees) {
+            document.getElementById("rf3Status").innerHTML =
+                "El bosque ya tiene la cantidad de árboles configurada.";
+            document.getElementById("rf3Status").className = "rf3-warning";
+            return false;
+        }
+
+        const treeNumber = rf3State.forest.length + 1;
+        const sampleSize = parseInt(document.getElementById("rf3SampleSize").value);
+        const maxFeatures = parseInt(document.getElementById("rf3MaxFeatures").value);
+        const maxDepth = parseInt(document.getElementById("rf3MaxDepth").value);
+
+        const sample = rf3BootstrapSample(sampleSize);
+
+        let trace = [];
+        rf3TreeNodeCounter = 0;
+        const tree = rf3BuildTreeRecursive(sample, 0, maxDepth, maxFeatures, trace);
+        const predictionData = rf3PredictPath(tree, rf3TestStudent);
+
+        rf3State.current = {
+            treeNumber: treeNumber,
+            sample: sample,
+            shownSample: [],
+            tree: tree,
+            trace: trace,
+            revealedNodes: new Set(),
+            highlightedNode: null,
+            prediction: predictionData.prediction,
+            path: predictionData.path
+        };
+
+        rf3State.queue = [];
+
+        rf3State.queue.push({
+            action: "startTree",
+            treeNumber: treeNumber
+        });
+
+        sample.forEach((row, index) => {
+            rf3State.queue.push({
+                action: "bootstrapDraw",
+                row: row,
+                index: index + 1
+            });
+        });
+
+        trace.forEach(item => {
+            rf3State.queue.push({
+                action: "treeStep",
+                item: item
+            });
+        });
+
+        predictionData.path.forEach(item => {
+            rf3State.queue.push({
+                action: "predictionStep",
+                item: item
+            });
+        });
+
+        rf3State.queue.push({
+            action: "finishTree"
+        });
+
+        return true;
+    }
+
+    function rf3RenderCurrentBootstrap() {
+        const container = document.getElementById("rf3BootstrapSample");
+
+        if (!rf3State.current || rf3State.current.shownSample.length === 0) {
+            container.innerHTML = "Todavía no se generó ninguna muestra.";
+            return;
+        }
+
+        container.innerHTML = rf3State.current.shownSample.map((row, index) => {
+            return `
+                <span class="rf3-sample-item" style="background:${row.color};">
+                    ${row.id}
+                </span>
+            `;
+        }).join("");
+    }
+
+    function rf3AddLog(text) {
+        const log = document.getElementById("rf3Log");
+
+        if (log.innerHTML.includes("Esperando inicio")) {
+            log.innerHTML = "";
+        }
+
+        log.innerHTML += `<div class="rf3-log-entry">${text}</div>`;
+        log.scrollTop = log.scrollHeight;
+    }
+
+    function rf3RenderTreeNode(node) {
+        if (!rf3State.current) {
+            return "";
+        }
+
+        const revealed = rf3State.current.revealedNodes.has(node.id);
+        const active = rf3State.current.highlightedNode === node.id ? " active" : "";
+
+        if (!revealed) {
+            return `
+                <div class="rf3-tree-node-wrap">
+                    <div class="rf3-node pending">
+                        <div class="rf3-node-title">Nodo pendiente</div>
+                        <div class="rf3-node-small">Se revelará durante la construcción</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        if (node.type === "leaf") {
+            const leafClass = node.prediction === "Aprueba" ? "leaf-ok" : "leaf-no";
+            const badge = node.prediction === "Aprueba"
+                ? '<span class="rf3-pill-ok">Aprueba</span>'
+                : '<span class="rf3-pill-no">No aprueba</span>';
+
+            return `
+                <div class="rf3-tree-node-wrap">
+                    <div class="rf3-node ${leafClass}${active}">
+                        <div class="rf3-node-title">Hoja ${node.id}</div>
+                        <div>${badge}</div>
+                        <div class="rf3-node-small">
+                            Casos: ${node.rows.length}<br>
+                            Aprueba: ${node.counts.ok} | No aprueba: ${node.counts.no}<br>
+                            Gini: ${node.gini.toFixed(3)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="rf3-tree-node-wrap">
+                <div class="rf3-node split${active}">
+                    <div class="rf3-node-title">Nodo ${node.id}</div>
+                    <div>
+                        ${rf3FeatureNames[node.feature]} ≤ ${node.threshold.toFixed(2)}
+                    </div>
+                    <div class="rf3-node-small">
+                        Casos: ${node.rows.length}<br>
+                        Gini: ${node.gini.toFixed(3)}<br>
+                        Mejora: ${node.gain.toFixed(3)}
+                    </div>
+                </div>
+
+                <div class="rf3-children">
+                    <div class="rf3-child-branch">
+                        <div class="rf3-branch-label">Sí / izquierda</div>
+                        ${rf3RenderTreeNode(node.left)}
+                    </div>
+
+                    <div class="rf3-child-branch">
+                        <div class="rf3-branch-label">No / derecha</div>
+                        ${rf3RenderTreeNode(node.right)}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function rf3RenderCurrentTree() {
+        const area = document.getElementById("rf3TreeArea");
+
+        if (!rf3State.current) {
+            area.innerHTML = "El árbol aparecerá aquí.";
+            return;
+        }
+
+        area.innerHTML = `
+            <div class="rf3-tree-diagram">
+                ${rf3RenderTreeNode(rf3State.current.tree)}
+            </div>
+        `;
+    }
+
+    function rf3FeaturesText(features) {
+        return features.map(f => rf3FeatureNames[f]).join(", ");
+    }
+
+    function rf3ProcessNextAction() {
+        if (rf3State.queue.length === 0) {
+            const prepared = rf3PrepareNextTree();
+
+            if (!prepared) {
+                return false;
+            }
+        }
+
+        const action = rf3State.queue.shift();
+
+        if (action.action === "startTree") {
+            rf3State.current.shownSample = [];
+            rf3State.current.revealedNodes = new Set();
+            rf3State.current.highlightedNode = null;
+
+            document.getElementById("rf3Log").innerHTML = "";
+            rf3RenderCurrentBootstrap();
+            rf3RenderCurrentTree();
+
+            document.getElementById("rf3Status").innerHTML =
+                "Comienza la construcción del <strong>árbol " + action.treeNumber + "</strong>. Primero se generará su muestra bootstrap.";
+            document.getElementById("rf3Status").className = "rf3-success";
+
+            rf3AddLog("Árbol " + action.treeNumber + ": inicio de construcción.");
+            return true;
+        }
+
+        if (action.action === "bootstrapDraw") {
+            rf3State.current.shownSample.push(action.row);
+            rf3RenderCurrentBootstrap();
+            rf3FlashPopulation(action.row.id);
+
+            document.getElementById("rf3Status").innerHTML =
+                "Bootstrap del árbol " + rf3State.current.treeNumber + ": extracción " + action.index +
+                ". Se seleccionó <strong>" + action.row.id + "</strong> y vuelve a estar disponible.";
+
+            rf3AddLog("Bootstrap extracción " + action.index + ": se seleccionó " + action.row.id + ".");
+            return true;
+        }
+
+        if (action.action === "treeStep") {
+            const item = action.item;
+            const node = item.node;
+
+            rf3State.current.revealedNodes.add(node.id);
+            rf3State.current.highlightedNode = node.id;
+            rf3RenderCurrentTree();
+
+            if (item.action === "split") {
+                document.getElementById("rf3Status").innerHTML =
+                    "Construcción del árbol " + rf3State.current.treeNumber +
+                    ": se crea el nodo <strong>" + node.id + "</strong>. Variables candidatas: <strong>" +
+                    rf3FeaturesText(item.selectedFeatures) + "</strong>. Mejor división: <strong>" +
+                    rf3FeatureNames[node.feature] + " ≤ " + node.threshold.toFixed(2) + "</strong>.";
+
+                rf3AddLog(
+                    "Nodo " + node.id +
+                    ": variables candidatas = [" + rf3FeaturesText(item.selectedFeatures) + "]. " +
+                    "Mejor split = " + rf3FeatureNames[node.feature] + " ≤ " + node.threshold.toFixed(2) +
+                    ". Gini padre = " + node.gini.toFixed(3) +
+                    ". Gini ponderado = " + node.weightedGini.toFixed(3) +
+                    ". Mejora = " + node.gain.toFixed(3) + "."
+                );
+            } else {
+                document.getElementById("rf3Status").innerHTML =
+                    "Construcción del árbol " + rf3State.current.treeNumber +
+                    ": se crea la hoja <strong>" + node.id + "</strong>. Predicción de la hoja: <strong>" +
+                    node.prediction + "</strong>. Motivo: " + item.reason + ".";
+
+                rf3AddLog(
+                    "Hoja " + node.id +
+                    ": predicción = " + node.prediction +
+                    ". Casos = " + node.rows.length +
+                    ". Aprueba = " + node.counts.ok +
+                    ". No aprueba = " + node.counts.no +
+                    ". Motivo = " + item.reason + "."
+                );
+            }
+
+            return true;
+        }
+
+        if (action.action === "predictionStep") {
+            const item = action.item;
+
+            if (item.action === "decision") {
+                rf3State.current.highlightedNode = item.node.id;
+                rf3RenderCurrentTree();
+
+                const directionText = item.direction === "izquierda" ? "izquierda" : "derecha";
+
+                document.getElementById("rf3Status").innerHTML =
+                    "Predicción del estudiante nuevo en el árbol " + rf3State.current.treeNumber +
+                    ": en el nodo <strong>" + item.node.id + "</strong>, " +
+                    rf3FeatureNames[item.feature] + " = <strong>" + item.value + "</strong>. " +
+                    "Como se compara contra " + item.threshold.toFixed(2) +
+                    ", el recorrido va hacia la <strong>" + directionText + "</strong>.";
+
+                rf3AddLog(
+                    "Predicción: nodo " + item.node.id +
+                    ". Valor del estudiante en " + rf3FeatureNames[item.feature] + " = " + item.value +
+                    ". Umbral = " + item.threshold.toFixed(2) +
+                    ". Dirección = " + directionText + "."
+                );
+            } else {
+                rf3State.current.highlightedNode = item.node.id;
+                rf3RenderCurrentTree();
+
+                document.getElementById("rf3Status").innerHTML =
+                    "El estudiante nuevo llega a la hoja <strong>" + item.node.id +
+                    "</strong>. El árbol " + rf3State.current.treeNumber +
+                    " vota: <strong>" + item.prediction + "</strong>.";
+
+                rf3AddLog(
+                    "Predicción final del árbol " + rf3State.current.treeNumber +
+                    ": " + item.prediction + "."
+                );
+            }
+
+            return true;
+        }
+
+        if (action.action === "finishTree") {
+            const current = rf3State.current;
+
+            rf3State.forest.push({
+                treeNumber: current.treeNumber,
+                tree: current.tree,
+                sample: current.sample,
+                prediction: current.prediction
+            });
+
+            rf3RenderForest();
+            rf3RenderVotes();
+            rf3RenderFrequency();
+
+            document.getElementById("rf3Status").innerHTML =
+                "Árbol <strong>" + current.treeNumber + "</strong> agregado al bosque. " +
+                "Voto del árbol: <strong>" + current.prediction + "</strong>.";
+
+            rf3AddLog("Árbol " + current.treeNumber + " agregado al bosque con voto = " + current.prediction + ".");
+
+            rf3State.current = null;
+            rf3State.queue = [];
+
+            return true;
+        }
+
+        return false;
+    }
+
+    function rf3NextStep() {
+        if (rf3State.running) {
+            return;
+        }
+
+        rf3ProcessNextAction();
+    }
+
+    async function rf3RunAnimatedForest() {
+        if (rf3State.running) {
+            return;
+        }
+
+        rf3ResetAll(false);
+        rf3State.running = true;
+
+        const maxTrees = parseInt(document.getElementById("rf3NumTrees").value);
+
+        while (rf3State.forest.length < maxTrees) {
+            if (rf3State.queue.length === 0) {
+                rf3PrepareNextTree();
+            }
+
+            while (rf3State.queue.length > 0) {
+                rf3ProcessNextAction();
+                await rf3Sleep(rf3Delay());
+            }
+
+            await rf3Sleep(rf3Delay());
+        }
+
+        rf3State.running = false;
+
+        document.getElementById("rf3Status").innerHTML =
+            "Bosque completo construido dinámicamente. Ahora puede observarse la votación final.";
+        document.getElementById("rf3Status").className = "rf3-success";
+    }
+
+    function rf3RenderForest() {
+        const container = document.getElementById("rf3Forest");
+
+        if (rf3State.forest.length === 0) {
+            container.innerHTML = "<div class='rf3-warning'>Todavía no se construyó ningún árbol.</div>";
+            return;
+        }
+
+        container.innerHTML = rf3State.forest.map(treeData => {
+            const badge = treeData.prediction === "Aprueba"
+                ? '<span class="rf3-pill-ok">Aprueba</span>'
+                : '<span class="rf3-pill-no">No aprueba</span>';
+
+            const sampleHtml = treeData.sample.map(row => {
+                return `<span class="rf3-sample-item" style="background:${row.color};">${row.id}</span>`;
+            }).join("");
+
+            return `
+                <div class="rf3-tree-card">
+                    <h3>Árbol ${treeData.treeNumber}</h3>
+                    <p><strong>Muestra bootstrap:</strong></p>
+                    <div>${sampleHtml}</div>
+                    <p><strong>Voto:</strong> ${badge}</p>
+                </div>
+            `;
+        }).join("");
+    }
+
+    function rf3RenderVotes() {
+        let okVotes = 0;
+        let noVotes = 0;
+
+        rf3State.forest.forEach(tree => {
+            if (tree.prediction === "Aprueba") {
+                okVotes += 1;
+            } else {
+                noVotes += 1;
+            }
+        });
+
+        const total = rf3State.forest.length;
+        const okPct = total === 0 ? 0 : Math.round((okVotes / total) * 100);
+        const noPct = total === 0 ? 0 : Math.round((noVotes / total) * 100);
+
+        document.getElementById("rf3OkVotes").textContent = okVotes;
+        document.getElementById("rf3NoVotes").textContent = noVotes;
+        document.getElementById("rf3OkBar").style.width = okPct + "%";
+        document.getElementById("rf3NoBar").style.width = noPct + "%";
+
+        const box = document.getElementById("rf3FinalResult");
+
+        if (total === 0) {
+            box.innerHTML = "Todavía no hay votación final.";
+            box.className = "rf3-warning";
+            return;
+        }
+
+        if (okVotes > noVotes) {
+            box.innerHTML =
+                "Resultado final del bosque: <strong>Aprueba</strong>. " +
+                "La mayoría de los árboles votó por Aprueba: " + okVotes + " contra " + noVotes + ".";
+            box.className = "rf3-success";
+        } else if (noVotes > okVotes) {
+            box.innerHTML =
+                "Resultado final del bosque: <strong>No aprueba</strong>. " +
+                "La mayoría de los árboles votó por No aprueba: " + noVotes + " contra " + okVotes + ".";
+            box.className = "rf3-danger";
+        } else {
+            box.innerHTML =
+                "Resultado final del bosque: <strong>empate</strong>. En aplicaciones reales se suelen usar más árboles.";
+            box.className = "rf3-warning";
+        }
+    }
+
+    function rf3RenderFrequency() {
+        const tbody = document.getElementById("rf3FrequencyTable");
+
+        let counts = {};
+        rf3PopulationData.forEach(row => {
+            counts[row.id] = 0;
+        });
+
+        rf3State.forest.forEach(tree => {
+            tree.sample.forEach(row => {
+                counts[row.id] += 1;
+            });
+        });
+
+        tbody.innerHTML = rf3PopulationData.map(row => {
+            let interpretation = "";
+
+            if (counts[row.id] === 0) {
+                interpretation = "No apareció todavía en las muestras bootstrap del bosque.";
+            } else if (counts[row.id] === 1) {
+                interpretation = "Apareció una vez.";
+            } else {
+                interpretation = "Apareció repetido. Esto es normal por el muestreo con reemplazo.";
+            }
+
+            return `
+                <tr>
+                    <td><strong>${row.id}</strong></td>
+                    <td>${rf3ClassBadge(row.clase)}</td>
+                    <td>${counts[row.id]}</td>
+                    <td>${interpretation}</td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    function rf3ResetAll(updateStatus=true) {
+        rf3State = {
+            forest: [],
+            current: null,
+            queue: [],
+            running: false
+        };
+
+        document.getElementById("rf3BootstrapSample").innerHTML = "Todavía no se generó ninguna muestra.";
+        document.getElementById("rf3TreeArea").innerHTML = "El árbol aparecerá aquí.";
+        document.getElementById("rf3Log").innerHTML = "<div class='rf3-log-entry'>Esperando inicio de simulación.</div>";
+
+        rf3RenderForest();
+        rf3RenderVotes();
+        rf3RenderFrequency();
+
+        if (updateStatus) {
+            document.getElementById("rf3Status").innerHTML =
+                "Simulación reiniciada. Presioná “Siguiente paso” o “Construir bosque animado”.";
+            document.getElementById("rf3Status").className = "rf3-warning";
+        }
+    }
+
+    rf3UpdateLabels();
+    rf3RenderDataset();
+    rf3RenderPopulation();
+    rf3ResetAll(false);
+</script>
+
+</div>
+"""
+
+display(HTML(html))

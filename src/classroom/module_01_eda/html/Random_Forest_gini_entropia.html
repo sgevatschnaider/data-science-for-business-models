@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Gini y Entropía - Visualización Interactiva</title>
+
+<style>
+    :root {
+        --bg: #f4f7fb;
+        --card: #ffffff;
+        --text: #1f2937;
+        --muted: #64748b;
+        --primary: #1f4e79;
+        --secondary: #2563eb;
+        --accent: #0ea5e9;
+        --accent-soft: #e0f2fe;
+        --success: #16a34a;
+        --danger: #dc2626;
+        --warning: #f59e0b;
+        --purple: #7c3aed;
+        --border: #d8e2ef;
+        --shadow: rgba(15, 23, 42, 0.12);
+        --code: #f8fafc;
+        --table-row: #ffffff;
+        --table-row-alt: #f8fafc;
+    }
+
+    body.dark {
+        --bg: #0f172a;
+        --card: #111827;
+        --text: #e5e7eb;
+        --muted: #cbd5e1;
+        --primary: #93c5fd;
+        --secondary: #60a5fa;
+        --accent: #38bdf8;
+        --accent-soft: #1e293b;
+        --border: #334155;
+        --shadow: rgba(0, 0, 0, 0.35);
+        --code: #020617;
+        --table-row: #111827;
+        --table-row-alt: #0f172a;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 24px;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.65;
+    }
+
+    .container {
+        max-width: 1220px;
+        margin: auto;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #1f4e79, #0f766e);
+        color: white;
+        padding: 34px;
+        border-radius: 24px;
+        box-shadow: 0 18px 35px var(--shadow);
+        margin-bottom: 22px;
+    }
+
+    .header h1 {
+        margin: 0 0 10px 0;
+        font-size: 36px;
+        line-height: 1.15;
+    }
+
+    .header p {
+        margin: 0;
+        max-width: 980px;
+        font-size: 18px;
+    }
+
+    .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 18px 0 24px 0;
+    }
+
+    .btn {
+        border: none;
+        padding: 11px 16px;
+        border-radius: 999px;
+        color: white;
+        background: var(--primary);
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 8px 20px var(--shadow);
+        transition: transform .2s ease, opacity .2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        opacity: .92;
+    }
+
+    .btn.secondary { background: var(--secondary); }
+    .btn.success { background: var(--success); }
+    .btn.warning { background: var(--warning); }
+    .btn.danger { background: var(--danger); }
+    .btn.purple { background: var(--purple); }
+
+    .card {
+        background: var(--card);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 24px;
+        margin: 18px 0;
+        box-shadow: 0 14px 28px var(--shadow);
+    }
+
+    .card h2 {
+        margin-top: 0;
+        color: var(--primary);
+        border-bottom: 2px solid var(--border);
+        padding-bottom: 8px;
+    }
+
+    .card h3 {
+        color: var(--secondary);
+        margin-bottom: 8px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+    }
+
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        margin-top: 16px;
+    }
+
+    .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-top: 16px;
+    }
+
+    @media (max-width: 980px) {
+        .grid-2,
+        .grid-3 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .mini {
+        background: var(--card);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px;
+    }
+
+    .note {
+        background: var(--accent-soft);
+        color: var(--text);
+        border-left: 6px solid var(--accent);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .warning {
+        background: rgba(245, 158, 11, 0.16);
+        color: var(--text);
+        border-left: 6px solid var(--warning);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .success {
+        background: rgba(22, 163, 74, 0.16);
+        color: var(--text);
+        border-left: 6px solid var(--success);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .formula {
+        background: var(--code);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+        white-space: pre-wrap;
+        font-family: Consolas, Monaco, monospace;
+        font-size: 15px;
+        overflow-x: auto;
+    }
+
+    .controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 14px;
+        margin: 16px 0;
+    }
+
+    input[type="range"] {
+        min-width: 180px;
+    }
+
+    select {
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+        font-weight: 700;
+    }
+
+    .pill {
+        display: inline-block;
+        border: 1px solid var(--border);
+        background: var(--accent-soft);
+        color: var(--primary);
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 800;
+        margin: 3px;
+    }
+
+    .pill-ok {
+        display: inline-block;
+        background: var(--success);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 800;
+        margin: 3px;
+    }
+
+    .pill-no {
+        display: inline-block;
+        background: var(--danger);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 800;
+        margin: 3px;
+    }
+
+    .metric-box {
+        border: 1px solid var(--border);
+        background: var(--code);
+        border-radius: 16px;
+        padding: 16px;
+        text-align: center;
+    }
+
+    .metric-title {
+        font-size: 14px;
+        color: var(--muted);
+        font-weight: 800;
+    }
+
+    .metric-value {
+        font-size: 32px;
+        font-weight: 900;
+        color: var(--primary);
+        margin-top: 6px;
+    }
+
+    .bar-wrap {
+        height: 18px;
+        background: var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+        margin: 8px 0;
+    }
+
+    .bar {
+        height: 18px;
+        width: 0%;
+        transition: width .35s ease;
+    }
+
+    .bar-ok { background: var(--success); }
+    .bar-gini { background: var(--accent); }
+    .bar-entropy { background: var(--purple); }
+
+    .node-box {
+        border: 2px solid var(--border);
+        border-radius: 18px;
+        padding: 16px;
+        background: var(--code);
+        min-height: 180px;
+    }
+
+    .node-title {
+        font-weight: 900;
+        color: var(--primary);
+        margin-bottom: 10px;
+    }
+
+    .dot-area {
+        min-height: 82px;
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px dashed var(--border);
+        border-radius: 14px;
+        background: var(--card);
+    }
+
+    .dot {
+        width: 28px;
+        height: 28px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        color: white;
+        font-size: 12px;
+        font-weight: 800;
+        margin: 4px;
+        box-shadow: 0 5px 12px var(--shadow);
+        animation: pop .2s ease;
+    }
+
+    @keyframes pop {
+        from { transform: scale(.5); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    canvas {
+        width: 100%;
+        height: 340px;
+        border-radius: 18px;
+        background: var(--code);
+        border: 1px solid var(--border);
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 14px;
+        font-size: 15px;
+        color: var(--text);
+        background: var(--card);
+    }
+
+    .table th {
+        background: var(--primary);
+        color: white;
+        text-align: left;
+        border: 1px solid var(--border);
+        padding: 10px;
+        vertical-align: top;
+    }
+
+    .table td {
+        border: 1px solid var(--border);
+        padding: 10px;
+        vertical-align: top;
+        color: var(--text);
+        background: var(--table-row);
+    }
+
+    .table tbody tr:nth-child(even) td {
+        background: var(--table-row-alt);
+    }
+
+    .accordion {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        margin: 10px 0;
+    }
+
+    .accordion button {
+        width: 100%;
+        text-align: left;
+        border: none;
+        padding: 14px 16px;
+        background: var(--accent-soft);
+        color: var(--text);
+        cursor: pointer;
+        font-weight: 800;
+        font-size: 15px;
+    }
+
+    .accordion-content {
+        display: none;
+        padding: 16px;
+        background: var(--card);
+        color: var(--text);
+        border-top: 1px solid var(--border);
+    }
+
+    .accordion.open .accordion-content {
+        display: block;
+    }
+
+    .footer {
+        text-align: center;
+        color: var(--muted);
+        font-size: 14px;
+        margin-top: 28px;
+        padding-top: 18px;
+        border-top: 1px solid var(--border);
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>Gini y Entropía: visualización dinámica</h1>
+        <p>
+            Esta herramienta permite explicar qué es la impureza de un nodo en árboles de decisión y visualizar dinámicamente
+            cómo cambian Gini y Entropía según la proporción de clases.
+        </p>
+    </div>
+
+    <div class="toolbar">
+        <button class="btn" onclick="toggleTheme()">Cambiar tema claro / oscuro</button>
+        <button class="btn success" onclick="setScenario(20, 0)">Nodo puro: Aprueba</button>
+        <button class="btn danger" onclick="setScenario(0, 20)">Nodo puro: No aprueba</button>
+        <button class="btn warning" onclick="setScenario(10, 10)">Nodo mezclado 50/50</button>
+        <button class="btn secondary" onclick="setScenario(16, 4)">Nodo dominante 80/20</button>
+        <button class="btn purple" onclick="randomScenario()">Escenario aleatorio</button>
+    </div>
+
+    <div class="card">
+        <h2>1. ¿Qué problema resuelven Gini y Entropía?</h2>
+
+        <p>
+            En un árbol de decisión, cada nodo contiene observaciones que pueden pertenecer a distintas clases.
+            Por ejemplo, estudiantes que <strong>aprueban</strong> y estudiantes que <strong>no aprueban</strong>.
+            El árbol necesita una forma de medir si ese nodo está ordenado o mezclado.
+        </p>
+
+        <div class="grid">
+            <div class="mini">
+                <h3>Nodo puro</h3>
+                <p>Todos los casos pertenecen a la misma clase. No hay incertidumbre.</p>
+                <span class="pill-ok">Aprueba</span>
+                <span class="pill-ok">Aprueba</span>
+                <span class="pill-ok">Aprueba</span>
+            </div>
+
+            <div class="mini">
+                <h3>Nodo impuro</h3>
+                <p>Hay mezcla de clases. El árbol todavía no separó bien los datos.</p>
+                <span class="pill-ok">Aprueba</span>
+                <span class="pill-no">No aprueba</span>
+                <span class="pill-ok">Aprueba</span>
+                <span class="pill-no">No aprueba</span>
+            </div>
+
+            <div class="mini">
+                <h3>Objetivo del árbol</h3>
+                <p>Elegir cortes que produzcan nodos hijos más puros.</p>
+                <span class="pill">Reducir impureza</span>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Idea central:</strong> Gini y Entropía miden qué tan mezcladas están las clases dentro de un nodo.
+            Cuanto más puro es el nodo, más bajo es el valor de ambos criterios.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>2. Fórmulas</h2>
+
+        <div class="grid-2">
+            <div class="mini">
+                <h3>Impureza Gini</h3>
+                <div class="formula">Gini = 1 − Σ pᵢ²
+
+Para dos clases:
+
+Gini = 1 − (p_Aprueba² + p_NoAprueba²)</div>
+                <p>
+                    Gini mide la impureza de un nodo. En un problema binario, su valor máximo es 0.5 cuando las clases están 50/50.
+                </p>
+            </div>
+
+            <div class="mini">
+                <h3>Entropía</h3>
+                <div class="formula">Entropía = − Σ pᵢ log₂(pᵢ)
+
+Para dos clases:
+
+Entropía = −(p_Aprueba log₂ p_Aprueba + p_NoAprueba log₂ p_NoAprueba)</div>
+                <p>
+                    La Entropía mide incertidumbre o desorden. En un problema binario, su valor máximo es 1 cuando las clases están 50/50.
+                </p>
+            </div>
+        </div>
+
+        <div class="warning">
+            Cuando el nodo es puro, Gini y Entropía valen 0. Cuando las clases están equilibradas, ambos criterios alcanzan su máximo.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>3. Simulador dinámico de un nodo</h2>
+
+        <p>
+            Mové los controles para cambiar la cantidad de casos de cada clase. El nodo, las métricas y el gráfico se actualizan automáticamente.
+        </p>
+
+        <div class="controls">
+            <label><strong>Casos Aprueba:</strong></label>
+            <input id="okSlider" type="range" min="0" max="30" value="10" oninput="updateAll()">
+            <span id="okLabel" class="pill-ok">10</span>
+
+            <label><strong>Casos No aprueba:</strong></label>
+            <input id="noSlider" type="range" min="0" max="30" value="10" oninput="updateAll()">
+            <span id="noLabel" class="pill-no">10</span>
+        </div>
+
+        <div class="grid-2">
+            <div class="node-box">
+                <div class="node-title">Nodo actual</div>
+                <div id="dotArea" class="dot-area"></div>
+                <div id="nodeSummary"></div>
+            </div>
+
+            <div class="node-box">
+                <div class="node-title">Interpretación</div>
+                <div id="interpretation"></div>
+            </div>
+        </div>
+
+        <div class="grid-3">
+            <div class="metric-box">
+                <div class="metric-title">Proporción Aprueba</div>
+                <div id="propOkValue" class="metric-value">0.50</div>
+                <div class="bar-wrap"><div id="propOkBar" class="bar bar-ok"></div></div>
+            </div>
+
+            <div class="metric-box">
+                <div class="metric-title">Gini</div>
+                <div id="giniValue" class="metric-value">0.500</div>
+                <div class="bar-wrap"><div id="giniBar" class="bar bar-gini"></div></div>
+            </div>
+
+            <div class="metric-box">
+                <div class="metric-title">Entropía</div>
+                <div id="entropyValue" class="metric-value">1.000</div>
+                <div class="bar-wrap"><div id="entropyBar" class="bar bar-entropy"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>4. Visualización seleccionable: Gini o Entropía</h2>
+
+        <p>
+            Elegí qué criterio querés visualizar. Podés mostrar solo Gini, solo Entropía o ambas curvas para comparar.
+        </p>
+
+        <div class="controls">
+            <label><strong>Visualización:</strong></label>
+            <select id="metricSelector" onchange="updateAll()">
+                <option value="both">Gini y Entropía</option>
+                <option value="gini">Solo Gini</option>
+                <option value="entropy">Solo Entropía</option>
+            </select>
+            <span id="selectedMetricLabel" class="pill">Gini y Entropía</span>
+        </div>
+
+        <canvas id="metricCanvas"></canvas>
+
+        <div id="graphExplanation" class="note"></div>
+    </div>
+
+    <div class="card">
+        <h2>5. ¿Cómo usa esto un árbol de decisión?</h2>
+
+        <p>
+            Un árbol de decisión usa Gini o Entropía para decidir qué corte conviene hacer. El mejor corte es el que produce
+            nodos hijos más puros que el nodo original.
+        </p>
+
+        <div class="formula">Ejemplo:
+
+¿Horas de estudio ≤ 5?
+
+Nodo izquierdo: estudiantes con horas ≤ 5
+Nodo derecho: estudiantes con horas > 5
+
+El árbol compara la impureza antes y después del corte.</div>
+
+        <div class="success">
+            <strong>Regla práctica:</strong> cuanto mayor sea la reducción de Gini o la ganancia de información basada en Entropía,
+            mejor es la división para el árbol.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>6. Comparación directa</h2>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Criterio</th>
+                    <th>Qué mide</th>
+                    <th>Cuándo vale 0</th>
+                    <th>Cuándo es alto</th>
+                    <th>Uso en árboles</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Gini</strong></td>
+                    <td>Impureza de clases.</td>
+                    <td>Cuando el nodo es puro.</td>
+                    <td>Cuando las clases están muy mezcladas.</td>
+                    <td>Busca divisiones que reduzcan la impureza.</td>
+                </tr>
+                <tr>
+                    <td><strong>Entropía</strong></td>
+                    <td>Incertidumbre o desorden.</td>
+                    <td>Cuando no hay incertidumbre.</td>
+                    <td>Cuando las clases están equilibradas.</td>
+                    <td>Busca divisiones que aumenten la ganancia de información.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>7. Explicaciones desplegables</h2>
+
+        <div class="accordion">
+            <button onclick="toggleAccordion(this)">¿Por qué Gini vale 0 en un nodo puro?</button>
+            <div class="accordion-content">
+                Si todos los casos pertenecen a una sola clase, la proporción de esa clase es 1 y la proporción de la otra clase es 0.
+                Entonces: Gini = 1 − (1² + 0²) = 0. No hay mezcla de clases.
+            </div>
+        </div>
+
+        <div class="accordion">
+            <button onclick="toggleAccordion(this)">¿Por qué la Entropía es máxima cuando las clases están 50/50?</button>
+            <div class="accordion-content">
+                Porque en ese caso la incertidumbre es máxima. Si tomamos un caso al azar, no hay una clase claramente dominante.
+                La distribución 50/50 representa el mayor desorden posible en un problema de dos clases.
+            </div>
+        </div>
+
+        <div class="accordion">
+            <button onclick="toggleAccordion(this)">¿Gini y Entropía siempre eligen el mismo corte?</button>
+            <div class="accordion-content">
+                Muchas veces producen cortes similares, pero no necesariamente idénticos. Gini suele ser más simple y rápido.
+                Entropía está relacionada con la teoría de la información y la ganancia de información.
+            </div>
+        </div>
+
+        <div class="accordion">
+            <button onclick="toggleAccordion(this)">¿Cómo se conecta esto con Random Forest?</button>
+            <div class="accordion-content">
+                Random Forest construye muchos árboles. Cada árbol puede usar criterios como Gini o Entropía para dividir nodos.
+                La diferencia es que cada árbol se entrena con una muestra bootstrap distinta y con subconjuntos aleatorios de variables.
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>8. Mini explicación para decir en clase</h2>
+
+        <div class="formula">Gini y Entropía son criterios que ayudan a un árbol de decisión a elegir cómo dividir los datos.
+
+Si un nodo tiene casos mezclados de distintas clases, decimos que el nodo es impuro.
+
+Gini mide esa impureza de manera directa.
+
+Entropía mide la incertidumbre o el desorden de las clases.
+
+Cuando el nodo es puro, ambos valores son 0.
+
+Cuando las clases están muy mezcladas, ambos valores aumentan.
+
+El árbol busca divisiones que reduzcan esa impureza, porque nodos más puros permiten predicciones más claras.</div>
+    </div>
+
+    <div class="footer">
+        Material elaborado por el profesor Sergio Gevatschnaider.
+    </div>
+
+</div>
+
+<script>
+    function getCSS(name) {
+        return getComputedStyle(document.body).getPropertyValue(name).trim();
+    }
+
+    function toggleTheme() {
+        document.body.classList.toggle("dark");
+        drawCanvas();
+    }
+
+    function toggleAccordion(button) {
+        button.parentElement.classList.toggle("open");
+    }
+
+    function gini(ok, no) {
+        const total = ok + no;
+
+        if (total === 0) {
+            return 0;
+        }
+
+        const pOk = ok / total;
+        const pNo = no / total;
+
+        return 1 - (pOk * pOk + pNo * pNo);
+    }
+
+    function entropy(ok, no) {
+        const total = ok + no;
+
+        if (total === 0) {
+            return 0;
+        }
+
+        const probabilities = [ok / total, no / total];
+        let result = 0;
+
+        probabilities.forEach(p => {
+            if (p > 0) {
+                result += -p * Math.log2(p);
+            }
+        });
+
+        return result;
+    }
+
+    function setScenario(ok, no) {
+        document.getElementById("okSlider").value = ok;
+        document.getElementById("noSlider").value = no;
+        updateAll();
+    }
+
+    function randomScenario() {
+        const ok = Math.floor(Math.random() * 31);
+        const no = Math.floor(Math.random() * 31);
+
+        document.getElementById("okSlider").value = ok;
+        document.getElementById("noSlider").value = no;
+
+        updateAll();
+    }
+
+    function renderDots(ok, no) {
+        const area = document.getElementById("dotArea");
+        let html = "";
+
+        for (let i = 0; i < ok; i++) {
+            html += '<span class="dot" style="background: var(--success);">A</span>';
+        }
+
+        for (let i = 0; i < no; i++) {
+            html += '<span class="dot" style="background: var(--danger);">N</span>';
+        }
+
+        if (ok + no === 0) {
+            html = "<em>No hay casos en el nodo.</em>";
+        }
+
+        area.innerHTML = html;
+    }
+
+    function updateSelectedMetricLabel() {
+        const selector = document.getElementById("metricSelector").value;
+        const label = document.getElementById("selectedMetricLabel");
+        const explanation = document.getElementById("graphExplanation");
+
+        if (selector === "gini") {
+            label.textContent = "Solo Gini";
+            explanation.innerHTML =
+                "<strong>Visualización actual:</strong> se muestra solo la curva de Gini. " +
+                "En un problema binario, Gini llega a su máximo cuando las clases están equilibradas 50/50.";
+        } else if (selector === "entropy") {
+            label.textContent = "Solo Entropía";
+            explanation.innerHTML =
+                "<strong>Visualización actual:</strong> se muestra solo la curva de Entropía. " +
+                "La Entropía representa la incertidumbre del nodo y alcanza su máximo cuando las clases están 50/50.";
+        } else {
+            label.textContent = "Gini y Entropía";
+            explanation.innerHTML =
+                "<strong>Visualización actual:</strong> se muestran Gini y Entropía en el mismo gráfico. " +
+                "Ambas métricas son bajas cuando el nodo es puro y altas cuando las clases están mezcladas.";
+        }
+    }
+
+    function updateAll() {
+        const ok = parseInt(document.getElementById("okSlider").value);
+        const no = parseInt(document.getElementById("noSlider").value);
+        const total = ok + no;
+
+        const pOk = total === 0 ? 0 : ok / total;
+        const pNo = total === 0 ? 0 : no / total;
+
+        const g = gini(ok, no);
+        const e = entropy(ok, no);
+
+        document.getElementById("okLabel").textContent = ok;
+        document.getElementById("noLabel").textContent = no;
+
+        document.getElementById("propOkValue").textContent = pOk.toFixed(2);
+        document.getElementById("giniValue").textContent = g.toFixed(3);
+        document.getElementById("entropyValue").textContent = e.toFixed(3);
+
+        document.getElementById("propOkBar").style.width = Math.round(pOk * 100) + "%";
+        document.getElementById("giniBar").style.width = Math.round((g / 0.5) * 100) + "%";
+        document.getElementById("entropyBar").style.width = Math.round(e * 100) + "%";
+
+        renderDots(ok, no);
+
+        document.getElementById("nodeSummary").innerHTML =
+            "<strong>Total de casos:</strong> " + total + "<br>" +
+            "<strong>p(Aprueba):</strong> " + pOk.toFixed(3) + "<br>" +
+            "<strong>p(No aprueba):</strong> " + pNo.toFixed(3);
+
+        let explanation = "";
+
+        if (total === 0) {
+            explanation = "No hay casos en el nodo. No se puede evaluar la impureza.";
+        } else if (ok === 0 || no === 0) {
+            explanation =
+                "<strong>Nodo puro.</strong><br>" +
+                "Todos los casos pertenecen a una sola clase. Por eso Gini = 0 y Entropía = 0. " +
+                "El árbol no necesita seguir dividiendo este nodo para separar clases.";
+        } else if (ok === no) {
+            explanation =
+                "<strong>Nodo altamente impuro.</strong><br>" +
+                "Las clases están equilibradas. Hay máxima incertidumbre: si elegimos un caso al azar, " +
+                "no hay una clase dominante. En un problema binario, este es el caso de mayor Entropía.";
+        } else {
+            explanation =
+                "<strong>Nodo parcialmente impuro.</strong><br>" +
+                "Hay mezcla de clases, pero una de ellas domina. Gini y Entropía son mayores que 0, " +
+                "aunque menores que en el caso completamente equilibrado.";
+        }
+
+        document.getElementById("interpretation").innerHTML = explanation;
+
+        updateSelectedMetricLabel();
+        drawCanvas();
+    }
+
+    function drawCanvas() {
+        const canvas = document.getElementById("metricCanvas");
+        const rect = canvas.getBoundingClientRect();
+
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = rect.width * dpr;
+        canvas.height = 340 * dpr;
+
+        const ctx = canvas.getContext("2d");
+        ctx.scale(dpr, dpr);
+
+        const width = rect.width;
+        const height = 340;
+
+        const bg = getCSS("--code");
+        const text = getCSS("--text");
+        const muted = getCSS("--muted");
+        const border = getCSS("--border");
+        const giniColor = getCSS("--accent");
+        const entropyColor = getCSS("--purple");
+        const warningColor = getCSS("--warning");
+
+        const selectedMetric = document.getElementById("metricSelector").value;
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, width, height);
+
+        const marginLeft = 58;
+        const marginRight = 28;
+        const marginTop = 42;
+        const marginBottom = 52;
+
+        const plotW = width - marginLeft - marginRight;
+        const plotH = height - marginTop - marginBottom;
+
+        ctx.strokeStyle = border;
+        ctx.lineWidth = 1;
+
+        for (let i = 0; i <= 5; i++) {
+            const y = marginTop + (plotH * i / 5);
+            ctx.beginPath();
+            ctx.moveTo(marginLeft, y);
+            ctx.lineTo(marginLeft + plotW, y);
+            ctx.stroke();
+        }
+
+        ctx.strokeStyle = text;
+        ctx.lineWidth = 1.5;
+
+        ctx.beginPath();
+        ctx.moveTo(marginLeft, marginTop);
+        ctx.lineTo(marginLeft, marginTop + plotH);
+        ctx.lineTo(marginLeft + plotW, marginTop + plotH);
+        ctx.stroke();
+
+        function xFromP(p) {
+            return marginLeft + p * plotW;
+        }
+
+        function yFromValue(v) {
+            return marginTop + (1 - v) * plotH;
+        }
+
+        function drawGiniCurve() {
+            ctx.strokeStyle = giniColor;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            for (let i = 0; i <= 300; i++) {
+                const p = i / 300;
+                const g = 1 - (p * p + (1 - p) * (1 - p));
+                const normalizedGini = g / 0.5;
+                const x = xFromP(p);
+                const y = yFromValue(normalizedGini);
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            ctx.stroke();
+        }
+
+        function drawEntropyCurve() {
+            ctx.strokeStyle = entropyColor;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            for (let i = 0; i <= 300; i++) {
+                const p = i / 300;
+                let ent = 0;
+
+                if (p > 0) {
+                    ent += -p * Math.log2(p);
+                }
+
+                if (1 - p > 0) {
+                    ent += -(1 - p) * Math.log2(1 - p);
+                }
+
+                const x = xFromP(p);
+                const y = yFromValue(ent);
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            ctx.stroke();
+        }
+
+        if (selectedMetric === "gini") {
+            drawGiniCurve();
+        } else if (selectedMetric === "entropy") {
+            drawEntropyCurve();
+        } else {
+            drawGiniCurve();
+            drawEntropyCurve();
+        }
+
+        const ok = parseInt(document.getElementById("okSlider").value);
+        const no = parseInt(document.getElementById("noSlider").value);
+        const total = ok + no;
+        const currentP = total === 0 ? 0 : ok / total;
+        const currentX = xFromP(currentP);
+
+        ctx.strokeStyle = warningColor;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(currentX, marginTop);
+        ctx.lineTo(currentX, marginTop + plotH);
+        ctx.stroke();
+
+        ctx.fillStyle = text;
+        ctx.font = "13px Arial";
+        ctx.fillText("0", marginLeft - 5, marginTop + plotH + 24);
+        ctx.fillText("p(Aprueba)", marginLeft + plotW / 2 - 35, marginTop + plotH + 40);
+        ctx.fillText("1", marginLeft + plotW - 5, marginTop + plotH + 24);
+
+        ctx.save();
+        ctx.translate(18, marginTop + plotH / 2 + 50);
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillText("Valor normalizado de la métrica", 0, 0);
+        ctx.restore();
+
+        let legendX = marginLeft + 10;
+        const legendY = 18;
+
+        if (selectedMetric === "gini" || selectedMetric === "both") {
+            ctx.fillStyle = giniColor;
+            ctx.fillRect(legendX, legendY, 14, 14);
+            ctx.fillStyle = text;
+            ctx.fillText("Gini normalizado", legendX + 22, legendY + 12);
+            legendX += 150;
+        }
+
+        if (selectedMetric === "entropy" || selectedMetric === "both") {
+            ctx.fillStyle = entropyColor;
+            ctx.fillRect(legendX, legendY, 14, 14);
+            ctx.fillStyle = text;
+            ctx.fillText("Entropía", legendX + 22, legendY + 12);
+            legendX += 110;
+        }
+
+        ctx.fillStyle = warningColor;
+        ctx.fillRect(legendX, legendY, 14, 14);
+        ctx.fillStyle = text;
+        ctx.fillText("Proporción actual", legendX + 22, legendY + 12);
+
+        const currentGini = gini(ok, no);
+        const currentEntropy = entropy(ok, no);
+
+        ctx.fillStyle = muted;
+        ctx.font = "12px Arial";
+
+        let infoText = "";
+
+        if (selectedMetric === "gini") {
+            infoText = "Gini actual = " + currentGini.toFixed(3);
+        } else if (selectedMetric === "entropy") {
+            infoText = "Entropía actual = " + currentEntropy.toFixed(3);
+        } else {
+            infoText = "Gini actual = " + currentGini.toFixed(3) + " | Entropía actual = " + currentEntropy.toFixed(3);
+        }
+
+        ctx.fillText(infoText, marginLeft + 10, height - 12);
+    }
+
+    window.addEventListener("resize", drawCanvas);
+
+    updateAll();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sabiduría de la Multitud, Ensambles y Random Forest 3.1</title>
+
+<style>
+    :root {
+        --bg: #f4f7fb;
+        --card: #ffffff;
+        --text: #1f2937;
+        --muted: #64748b;
+        --primary: #1f4e79;
+        --secondary: #2563eb;
+        --accent: #0ea5e9;
+        --accent-soft: #e0f2fe;
+        --success: #16a34a;
+        --danger: #dc2626;
+        --warning: #f59e0b;
+        --purple: #7c3aed;
+        --border: #d8e2ef;
+        --shadow: rgba(15, 23, 42, 0.12);
+        --code: #f8fafc;
+        --table-row: #ffffff;
+        --table-row-alt: #f8fafc;
+    }
+
+    body.dark {
+        --bg: #0f172a;
+        --card: #111827;
+        --text: #e5e7eb;
+        --muted: #cbd5e1;
+        --primary: #93c5fd;
+        --secondary: #60a5fa;
+        --accent: #38bdf8;
+        --accent-soft: #1e293b;
+        --border: #334155;
+        --shadow: rgba(0, 0, 0, 0.35);
+        --code: #020617;
+        --table-row: #111827;
+        --table-row-alt: #0f172a;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 24px;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.65;
+    }
+
+    .container {
+        max-width: 1260px;
+        margin: auto;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #1f4e79, #0f766e);
+        color: white;
+        padding: 36px;
+        border-radius: 24px;
+        box-shadow: 0 18px 35px var(--shadow);
+        margin-bottom: 22px;
+    }
+
+    .header h1 {
+        margin: 0 0 10px 0;
+        font-size: 36px;
+        line-height: 1.15;
+    }
+
+    .header p {
+        margin: 0;
+        max-width: 980px;
+        font-size: 18px;
+    }
+
+    .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 18px 0 24px 0;
+    }
+
+    .btn {
+        border: none;
+        padding: 11px 16px;
+        border-radius: 999px;
+        color: white;
+        background: var(--primary);
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 8px 20px var(--shadow);
+        transition: transform .2s ease, opacity .2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        opacity: .92;
+    }
+
+    .btn.secondary { background: var(--secondary); }
+    .btn.success { background: var(--success); }
+    .btn.warning { background: var(--warning); }
+    .btn.danger { background: var(--danger); }
+    .btn.purple { background: var(--purple); }
+
+    .card {
+        background: var(--card);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 24px;
+        margin: 18px 0;
+        box-shadow: 0 14px 28px var(--shadow);
+    }
+
+    .card h2 {
+        margin-top: 0;
+        color: var(--primary);
+        border-bottom: 2px solid var(--border);
+        padding-bottom: 8px;
+    }
+
+    .card h3 {
+        color: var(--secondary);
+        margin-bottom: 8px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+    }
+
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        margin-top: 16px;
+    }
+
+    .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-top: 16px;
+    }
+
+    @media (max-width: 980px) {
+        .grid-2,
+        .grid-3 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .mini {
+        background: var(--card);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px;
+    }
+
+    .note {
+        background: var(--accent-soft);
+        color: var(--text);
+        border-left: 6px solid var(--accent);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .warning {
+        background: rgba(245, 158, 11, 0.16);
+        color: var(--text);
+        border-left: 6px solid var(--warning);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .success {
+        background: rgba(22, 163, 74, 0.16);
+        color: var(--text);
+        border-left: 6px solid var(--success);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .danger {
+        background: rgba(220, 38, 38, 0.16);
+        color: var(--text);
+        border-left: 6px solid var(--danger);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .formula {
+        background: var(--code);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+        white-space: pre-wrap;
+        font-family: Consolas, Monaco, monospace;
+        font-size: 15px;
+        overflow-x: auto;
+    }
+
+    .flow {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        margin: 16px 0;
+    }
+
+    .step {
+        background: var(--accent-soft);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px 14px;
+        font-weight: 800;
+    }
+
+    .arrow {
+        font-weight: 900;
+        color: var(--secondary);
+    }
+
+    .controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 14px;
+        margin: 16px 0;
+    }
+
+    input[type="range"] {
+        min-width: 170px;
+    }
+
+    select {
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+        font-weight: 700;
+    }
+
+    .pill {
+        display: inline-block;
+        border: 1px solid var(--border);
+        background: var(--accent-soft);
+        color: var(--primary);
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 800;
+        margin: 3px;
+    }
+
+    .pill-ok {
+        display: inline-block;
+        background: var(--success);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 800;
+        margin: 3px;
+    }
+
+    .pill-no {
+        display: inline-block;
+        background: var(--danger);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 800;
+        margin: 3px;
+    }
+
+    .metric-box {
+        border: 1px solid var(--border);
+        background: var(--code);
+        border-radius: 16px;
+        padding: 16px;
+        text-align: center;
+    }
+
+    .metric-title {
+        font-size: 14px;
+        color: var(--muted);
+        font-weight: 800;
+    }
+
+    .metric-value {
+        font-size: 32px;
+        font-weight: 900;
+        color: var(--primary);
+        margin-top: 6px;
+    }
+
+    .bar-wrap {
+        height: 18px;
+        background: var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+        margin: 8px 0;
+    }
+
+    .bar {
+        height: 18px;
+        width: 0%;
+        transition: width .35s ease;
+    }
+
+    .bar-ok { background: var(--success); }
+    .bar-no { background: var(--danger); }
+    .bar-blue { background: var(--accent); }
+    .bar-purple { background: var(--purple); }
+    .bar-warning { background: var(--warning); }
+
+    .voter-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+        gap: 10px;
+        margin-top: 14px;
+    }
+
+    .voter {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px;
+        text-align: center;
+        background: var(--code);
+        box-shadow: 0 6px 14px var(--shadow);
+        animation: pop .18s ease;
+    }
+
+    .voter.correct {
+        border-color: var(--success);
+    }
+
+    .voter.incorrect {
+        border-color: var(--danger);
+    }
+
+    @keyframes pop {
+        from { transform: scale(.6); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    canvas {
+        width: 100%;
+        height: 330px;
+        border-radius: 18px;
+        background: var(--code);
+        border: 1px solid var(--border);
+    }
+
+    .type-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 16px 0;
+    }
+
+    .type-btn {
+        border: 1px solid var(--border);
+        background: var(--accent-soft);
+        color: var(--primary);
+        padding: 10px 14px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-weight: 800;
+    }
+
+    .type-btn.active {
+        background: var(--primary);
+        color: white;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 14px;
+        font-size: 15px;
+        color: var(--text);
+        background: var(--card);
+    }
+
+    .table th {
+        background: var(--primary);
+        color: white;
+        text-align: left;
+        border: 1px solid var(--border);
+        padding: 10px;
+        vertical-align: top;
+    }
+
+    .table td {
+        border: 1px solid var(--border);
+        padding: 10px;
+        vertical-align: top;
+        color: var(--text);
+        background: var(--table-row);
+    }
+
+    .table tbody tr:nth-child(even) td {
+        background: var(--table-row-alt);
+    }
+
+    .forest {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+        gap: 14px;
+        margin-top: 16px;
+    }
+
+    .tree-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 14px;
+        box-shadow: 0 10px 22px var(--shadow);
+        position: relative;
+        overflow: hidden;
+        animation: pop .2s ease;
+    }
+
+    .tree-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 5px;
+        width: 100%;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .sample-item {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 42px;
+        height: 34px;
+        border-radius: 12px;
+        margin: 4px;
+        color: white;
+        font-weight: 800;
+        font-size: 13px;
+        box-shadow: 0 6px 12px var(--shadow);
+    }
+
+    .accordion {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        margin: 10px 0;
+    }
+
+    .accordion button {
+        width: 100%;
+        text-align: left;
+        border: none;
+        padding: 14px 16px;
+        background: var(--accent-soft);
+        color: var(--text);
+        cursor: pointer;
+        font-weight: 800;
+        font-size: 15px;
+    }
+
+    .accordion-content {
+        display: none;
+        padding: 16px;
+        background: var(--card);
+        color: var(--text);
+        border-top: 1px solid var(--border);
+    }
+
+    .accordion.open .accordion-content {
+        display: block;
+    }
+
+    .footer {
+        text-align: center;
+        color: var(--muted);
+        font-size: 14px;
+        margin-top: 28px;
+        padding-top: 18px;
+        border-top: 1px solid var(--border);
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>Sabiduría de la multitud, modelos de ensamble y Random Forest</h1>
+        <p>
+            Visualización 3.1 para explicar cómo una colección de modelos puede superar a un modelo individual,
+            qué tipos de ensamble existen y por qué Random Forest es un caso especial de bagging con árboles de decisión.
+        </p>
+    </div>
+
+    <div class="toolbar">
+        <button class="btn" onclick="toggleTheme()">Cambiar tema claro / oscuro</button>
+        <button class="btn secondary" onclick="toggleTheory()">Mostrar / ocultar teoría</button>
+        <button class="btn success" onclick="simulateCrowd()">Simular sabiduría de la multitud</button>
+        <button class="btn warning" onclick="buildForestAnimated()">Construir Random Forest animado</button>
+        <button class="btn danger" onclick="resetAll()">Reiniciar</button>
+    </div>
+
+    <div class="card" id="theoryCard">
+        <h2>1. La idea madre: sabiduría de la multitud</h2>
+
+        <p>
+            La <strong>sabiduría de la multitud</strong> sostiene que muchas opiniones razonablemente buenas,
+            si son suficientemente diversas e independientes, pueden producir una decisión colectiva más robusta
+            que la decisión de un único individuo.
+        </p>
+
+        <div class="flow">
+            <div class="step">Muchos decisores</div>
+            <div class="arrow">→</div>
+            <div class="step">Errores diferentes</div>
+            <div class="arrow">→</div>
+            <div class="step">Combinación de respuestas</div>
+            <div class="arrow">→</div>
+            <div class="step">Decisión más estable</div>
+        </div>
+
+        <div class="grid">
+            <div class="mini">
+                <h3>Condición 1: competencia</h3>
+                <p>
+                    Cada modelo individual debe ser al menos razonablemente útil. Si todos son muy malos,
+                    combinarlos no garantiza mejorar.
+                </p>
+            </div>
+
+            <div class="mini">
+                <h3>Condición 2: diversidad</h3>
+                <p>
+                    Los modelos deben cometer errores diferentes. Si todos se equivocan por la misma razón,
+                    el ensamble repite el mismo sesgo.
+                </p>
+            </div>
+
+            <div class="mini">
+                <h3>Condición 3: agregación</h3>
+                <p>
+                    Debe existir una regla para combinar las respuestas: votación, promedio, ponderación,
+                    combinación por otro modelo o corrección secuencial.
+                </p>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Traducción a Machine Learning:</strong> un ensamble combina varios modelos para reducir inestabilidad,
+            mejorar generalización y disminuir la dependencia de una única hipótesis aprendida.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>2. Simulador: de individuos a decisión colectiva</h2>
+
+        <p>
+            Esta simulación muestra cómo cambia la decisión final cuando combinamos muchos modelos. La diversidad es clave:
+            si los modelos son independientes, la mayoría puede corregir errores individuales; si están muy correlacionados,
+            el ensamble pierde fuerza.
+        </p>
+
+        <div class="controls">
+            <label><strong>Número de modelos:</strong></label>
+            <input id="crowdSize" type="range" min="3" max="31" step="2" value="11"
+                   oninput="updateCrowdLabels(); drawWisdomCurve();">
+            <span id="crowdSizeLabel" class="pill">11 modelos</span>
+
+            <label><strong>Precisión individual:</strong></label>
+            <input id="individualAccuracy" type="range" min="50" max="95" value="65"
+                   oninput="updateCrowdLabels(); drawWisdomCurve();">
+            <span id="accuracyLabel" class="pill">65%</span>
+
+            <label><strong>Diversidad:</strong></label>
+            <input id="diversity" type="range" min="0" max="100" value="75"
+                   oninput="updateCrowdLabels();">
+            <span id="diversityLabel" class="pill">75%</span>
+        </div>
+
+        <div class="grid-3">
+            <div class="metric-box">
+                <div class="metric-title">Aciertos individuales</div>
+                <div id="correctVotes" class="metric-value">0</div>
+                <div class="bar-wrap"><div id="correctBar" class="bar bar-ok"></div></div>
+            </div>
+
+            <div class="metric-box">
+                <div class="metric-title">Errores individuales</div>
+                <div id="incorrectVotes" class="metric-value">0</div>
+                <div class="bar-wrap"><div id="incorrectBar" class="bar bar-no"></div></div>
+            </div>
+
+            <div class="metric-box">
+                <div class="metric-title">Mayoría correcta teórica</div>
+                <div id="theoreticalMajority" class="metric-value">0%</div>
+                <div class="bar-wrap"><div id="theoreticalBar" class="bar bar-blue"></div></div>
+            </div>
+        </div>
+
+        <div id="crowdResult" class="warning">
+            Presioná “Simular sabiduría de la multitud” para observar la decisión colectiva.
+        </div>
+
+        <div id="voterGrid" class="voter-grid"></div>
+    </div>
+
+    <div class="card">
+        <h2>3. Curva: precisión del ensamble según cantidad de modelos</h2>
+
+        <p>
+            El gráfico muestra la probabilidad teórica de que la mayoría acierte si los modelos fueran independientes
+            y cada uno tuviera la precisión individual seleccionada.
+        </p>
+
+        <canvas id="wisdomCanvas"></canvas>
+
+        <div class="note">
+            La curva expresa la intuición central de los ensambles: cuando los modelos son mejores que el azar
+            y sus errores son relativamente independientes, aumentar la cantidad de modelos puede mejorar la decisión colectiva.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>4. ¿Qué es un modelo de ensamble?</h2>
+
+        <p>
+            Un <strong>modelo de ensamble</strong> combina varios modelos base para producir una predicción final.
+            La lógica es similar a consultar a varios especialistas y luego integrar sus respuestas.
+        </p>
+
+        <div class="flow">
+            <div class="step">Modelo 1</div>
+            <div class="step">Modelo 2</div>
+            <div class="step">Modelo 3</div>
+            <div class="arrow">→</div>
+            <div class="step">Combinador</div>
+            <div class="arrow">→</div>
+            <div class="step">Predicción final</div>
+        </div>
+
+        <div class="grid">
+            <div class="mini">
+                <h3>Clasificación</h3>
+                <p>
+                    Los modelos votan una clase y gana la clase más votada.
+                </p>
+                <span class="pill-ok">Clase A</span>
+                <span class="pill-no">Clase B</span>
+            </div>
+
+            <div class="mini">
+                <h3>Regresión</h3>
+                <p>
+                    Los modelos predicen valores numéricos y se promedian o ponderan.
+                </p>
+                <span class="pill">Promedio</span>
+            </div>
+
+            <div class="mini">
+                <h3>Objetivo</h3>
+                <p>
+                    Reducir varianza, mejorar estabilidad y capturar patrones que un único modelo puede no representar bien.
+                </p>
+                <span class="pill">Robustez</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>5. Tipos principales de ensamble</h2>
+
+        <p>
+            Seleccioná un tipo de ensamble para ver su lógica, su forma de combinar modelos y su relación con Random Forest.
+        </p>
+
+        <div class="type-buttons">
+            <button class="type-btn active" onclick="selectEnsembleType('voting', this)">Voting</button>
+            <button class="type-btn" onclick="selectEnsembleType('bagging', this)">Bagging</button>
+            <button class="type-btn" onclick="selectEnsembleType('boosting', this)">Boosting</button>
+            <button class="type-btn" onclick="selectEnsembleType('stacking', this)">Stacking</button>
+            <button class="type-btn" onclick="selectEnsembleType('randomforest', this)">Random Forest</button>
+        </div>
+
+        <div id="ensembleTypePanel" class="mini"></div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Idea central</th>
+                    <th>Cómo combina</th>
+                    <th>Ejemplos</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Voting</strong></td>
+                    <td>Varios modelos votan.</td>
+                    <td>Mayoría o promedio de probabilidades.</td>
+                    <td>Voting Classifier.</td>
+                </tr>
+                <tr>
+                    <td><strong>Bagging</strong></td>
+                    <td>Modelos paralelos entrenados con muestras bootstrap.</td>
+                    <td>Votación o promedio.</td>
+                    <td>Bagged Trees, Random Forest.</td>
+                </tr>
+                <tr>
+                    <td><strong>Boosting</strong></td>
+                    <td>Modelos secuenciales que corrigen errores previos.</td>
+                    <td>Suma ponderada de modelos.</td>
+                    <td>AdaBoost, Gradient Boosting, XGBoost.</td>
+                </tr>
+                <tr>
+                    <td><strong>Stacking</strong></td>
+                    <td>Un modelo aprende a combinar las predicciones de otros modelos.</td>
+                    <td>Meta-modelo.</td>
+                    <td>Stacked Generalization.</td>
+                </tr>
+                <tr>
+                    <td><strong>Random Forest</strong></td>
+                    <td>Bagging de árboles con selección aleatoria de variables.</td>
+                    <td>Votación en clasificación o promedio en regresión.</td>
+                    <td>RandomForestClassifier, RandomForestRegressor.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>6. Random Forest como ensamble especializado</h2>
+
+        <p>
+            Random Forest pertenece a la familia de los métodos de <strong>bagging</strong>. Construye muchos árboles
+            de decisión, pero introduce dos fuentes de aleatoriedad: muestras bootstrap y selección aleatoria de variables.
+        </p>
+
+        <div class="flow">
+            <div class="step">Dataset original</div>
+            <div class="arrow">→</div>
+            <div class="step">Muestras bootstrap</div>
+            <div class="arrow">→</div>
+            <div class="step">Árboles distintos</div>
+            <div class="arrow">→</div>
+            <div class="step">Votos</div>
+            <div class="arrow">→</div>
+            <div class="step">Predicción final</div>
+        </div>
+
+        <div class="controls">
+            <label><strong>Cantidad de árboles:</strong></label>
+            <input id="rfTrees" type="range" min="3" max="11" step="1" value="5" oninput="updateRFLabels()">
+            <span id="rfTreesLabel" class="pill">5 árboles</span>
+
+            <label><strong>Tamaño bootstrap:</strong></label>
+            <input id="rfSampleSize" type="range" min="4" max="10" value="8" oninput="updateRFLabels()">
+            <span id="rfSampleLabel" class="pill">8 casos</span>
+
+            <label><strong>Variables por árbol:</strong></label>
+            <input id="rfFeatures" type="range" min="1" max="4" value="2" oninput="updateRFLabels()">
+            <span id="rfFeaturesLabel" class="pill">2 variables</span>
+        </div>
+
+        <div class="grid-3">
+            <div class="metric-box">
+                <div class="metric-title">Votos Aprueba</div>
+                <div id="rfOkVotes" class="metric-value">0</div>
+                <div class="bar-wrap"><div id="rfOkBar" class="bar bar-ok"></div></div>
+            </div>
+
+            <div class="metric-box">
+                <div class="metric-title">Votos No aprueba</div>
+                <div id="rfNoVotes" class="metric-value">0</div>
+                <div class="bar-wrap"><div id="rfNoBar" class="bar bar-no"></div></div>
+            </div>
+
+            <div class="metric-box">
+                <div class="metric-title">Árboles construidos</div>
+                <div id="rfBuiltTrees" class="metric-value">0</div>
+                <div class="bar-wrap"><div id="rfBuiltBar" class="bar bar-purple"></div></div>
+            </div>
+        </div>
+
+        <div id="rfFinalResult" class="warning">
+            Presioná “Construir Random Forest animado” para generar árboles con bootstrap y votación final.
+        </div>
+
+        <div id="forestContainer" class="forest"></div>
+    </div>
+
+    <div class="card">
+        <h2>7. Dataset didáctico usado por Random Forest</h2>
+
+        <p>
+            El objetivo es clasificar a un estudiante nuevo como <strong>Aprueba</strong> o <strong>No aprueba</strong>.
+            El dataset es artificial y sirve para explicar el mecanismo.
+        </p>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Estudiante</th>
+                    <th>Horas</th>
+                    <th>Asistencia</th>
+                    <th>Promedio</th>
+                    <th>Participación</th>
+                    <th>Clase</th>
+                </tr>
+            </thead>
+            <tbody id="datasetTable"></tbody>
+        </table>
+
+        <div class="warning">
+            <strong>Estudiante nuevo:</strong> horas = 6, asistencia = 82, promedio = 7, participación = 6.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>8. Lecturas conceptuales</h2>
+
+        <div class="accordion">
+            <button onclick="toggleAccordion(this)">¿Por qué la diversidad es importante en un ensamble?</button>
+            <div class="accordion-content">
+                Si todos los modelos ven exactamente los mismos datos, usan la misma lógica y cometen los mismos errores,
+                la combinación no aporta demasiado. La diversidad permite que los errores individuales se compensen.
+            </div>
+        </div>
+
+        <div class="accordion">
+            <button onclick="toggleAccordion(this)">¿Por qué Random Forest reduce el sobreajuste de un árbol individual?</button>
+            <div class="accordion-content">
+                Un árbol individual puede adaptarse demasiado al conjunto de entrenamiento. Random Forest reduce ese riesgo
+                porque entrena muchos árboles sobre muestras bootstrap diferentes y combina sus predicciones.
+            </div>
+        </div>
+
+        <div class="accordion">
+            <button onclick="toggleAccordion(this)">¿Cuál es la diferencia entre bagging y boosting?</button>
+            <div class="accordion-content">
+                En bagging, los modelos se entrenan en paralelo sobre muestras distintas y luego se combinan.
+                En boosting, los modelos se entrenan secuencialmente y cada nuevo modelo intenta corregir errores de los anteriores.
+            </div>
+        </div>
+
+        <div class="accordion">
+            <button onclick="toggleAccordion(this)">¿Dónde entra Random Forest dentro de los ensambles?</button>
+            <div class="accordion-content">
+                Random Forest es un tipo de bagging aplicado a árboles de decisión, con una mejora adicional:
+                en cada árbol o división se consideran subconjuntos aleatorios de variables para aumentar la diversidad.
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>9. Mini explicación para decir en clase</h2>
+
+        <div class="formula">La idea de los ensambles parte de una intuición muy simple: muchas decisiones razonablemente buenas pueden producir una decisión colectiva más robusta.
+
+Esto se conoce como sabiduría de la multitud.
+
+En Machine Learning, un ensamble combina varios modelos para obtener una predicción final.
+
+Hay distintos tipos de ensamble: voting, bagging, boosting, stacking y Random Forest.
+
+Random Forest es un caso especial de bagging: construye muchos árboles de decisión, cada uno entrenado con una muestra bootstrap diferente.
+
+Además, introduce aleatoriedad en las variables usadas por cada árbol.
+
+Luego, cada árbol vota y el bosque toma la decisión final por mayoría.
+
+La clave no es construir el árbol perfecto, sino muchos árboles diferentes y combinar sus decisiones.</div>
+    </div>
+
+    <div class="footer">
+        Material elaborado por el profesor Sergio Gevatschnaider.
+    </div>
+
+</div>
+
+<script>
+    const ensembleTypes = {
+        voting: {
+            title: "Voting Ensemble",
+            concept: "Combina modelos distintos mediante votación. Cada modelo emite una predicción y la clase final se decide por mayoría o por promedio de probabilidades.",
+            logic: "Entrenar modelos diferentes → obtener predicciones → votar → elegir la clase ganadora.",
+            risk: "Si los modelos son muy parecidos, sus errores también serán parecidos y la votación aportará poco.",
+            relation: "Es la forma más directa de representar la sabiduría de la multitud en Machine Learning."
+        },
+        bagging: {
+            title: "Bagging",
+            concept: "Entrena muchos modelos en paralelo usando muestras bootstrap del dataset original. Cada modelo ve una versión ligeramente distinta de los datos.",
+            logic: "Dataset original → muestras bootstrap → modelos paralelos → votación o promedio.",
+            risk: "Si los modelos base son demasiado débiles o demasiado correlacionados, la mejora puede ser limitada.",
+            relation: "Random Forest es una extensión de bagging aplicada a árboles de decisión."
+        },
+        boosting: {
+            title: "Boosting",
+            concept: "Construye modelos de manera secuencial. Cada nuevo modelo intenta corregir los errores cometidos por los modelos anteriores.",
+            logic: "Modelo 1 → errores → Modelo 2 corrige → Modelo 3 corrige → suma ponderada.",
+            risk: "Puede ser muy potente, pero también más sensible a hiperparámetros y sobreajuste si no se controla.",
+            relation: "A diferencia de Random Forest, boosting aprende en secuencia; Random Forest aprende árboles en paralelo."
+        },
+        stacking: {
+            title: "Stacking",
+            concept: "Combina varios modelos base usando otro modelo, llamado meta-modelo, que aprende cómo integrar sus predicciones.",
+            logic: "Modelos base → predicciones intermedias → meta-modelo → predicción final.",
+            risk: "Si se diseña mal, puede producir fuga de información o sobreajuste.",
+            relation: "Es una estrategia más sofisticada de combinación que la votación simple."
+        },
+        randomforest: {
+            title: "Random Forest",
+            concept: "Construye muchos árboles de decisión usando muestras bootstrap y selección aleatoria de variables. Luego combina sus predicciones.",
+            logic: "Bootstrap + árboles + variables aleatorias + votación o promedio.",
+            risk: "Es menos interpretable que un árbol individual y puede ser más costoso computacionalmente.",
+            relation: "Es uno de los ejemplos más importantes de ensamble en modelos tabulares."
+        }
+    };
+
+    const dataset = [
+        {id: "E1", horas: 8, asistencia: 92, promedio: 8, participacion: 9, clase: "Aprueba", color: "#2563eb"},
+        {id: "E2", horas: 6, asistencia: 85, promedio: 7, participacion: 7, clase: "Aprueba", color: "#16a34a"},
+        {id: "E3", horas: 3, asistencia: 60, promedio: 5, participacion: 4, clase: "No aprueba", color: "#dc2626"},
+        {id: "E4", horas: 4, asistencia: 70, promedio: 6, participacion: 5, clase: "No aprueba", color: "#ea580c"},
+        {id: "E5", horas: 9, asistencia: 95, promedio: 9, participacion: 8, clase: "Aprueba", color: "#7c3aed"},
+        {id: "E6", horas: 2, asistencia: 55, promedio: 4, participacion: 3, clase: "No aprueba", color: "#be123c"},
+        {id: "E7", horas: 7, asistencia: 88, promedio: 8, participacion: 6, clase: "Aprueba", color: "#0f766e"},
+        {id: "E8", horas: 5, asistencia: 78, promedio: 6, participacion: 5, clase: "No aprueba", color: "#9333ea"},
+        {id: "E9", horas: 6, asistencia: 80, promedio: 7, participacion: 8, clase: "Aprueba", color: "#0284c7"},
+        {id: "E10", horas: 3, asistencia: 65, promedio: 5, participacion: 4, clase: "No aprueba", color: "#b45309"}
+    ];
+
+    const newStudent = {
+        horas: 6,
+        asistencia: 82,
+        promedio: 7,
+        participacion: 6
+    };
+
+    const featureNames = {
+        horas: "Horas",
+        asistencia: "Asistencia",
+        promedio: "Promedio",
+        participacion: "Participación"
+    };
+
+    const features = ["horas", "asistencia", "promedio", "participacion"];
+
+    let rfForest = [];
+    let rfRunning = false;
+
+    function getCSS(name) {
+        return getComputedStyle(document.body).getPropertyValue(name).trim();
+    }
+
+    function toggleTheme() {
+        document.body.classList.toggle("dark");
+        drawWisdomCurve();
+    }
+
+    function toggleTheory() {
+        const card = document.getElementById("theoryCard");
+        card.style.display = card.style.display === "none" ? "block" : "none";
+    }
+
+    function toggleAccordion(button) {
+        button.parentElement.classList.toggle("open");
+    }
+
+    function updateCrowdLabels() {
+        const n = parseInt(document.getElementById("crowdSize").value);
+        const acc = parseInt(document.getElementById("individualAccuracy").value);
+        const div = parseInt(document.getElementById("diversity").value);
+
+        document.getElementById("crowdSizeLabel").textContent = n + " modelos";
+        document.getElementById("accuracyLabel").textContent = acc + "%";
+        document.getElementById("diversityLabel").textContent = div + "%";
+
+        updateTheoreticalMajority();
+    }
+
+    function updateTheoreticalMajority() {
+        const n = parseInt(document.getElementById("crowdSize").value);
+        const accuracy = parseInt(document.getElementById("individualAccuracy").value) / 100;
+
+        const theoretical = majorityProbability(n, accuracy);
+        const theoreticalPct = Math.round(theoretical * 100);
+
+        document.getElementById("theoreticalMajority").textContent = theoreticalPct + "%";
+        document.getElementById("theoreticalBar").style.width = theoreticalPct + "%";
+    }
+
+    function updateRFLabels() {
+        document.getElementById("rfTreesLabel").textContent =
+            document.getElementById("rfTrees").value + " árboles";
+
+        document.getElementById("rfSampleLabel").textContent =
+            document.getElementById("rfSampleSize").value + " casos";
+
+        document.getElementById("rfFeaturesLabel").textContent =
+            document.getElementById("rfFeatures").value + " variables";
+    }
+
+    function factorial(n) {
+        let result = 1;
+
+        for (let i = 2; i <= n; i++) {
+            result *= i;
+        }
+
+        return result;
+    }
+
+    function combination(n, k) {
+        return factorial(n) / (factorial(k) * factorial(n - k));
+    }
+
+    function majorityProbability(n, p) {
+        const needed = Math.floor(n / 2) + 1;
+        let prob = 0;
+
+        for (let k = needed; k <= n; k++) {
+            prob += combination(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+        }
+
+        return prob;
+    }
+
+    function simulateCrowd() {
+        const n = parseInt(document.getElementById("crowdSize").value);
+        const accuracy = parseInt(document.getElementById("individualAccuracy").value) / 100;
+        const diversity = parseInt(document.getElementById("diversity").value) / 100;
+
+        let correct = 0;
+        let incorrect = 0;
+        let html = "";
+
+        const commonCorrect = Math.random() < accuracy;
+
+        for (let i = 1; i <= n; i++) {
+            let isCorrect;
+
+            if (Math.random() < diversity) {
+                isCorrect = Math.random() < accuracy;
+            } else {
+                isCorrect = commonCorrect;
+            }
+
+            if (isCorrect) {
+                correct++;
+            } else {
+                incorrect++;
+            }
+
+            html += `
+                <div class="voter ${isCorrect ? "correct" : "incorrect"}">
+                    <strong>Modelo ${i}</strong><br>
+                    ${isCorrect ? '<span class="pill-ok">Acierta</span>' : '<span class="pill-no">Falla</span>'}
+                </div>
+            `;
+        }
+
+        const total = correct + incorrect;
+        const correctPct = total === 0 ? 0 : Math.round((correct / total) * 100);
+        const incorrectPct = total === 0 ? 0 : Math.round((incorrect / total) * 100);
+
+        document.getElementById("correctVotes").textContent = correct;
+        document.getElementById("incorrectVotes").textContent = incorrect;
+
+        document.getElementById("correctBar").style.width = correctPct + "%";
+        document.getElementById("incorrectBar").style.width = incorrectPct + "%";
+
+        document.getElementById("voterGrid").innerHTML = html;
+
+        updateTheoreticalMajority();
+
+        const result = document.getElementById("crowdResult");
+
+        if (correct > incorrect) {
+            result.className = "success";
+            result.innerHTML =
+                "<strong>Decisión colectiva correcta.</strong> La mayoría de los modelos acertó: " +
+                correct + " contra " + incorrect + ".";
+        } else if (incorrect > correct) {
+            result.className = "danger";
+            result.innerHTML =
+                "<strong>Decisión colectiva incorrecta.</strong> La mayoría de los modelos falló: " +
+                incorrect + " contra " + correct + ". Esto puede ocurrir si los modelos son poco precisos o poco diversos.";
+        } else {
+            result.className = "warning";
+            result.innerHTML =
+                "<strong>Empate.</strong> En ensambles reales se suelen usar reglas adicionales o probabilidades promedio.";
+        }
+
+        drawWisdomCurve();
+    }
+
+    function drawWisdomCurve() {
+        const canvas = document.getElementById("wisdomCanvas");
+        const rect = canvas.getBoundingClientRect();
+
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = rect.width * dpr;
+        canvas.height = 330 * dpr;
+
+        const ctx = canvas.getContext("2d");
+        ctx.scale(dpr, dpr);
+
+        const width = rect.width;
+        const height = 330;
+
+        const bg = getCSS("--code");
+        const text = getCSS("--text");
+        const muted = getCSS("--muted");
+        const border = getCSS("--border");
+        const accent = getCSS("--accent");
+        const warning = getCSS("--warning");
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, width, height);
+
+        const p = parseInt(document.getElementById("individualAccuracy").value) / 100;
+        const currentN = parseInt(document.getElementById("crowdSize").value);
+
+        const marginLeft = 58;
+        const marginRight = 28;
+        const marginTop = 38;
+        const marginBottom = 52;
+        const plotW = width - marginLeft - marginRight;
+        const plotH = height - marginTop - marginBottom;
+
+        ctx.strokeStyle = border;
+        ctx.lineWidth = 1;
+
+        for (let i = 0; i <= 5; i++) {
+            const y = marginTop + (plotH * i / 5);
+            ctx.beginPath();
+            ctx.moveTo(marginLeft, y);
+            ctx.lineTo(marginLeft + plotW, y);
+            ctx.stroke();
+        }
+
+        ctx.strokeStyle = text;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(marginLeft, marginTop);
+        ctx.lineTo(marginLeft, marginTop + plotH);
+        ctx.lineTo(marginLeft + plotW, marginTop + plotH);
+        ctx.stroke();
+
+        function xFromN(n) {
+            return marginLeft + ((n - 1) / 30) * plotW;
+        }
+
+        function yFromProb(prob) {
+            return marginTop + (1 - prob) * plotH;
+        }
+
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+
+        let first = true;
+
+        for (let n = 1; n <= 31; n += 2) {
+            const prob = majorityProbability(n, p);
+            const x = xFromN(n);
+            const y = yFromProb(prob);
+
+            if (first) {
+                ctx.moveTo(x, y);
+                first = false;
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+
+        ctx.stroke();
+
+        const currentProb = majorityProbability(currentN, p);
+        const cx = xFromN(currentN);
+        const cy = yFromProb(currentProb);
+
+        ctx.fillStyle = warning;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 7, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = text;
+        ctx.font = "13px Arial";
+        ctx.fillText("Cantidad de modelos", marginLeft + plotW / 2 - 50, height - 14);
+
+        ctx.save();
+        ctx.translate(18, marginTop + plotH / 2 + 50);
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillText("Probabilidad de mayoría correcta", 0, 0);
+        ctx.restore();
+
+        ctx.fillStyle = muted;
+        ctx.fillText("Precisión individual: " + Math.round(p * 100) + "%", marginLeft + 10, 24);
+        ctx.fillText("Punto actual: " + currentN + " modelos → " + Math.round(currentProb * 100) + "%", marginLeft + 220, 24);
+    }
+
+    function selectEnsembleType(type, button) {
+        document.querySelectorAll(".type-btn").forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+
+        const info = ensembleTypes[type];
+
+        document.getElementById("ensembleTypePanel").innerHTML = `
+            <h3>${info.title}</h3>
+            <p><strong>Concepto:</strong> ${info.concept}</p>
+            <p><strong>Lógica:</strong> ${info.logic}</p>
+            <p><strong>Riesgo o límite:</strong> ${info.risk}</p>
+            <div class="note"><strong>Relación con la clase:</strong> ${info.relation}</div>
+        `;
+    }
+
+    function classBadge(clase) {
+        return clase === "Aprueba"
+            ? '<span class="pill-ok">Aprueba</span>'
+            : '<span class="pill-no">No aprueba</span>';
+    }
+
+    function renderDataset() {
+        const tbody = document.getElementById("datasetTable");
+
+        tbody.innerHTML = dataset.map(row => {
+            return `
+                <tr>
+                    <td><strong>${row.id}</strong></td>
+                    <td>${row.horas}</td>
+                    <td>${row.asistencia}%</td>
+                    <td>${row.promedio}</td>
+                    <td>${row.participacion}</td>
+                    <td>${classBadge(row.clase)}</td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    function shuffle(array) {
+        const copy = array.slice();
+
+        for (let i = copy.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = copy[i];
+            copy[i] = copy[j];
+            copy[j] = temp;
+        }
+
+        return copy;
+    }
+
+    function bootstrapSample(size) {
+        const sample = [];
+
+        for (let i = 0; i < size; i++) {
+            const index = Math.floor(Math.random() * dataset.length);
+            sample.push(dataset[index]);
+        }
+
+        return sample;
+    }
+
+    function majorityClass(rows) {
+        let ok = 0;
+        let no = 0;
+
+        rows.forEach(row => {
+            if (row.clase === "Aprueba") {
+                ok++;
+            } else {
+                no++;
+            }
+        });
+
+        return {
+            prediction: ok >= no ? "Aprueba" : "No aprueba",
+            ok: ok,
+            no: no,
+            confidence: rows.length === 0 ? 0 : Math.max(ok, no) / rows.length
+        };
+    }
+
+    function mean(rows, feature) {
+        const total = rows.reduce((acc, row) => acc + row[feature], 0);
+        return total / rows.length;
+    }
+
+    function buildTree(treeNumber) {
+        const sampleSize = parseInt(document.getElementById("rfSampleSize").value);
+        const featureCount = parseInt(document.getElementById("rfFeatures").value);
+
+        const sample = bootstrapSample(sampleSize);
+        const selectedFeatures = shuffle(features).slice(0, featureCount);
+
+        let candidates = [];
+
+        selectedFeatures.forEach(feature => {
+            const threshold = mean(sample, feature);
+            const goLeftNew = newStudent[feature] <= threshold;
+
+            const branch = sample.filter(row => {
+                const rowGoesLeft = row[feature] <= threshold;
+                return rowGoesLeft === goLeftNew;
+            });
+
+            const effectiveBranch = branch.length > 0 ? branch : sample;
+            const majority = majorityClass(effectiveBranch);
+
+            candidates.push({
+                feature: feature,
+                threshold: threshold,
+                branchSize: effectiveBranch.length,
+                prediction: majority.prediction,
+                ok: majority.ok,
+                no: majority.no,
+                confidence: majority.confidence
+            });
+        });
+
+        candidates.sort((a, b) => b.confidence - a.confidence);
+
+        return {
+            treeNumber: treeNumber,
+            sample: sample,
+            features: selectedFeatures,
+            rule: candidates[0],
+            prediction: candidates[0].prediction
+        };
+    }
+
+    function sampleHTML(sample) {
+        return sample.map(row => {
+            return `<span class="sample-item" style="background:${row.color};">${row.id}</span>`;
+        }).join("");
+    }
+
+    function featuresHTML(featureList) {
+        return featureList.map(f => `<span class="pill">${featureNames[f]}</span>`).join("");
+    }
+
+    function renderForest() {
+        const container = document.getElementById("forestContainer");
+
+        if (rfForest.length === 0) {
+            container.innerHTML = "";
+            return;
+        }
+
+        container.innerHTML = rfForest.map(tree => {
+            const rule = tree.rule;
+            const predictionBadge = tree.prediction === "Aprueba"
+                ? '<span class="pill-ok">Aprueba</span>'
+                : '<span class="pill-no">No aprueba</span>';
+
+            return `
+                <div class="tree-card">
+                    <h3>Árbol ${tree.treeNumber}</h3>
+
+                    <p><strong>Muestra bootstrap:</strong></p>
+                    <div>${sampleHTML(tree.sample)}</div>
+
+                    <p><strong>Variables consideradas:</strong></p>
+                    <div>${featuresHTML(tree.features)}</div>
+
+                    <p><strong>Regla simplificada:</strong></p>
+                    <div class="formula">Si ${featureNames[rule.feature]} ≤ ${rule.threshold.toFixed(2)}
+se sigue una rama del árbol.
+
+En la rama usada por el estudiante nuevo:
+Aprueba = ${rule.ok}
+No aprueba = ${rule.no}</div>
+
+                    <p><strong>Voto del árbol:</strong> ${predictionBadge}</p>
+                </div>
+            `;
+        }).join("");
+    }
+
+    function renderRFVotes() {
+        let okVotes = 0;
+        let noVotes = 0;
+
+        rfForest.forEach(tree => {
+            if (tree.prediction === "Aprueba") {
+                okVotes++;
+            } else {
+                noVotes++;
+            }
+        });
+
+        const total = rfForest.length;
+        const maxTrees = parseInt(document.getElementById("rfTrees").value);
+
+        const okPct = total === 0 ? 0 : Math.round((okVotes / total) * 100);
+        const noPct = total === 0 ? 0 : Math.round((noVotes / total) * 100);
+        const builtPct = Math.round((total / maxTrees) * 100);
+
+        document.getElementById("rfOkVotes").textContent = okVotes;
+        document.getElementById("rfNoVotes").textContent = noVotes;
+        document.getElementById("rfBuiltTrees").textContent = total;
+
+        document.getElementById("rfOkBar").style.width = okPct + "%";
+        document.getElementById("rfNoBar").style.width = noPct + "%";
+        document.getElementById("rfBuiltBar").style.width = builtPct + "%";
+
+        const result = document.getElementById("rfFinalResult");
+
+        if (total === 0) {
+            result.className = "warning";
+            result.innerHTML = "Todavía no se construyó ningún árbol.";
+            return;
+        }
+
+        if (okVotes > noVotes) {
+            result.className = "success";
+            result.innerHTML =
+                "<strong>Predicción actual del bosque: Aprueba.</strong> " +
+                "La mayoría de los árboles votó Aprueba: " + okVotes + " contra " + noVotes + ".";
+        } else if (noVotes > okVotes) {
+            result.className = "danger";
+            result.innerHTML =
+                "<strong>Predicción actual del bosque: No aprueba.</strong> " +
+                "La mayoría de los árboles votó No aprueba: " + noVotes + " contra " + okVotes + ".";
+        } else {
+            result.className = "warning";
+            result.innerHTML =
+                "<strong>Empate parcial.</strong> Se necesitan más árboles o una regla de desempate.";
+        }
+    }
+
+    async function buildForestAnimated() {
+        if (rfRunning) {
+            return;
+        }
+
+        rfRunning = true;
+        rfForest = [];
+        renderForest();
+        renderRFVotes();
+
+        const totalTrees = parseInt(document.getElementById("rfTrees").value);
+
+        for (let i = 1; i <= totalTrees; i++) {
+            const tree = buildTree(i);
+            rfForest.push(tree);
+
+            renderForest();
+            renderRFVotes();
+
+            await new Promise(resolve => setTimeout(resolve, 650));
+        }
+
+        rfRunning = false;
+    }
+
+    function resetAll() {
+        document.getElementById("crowdSize").value = 11;
+        document.getElementById("individualAccuracy").value = 65;
+        document.getElementById("diversity").value = 75;
+
+        document.getElementById("rfTrees").value = 5;
+        document.getElementById("rfSampleSize").value = 8;
+        document.getElementById("rfFeatures").value = 2;
+
+        updateCrowdLabels();
+        updateRFLabels();
+
+        document.getElementById("correctVotes").textContent = "0";
+        document.getElementById("incorrectVotes").textContent = "0";
+
+        document.getElementById("correctBar").style.width = "0%";
+        document.getElementById("incorrectBar").style.width = "0%";
+
+        document.getElementById("voterGrid").innerHTML = "";
+        document.getElementById("crowdResult").className = "warning";
+        document.getElementById("crowdResult").innerHTML =
+            "Presioná “Simular sabiduría de la multitud” para observar la decisión colectiva.";
+
+        rfForest = [];
+        renderForest();
+        renderRFVotes();
+        updateTheoreticalMajority();
+        drawWisdomCurve();
+    }
+
+    window.addEventListener("resize", drawWisdomCurve);
+
+    updateCrowdLabels();
+    updateRFLabels();
+    renderDataset();
+    selectEnsembleType("voting", document.querySelector(".type-btn"));
+    renderRFVotes();
+    updateTheoreticalMajority();
+    drawWisdomCurve();
+</script>
+
+</body>
+</html>

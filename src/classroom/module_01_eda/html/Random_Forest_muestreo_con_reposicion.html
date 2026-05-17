@@ -1,0 +1,823 @@
+# ============================================================
+# SIMULADOR INTERACTIVO: MUESTREO CON REEMPLAZO / BOOTSTRAP
+# Versión 2.0 corregida para Google Colab
+# Corrección: contraste de tabla en modo claro/oscuro
+# Profesor Sergio Gevatschnaider
+# ============================================================
+
+from IPython.display import display, HTML
+
+html = """
+<div id="bootstrap-app">
+
+<style>
+    #bootstrap-app {
+        --bg: #f4f7fb;
+        --card: #ffffff;
+        --text: #1f2937;
+        --muted: #64748b;
+        --primary: #1f4e79;
+        --secondary: #2563eb;
+        --accent: #0ea5e9;
+        --accent-soft: #e0f2fe;
+        --success: #16a34a;
+        --warning: #f59e0b;
+        --danger: #dc2626;
+        --border: #d8e2ef;
+        --shadow: rgba(15, 23, 42, 0.12);
+        --code: #f8fafc;
+        --table-row: #ffffff;
+        --table-row-alt: #f8fafc;
+
+        font-family: Arial, Helvetica, sans-serif;
+        max-width: 1120px;
+        margin: auto;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.65;
+        padding: 24px;
+        border-radius: 20px;
+    }
+
+    #bootstrap-app.dark {
+        --bg: #0f172a;
+        --card: #111827;
+        --text: #e5e7eb;
+        --muted: #cbd5e1;
+        --primary: #93c5fd;
+        --secondary: #60a5fa;
+        --accent: #38bdf8;
+        --accent-soft: #1e293b;
+        --border: #334155;
+        --shadow: rgba(0, 0, 0, 0.35);
+        --code: #020617;
+        --table-row: #111827;
+        --table-row-alt: #0f172a;
+    }
+
+    #bootstrap-app * {
+        box-sizing: border-box;
+    }
+
+    #bootstrap-app p,
+    #bootstrap-app li,
+    #bootstrap-app td,
+    #bootstrap-app div,
+    #bootstrap-app span,
+    #bootstrap-app label {
+        color: inherit;
+    }
+
+    .bs-header {
+        background: linear-gradient(135deg, #1f4e79, #0f766e);
+        color: white !important;
+        padding: 34px;
+        border-radius: 24px;
+        box-shadow: 0 18px 35px var(--shadow);
+        margin-bottom: 22px;
+    }
+
+    .bs-header h1,
+    .bs-header p {
+        color: white !important;
+    }
+
+    .bs-header h1 {
+        margin: 0 0 10px 0;
+        font-size: 34px;
+        line-height: 1.15;
+    }
+
+    .bs-header p {
+        margin: 0;
+        max-width: 900px;
+        font-size: 18px;
+    }
+
+    .bs-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 18px 0 24px 0;
+    }
+
+    .bs-btn {
+        border: none;
+        padding: 11px 16px;
+        border-radius: 999px;
+        color: white !important;
+        background: var(--primary);
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 8px 20px var(--shadow);
+        transition: transform .2s ease, opacity .2s ease;
+    }
+
+    .bs-btn:hover {
+        transform: translateY(-2px);
+        opacity: .92;
+    }
+
+    .bs-btn.secondary {
+        background: var(--secondary);
+    }
+
+    .bs-btn.success {
+        background: var(--success);
+    }
+
+    .bs-btn.warning {
+        background: var(--warning);
+    }
+
+    .bs-btn.danger {
+        background: var(--danger);
+    }
+
+    .bs-card {
+        background: var(--card);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 24px;
+        margin: 18px 0;
+        box-shadow: 0 14px 28px var(--shadow);
+    }
+
+    .bs-card h2 {
+        margin-top: 0;
+        color: var(--primary) !important;
+        border-bottom: 2px solid var(--border);
+        padding-bottom: 8px;
+    }
+
+    .bs-card h3 {
+        color: var(--secondary) !important;
+        margin-bottom: 8px;
+    }
+
+    .bs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+    }
+
+    .bs-mini {
+        background: var(--card);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px;
+    }
+
+    .bs-note {
+        background: var(--accent-soft);
+        color: var(--text);
+        border-left: 6px solid var(--accent);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .bs-warning {
+        background: rgba(245, 158, 11, 0.16);
+        color: var(--text);
+        border-left: 6px solid var(--warning);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .bs-success {
+        background: rgba(22, 163, 74, 0.16);
+        color: var(--text);
+        border-left: 6px solid var(--success);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .bs-stage {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+
+    @media (max-width: 850px) {
+        .bs-stage {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .bs-panel-title {
+        font-weight: 800;
+        color: var(--primary) !important;
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+
+    .bs-population,
+    .bs-sample {
+        min-height: 185px;
+        border: 2px dashed var(--border);
+        border-radius: 18px;
+        padding: 16px;
+        background: var(--code);
+        color: var(--text);
+    }
+
+    .bs-item {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 62px;
+        height: 54px;
+        padding: 8px 10px;
+        border-radius: 16px;
+        margin: 6px;
+        color: white !important;
+        font-weight: 800;
+        box-shadow: 0 8px 18px var(--shadow);
+        transition: transform .25s ease, outline .25s ease;
+    }
+
+    .bs-item div,
+    .bs-item small {
+        color: white !important;
+    }
+
+    .bs-item.flash {
+        transform: scale(1.18);
+        outline: 4px solid rgba(255,255,255,.8);
+    }
+
+    .bs-item small {
+        display: block;
+        font-size: 11px;
+        opacity: .95;
+        font-weight: 600;
+    }
+
+    .bs-sample .bs-item {
+        animation: bsPop .25s ease;
+    }
+
+    @keyframes bsPop {
+        from { transform: scale(.4); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    .bs-controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        margin: 16px 0;
+    }
+
+    .bs-select,
+    .bs-range {
+        padding: 9px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text) !important;
+        font-weight: 700;
+    }
+
+    .bs-status {
+        font-size: 17px;
+        background: var(--accent-soft);
+        color: var(--text);
+        border: 1px solid var(--border);
+        padding: 14px 16px;
+        border-radius: 16px;
+        margin: 14px 0;
+    }
+
+    .bs-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 14px;
+        font-size: 15px;
+        color: var(--text) !important;
+        background: var(--card);
+    }
+
+    .bs-table th {
+        background: var(--primary);
+        color: white !important;
+        text-align: left;
+        border: 1px solid var(--border);
+        padding: 10px;
+        vertical-align: top;
+    }
+
+    .bs-table td {
+        border: 1px solid var(--border);
+        padding: 10px;
+        vertical-align: top;
+        color: var(--text) !important;
+        background: var(--table-row);
+    }
+
+    .bs-table tbody tr:nth-child(even) td {
+        background: var(--table-row-alt);
+        color: var(--text) !important;
+    }
+
+    .bs-table td strong,
+    .bs-table td span,
+    .bs-table td div {
+        color: var(--text) !important;
+    }
+
+    .bs-code {
+        background: var(--code);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px;
+        white-space: pre-wrap;
+        font-family: Consolas, Monaco, monospace;
+        font-size: 14px;
+        overflow-x: auto;
+    }
+
+    .bs-pill {
+        display: inline-block;
+        border: 1px solid var(--border);
+        background: var(--accent-soft);
+        color: var(--primary) !important;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 800;
+        margin: 3px;
+    }
+
+    .bs-accordion {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        margin: 10px 0;
+    }
+
+    .bs-accordion button {
+        width: 100%;
+        text-align: left;
+        border: none;
+        padding: 14px 16px;
+        background: var(--accent-soft);
+        color: var(--text) !important;
+        cursor: pointer;
+        font-weight: 800;
+        font-size: 15px;
+    }
+
+    .bs-accordion-content {
+        display: none;
+        padding: 16px;
+        background: var(--card);
+        color: var(--text);
+        border-top: 1px solid var(--border);
+    }
+
+    .bs-accordion.open .bs-accordion-content {
+        display: block;
+    }
+
+    .bs-footer {
+        text-align: center;
+        color: var(--muted) !important;
+        font-size: 14px;
+        margin-top: 28px;
+        padding-top: 18px;
+        border-top: 1px solid var(--border);
+    }
+</style>
+
+<div class="bs-header">
+    <h1>Muestreo con reemplazo: simulador interactivo</h1>
+    <p>
+        Esta visualización permite mostrar cómo se construye una muestra bootstrap: se extrae un elemento al azar,
+        se registra en la muestra y luego vuelve a estar disponible para futuras extracciones.
+    </p>
+</div>
+
+<div class="bs-toolbar">
+    <button class="bs-btn" onclick="bsToggleTheme()">Cambiar tema claro / oscuro</button>
+    <button class="bs-btn secondary" onclick="bsToggleTheory()">Mostrar / ocultar teoría</button>
+    <button class="bs-btn success" onclick="bsDrawOne()">Extraer 1 elemento</button>
+    <button class="bs-btn warning" onclick="bsGenerateFullSample()">Generar muestra completa</button>
+    <button class="bs-btn danger" onclick="bsReset()">Reiniciar</button>
+</div>
+
+<div class="bs-card" id="bs-theory">
+    <h2>1. ¿Qué significa muestrear con reemplazo?</h2>
+
+    <p>
+        Muestrear con reemplazo significa seleccionar un elemento de una población, anotarlo en la muestra y luego
+        devolverlo a la población antes de realizar la siguiente extracción. Por eso, un mismo elemento puede aparecer
+        varias veces en la muestra.
+    </p>
+
+    <div class="bs-grid">
+        <div class="bs-mini">
+            <h3>Población original</h3>
+            <p>Es el conjunto inicial de casos disponibles.</p>
+            <span class="bs-pill">A</span>
+            <span class="bs-pill">B</span>
+            <span class="bs-pill">C</span>
+            <span class="bs-pill">D</span>
+            <span class="bs-pill">E</span>
+        </div>
+
+        <div class="bs-mini">
+            <h3>Muestra con reemplazo</h3>
+            <p>Puede repetir elementos porque cada caso vuelve a estar disponible.</p>
+            <span class="bs-pill">A</span>
+            <span class="bs-pill">C</span>
+            <span class="bs-pill">C</span>
+            <span class="bs-pill">E</span>
+            <span class="bs-pill">A</span>
+        </div>
+
+        <div class="bs-mini">
+            <h3>Consecuencia importante</h3>
+            <p>
+                Algunos elementos pueden repetirse y otros pueden quedar afuera. Esto es exactamente lo que se usa
+                en bootstrap y en Random Forest.
+            </p>
+        </div>
+    </div>
+
+    <div class="bs-note">
+        <strong>Idea clave para explicar en clase:</strong> en cada extracción, todos los elementos de la población original
+        siguen teniendo probabilidad de ser seleccionados porque el elemento extraído se repone.
+    </div>
+</div>
+
+<div class="bs-card">
+    <h2>2. Simulación dinámica</h2>
+
+    <div class="bs-controls">
+        <label><strong>Conjunto de datos:</strong></label>
+        <select id="bsDataset" class="bs-select" onchange="bsChangeDataset()">
+            <option value="students">Estudiantes</option>
+            <option value="clients">Clientes</option>
+            <option value="letters">Letras</option>
+        </select>
+
+        <label><strong>Tamaño de la muestra:</strong></label>
+        <input id="bsSampleSize" class="bs-range" type="range" min="1" max="12" value="5" oninput="bsUpdateSampleSizeLabel()">
+        <span id="bsSampleSizeLabel" class="bs-pill">5 extracciones</span>
+    </div>
+
+    <div class="bs-stage">
+        <div>
+            <div class="bs-panel-title">Población original</div>
+            <div id="bsPopulation" class="bs-population"></div>
+        </div>
+
+        <div>
+            <div class="bs-panel-title">Muestra generada con reemplazo</div>
+            <div id="bsSample" class="bs-sample"></div>
+        </div>
+    </div>
+
+    <div id="bsStatus" class="bs-status">
+        Presioná “Extraer 1 elemento” o “Generar muestra completa” para comenzar.
+    </div>
+</div>
+
+<div class="bs-card">
+    <h2>3. Frecuencia de aparición en la muestra</h2>
+    <p>
+        Esta tabla muestra cuántas veces apareció cada elemento en la muestra generada. En muestreo con reemplazo,
+        una frecuencia mayor que 1 es completamente normal.
+    </p>
+
+    <table class="bs-table">
+        <thead>
+            <tr>
+                <th>Elemento</th>
+                <th>Descripción</th>
+                <th>Veces seleccionado</th>
+                <th>Interpretación</th>
+            </tr>
+        </thead>
+        <tbody id="bsCountsTable"></tbody>
+    </table>
+</div>
+
+<div class="bs-card">
+    <h2>4. Lectura conceptual del resultado</h2>
+
+    <div id="bsInterpretation" class="bs-success">
+        Todavía no se generó ninguna muestra. Al iniciar la simulación, vas a ver qué elementos se repiten y cuáles quedan afuera.
+    </div>
+
+    <div class="bs-accordion">
+        <button onclick="bsAccordion(this)">¿Por qué se pueden repetir elementos?</button>
+        <div class="bs-accordion-content">
+            Porque después de cada extracción el elemento vuelve a la población original. Entonces, si el elemento C fue elegido
+            en la primera extracción, también puede ser elegido en la segunda, tercera o cualquier extracción posterior.
+        </div>
+    </div>
+
+    <div class="bs-accordion">
+        <button onclick="bsAccordion(this)">¿Por qué algunos elementos pueden quedar afuera?</button>
+        <div class="bs-accordion-content">
+            Porque cada extracción es aleatoria. Aunque todos los elementos estén disponibles en cada paso, no hay garantía
+            de que todos aparezcan en una muestra concreta.
+        </div>
+    </div>
+
+    <div class="bs-accordion">
+        <button onclick="bsAccordion(this)">¿Qué relación tiene esto con bootstrap?</button>
+        <div class="bs-accordion-content">
+            Bootstrap usa muestras con reemplazo para construir múltiples versiones del conjunto de datos original.
+            Cada versión puede tener repeticiones y omisiones, lo que permite estimar variabilidad y entrenar modelos diversos.
+        </div>
+    </div>
+
+    <div class="bs-accordion">
+        <button onclick="bsAccordion(this)">¿Qué relación tendrá con Random Forest?</button>
+        <div class="bs-accordion-content">
+            En Random Forest, cada árbol se entrena con una muestra bootstrap distinta. Esto hace que los árboles no sean idénticos.
+            Luego, sus predicciones se combinan por votación o promedio.
+        </div>
+    </div>
+</div>
+
+<div class="bs-card">
+    <h2>5. Mini explicación para decir en clase</h2>
+
+    <div class="bs-code">Cuando hacemos muestreo con reemplazo, tomamos un elemento de la población, lo registramos en la muestra y luego lo devolvemos.
+
+Eso significa que cada extracción se realiza nuevamente sobre la población completa.
+
+Por esta razón, una muestra bootstrap puede contener elementos repetidos y también puede dejar afuera algunos elementos originales.
+
+Esta idea es fundamental para Random Forest porque cada árbol del bosque se entrena con una muestra bootstrap diferente.</div>
+</div>
+
+<div class="bs-card">
+    <h2>6. Diferencia entre muestreo con y sin reemplazo</h2>
+
+    <table class="bs-table">
+        <tr>
+            <th>Tipo de muestreo</th>
+            <th>Qué ocurre después de extraer un elemento</th>
+            <th>Puede repetirse un elemento</th>
+            <th>Ejemplo</th>
+        </tr>
+        <tr>
+            <td><strong>Con reemplazo</strong></td>
+            <td>El elemento vuelve a la población.</td>
+            <td>Sí.</td>
+            <td>A, C, C, E, A</td>
+        </tr>
+        <tr>
+            <td><strong>Sin reemplazo</strong></td>
+            <td>El elemento no vuelve a la población.</td>
+            <td>No, salvo que existan duplicados originales.</td>
+            <td>A, C, E, B, D</td>
+        </tr>
+    </table>
+
+    <div class="bs-warning">
+        <strong>Para Random Forest:</strong> el caso importante es el muestreo con reemplazo, porque permite generar
+        diferentes muestras bootstrap a partir del mismo conjunto de entrenamiento.
+    </div>
+</div>
+
+<div class="bs-footer">
+    Material elaborado por el profesor Sergio Gevatschnaider.
+</div>
+
+<script>
+    let bsDataSets = {
+        students: [
+            {id: "E1", label: "Est. 1", desc: "Estudiante 1", color: "#2563eb"},
+            {id: "E2", label: "Est. 2", desc: "Estudiante 2", color: "#16a34a"},
+            {id: "E3", label: "Est. 3", desc: "Estudiante 3", color: "#f59e0b"},
+            {id: "E4", label: "Est. 4", desc: "Estudiante 4", color: "#dc2626"},
+            {id: "E5", label: "Est. 5", desc: "Estudiante 5", color: "#7c3aed"}
+        ],
+        clients: [
+            {id: "C1", label: "Cliente 1", desc: "Cliente 1", color: "#0f766e"},
+            {id: "C2", label: "Cliente 2", desc: "Cliente 2", color: "#1d4ed8"},
+            {id: "C3", label: "Cliente 3", desc: "Cliente 3", color: "#ea580c"},
+            {id: "C4", label: "Cliente 4", desc: "Cliente 4", color: "#be123c"},
+            {id: "C5", label: "Cliente 5", desc: "Cliente 5", color: "#9333ea"}
+        ],
+        letters: [
+            {id: "A", label: "A", desc: "Elemento A", color: "#2563eb"},
+            {id: "B", label: "B", desc: "Elemento B", color: "#16a34a"},
+            {id: "C", label: "C", desc: "Elemento C", color: "#f59e0b"},
+            {id: "D", label: "D", desc: "Elemento D", color: "#dc2626"},
+            {id: "E", label: "E", desc: "Elemento E", color: "#7c3aed"}
+        ]
+    };
+
+    let bsCurrentData = bsDataSets.students;
+    let bsSample = [];
+    let bsCounts = {};
+
+    function bsInitCounts() {
+        bsCounts = {};
+        bsCurrentData.forEach(item => {
+            bsCounts[item.id] = 0;
+        });
+    }
+
+    function bsToggleTheme() {
+        document.getElementById("bootstrap-app").classList.toggle("dark");
+    }
+
+    function bsToggleTheory() {
+        const theory = document.getElementById("bs-theory");
+        theory.style.display = theory.style.display === "none" ? "block" : "none";
+    }
+
+    function bsAccordion(button) {
+        button.parentElement.classList.toggle("open");
+    }
+
+    function bsCreateItem(item, extraText="") {
+        return `
+            <div class="bs-item" id="bs-pop-${item.id}" style="background:${item.color};">
+                <div>
+                    ${item.label}
+                    ${extraText ? "<small>" + extraText + "</small>" : ""}
+                </div>
+            </div>
+        `;
+    }
+
+    function bsRenderPopulation() {
+        const container = document.getElementById("bsPopulation");
+        container.innerHTML = bsCurrentData.map(item => bsCreateItem(item, "disponible")).join("");
+    }
+
+    function bsRenderSample() {
+        const container = document.getElementById("bsSample");
+
+        if (bsSample.length === 0) {
+            container.innerHTML = "<em>La muestra todavía está vacía.</em>";
+            return;
+        }
+
+        container.innerHTML = bsSample.map((item, index) => {
+            return `
+                <div class="bs-item" style="background:${item.color};">
+                    <div>
+                        ${item.label}
+                        <small>extracción ${index + 1}</small>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    }
+
+    function bsRenderCounts() {
+        const tbody = document.getElementById("bsCountsTable");
+
+        tbody.innerHTML = bsCurrentData.map(item => {
+            const count = bsCounts[item.id] || 0;
+            let interpretation = "";
+
+            if (count === 0) {
+                interpretation = "Quedó afuera de esta muestra.";
+            } else if (count === 1) {
+                interpretation = "Apareció una vez.";
+            } else {
+                interpretation = "Apareció repetido. Esto es normal con reemplazo.";
+            }
+
+            return `
+                <tr>
+                    <td><strong>${item.label}</strong></td>
+                    <td>${item.desc}</td>
+                    <td>${count}</td>
+                    <td>${interpretation}</td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    function bsUpdateSampleSizeLabel() {
+        const value = document.getElementById("bsSampleSize").value;
+        document.getElementById("bsSampleSizeLabel").textContent = value + " extracciones";
+    }
+
+    function bsFlashPopulationItem(item) {
+        const el = document.getElementById("bs-pop-" + item.id);
+        if (!el) return;
+
+        el.classList.add("flash");
+
+        setTimeout(() => {
+            el.classList.remove("flash");
+        }, 350);
+    }
+
+    function bsDrawOne() {
+        const maxSize = parseInt(document.getElementById("bsSampleSize").value);
+
+        if (bsSample.length >= maxSize) {
+            document.getElementById("bsStatus").innerHTML =
+                "La muestra ya alcanzó el tamaño definido. Podés reiniciar o aumentar el tamaño de la muestra.";
+            return;
+        }
+
+        const index = Math.floor(Math.random() * bsCurrentData.length);
+        const selected = bsCurrentData[index];
+
+        bsSample.push(selected);
+        bsCounts[selected.id] += 1;
+
+        bsFlashPopulationItem(selected);
+        bsRenderSample();
+        bsRenderCounts();
+        bsUpdateStatus(selected);
+        bsUpdateInterpretation();
+    }
+
+    function bsGenerateFullSample() {
+        const maxSize = parseInt(document.getElementById("bsSampleSize").value);
+
+        function step() {
+            if (bsSample.length < maxSize) {
+                bsDrawOne();
+                setTimeout(step, 420);
+            }
+        }
+
+        step();
+    }
+
+    function bsUpdateStatus(selected) {
+        document.getElementById("bsStatus").innerHTML =
+            "Extracción " + bsSample.length + ": se seleccionó <strong>" + selected.label + "</strong>. " +
+            "Como el muestreo es con reemplazo, <strong>" + selected.label + "</strong> vuelve a estar disponible para la próxima extracción.";
+    }
+
+    function bsUpdateInterpretation() {
+        const repeated = bsCurrentData.filter(item => bsCounts[item.id] > 1);
+        const omitted = bsCurrentData.filter(item => bsCounts[item.id] === 0);
+
+        let text = "";
+
+        if (bsSample.length === 0) {
+            text = "Todavía no se generó ninguna muestra.";
+        } else {
+            text = "La muestra actual tiene <strong>" + bsSample.length + "</strong> extracciones. ";
+
+            if (repeated.length > 0) {
+                text += "Elementos repetidos: <strong>" + repeated.map(x => x.label).join(", ") + "</strong>. ";
+            } else {
+                text += "Por ahora no hay elementos repetidos. ";
+            }
+
+            if (omitted.length > 0) {
+                text += "Elementos que todavía no aparecieron: <strong>" + omitted.map(x => x.label).join(", ") + "</strong>. ";
+            } else {
+                text += "Todos los elementos aparecieron al menos una vez. ";
+            }
+
+            text += "Esto muestra que una muestra con reemplazo puede repetir algunos casos y omitir otros.";
+        }
+
+        document.getElementById("bsInterpretation").innerHTML = text;
+    }
+
+    function bsReset() {
+        bsSample = [];
+        bsInitCounts();
+        bsRenderPopulation();
+        bsRenderSample();
+        bsRenderCounts();
+        bsUpdateInterpretation();
+
+        document.getElementById("bsStatus").innerHTML =
+            "Simulación reiniciada. Presioná “Extraer 1 elemento” o “Generar muestra completa” para comenzar.";
+    }
+
+    function bsChangeDataset() {
+        const selected = document.getElementById("bsDataset").value;
+        bsCurrentData = bsDataSets[selected];
+        bsReset();
+    }
+
+    bsUpdateSampleSizeLabel();
+    bsReset();
+</script>
+
+</div>
+"""
+
+display(HTML(html))

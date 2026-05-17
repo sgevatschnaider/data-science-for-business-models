@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De la sabiduría de la multitud a la agregación estadística</title>
+
+<style>
+    :root {
+        --bg: #f4f7fb;
+        --card: #ffffff;
+        --text: #1f2937;
+        --muted: #64748b;
+        --primary: #1f4e79;
+        --secondary: #2563eb;
+        --accent: #0ea5e9;
+        --accent-soft: #e0f2fe;
+        --success: #16a34a;
+        --danger: #dc2626;
+        --warning: #f59e0b;
+        --purple: #7c3aed;
+        --border: #d8e2ef;
+        --shadow: rgba(15, 23, 42, 0.10);
+        --soft: #f8fafc;
+    }
+
+    body.dark {
+        --bg: #0f172a;
+        --card: #111827;
+        --text: #e5e7eb;
+        --muted: #cbd5e1;
+        --primary: #93c5fd;
+        --secondary: #60a5fa;
+        --accent: #38bdf8;
+        --accent-soft: #1e293b;
+        --success: #22c55e;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --purple: #a78bfa;
+        --border: #334155;
+        --shadow: rgba(0, 0, 0, 0.25);
+        --soft: #020617;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 24px;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.65;
+    }
+
+    .container {
+        max-width: 1250px;
+        margin: auto;
+    }
+
+    .hero {
+        background: linear-gradient(135deg, #1f4e79, #0f766e);
+        color: white;
+        padding: 34px;
+        border-radius: 24px;
+        box-shadow: 0 18px 35px var(--shadow);
+        margin-bottom: 22px;
+    }
+
+    .hero h1 {
+        margin: 0 0 10px 0;
+        font-size: 36px;
+        line-height: 1.15;
+    }
+
+    .hero p {
+        margin: 0;
+        font-size: 18px;
+        max-width: 980px;
+    }
+
+    .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 18px 0 24px 0;
+    }
+
+    .btn {
+        border: none;
+        padding: 11px 16px;
+        border-radius: 999px;
+        color: white;
+        background: var(--primary);
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 8px 20px var(--shadow);
+        transition: transform .2s ease, opacity .2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        opacity: .94;
+    }
+
+    .btn.secondary { background: var(--secondary); }
+    .btn.success { background: var(--success); }
+    .btn.warning { background: var(--warning); }
+    .btn.danger { background: var(--danger); }
+    .btn.purple { background: var(--purple); }
+
+    .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        padding: 24px;
+        margin: 18px 0;
+        box-shadow: 0 14px 28px var(--shadow);
+    }
+
+    .card h2 {
+        margin-top: 0;
+        color: var(--primary);
+        border-bottom: 2px solid var(--border);
+        padding-bottom: 8px;
+    }
+
+    .card h3 {
+        color: var(--secondary);
+        margin-bottom: 8px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+    }
+
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 18px;
+        margin-top: 16px;
+    }
+
+    .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-top: 16px;
+    }
+
+    .grid-4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-top: 16px;
+    }
+
+    @media (max-width: 1050px) {
+        .grid-2, .grid-3, .grid-4 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .mini {
+        background: var(--soft);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px;
+    }
+
+    .note {
+        background: var(--accent-soft);
+        border-left: 6px solid var(--accent);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .success-box {
+        background: rgba(34,197,94,0.12);
+        border-left: 6px solid var(--success);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .warning-box {
+        background: rgba(245,158,11,0.12);
+        border-left: 6px solid var(--warning);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .danger-box {
+        background: rgba(239,68,68,0.12);
+        border-left: 6px solid var(--danger);
+        border-radius: 14px;
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        align-items: center;
+        margin: 16px 0;
+    }
+
+    .control-group {
+        background: var(--soft);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px 14px;
+        min-width: 220px;
+    }
+
+    .control-group label {
+        display: block;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: var(--primary);
+    }
+
+    input[type="range"] {
+        width: 100%;
+    }
+
+    select {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+        font-weight: 700;
+    }
+
+    .pill {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 800;
+        background: var(--accent-soft);
+        border: 1px solid var(--border);
+        color: var(--primary);
+        margin-top: 8px;
+    }
+
+    .metric-box {
+        border: 1px solid var(--border);
+        background: var(--soft);
+        border-radius: 16px;
+        padding: 16px;
+        text-align: center;
+    }
+
+    .metric-title {
+        font-size: 14px;
+        color: var(--muted);
+        font-weight: 800;
+    }
+
+    .metric-value {
+        font-size: 30px;
+        font-weight: 900;
+        color: var(--primary);
+        margin-top: 6px;
+    }
+
+    .bar-wrap {
+        height: 16px;
+        background: var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+        margin-top: 8px;
+    }
+
+    .bar {
+        height: 16px;
+        width: 0%;
+        transition: width .4s ease;
+    }
+
+    .bar-primary { background: var(--accent); }
+    .bar-success { background: var(--success); }
+    .bar-danger { background: var(--danger); }
+    .bar-warning { background: var(--warning); }
+    .bar-purple { background: var(--purple); }
+
+    .estimates-area {
+        min-height: 160px;
+        background: var(--soft);
+        border: 1px dashed var(--border);
+        border-radius: 16px;
+        padding: 14px;
+    }
+
+    .estimate-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 62px;
+        height: 36px;
+        padding: 0 12px;
+        margin: 6px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        border: 1px solid var(--border);
+        font-weight: 700;
+        box-shadow: 0 5px 12px var(--shadow);
+        animation: pop .18s ease;
+    }
+
+    @keyframes pop {
+        from { transform: scale(.65); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 14px;
+        font-size: 15px;
+        background: var(--card);
+    }
+
+    .table th {
+        background: var(--primary);
+        color: white;
+        text-align: left;
+        border: 1px solid var(--border);
+        padding: 10px;
+    }
+
+    .table td {
+        border: 1px solid var(--border);
+        padding: 10px;
+        color: var(--text);
+        background: var(--card);
+    }
+
+    .table tbody tr:nth-child(even) td {
+        background: var(--soft);
+    }
+
+    canvas {
+        width: 100%;
+        height: 320px;
+        border-radius: 16px;
+        background: var(--soft);
+        border: 1px solid var(--border);
+    }
+
+    .formula {
+        background: var(--soft);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+        white-space: pre-wrap;
+        font-family: Consolas, Monaco, monospace;
+        font-size: 15px;
+        overflow-x: auto;
+    }
+
+    .footer {
+        text-align: center;
+        font-size: 14px;
+        color: var(--muted);
+        margin-top: 30px;
+        border-top: 1px solid var(--border);
+        padding-top: 18px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="hero">
+        <h1>De la sabiduría de la multitud a la agregación estadística</h1>
+        <p>
+            Esta visualización muestra cómo muchas estimaciones individuales pueden combinarse
+            para producir una estimación colectiva más robusta. También permite comparar
+            distintos mecanismos de agregación: media aritmética, mediana, moda y media geométrica,
+            conectando esta intuición con la lógica de los modelos de ensamble y, en particular,
+            con Random Forest.
+        </p>
+    </div>
+
+    <div class="toolbar">
+        <button class="btn" onclick="toggleTheme()">Cambiar tema claro / oscuro</button>
+        <button class="btn success" onclick="simulateEstimates()">Simulación dinámica</button>
+        <button class="btn secondary" onclick="stepSimulation()">Simulación paso a paso</button>
+        <button class="btn warning" onclick="compareMethods()">Comparar métodos</button>
+        <button class="btn danger" onclick="resetSimulation()">Reiniciar</button>
+    </div>
+
+    <div class="card">
+        <h2>1. Idea conceptual</h2>
+        <p>
+            Supongamos que muchas personas intentan estimar cuántas monedas hay dentro de un frasco.
+            Cada persona puede cometer errores, pero cuando las respuestas se combinan adecuadamente,
+            puede emerger una estimación colectiva cercana al valor real.
+        </p>
+
+        <div class="grid">
+            <div class="mini">
+                <h3>Sabiduría de la multitud</h3>
+                <p>
+                    Muchas estimaciones imperfectas, si son suficientemente diversas,
+                    pueden producir un resultado más estable que una estimación individual.
+                </p>
+            </div>
+
+            <div class="mini">
+                <h3>Agregación estadística</h3>
+                <p>
+                    No solo importa tener muchas respuestas; también importa cómo se combinan:
+                    promedio, mediana, moda o media geométrica.
+                </p>
+            </div>
+
+            <div class="mini">
+                <h3>Puente con ensambles</h3>
+                <p>
+                    En Machine Learning, esto se relaciona con la lógica de los ensambles:
+                    muchos modelos individuales y una regla de combinación final.
+                </p>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Intuición didáctica:</strong> en clasificación, el ensamble suele combinar por votación.
+            En regresión, combina mediante promedio. En esta simulación trabajamos con una estimación numérica,
+            por eso el foco está en la agregación estadística.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>2. Parámetros de la simulación</h2>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="trueValue">Valor real del frasco</label>
+                <input id="trueValue" type="range" min="50" max="1000" step="10" value="320" oninput="updateLabels()">
+                <div id="trueValueLabel" class="pill">320 monedas</div>
+            </div>
+
+            <div class="control-group">
+                <label for="numPeople">Cantidad de personas</label>
+                <input id="numPeople" type="range" min="5" max="80" step="1" value="25" oninput="updateLabels()">
+                <div id="numPeopleLabel" class="pill">25 personas</div>
+            </div>
+
+            <div class="control-group">
+                <label for="dispersion">Dispersión de estimaciones</label>
+                <input id="dispersion" type="range" min="5" max="80" step="1" value="25" oninput="updateLabels()">
+                <div id="dispersionLabel" class="pill">25%</div>
+            </div>
+
+            <div class="control-group">
+                <label for="outlierRate">Porcentaje de valores extremos</label>
+                <input id="outlierRate" type="range" min="0" max="40" step="1" value="10" oninput="updateLabels()">
+                <div id="outlierRateLabel" class="pill">10%</div>
+            </div>
+
+            <div class="control-group">
+                <label for="selectedMethod">Método destacado</label>
+                <select id="selectedMethod" onchange="highlightMethod()">
+                    <option value="mean">Media aritmética</option>
+                    <option value="median">Mediana</option>
+                    <option value="mode">Moda</option>
+                    <option value="geometric">Media geométrica</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <strong>Lectura:</strong> si la dispersión es baja, las estimaciones tienden a estar más agrupadas.
+            Si el porcentaje de valores extremos aumenta, algunas personas se alejan mucho del valor real,
+            y eso puede afectar a ciertos métodos de agregación más que a otros.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>3. Estimaciones individuales generadas</h2>
+
+        <div class="grid-2">
+            <div>
+                <div class="estimates-area" id="estimatesArea">
+                    <em>Aquí aparecerán las estimaciones de cada persona cuando ejecutes la simulación.</em>
+                </div>
+            </div>
+
+            <div>
+                <canvas id="estimatesCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>4. Resultados de agregación</h2>
+
+        <div class="grid-4">
+            <div class="metric-box" id="meanBox">
+                <div class="metric-title">Media aritmética</div>
+                <div class="metric-value" id="meanValue">—</div>
+                <div class="bar-wrap"><div class="bar bar-primary" id="meanBar"></div></div>
+                <div class="pill" id="meanError">Error: —</div>
+            </div>
+
+            <div class="metric-box" id="medianBox">
+                <div class="metric-title">Mediana</div>
+                <div class="metric-value" id="medianValue">—</div>
+                <div class="bar-wrap"><div class="bar bar-success" id="medianBar"></div></div>
+                <div class="pill" id="medianError">Error: —</div>
+            </div>
+
+            <div class="metric-box" id="modeBox">
+                <div class="metric-title">Moda</div>
+                <div class="metric-value" id="modeValue">—</div>
+                <div class="bar-wrap"><div class="bar bar-warning" id="modeBar"></div></div>
+                <div class="pill" id="modeError">Error: —</div>
+            </div>
+
+            <div class="metric-box" id="geometricBox">
+                <div class="metric-title">Media geométrica</div>
+                <div class="metric-value" id="geometricValue">—</div>
+                <div class="bar-wrap"><div class="bar bar-purple" id="geometricBar"></div></div>
+                <div class="pill" id="geometricError">Error: —</div>
+            </div>
+        </div>
+
+        <div id="bestMethodMessage" class="note">
+            Ejecutá una simulación para comparar qué método de agregación se aproxima más al valor real.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>5. Tabla de comparación</h2>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Método</th>
+                    <th>Valor agregado</th>
+                    <th>Error absoluto</th>
+                    <th>Interpretación</th>
+                </tr>
+            </thead>
+            <tbody id="comparisonTable">
+                <tr>
+                    <td colspan="4"><em>Sin datos aún.</em></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>6. Interpretación conceptual</h2>
+
+        <div id="conceptualExplanation" class="success-box">
+            Todavía no se ejecutó la simulación. Una vez generadas las estimaciones,
+            aquí aparecerá una interpretación automática de los resultados.
+        </div>
+
+        <div class="formula">Sabiduría de la multitud
+        ↓
+Muchas estimaciones individuales
+        ↓
+Regla de agregación estadística
+        ↓
+Estimación colectiva
+        ↓
+Puente conceptual con ensambles
+        ↓
+Muchos modelos + una regla de combinación final</div>
+    </div>
+
+    <div class="card">
+        <h2>7. Relación con Random Forest</h2>
+
+        <p>
+            Esta simulación ayuda a introducir una intuición esencial para comprender los modelos de ensamble.
+            En Random Forest, no se agregan estimaciones de personas, sino predicciones de muchos árboles de decisión.
+        </p>
+
+        <div class="grid">
+            <div class="mini">
+                <h3>En el ejemplo del frasco</h3>
+                <p>
+                    Cada persona produce una estimación sobre la cantidad de monedas.
+                </p>
+            </div>
+
+            <div class="mini">
+                <h3>En Random Forest</h3>
+                <p>
+                    Cada árbol produce una predicción. Luego, el bosque combina esas predicciones.
+                </p>
+            </div>
+
+            <div class="mini">
+                <h3>Analogía didáctica</h3>
+                <p>
+                    Persona individual = árbol individual.  
+                    Estimación colectiva = predicción final del ensamble.
+                </p>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Conexión final:</strong> en clasificación, Random Forest suele decidir por votación mayoritaria.
+            En regresión, promedia predicciones. Por eso esta sección sirve como antesala conceptual para explicar
+            por qué los ensambles funcionan.
+        </div>
+    </div>
+
+    <div class="footer">
+        Material elaborado para visualización docente. Adaptado para una explicación sobre sabiduría de la multitud,
+        agregación estadística, ensambles y Random Forest.
+    </div>
+
+</div>
+
+<script>
+    let estimates = [];
+    let stepInterval = null;
+    let stepIndex = 0;
+    let pendingStepEstimates = [];
+
+    function toggleTheme() {
+        document.body.classList.toggle("dark");
+        drawEstimatesCanvas();
+    }
+
+    function updateLabels() {
+        document.getElementById("trueValueLabel").textContent =
+            document.getElementById("trueValue").value + " monedas";
+
+        document.getElementById("numPeopleLabel").textContent =
+            document.getElementById("numPeople").value + " personas";
+
+        document.getElementById("dispersionLabel").textContent =
+            document.getElementById("dispersion").value + "%";
+
+        document.getElementById("outlierRateLabel").textContent =
+            document.getElementById("outlierRate").value + "%";
+    }
+
+    function randomNormal(mean, stdDev) {
+        let u = 0, v = 0;
+        while (u === 0) u = Math.random();
+        while (v === 0) v = Math.random();
+        const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+        return mean + z * stdDev;
+    }
+
+    function generateEstimates() {
+        const trueValue = parseFloat(document.getElementById("trueValue").value);
+        const numPeople = parseInt(document.getElementById("numPeople").value);
+        const dispersionPct = parseFloat(document.getElementById("dispersion").value) / 100;
+        const outlierRate = parseFloat(document.getElementById("outlierRate").value) / 100;
+
+        const stdDev = trueValue * dispersionPct;
+        const generated = [];
+
+        for (let i = 0; i < numPeople; i++) {
+            let estimate = randomNormal(trueValue, stdDev);
+
+            if (Math.random() < outlierRate) {
+                const factor = Math.random() < 0.5
+                    ? (1 + Math.random() * 2.5)
+                    : (1 - Math.random() * 0.7);
+                estimate = trueValue * factor;
+            }
+
+            estimate = Math.max(1, Math.round(estimate));
+            generated.push(estimate);
+        }
+
+        return generated;
+    }
+
+    function mean(arr) {
+        return arr.reduce((a, b) => a + b, 0) / arr.length;
+    }
+
+    function median(arr) {
+        const sorted = [...arr].sort((a, b) => a - b);
+        const mid = Math.floor(sorted.length / 2);
+        return sorted.length % 2 === 0
+            ? (sorted[mid - 1] + sorted[mid]) / 2
+            : sorted[mid];
+    }
+
+    function mode(arr) {
+        const freq = {};
+        let maxCount = 0;
+        let best = arr[0];
+
+        arr.forEach(v => {
+            freq[v] = (freq[v] || 0) + 1;
+            if (freq[v] > maxCount) {
+                maxCount = freq[v];
+                best = v;
+            }
+        });
+
+        return best;
+    }
+
+    function geometricMean(arr) {
+        const safe = arr.filter(v => v > 0);
+        const logSum = safe.reduce((acc, v) => acc + Math.log(v), 0);
+        return Math.exp(logSum / safe.length);
+    }
+
+    function absError(value, truth) {
+        return Math.abs(value - truth);
+    }
+
+    function renderEstimateChips() {
+        const area = document.getElementById("estimatesArea");
+
+        if (estimates.length === 0) {
+            area.innerHTML = "<em>Aquí aparecerán las estimaciones de cada persona cuando ejecutes la simulación.</em>";
+            return;
+        }
+
+        area.innerHTML = estimates.map((v, i) =>
+            `<span class="estimate-chip">P${i + 1}: ${v}</span>`
+        ).join("");
+    }
+
+    function updateMetricBox(valueId, barId, errorId, value, error, maxErrorReference) {
+        document.getElementById(valueId).textContent = value.toFixed(2);
+        document.getElementById(errorId).textContent = "Error: " + error.toFixed(2);
+
+        const normalized = maxErrorReference === 0 ? 0 : Math.max(4, Math.min(100, 100 - (error / maxErrorReference) * 100));
+        document.getElementById(barId).style.width = normalized + "%";
+    }
+
+    function renderResults() {
+        if (estimates.length === 0) return;
+
+        const trueValue = parseFloat(document.getElementById("trueValue").value);
+
+        const mMean = mean(estimates);
+        const mMedian = median(estimates);
+        const mMode = mode(estimates);
+        const mGeometric = geometricMean(estimates);
+
+        const meanErr = absError(mMean, trueValue);
+        const medianErr = absError(mMedian, trueValue);
+        const modeErr = absError(mMode, trueValue);
+        const geometricErr = absError(mGeometric, trueValue);
+
+        const maxRef = Math.max(meanErr, medianErr, modeErr, geometricErr, 1);
+
+        updateMetricBox("meanValue", "meanBar", "meanError", mMean, meanErr, maxRef);
+        updateMetricBox("medianValue", "medianBar", "medianError", mMedian, medianErr, maxRef);
+        updateMetricBox("modeValue", "modeBar", "modeError", mMode, modeErr, maxRef);
+        updateMetricBox("geometricValue", "geometricBar", "geometricError", mGeometric, geometricErr, maxRef);
+
+        const methods = [
+            { name: "Media aritmética", value: mMean, error: meanErr, key: "mean" },
+            { name: "Mediana", value: mMedian, error: medianErr, key: "median" },
+            { name: "Moda", value: mMode, error: modeErr, key: "mode" },
+            { name: "Media geométrica", value: mGeometric, error: geometricErr, key: "geometric" }
+        ];
+
+        methods.sort((a, b) => a.error - b.error);
+        const best = methods[0];
+
+        document.getElementById("bestMethodMessage").innerHTML =
+            `<strong>Método más cercano al valor real en esta simulación:</strong> ${best.name},
+             con un error absoluto de ${best.error.toFixed(2)}.`;
+
+        const tbody = document.getElementById("comparisonTable");
+        tbody.innerHTML = methods.map(m => {
+            let interpretation = "";
+
+            if (m.key === "mean") {
+                interpretation = "Suele funcionar bien si la distribución es aproximadamente simétrica y no hay muchos valores extremos.";
+            } else if (m.key === "median") {
+                interpretation = "Es robusta frente a valores extremos y suele ser útil cuando hay asimetría.";
+            } else if (m.key === "mode") {
+                interpretation = "Representa el valor más frecuente, pero puede ser menos estable si los datos son muy dispersos.";
+            } else if (m.key === "geometric") {
+                interpretation = "Es útil cuando los datos se comportan de forma multiplicativa o están muy sesgados.";
+            }
+
+            return `
+                <tr>
+                    <td><strong>${m.name}</strong></td>
+                    <td>${m.value.toFixed(2)}</td>
+                    <td>${m.error.toFixed(2)}</td>
+                    <td>${interpretation}</td>
+                </tr>
+            `;
+        }).join("");
+
+        renderExplanation(methods);
+        highlightMethod();
+    }
+
+    function renderExplanation(sortedMethods) {
+        const trueValue = parseFloat(document.getElementById("trueValue").value);
+        const outlierRate = parseFloat(document.getElementById("outlierRate").value);
+        const dispersion = parseFloat(document.getElementById("dispersion").value);
+
+        let text = `<strong>Lectura automática:</strong> el valor real del frasco es ${trueValue.toFixed(0)}.
+        En esta simulación, el método que quedó más cerca fue <strong>${sortedMethods[0].name}</strong>. `;
+
+        if (outlierRate >= 20) {
+            text += `El porcentaje de valores extremos es relativamente alto, por lo que métodos robustos como la mediana
+            pueden tener ventaja frente a la media aritmética. `;
+        }
+
+        if (dispersion >= 40) {
+            text += `Además, la dispersión de las respuestas es elevada, lo que indica desacuerdo importante entre los participantes. `;
+        } else {
+            text += `La dispersión no es extrema, por lo que varias medidas pueden ofrecer resultados razonables. `;
+        }
+
+        text += `Este comportamiento ayuda a entender que en problemas reales no basta con reunir muchas respuestas:
+        también debemos elegir cuidadosamente el mecanismo de agregación.`;
+
+        document.getElementById("conceptualExplanation").innerHTML = text;
+    }
+
+    function highlightMethod() {
+        const selected = document.getElementById("selectedMethod").value;
+        const ids = ["meanBox", "medianBox", "modeBox", "geometricBox"];
+
+        ids.forEach(id => {
+            document.getElementById(id).style.outline = "none";
+            document.getElementById(id).style.transform = "scale(1)";
+        });
+
+        const selectedMap = {
+            mean: "meanBox",
+            median: "medianBox",
+            mode: "modeBox",
+            geometric: "geometricBox"
+        };
+
+        const box = document.getElementById(selectedMap[selected]);
+        if (box) {
+            box.style.outline = "3px solid var(--accent)";
+            box.style.transform = "scale(1.02)";
+            box.style.transition = "all .2s ease";
+        }
+    }
+
+    function simulateEstimates() {
+        clearStepSimulation();
+        estimates = generateEstimates();
+        renderEstimateChips();
+        renderResults();
+        drawEstimatesCanvas();
+    }
+
+    function stepSimulation() {
+        clearStepSimulation();
+        pendingStepEstimates = generateEstimates();
+        estimates = [];
+        renderEstimateChips();
+        drawEstimatesCanvas();
+
+        stepIndex = 0;
+        stepInterval = setInterval(() => {
+            if (stepIndex >= pendingStepEstimates.length) {
+                clearStepSimulation();
+                renderResults();
+                return;
+            }
+
+            estimates.push(pendingStepEstimates[stepIndex]);
+            renderEstimateChips();
+            drawEstimatesCanvas();
+            stepIndex++;
+        }, 250);
+    }
+
+    function clearStepSimulation() {
+        if (stepInterval) {
+            clearInterval(stepInterval);
+            stepInterval = null;
+        }
+    }
+
+    function compareMethods() {
+        if (estimates.length === 0) {
+            simulateEstimates();
+        } else {
+            renderResults();
+        }
+    }
+
+    function resetSimulation() {
+        clearStepSimulation();
+        estimates = [];
+        pendingStepEstimates = [];
+        stepIndex = 0;
+
+        renderEstimateChips();
+        document.getElementById("meanValue").textContent = "—";
+        document.getElementById("medianValue").textContent = "—";
+        document.getElementById("modeValue").textContent = "—";
+        document.getElementById("geometricValue").textContent = "—";
+
+        document.getElementById("meanError").textContent = "Error: —";
+        document.getElementById("medianError").textContent = "Error: —";
+        document.getElementById("modeError").textContent = "Error: —";
+        document.getElementById("geometricError").textContent = "Error: —";
+
+        document.getElementById("meanBar").style.width = "0%";
+        document.getElementById("medianBar").style.width = "0%";
+        document.getElementById("modeBar").style.width = "0%";
+        document.getElementById("geometricBar").style.width = "0%";
+
+        document.getElementById("comparisonTable").innerHTML =
+            `<tr><td colspan="4"><em>Sin datos aún.</em></td></tr>`;
+
+        document.getElementById("bestMethodMessage").innerHTML =
+            "Ejecutá una simulación para comparar qué método de agregación se aproxima más al valor real.";
+
+        document.getElementById("conceptualExplanation").innerHTML =
+            "Todavía no se ejecutó la simulación. Una vez generadas las estimaciones, aquí aparecerá una interpretación automática de los resultados.";
+
+        drawEstimatesCanvas();
+        highlightMethod();
+    }
+
+    function drawEstimatesCanvas() {
+        const canvas = document.getElementById("estimatesCanvas");
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+
+        canvas.width = rect.width * dpr;
+        canvas.height = 320 * dpr;
+
+        const ctx = canvas.getContext("2d");
+        ctx.scale(dpr, dpr);
+
+        const width = rect.width;
+        const height = 320;
+
+        const bg = getComputedStyle(document.body).getPropertyValue("--soft").trim();
+        const text = getComputedStyle(document.body).getPropertyValue("--text").trim();
+        const border = getComputedStyle(document.body).getPropertyValue("--border").trim();
+        const accent = getComputedStyle(document.body).getPropertyValue("--accent").trim();
+        const success = getComputedStyle(document.body).getPropertyValue("--success").trim();
+        const warning = getComputedStyle(document.body).getPropertyValue("--warning").trim();
+        const danger = getComputedStyle(document.body).getPropertyValue("--danger").trim();
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, width, height);
+
+        const marginLeft = 48;
+        const marginBottom = 40;
+        const marginTop = 24;
+        const marginRight = 20;
+        const plotW = width - marginLeft - marginRight;
+        const plotH = height - marginTop - marginBottom;
+
+        ctx.strokeStyle = border;
+        ctx.lineWidth = 1;
+
+        for (let i = 0; i <= 5; i++) {
+            const y = marginTop + (plotH * i / 5);
+            ctx.beginPath();
+            ctx.moveTo(marginLeft, y);
+            ctx.lineTo(marginLeft + plotW, y);
+            ctx.stroke();
+        }
+
+        ctx.strokeStyle = text;
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(marginLeft, marginTop);
+        ctx.lineTo(marginLeft, marginTop + plotH);
+        ctx.lineTo(marginLeft + plotW, marginTop + plotH);
+        ctx.stroke();
+
+        if (estimates.length === 0) {
+            ctx.fillStyle = text;
+            ctx.font = "15px Arial";
+            ctx.fillText("Sin simulación aún", marginLeft + 20, marginTop + 40);
+            return;
+        }
+
+        const trueValue = parseFloat(document.getElementById("trueValue").value);
+        const maxVal = Math.max(...estimates, trueValue) * 1.1;
+        const minVal = 0;
+
+        function xPos(i, n) {
+            return marginLeft + (i + 1) * (plotW / (n + 1));
+        }
+
+        function yPos(v) {
+            return marginTop + plotH - ((v - minVal) / (maxVal - minVal)) * plotH;
+        }
+
+        const trueY = yPos(trueValue);
+        ctx.strokeStyle = danger;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(marginLeft, trueY);
+        ctx.lineTo(marginLeft + plotW, trueY);
+        ctx.stroke();
+
+        ctx.fillStyle = danger;
+        ctx.font = "13px Arial";
+        ctx.fillText("Valor real: " + trueValue, marginLeft + 8, trueY - 8);
+
+        estimates.forEach((v, i) => {
+            const x = xPos(i, estimates.length);
+            const y = yPos(v);
+            ctx.fillStyle = accent;
+            ctx.beginPath();
+            ctx.arc(x, y, 5, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        const mMean = mean(estimates);
+        const mMedian = median(estimates);
+
+        ctx.fillStyle = success;
+        ctx.beginPath();
+        ctx.arc(marginLeft + plotW - 90, yPos(mMean), 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillText("Media", marginLeft + plotW - 75, yPos(mMean) + 4);
+
+        ctx.fillStyle = warning;
+        ctx.beginPath();
+        ctx.arc(marginLeft + plotW - 90, yPos(mMedian), 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillText("Mediana", marginLeft + plotW - 75, yPos(mMedian) + 4);
+    }
+
+    window.addEventListener("resize", drawEstimatesCanvas);
+
+    updateLabels();
+    drawEstimatesCanvas();
+    highlightMethod();
+</script>
+
+</body>
+</html>
