@@ -181,6 +181,454 @@ Este bloque reúne los recursos interactivos sobre **Random Forest**, organizado
         ↓
 7. Glosario Interactivo
 
+# 🧩 Clustering, K-Means y Clustering Jerárquico · Recursos interactivos de estudio
+
+> **Versión 2.0 mejorada del bloque de recursos sobre clustering**  
+> Material organizado para estudiar **aprendizaje no supervisado**, **K-Means**, **clustering jerárquico**, **dendrogramas**, **distancias**, **escalado**, **métricas de evaluación** e **interpretación de clusters**.
+
+---
+
+## 🎯 Objetivo general del bloque
+
+Este conjunto de recursos tiene como objetivo comprender el **clustering** como una técnica de **aprendizaje no supervisado** orientada a descubrir estructuras ocultas en los datos cuando no existe una etiqueta previa.
+
+A diferencia del aprendizaje supervisado, donde el modelo aprende a predecir una respuesta conocida, el clustering busca identificar **grupos naturales** de observaciones a partir de la similitud entre ellas.
+
+El bloque permite estudiar:
+
+- qué es el aprendizaje no supervisado;
+- qué significa agrupar observaciones sin etiquetas;
+- cómo se define la similitud entre datos;
+- por qué la distancia es central en clustering;
+- cómo funciona K-Means;
+- qué son los centroides;
+- cómo se interpreta el método del codo;
+- qué mide la silueta o silhouette;
+- cómo funciona el clustering jerárquico;
+- qué es un dendrograma;
+- cómo se corta un árbol jerárquico;
+- qué diferencias existen entre K-Means y clustering jerárquico;
+- qué cuidados deben tenerse con escala, outliers y variables;
+- cómo interpretar clusters de manera accionable.
+
+---
+
+## 🧭 Secuencia didáctica sugerida
+
+```text
+1. Clustering y aprendizaje no supervisado
+        ↓
+2. Distancia, similitud y escala
+        ↓
+3. K-Means y centroides
+        ↓
+4. Método del codo y silhouette
+        ↓
+5. Clustering jerárquico y dendrogramas
+        ↓
+6. Comparación entre métodos
+        ↓
+7. Cuestionario integrador
+        ↓
+8. Glosario interactivo
+```
+
+## 📚 Recursos interactivos
+
+| Orden | Recurso | Propósito didáctico | Acceso |
+| :---: | :--- | :--- | :---: |
+| **1** | **Clustering, K-Means y Jerárquico · Laboratorio Interactivo** | Presentar el tema completo mediante una guía visual e interactiva. Permite estudiar clustering no supervisado, K-Means, clustering jerárquico, dendrogramas, distancias, escala, método del codo y silhouette. | [![Abrir HTML](https://img.shields.io/badge/Abrir-HTML-1f4e79?style=for-the-badge)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/KNN_Clustering_kmeans_Jerarquico.html)<br>[![Ver código](https://img.shields.io/badge/Ver-código-0f766e?style=for-the-badge)](https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/KNN_Clustering_kmeans_Jerarquico.html) |
+| **2** | **Clustering, K-Means y Jerárquico · Cuestionario Interactivo** | Consolidar el aprendizaje mediante preguntas desarrolladas. Funciona como guía de estudio, repaso conceptual, preparación de examen o actividad de cierre. | [![Abrir HTML](https://img.shields.io/badge/Abrir-HTML-1f4e79?style=for-the-badge)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/KNN_clustering_kmeans_jerarquico_cuestionario_v2.html)<br>[![Ver código](https://img.shields.io/badge/Ver-código-0f766e?style=for-the-badge)](https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/KNN_clustering_kmeans_jerarquico_cuestionario_v2.html) |
+| **3** | **Clustering, K-Means y Jerárquico · Glosario Interactivo** | Servir como material permanente de consulta. Incluye conceptos sobre aprendizaje no supervisado, distancia, centroides, dendrogramas, linkage, preprocesamiento, métricas e interpretación de clusters. | [![Abrir HTML](https://img.shields.io/badge/Abrir-HTML-1f4e79?style=for-the-badge)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/KNN_glosario_clustering_kmeans_jerarquico.html)<br>[![Ver código](https://img.shields.io/badge/Ver-código-0f766e?style=for-the-badge)](https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/KNN_glosario_clustering_kmeans_jerarquico.html) |
+
+---
+
+## 🧩 Resumen didáctico de cada recurso
+
+### 1. Clustering, K-Means y Jerárquico · Laboratorio Interactivo
+
+Este recurso funciona como el **material principal del bloque**. Presenta una guía visual e interactiva para comprender el clustering desde la intuición hasta la comparación técnica entre métodos.
+
+Permite trabajar los conceptos centrales:
+
+- clustering como técnica no supervisada;
+- datos sin etiquetas;
+- grupos naturales;
+- distancia y similitud;
+- K-Means;
+- centroides;
+- número de clusters K;
+- método del codo;
+- silhouette;
+- clustering jerárquico;
+- dendrogramas;
+- linkage;
+- escalado de variables;
+- interpretación de resultados.
+
+El laboratorio permite observar que **K-Means agrupa por proximidad a centros**, mientras que el **clustering jerárquico construye una historia de semejanzas entre observaciones**.
+
+**Idea clave:**  
+El clustering busca descubrir estructura latente en los datos. K-Means lo hace mediante centroides; el clustering jerárquico lo hace mediante un árbol de fusiones o separaciones.
+
+---
+
+### 2. Clustering, K-Means y Jerárquico · Cuestionario Interactivo
+
+Este recurso funciona como **material de consolidación**. Está pensado para transformar la visualización y la teoría en comprensión conceptual.
+
+Puede utilizarse para:
+
+- repaso individual;
+- actividad en clase;
+- evaluación diagnóstica;
+- preparación de parcial;
+- discusión oral;
+- cierre de unidad;
+- guía de estudio autónomo.
+
+El cuestionario permite trabajar preguntas sobre:
+
+- qué es clustering;
+- qué es aprendizaje no supervisado;
+- diferencia entre clustering y clasificación;
+- funcionamiento de K-Means;
+- rol de los centroides;
+- elección del número de clusters;
+- método del codo;
+- silhouette;
+- clustering jerárquico;
+- dendrogramas;
+- criterios de linkage;
+- interpretación de clusters;
+- ventajas y limitaciones de cada método.
+
+**Idea clave:**  
+El cuestionario ayuda a que el estudiante no solo vea la simulación, sino que pueda explicar el tema con lenguaje técnico y ejemplos.
+
+---
+
+### 3. Clustering, K-Means y Jerárquico · Glosario Interactivo
+
+Este recurso funciona como **material permanente de consulta**. El glosario organiza los conceptos del tema en categorías y permite reforzar el vocabulario técnico necesario para estudiar clustering.
+
+Incluye conceptos relacionados con:
+
+- aprendizaje automático;
+- aprendizaje supervisado;
+- aprendizaje no supervisado;
+- clustering;
+- observaciones;
+- variables;
+- espacio de características;
+- distancia;
+- similitud;
+- K-Means;
+- centroides;
+- inicialización;
+- K-Means++;
+- WCSS;
+- método del codo;
+- silhouette;
+- clustering jerárquico;
+- dendrograma;
+- linkage;
+- single linkage;
+- complete linkage;
+- average linkage;
+- Ward;
+- escalado;
+- normalización;
+- estandarización;
+- outliers;
+- reducción de dimensionalidad;
+- PCA;
+- interpretación de clusters.
+
+**Idea clave:**  
+El glosario permite que el estudiante conecte términos técnicos con intuiciones, ejemplos y usos prácticos.
+
+---
+
+## 🧠 Mapa conceptual del bloque
+
+```text
+Clustering
+│
+├── 1. Aprendizaje automático
+│   ├── Aprendizaje supervisado
+│   ├── Aprendizaje no supervisado
+│   └── Descubrimiento de patrones
+│
+├── 2. Problema central
+│   ├── Datos sin etiquetas
+│   ├── Observaciones
+│   ├── Variables
+│   ├── Similitud
+│   └── Distancia
+│
+├── 3. K-Means
+│   ├── Elegir K
+│   ├── Inicializar centroides
+│   ├── Asignar puntos al centro más cercano
+│   ├── Recalcular centroides
+│   ├── Repetir hasta converger
+│   └── Interpretar clusters
+│
+├── 4. Evaluación de K-Means
+│   ├── WCSS
+│   ├── Método del codo
+│   ├── Silhouette
+│   ├── Compactación
+│   └── Separación
+│
+├── 5. Clustering jerárquico
+│   ├── Enfoque aglomerativo
+│   ├── Enfoque divisivo
+│   ├── Dendrograma
+│   ├── Altura de corte
+│   └── Número de clusters
+│
+├── 6. Linkage
+│   ├── Single linkage
+│   ├── Complete linkage
+│   ├── Average linkage
+│   └── Ward
+│
+├── 7. Preprocesamiento
+│   ├── Escalado
+│   ├── Normalización
+│   ├── Estandarización
+│   ├── Outliers
+│   └── Variables irrelevantes
+│
+└── 8. Interpretación
+    ├── Perfil de cluster
+    ├── Segmentos accionables
+    ├── Visualización
+    ├── Validación
+    └── Decisión práctica
+```
+
+---
+
+## 🔎 Guía rápida de lectura
+
+### Para comenzar desde cero
+
+Usar primero:
+
+1. **Clustering, K-Means y Jerárquico · Laboratorio Interactivo**
+
+Este recurso permite presentar la intuición general del tema. Es recomendable comenzar mostrando que el clustering busca descubrir grupos sin una etiqueta previa.
+
+---
+
+### Para explicar K-Means
+
+Dentro del laboratorio principal, trabajar especialmente:
+
+- centroides;
+- elección de K;
+- asignación de puntos;
+- actualización de centroides;
+- convergencia;
+- método del codo;
+- silhouette.
+
+La explicación puede seguir este flujo:
+
+```text
+Elegir K
+        ↓
+Inicializar centroides
+        ↓
+Asignar cada punto al centroide más cercano
+        ↓
+Recalcular centroides
+        ↓
+Repetir
+        ↓
+Obtener clusters finales
+```
+
+---
+
+### Para explicar clustering jerárquico
+
+Dentro del laboratorio principal, trabajar:
+
+- dendrograma;
+- fusión de observaciones;
+- altura de unión;
+- criterio de linkage;
+- corte del árbol;
+- interpretación del número de clusters.
+
+La explicación puede seguir este flujo:
+
+```text
+Calcular distancias
+        ↓
+Unir observaciones o grupos más parecidos
+        ↓
+Actualizar distancias entre grupos
+        ↓
+Repetir fusiones
+        ↓
+Construir dendrograma
+        ↓
+Cortar el árbol para definir clusters
+```
+
+---
+
+### Para repasar y evaluar
+
+Usar al final:
+
+2. **Cuestionario Interactivo**
+3. **Glosario Interactivo**
+
+El cuestionario sirve para consolidar comprensión.  
+El glosario sirve como material de consulta y repaso conceptual.
+
+---
+
+## 🧩 Comparación entre K-Means y Clustering Jerárquico
+
+| Criterio | K-Means | Clustering jerárquico |
+| :--- | :--- | :--- |
+| Tipo de método | Particional | Jerárquico |
+| Idea central | Agrupar puntos alrededor de centroides | Construir una estructura de semejanzas |
+| Resultado principal | K clusters y sus centroides | Dendrograma |
+| Necesita elegir K al inicio | Sí | No necesariamente |
+| Representación visual | Centros y grupos en el espacio | Árbol de fusiones o divisiones |
+| Sensibilidad a la escala | Alta | Alta |
+| Sensibilidad a outliers | Alta | Depende del linkage |
+| Interpretabilidad | Buena si los clusters son compactos | Muy buena por el dendrograma |
+| Costo computacional | Más eficiente en datasets grandes | Más costoso en datasets grandes |
+| Mejor uso | Segmentación rápida con muchos datos | Exploración e interpretación de estructura |
+| Limitación típica | Puede fallar con clusters no esféricos | Puede ser costoso y sensible al criterio de linkage |
+
+---
+
+## 🧪 Preguntas guía para trabajar en clase
+
+1. ¿Qué significa que el clustering sea una técnica de aprendizaje no supervisado?
+2. ¿Cuál es la diferencia entre clasificación y clustering?
+3. ¿Por qué la distancia es tan importante para agrupar datos?
+4. ¿Qué ocurre si las variables están en escalas muy diferentes?
+5. ¿Qué es un centroide en K-Means?
+6. ¿Por qué K-Means necesita definir K antes de entrenar?
+7. ¿Qué problema intenta resolver el método del codo?
+8. ¿Qué mide el coeficiente silhouette?
+9. ¿Qué es un dendrograma?
+10. ¿Cómo se decide el número de clusters en clustering jerárquico?
+11. ¿Qué diferencia hay entre single linkage y complete linkage?
+12. ¿Por qué los outliers pueden afectar el resultado?
+13. ¿Qué significa que un cluster sea compacto?
+14. ¿Qué significa que dos clusters estén bien separados?
+15. ¿Cómo se interpreta un cluster en un problema real?
+16. ¿Por qué clustering no debe confundirse con predicción supervisada?
+17. ¿Qué ventajas tiene K-Means?
+18. ¿Qué ventajas tiene el clustering jerárquico?
+19. ¿Cuándo conviene usar K-Means?
+20. ¿Cuándo conviene usar clustering jerárquico?
+
+---
+
+## 🧑‍🏫 Uso sugerido para una clase
+
+| Momento de la clase | Recurso sugerido | Actividad |
+| :--- | :--- | :--- |
+| Inicio | Laboratorio Interactivo | Presentar la idea de agrupar sin etiquetas. |
+| Desarrollo conceptual | Laboratorio Interactivo | Explicar distancia, similitud y clusters. |
+| Desarrollo técnico I | Laboratorio Interactivo | Mostrar el funcionamiento de K-Means. |
+| Desarrollo técnico II | Laboratorio Interactivo | Explicar dendrogramas y clustering jerárquico. |
+| Comparación | Laboratorio Interactivo | Comparar ventajas y limitaciones de cada método. |
+| Cierre | Cuestionario Interactivo | Repasar con preguntas desarrolladas. |
+| Estudio autónomo | Glosario Interactivo | Consultar definiciones y reforzar vocabulario técnico. |
+
+---
+
+## 🧩 Relación entre los recursos
+
+| Concepto | Recurso principal | Recurso complementario |
+| :--- | :--- | :--- |
+| Aprendizaje no supervisado | Laboratorio Interactivo | Glosario |
+| Clustering | Laboratorio Interactivo | Cuestionario |
+| Distancia | Laboratorio Interactivo | Glosario |
+| Similitud | Laboratorio Interactivo | Glosario |
+| K-Means | Laboratorio Interactivo | Cuestionario |
+| Centroide | Laboratorio Interactivo | Glosario |
+| Número de clusters K | Laboratorio Interactivo | Cuestionario |
+| Método del codo | Laboratorio Interactivo | Glosario |
+| Silhouette | Laboratorio Interactivo | Cuestionario |
+| Clustering jerárquico | Laboratorio Interactivo | Cuestionario |
+| Dendrograma | Laboratorio Interactivo | Glosario |
+| Linkage | Laboratorio Interactivo | Glosario |
+| Escalado | Glosario | Cuestionario |
+| Outliers | Glosario | Cuestionario |
+| Interpretación de clusters | Cuestionario | Glosario |
+| Repaso conceptual | Cuestionario | Glosario |
+
+---
+
+## 🧠 Síntesis conceptual
+
+### Clustering
+
+El clustering es una técnica que busca agrupar observaciones parecidas entre sí. No parte de etiquetas conocidas, sino que intenta descubrir una estructura latente dentro de los datos.
+
+---
+
+### K-Means
+
+K-Means agrupa observaciones alrededor de centroides. El algoritmo necesita que se defina previamente el número de clusters K. Luego asigna puntos al centroide más cercano, recalcula los centroides y repite el proceso hasta estabilizar los grupos.
+
+---
+
+### Clustering jerárquico
+
+El clustering jerárquico construye una estructura en forma de árbol. Esa estructura se representa mediante un dendrograma, que permite observar en qué orden se fusionan las observaciones o grupos y a qué distancia ocurre cada unión.
+
+---
+
+### Dendrograma
+
+El dendrograma es una representación visual de las relaciones jerárquicas entre observaciones o grupos. Permite decidir el número de clusters cortando el árbol a una determinada altura.
+
+---
+
+### Distancia
+
+La distancia define qué tan parecidas o diferentes son dos observaciones. En clustering, elegir una medida de distancia adecuada es fundamental, porque el algoritmo agrupa según esa noción de cercanía.
+
+---
+
+### Escalado
+
+El escalado evita que una variable domine artificialmente el cálculo de distancias por estar medida en unidades mayores. En clustering, escalar las variables suele ser una práctica necesaria.
+
+---
+
+## 📌 Tabla de links directos
+
+| Archivo | Abrir en HTML | Ver código en GitHub |
+| :--- | :---: | :---: |
+| `KNN_Clustering_kmeans_Jerarquico.html` | [Abrir HTML](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/KNN_Clustering_kmeans_Jerarquico.html) | [Ver código](https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/KNN_Clustering_kmeans_Jerarquico.html) |
+| `KNN_clustering_kmeans_jerarquico_cuestionario_v2.html` | [Abrir HTML](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/KNN_clustering_kmeans_jerarquico_cuestionario_v2.html) | [Ver código](https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/KNN_clustering_kmeans_jerarquico_cuestionario_v2.html) |
+| `KNN_glosario_clustering_kmeans_jerarquico.html` | [Abrir HTML](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/KNN_glosario_clustering_kmeans_jerarquico.html) | [Ver código](https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/KNN_glosario_clustering_kmeans_jerarquico.html) |
+
+---
+
+## 🧠 Frase síntesis
+
+> Clustering es descubrir grupos; K-Means los busca alrededor de centros; el clustering jerárquico los construye como una historia de semejanzas.
+
+---
+
 
 
 
