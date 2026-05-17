@@ -623,6 +623,332 @@ El escalado evita que una variable domine artificialmente el cálculo de distanc
 
 ---
 
+# 📘 Parcial Ciencia de Datos · Banco de Preguntas y Glosario Interactivo
+
+> **Versión 2.0 mejorada del bloque de recursos para el parcial**  
+> Material organizado para estudiar, repasar y consolidar los conceptos principales de Ciencia de Datos mediante un **banco de preguntas** y un **glosario interactivo**.
+
+---
+
+## 🎯 Objetivo general del bloque
+
+Este bloque reúne dos recursos centrales para preparar el parcial de Ciencia de Datos:
+
+1. **Banco de preguntas del parcial**, orientado a practicar respuestas completas, desarrollar argumentos técnicos y revisar conceptos clave.
+2. **Glosario del parcial**, pensado como material permanente de consulta para reforzar vocabulario, definiciones y relaciones entre conceptos.
+
+La finalidad es que el estudiante no solo memorice términos, sino que pueda:
+
+- explicar conceptos con claridad;
+- relacionar ideas entre sí;
+- responder preguntas de examen con desarrollo;
+- diferenciar técnicas, modelos y enfoques;
+- reconocer aplicaciones prácticas;
+- preparar una respuesta escrita más sólida;
+- usar el glosario como guía de repaso rápido.
+
+---
+
+## 🧭 Secuencia didáctica sugerida
+
+```text
+1. Revisar el glosario
+        ↓
+2. Identificar conceptos centrales
+        ↓
+3. Resolver preguntas del banco
+        ↓
+4. Comparar respuestas con definiciones
+        ↓
+5. Reforzar conceptos débiles
+        ↓
+6. Repasar antes del parcial
+```
+
+---
+
+## 📚 Recursos interactivos
+
+| Orden | Recurso | Propósito didáctico | Acceso |
+| :---: | :--- | :--- | :---: |
+| **1** | **Banco de Preguntas · Parcial Ciencia de Datos** | Practicar preguntas posibles del parcial con respuestas desarrolladas, orientadas a consolidar comprensión conceptual y capacidad de explicación. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-1f4e79?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Banco_preguntas_parcial_ciencia_datos.html)<br>[![Ver código](https://img.shields.io/badge/Ver%20código-0f766e?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Banco_preguntas_parcial_ciencia_datos.html) |
+| **2** | **Glosario · Parcial Ciencia de Datos** | Consultar definiciones, términos técnicos y relaciones conceptuales fundamentales para estudiar el parcial. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-7c3aed?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Glosario_parcial_ciencia_datos.html)<br>[![Ver código](https://img.shields.io/badge/Ver%20código-f59e0b?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Glosario_parcial_ciencia_datos.html) |
+
+---
+
+## 🧩 Resumen didáctico de cada recurso
+
+### 1. Banco de Preguntas · Parcial Ciencia de Datos
+
+Este recurso funciona como una **guía de práctica para el parcial**. Su objetivo principal es ayudar al estudiante a entrenar la capacidad de responder preguntas con desarrollo, precisión conceptual y ejemplos.
+
+Puede utilizarse para:
+
+- repasar antes del examen;
+- practicar respuestas escritas;
+- identificar temas que necesitan refuerzo;
+- preparar explicaciones orales;
+- construir una guía de estudio personal;
+- simular una instancia de parcial;
+- comparar conceptos relacionados.
+
+El banco de preguntas permite transformar el estudio pasivo en una práctica activa. En lugar de solo leer definiciones, el estudiante debe explicar, conectar, justificar y aplicar conceptos.
+
+**Idea clave:**  
+El banco de preguntas sirve para comprobar si el estudiante realmente puede expresar lo que entiende.
+
+---
+
+### 2. Glosario · Parcial Ciencia de Datos
+
+Este recurso funciona como **material de consulta permanente**. Reúne conceptos centrales que pueden aparecer en el parcial y permite revisar definiciones de manera rápida y ordenada.
+
+Puede utilizarse para:
+
+- repasar vocabulario técnico;
+- aclarar dudas conceptuales;
+- estudiar antes de responder preguntas;
+- revisar diferencias entre términos;
+- construir mapas conceptuales;
+- preparar explicaciones más precisas;
+- reforzar temas antes del examen.
+
+El glosario es especialmente útil porque en Ciencia de Datos muchos conceptos están conectados: datos, variables, modelos, entrenamiento, evaluación, overfitting, métricas, clasificación, regresión, clustering y validación.
+
+**Idea clave:**  
+El glosario permite estudiar los conceptos como una red de ideas, no como definiciones aisladas.
+
+---
+
+## 🧠 Mapa conceptual del bloque
+
+```text
+Parcial Ciencia de Datos
+│
+├── 1. Conceptos fundamentales
+│   ├── Ciencia de Datos
+│   ├── Datos
+│   ├── Dataset
+│   ├── Variables
+│   ├── Observaciones
+│   └── Problema de negocio
+│
+├── 2. Aprendizaje automático
+│   ├── Machine Learning
+│   ├── Aprendizaje supervisado
+│   ├── Aprendizaje no supervisado
+│   ├── Clasificación
+│   ├── Regresión
+│   └── Clustering
+│
+├── 3. Modelos y entrenamiento
+│   ├── Entrenamiento
+│   ├── Test
+│   ├── Validación
+│   ├── Generalización
+│   ├── Overfitting
+│   └── Underfitting
+│
+├── 4. Evaluación
+│   ├── Accuracy
+│   ├── Precision
+│   ├── Recall
+│   ├── F1-score
+│   ├── Matriz de confusión
+│   └── Métricas de error
+│
+├── 5. Modelos frecuentes
+│   ├── Árboles de decisión
+│   ├── Random Forest
+│   ├── KNN
+│   ├── K-Means
+│   └── Clustering jerárquico
+│
+└── 6. Preparación del parcial
+    ├── Glosario
+    ├── Banco de preguntas
+    ├── Respuestas desarrolladas
+    ├── Comparación de conceptos
+    └── Repaso final
+```
+
+---
+
+## 🔎 Guía rápida de uso
+
+### Para estudiar desde cero
+
+Usar primero:
+
+1. **Glosario · Parcial Ciencia de Datos**
+2. **Banco de Preguntas · Parcial Ciencia de Datos**
+
+Primero conviene revisar los términos principales y luego practicar las preguntas.
+
+---
+
+### Para preparar el parcial
+
+La secuencia recomendada es:
+
+```text
+Leer definición
+        ↓
+Explicar con tus palabras
+        ↓
+Resolver una pregunta relacionada
+        ↓
+Comparar con el glosario
+        ↓
+Corregir y ampliar la respuesta
+```
+
+---
+
+### Para repasar el día anterior
+
+Usar el siguiente recorrido:
+
+```text
+1. Revisar conceptos débiles
+2. Leer preguntas clave
+3. Practicar respuestas cortas
+4. Repasar diferencias entre modelos
+5. Revisar métricas de evaluación
+6. Cerrar con el mapa conceptual
+```
+
+---
+
+## 🧩 Relación entre los recursos
+
+| Necesidad de estudio | Recurso recomendado | Uso sugerido |
+| :--- | :--- | :--- |
+| Entender conceptos básicos | Glosario | Leer definiciones y conectar conceptos. |
+| Practicar respuestas | Banco de preguntas | Responder sin mirar y luego revisar. |
+| Preparar examen escrito | Banco de preguntas | Desarrollar respuestas completas. |
+| Repasar vocabulario técnico | Glosario | Usar como diccionario conceptual. |
+| Identificar temas débiles | Banco de preguntas | Marcar preguntas difíciles. |
+| Mejorar precisión conceptual | Glosario | Revisar definiciones exactas. |
+| Hacer repaso final | Ambos recursos | Alternar preguntas y definiciones. |
+
+---
+
+## 🧪 Preguntas guía para trabajar en clase
+
+1. ¿Qué diferencia hay entre datos, información y conocimiento?
+2. ¿Qué es un dataset?
+3. ¿Qué diferencia hay entre variable y observación?
+4. ¿Qué es Ciencia de Datos?
+5. ¿Qué relación existe entre Ciencia de Datos, Estadística y Machine Learning?
+6. ¿Qué es aprendizaje supervisado?
+7. ¿Qué es aprendizaje no supervisado?
+8. ¿Cuál es la diferencia entre clasificación y regresión?
+9. ¿Qué es clustering?
+10. ¿Qué significa entrenar un modelo?
+11. ¿Por qué se divide un dataset en entrenamiento y prueba?
+12. ¿Qué significa que un modelo generalice bien?
+13. ¿Qué es overfitting?
+14. ¿Qué es underfitting?
+15. ¿Qué es una matriz de confusión?
+16. ¿Qué mide accuracy?
+17. ¿Qué mide precision?
+18. ¿Qué mide recall?
+19. ¿Qué mide F1-score?
+20. ¿Por qué no alcanza con mirar una sola métrica?
+
+---
+
+## 🧑‍🏫 Uso sugerido para una clase
+
+| Momento de la clase | Recurso sugerido | Actividad |
+| :--- | :--- | :--- |
+| Inicio | Glosario | Repasar conceptos centrales del parcial. |
+| Desarrollo | Banco de preguntas | Resolver preguntas seleccionadas. |
+| Discusión | Banco de preguntas | Comparar respuestas entre estudiantes. |
+| Corrección | Glosario | Ajustar vocabulario y precisión conceptual. |
+| Cierre | Ambos recursos | Armar mapa de temas prioritarios. |
+| Estudio autónomo | Glosario | Repasar definiciones antes del examen. |
+| Preparación final | Banco de preguntas | Simular respuestas de parcial. |
+
+---
+
+## 🧠 Estrategia de estudio recomendada
+
+### Paso 1 · Lectura del glosario
+
+Leer primero las definiciones generales para construir una base conceptual.
+
+```text
+Concepto
+        ↓
+Definición
+        ↓
+Ejemplo
+        ↓
+Relación con otros conceptos
+```
+
+---
+
+### Paso 2 · Resolución del banco de preguntas
+
+Responder las preguntas sin mirar el glosario. Luego revisar si la respuesta fue clara, completa y técnicamente correcta.
+
+```text
+Pregunta
+        ↓
+Respuesta propia
+        ↓
+Comparación con el material
+        ↓
+Corrección
+        ↓
+Versión final
+```
+
+---
+
+### Paso 3 · Repaso cruzado
+
+Relacionar cada pregunta con uno o más términos del glosario.
+
+| Pregunta | Conceptos que conviene revisar |
+| :--- | :--- |
+| Preguntas sobre modelos | Machine Learning, entrenamiento, validación, generalización |
+| Preguntas sobre clasificación | Variable objetivo, clases, accuracy, matriz de confusión |
+| Preguntas sobre regresión | Variable numérica, error, predicción, evaluación |
+| Preguntas sobre clustering | Aprendizaje no supervisado, distancia, grupos, similitud |
+| Preguntas sobre métricas | Accuracy, precision, recall, F1-score |
+| Preguntas sobre sobreajuste | Overfitting, underfitting, sesgo, varianza |
+
+---
+
+## 📌 Tabla de links directos
+
+| Archivo | Abrir en HTML | Ver código en GitHub |
+| :--- | :---: | :---: |
+| `Banco_preguntas_parcial_ciencia_datos.html` | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-1f4e79?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Banco_preguntas_parcial_ciencia_datos.html) | [![Ver código](https://img.shields.io/badge/Ver%20código-0f766e?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Banco_preguntas_parcial_ciencia_datos.html) |
+| `Glosario_parcial_ciencia_datos.html` | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-7c3aed?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Glosario_parcial_ciencia_datos.html) | [![Ver código](https://img.shields.io/badge/Ver%20código-f59e0b?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Glosario_parcial_ciencia_datos.html) |
+
+---
+
+## 🧠 Frase síntesis
+
+> El glosario permite comprender los conceptos; el banco de preguntas permite comprobar si realmente podemos explicarlos.
+
+---
+
+## ⚠️ Nota sobre los archivos
+
+Los archivos incluidos en este bloque son:
+
+```text
+Banco_preguntas_parcial_ciencia_datos.html
+Glosario_parcial_ciencia_datos.html
+```
+
+
 ## 🧠 Frase síntesis
 
 > Clustering es descubrir grupos; K-Means los busca alrededor de centros; el clustering jerárquico los construye como una historia de semejanzas.
