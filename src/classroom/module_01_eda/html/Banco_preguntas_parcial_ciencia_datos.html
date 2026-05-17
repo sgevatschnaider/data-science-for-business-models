@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Banco de Preguntas · Ciencia de Datos · Parcial Interactivo 2.0</title>
+  <meta name="description" content="Banco interactivo de 65 preguntas y respuestas para parcial introductorio de Ciencia de Datos: EDA, datos faltantes, outliers, regresión, métricas, validación cruzada, series, clasificación, árboles, Random Forest y clustering." />
+  <style>
+    :root {
+      --bg:#07111f;
+      --bg2:#0b1628;
+      --panel:rgba(15,30,50,.84);
+      --panel2:rgba(22,43,70,.96);
+      --card:rgba(255,255,255,.055);
+      --text:#ecf4ff;
+      --muted:#a9bbd1;
+      --line:rgba(255,255,255,.14);
+      --primary:#38bdf8;
+      --primary2:#8b5cf6;
+      --good:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --shadow:0 24px 70px rgba(0,0,0,.36);
+      --radius:24px;
+      --code:#07101d;
+      --chip:rgba(56,189,248,.14);
+    }
+    html[data-theme="light"] {
+      --bg:#f4f7fb;
+      --bg2:#e8eef7;
+      --panel:rgba(255,255,255,.88);
+      --panel2:#ffffff;
+      --card:rgba(15,23,42,.045);
+      --text:#102033;
+      --muted:#52647a;
+      --line:rgba(16,32,51,.14);
+      --primary:#0369a1;
+      --primary2:#6d28d9;
+      --good:#047857;
+      --warn:#b45309;
+      --bad:#be123c;
+      --shadow:0 24px 60px rgba(35,56,86,.15);
+      --code:#eef4fb;
+      --chip:rgba(3,105,161,.11);
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(56,189,248,.20), transparent 30rem),
+        radial-gradient(circle at 95% 8%, rgba(139,92,246,.20), transparent 32rem),
+        radial-gradient(circle at 50% 85%, rgba(52,211,153,.10), transparent 34rem),
+        linear-gradient(180deg,var(--bg),var(--bg2) 62%,var(--bg));
+      min-height:100vh;
+    }
+    .progressTop {
+      position:fixed; inset:0 auto auto 0; height:4px; width:0%;
+      background:linear-gradient(90deg,var(--primary),var(--primary2),var(--good));
+      z-index:1000; box-shadow:0 0 18px rgba(56,189,248,.55);
+    }
+    .layout {
+      display:grid;
+      grid-template-columns:330px minmax(0,1fr);
+      gap:22px;
+      width:min(1480px, calc(100% - 28px));
+      margin:0 auto;
+      padding:18px 0 42px;
+    }
+    aside {
+      position:sticky; top:14px;
+      height:calc(100vh - 28px);
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:28px;
+      background:var(--panel);
+      backdrop-filter:blur(18px);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    main { min-width:0; }
+    .brand { display:flex; gap:12px; align-items:center; margin-bottom:16px; }
+    .brandMark {
+      width:46px; height:46px; border-radius:16px;
+      display:grid; place-items:center; color:#fff; font-weight:950;
+      background:linear-gradient(135deg,var(--primary),var(--primary2));
+      box-shadow:0 16px 34px rgba(56,189,248,.22);
+    }
+    .brand h1 { margin:0; font-size:1.05rem; line-height:1.15; }
+    .brand small { display:block; color:var(--muted); margin-top:3px; }
+    .searchBox {
+      display:flex; align-items:center; gap:9px; padding:11px 13px;
+      border-radius:18px; background:var(--panel2); border:1px solid var(--line);
+      margin:12px 0;
+    }
+    .searchBox input {
+      border:0; outline:0; background:transparent; color:var(--text);
+      width:100%; font-size:.94rem;
+    }
+    .sideGroup { margin:16px 0; }
+    .sideGroup h3 {
+      color:var(--muted); text-transform:uppercase; letter-spacing:.08em;
+      font-size:.76rem; margin:0 0 10px;
+    }
+    .btnGrid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    button, .pill {
+      border:1px solid var(--line);
+      color:var(--text);
+      background:var(--panel2);
+      border-radius:16px;
+      padding:10px 12px;
+      font-weight:850;
+      cursor:pointer;
+      transition:transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+    button:hover, .pill:hover { transform:translateY(-1px); border-color:var(--primary); }
+    button.primary {
+      background:linear-gradient(135deg,var(--primary),var(--primary2));
+      border-color:transparent;
+      color:white;
+    }
+    button.ghost { background:transparent; }
+    button.active { background:var(--chip); border-color:var(--primary); }
+    .filterList { display:flex; flex-direction:column; gap:7px; }
+    .filterBtn {
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
+      border-radius:15px;
+      font-size:.86rem;
+      text-align:left;
+      padding:9px 10px;
+    }
+    .filterBtn span:first-child {
+      min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    }
+    .filterBtn .count {
+      color:var(--primary); background:var(--chip); padding:3px 7px; border-radius:999px; font-size:.76rem;
+    }
+    .progressCard {
+      padding:14px; border:1px solid var(--line); border-radius:20px;
+      background:linear-gradient(135deg,rgba(56,189,248,.11),rgba(139,92,246,.08));
+    }
+    .progressMeta { display:flex; justify-content:space-between; color:var(--muted); font-weight:800; font-size:.86rem; margin-bottom:8px; }
+    .bar { height:10px; border-radius:999px; background:rgba(148,163,184,.2); overflow:hidden; }
+    .bar span { display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--primary),var(--good)); border-radius:inherit; transition:width .25s ease; }
+    .hero {
+      position:relative; overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:34px;
+      padding:30px;
+      background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.025)), var(--panel);
+      box-shadow:var(--shadow);
+    }
+    .heroGrid {
+      display:grid;
+      grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);
+      gap:22px;
+      align-items:stretch;
+    }
+    .eyebrow {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border-radius:999px; background:var(--chip);
+      color:var(--primary); text-transform:uppercase; letter-spacing:.09em;
+      font-size:.78rem; font-weight:950; margin-bottom:16px;
+    }
+    h2 {
+      font-size:clamp(2rem,4.4vw,4.35rem);
+      line-height:.96; margin:0 0 16px; letter-spacing:-.06em;
+    }
+    h3 { margin:0 0 10px; font-size:1.25rem; }
+    p { color:var(--muted); line-height:1.68; }
+    .lead { font-size:1.07rem; max-width:860px; margin:0; }
+    .heroStats {
+      display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:22px;
+    }
+    .stat {
+      border:1px solid var(--line); border-radius:20px; padding:14px;
+      background:var(--panel2);
+    }
+    .stat strong { display:block; font-size:1.5rem; }
+    .stat span { color:var(--muted); font-weight:800; font-size:.82rem; }
+    canvas {
+      width:100%; min-height:300px; display:block; border-radius:24px;
+      border:1px solid var(--line); background:var(--code);
+    }
+    .section {
+      margin:22px 0;
+      border:1px solid var(--line);
+      border-radius:30px;
+      padding:24px;
+      background:var(--panel);
+      box-shadow:var(--shadow);
+    }
+    .sectionTitle {
+      display:flex; align-items:flex-end; justify-content:space-between; gap:18px; margin-bottom:18px;
+    }
+    .sectionTitle h3 { font-size:1.45rem; letter-spacing:-.03em; margin:0; }
+    .sectionTitle p { margin:4px 0 0; max-width:900px; }
+    .mapGrid { display:grid; grid-template-columns:repeat(13,minmax(78px,1fr)); gap:10px; overflow-x:auto; padding-bottom:8px; }
+    .mapNode {
+      min-height:112px;
+      border:1px solid var(--line); border-radius:19px;
+      padding:12px; background:var(--panel2);
+      position:relative; overflow:hidden;
+    }
+    .mapNode::after {
+      content:""; position:absolute; right:-40px; bottom:-50px; width:120px; height:120px;
+      background:radial-gradient(circle,rgba(56,189,248,.2),transparent 68%); border-radius:50%;
+    }
+    .mapNode b { display:block; font-size:.92rem; margin-bottom:7px; position:relative; z-index:1; }
+    .mapNode small { color:var(--muted); line-height:1.35; position:relative; z-index:1; }
+    .labs {
+      display:grid; grid-template-columns:minmax(0,1fr) 330px; gap:18px;
+    }
+    .controlPanel {
+      border:1px solid var(--line); border-radius:24px; background:var(--panel2); padding:18px;
+    }
+    label {
+      display:block; color:var(--muted); font-size:.78rem; text-transform:uppercase;
+      letter-spacing:.08em; font-weight:950; margin:12px 0 6px;
+    }
+    select, input[type=range] {
+      width:100%;
+      background:var(--code);
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:13px;
+      padding:10px;
+      font-weight:800;
+    }
+    input[type=range] { padding:0; accent-color:var(--primary); }
+    .metric {
+      display:flex; justify-content:space-between; gap:10px;
+      border-bottom:1px solid var(--line); padding:10px 0;
+      color:var(--muted); font-size:.9rem;
+    }
+    .metric:last-child { border-bottom:0; }
+    .metric strong { color:var(--text); }
+    .questionTools {
+      display:flex; flex-wrap:wrap; gap:10px; margin:14px 0 0;
+    }
+    .questionGrid { display:grid; gap:14px; }
+    .qCard {
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:var(--panel2);
+      overflow:hidden;
+      transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+    .qCard:hover { transform:translateY(-1px); border-color:var(--primary); box-shadow:0 18px 45px rgba(0,0,0,.14); }
+    .qHead {
+      display:grid; grid-template-columns:56px minmax(0,1fr) auto; gap:14px;
+      align-items:center; padding:18px; cursor:pointer;
+    }
+    .qBadge {
+      width:48px; height:48px; border-radius:17px; display:grid; place-items:center;
+      color:white; font-weight:950;
+      background:linear-gradient(135deg,var(--primary),var(--primary2));
+    }
+    .qTitle h4 { margin:0 0 6px; font-size:1.08rem; line-height:1.35; }
+    .qTitle .meta { color:var(--muted); font-size:.84rem; font-weight:800; display:flex; flex-wrap:wrap; gap:8px; }
+    .tag {
+      display:inline-flex; align-items:center; padding:5px 8px; border-radius:999px;
+      background:var(--chip); color:var(--primary); font-weight:900; font-size:.76rem;
+    }
+    .qActions { display:flex; gap:8px; align-items:center; }
+    .markBtn.studied { background:rgba(52,211,153,.14); border-color:var(--good); color:var(--good); }
+    .chev { color:var(--muted); font-size:1.25rem; transition:transform .2s ease; }
+    .qCard.open .chev { transform:rotate(180deg); }
+    .qBody { display:none; padding:0 22px 22px 88px; }
+    .qCard.open .qBody { display:block; }
+    .answer p { margin:12px 0; }
+    .formula {
+      margin:12px 0; padding:14px 16px;
+      border:1px solid rgba(56,189,248,.35);
+      border-radius:18px; background:var(--code);
+      font-family:Cambria, Georgia, "Times New Roman", serif;
+      font-size:1.14rem; font-weight:800; color:var(--good);
+      overflow-x:auto; line-height:1.65;
+    }
+    .formula::before {
+      content:"fórmula"; text-transform:uppercase; letter-spacing:.09em;
+      font-family:Inter, system-ui, sans-serif; color:var(--primary);
+      font-size:.62rem; margin-right:10px; vertical-align:middle;
+    }
+    .examBox {
+      display:none; margin-top:18px; border:1px solid var(--line); border-radius:24px; background:var(--panel2); padding:18px;
+    }
+    .examBox.active { display:block; }
+    .examList { display:grid; gap:12px; }
+    .examItem {
+      border:1px solid var(--line); border-radius:18px; padding:14px; background:var(--card);
+    }
+    .examItem b { color:var(--primary); }
+    .answerToggle { margin-top:10px; }
+    .miniGrid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+    .miniCard {
+      padding:15px; border-radius:20px; border:1px solid var(--line); background:var(--panel2);
+    }
+    .miniCard b { display:block; margin-bottom:8px; color:var(--text); }
+    .miniCard span { color:var(--muted); line-height:1.45; font-size:.9rem; }
+    .empty {
+      display:none; text-align:center; padding:30px; color:var(--muted);
+      border:1px dashed var(--line); border-radius:22px; background:var(--card);
+    }
+    footer { color:var(--muted); text-align:center; padding:28px 0 4px; }
+    @media (max-width:1100px) {
+      .layout { grid-template-columns:1fr; }
+      aside { position:relative; height:auto; }
+      .heroGrid, .labs { grid-template-columns:1fr; }
+      .heroStats, .miniGrid { grid-template-columns:repeat(2,1fr); }
+      .mapGrid { grid-template-columns:repeat(13,120px); }
+    }
+    @media (max-width:680px) {
+      .layout { width:min(100% - 16px, 1480px); }
+      .hero { padding:20px; }
+      .heroStats, .miniGrid { grid-template-columns:1fr; }
+      .qHead { grid-template-columns:46px 1fr; }
+      .qActions { grid-column:1 / -1; justify-content:space-between; }
+      .qBody { padding:0 18px 20px; }
+    }
+    @media print {
+      aside,.questionTools,.controlPanel,.hero canvas,.labs,.progressTop { display:none !important; }
+      .layout { display:block; width:100%; }
+      body { background:white !important; color:#111 !important; }
+      .hero,.section,.qCard { box-shadow:none; break-inside:avoid; }
+      .qBody { display:block !important; padding:0 18px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progressTop" id="progressTop"></div>
+  <div class="layout">
+    <aside>
+      <div class="brand">
+        <div class="brandMark">DS</div>
+        <div>
+          <h1>Banco parcial · Ciencia de Datos</h1>
+          <small>65 preguntas con respuestas desarrolladas</small>
+        </div>
+      </div>
+
+      <div class="searchBox">
+        <span>🔎</span>
+        <input id="searchInput" type="search" placeholder="Buscar: EDA, overfitting, Random Forest..." />
+      </div>
+
+      <div class="sideGroup">
+        <h3>Acciones</h3>
+        <div class="btnGrid">
+          <button id="themeBtn" type="button">Tema</button>
+          <button id="printBtn" type="button">PDF</button>
+          <button id="expandBtn" type="button">Expandir</button>
+          <button id="collapseBtn" type="button">Contraer</button>
+        </div>
+      </div>
+
+      <div class="sideGroup">
+        <h3>Modo parcial</h3>
+        <div class="btnGrid">
+          <button id="randomBtn" class="primary" type="button">Pregunta azar</button>
+          <button id="examBtn" type="button">Generar 10</button>
+        </div>
+      </div>
+
+      <div class="sideGroup progressCard">
+        <div class="progressMeta"><span>Progreso estudiado</span><strong id="progressText">0/65</strong></div>
+        <div class="bar"><span id="progressBar"></span></div>
+      </div>
+
+      <div class="sideGroup">
+        <h3>Bloques</h3>
+        <div class="filterList" id="filters"></div>
+      </div>
+    </aside>
+
+    <main>
+      <section class="hero">
+        <div class="heroGrid">
+          <div>
+            <div class="eyebrow">Versión 2.0 · banco interactivo de parcial</div>
+            <h2>Ciencia de Datos: guía de estudio y banco evaluativo</h2>
+            <p class="lead">
+              Material organizado para estudiar y practicar preguntas abiertas de un curso introductorio:
+              definición del problema, EDA, limpieza de datos, transformación de variables, modelos predictivos,
+              validación, series de tiempo, árboles, Random Forest y clustering.
+            </p>
+            <div class="heroStats">
+              <div class="stat"><strong>65</strong><span>preguntas</span></div>
+              <div class="stat"><strong>13</strong><span>bloques</span></div>
+              <div class="stat"><strong>5</strong><span>preguntas por bloque</span></div>
+              <div class="stat"><strong>2.0</strong><span>versión interactiva</span></div>
+            </div>
+          </div>
+          <canvas id="heroCanvas" aria-label="Mapa visual de temas de Ciencia de Datos"></canvas>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="sectionTitle">
+          <div>
+            <h3>Mapa del parcial</h3>
+            <p>El recorrido va desde el pensamiento analítico y el EDA hasta modelos supervisados, validación y clustering no supervisado.</p>
+          </div>
+        </div>
+        <div class="mapGrid" id="blockMap"></div>
+      </section>
+
+      <section class="section">
+        <div class="sectionTitle">
+          <div>
+            <h3>Laboratorio visual de conceptos</h3>
+            <p>Usá el selector para visualizar, de forma conceptual, algunos temas clave del banco: EDA, regresión, logística, árboles, Random Forest, series y clustering.</p>
+          </div>
+        </div>
+        <div class="labs">
+          <canvas id="labCanvas" aria-label="Simulador visual de conceptos de Ciencia de Datos"></canvas>
+          <div class="controlPanel">
+            <h3>Simulador didáctico</h3>
+            <label for="labMode">Tema visual</label>
+            <select id="labMode">
+              <option value="eda">EDA: histograma, boxplot y outlier</option>
+              <option value="regression">Regresión lineal y residuos</option>
+              <option value="logistic">Regresión logística y umbral</option>
+              <option value="tree">Árbol de decisión</option>
+              <option value="forest">Random Forest</option>
+              <option value="series">Serie temporal y promedio móvil</option>
+              <option value="cluster">Clustering K-Means</option>
+            </select>
+            <label for="labIntensity">Intensidad / complejidad</label>
+            <input id="labIntensity" type="range" min="1" max="10" value="5" />
+            <div class="btnGrid" style="margin-top:14px">
+              <button id="labRedraw" class="primary" type="button">Redibujar</button>
+              <button id="labAnimate" type="button">Animar</button>
+            </div>
+            <div style="margin-top:16px">
+              <div class="metric"><span>Lectura</span><strong id="labReading">EDA</strong></div>
+              <div class="metric"><span>Uso</span><strong id="labUse">Explorar</strong></div>
+              <div class="metric"><span>Riesgo</span><strong id="labRisk">Ignorar calidad</strong></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="questionsSection">
+        <div class="sectionTitle">
+          <div>
+            <h3>Banco completo de preguntas</h3>
+            <p>Filtrá por bloque, buscá conceptos, marcá preguntas como estudiadas y generá un parcial aleatorio de práctica.</p>
+          </div>
+        </div>
+        <div class="questionTools">
+          <button id="allBtn" class="active" type="button">Todas</button>
+          <button id="pendingBtn" type="button">Pendientes</button>
+          <button id="studiedBtn" type="button">Estudiadas</button>
+          <button id="copyBtn" type="button">Copiar visibles</button>
+        </div>
+        <div class="examBox" id="examBox">
+          <h3>Parcial aleatorio de práctica</h3>
+          <p>Diez preguntas seleccionadas del banco visible. Tocá cada botón para desplegar la respuesta guía.</p>
+          <div class="examList" id="examList"></div>
+        </div>
+        <div class="empty" id="empty">No se encontraron preguntas con ese filtro.</div>
+        <div class="questionGrid" id="questionGrid"></div>
+      </section>
+
+      <section class="section">
+        <div class="sectionTitle">
+          <div>
+            <h3>Síntesis para estudiar</h3>
+            <p>La lógica del parcial combina teoría conceptual, interpretación aplicada y comparación entre técnicas.</p>
+          </div>
+        </div>
+        <div class="miniGrid">
+          <div class="miniCard"><b>1 · Comprender</b><span>Explicar qué hace cada técnica y qué problema intenta resolver.</span></div>
+          <div class="miniCard"><b>2 · Comparar</b><span>Distinguir modelos, métricas, gráficos y estrategias de validación.</span></div>
+          <div class="miniCard"><b>3 · Aplicar</b><span>Usar ejemplos de negocio, datos, fraude, clientes, series o segmentación.</span></div>
+          <div class="miniCard"><b>4 · Justificar</b><span>Decidir con criterio: no todo valor faltante se elimina, no todo outlier es error y no toda métrica sirve igual.</span></div>
+        </div>
+      </section>
+
+      <footer>Material elaborado por el profesor Sergio Gevatschnaider · Banco de preguntas para Ciencia de Datos</footer>
+    </main>
+  </div>
+
+  <script id="questionsData" type="application/json">[{"id": "1-1", "block": 1, "blockTitle": "Introducción a Ciencia de Datos", "qnum": 1, "question": "¿Qué es la Ciencia de Datos y cuál es su objetivo principal?", "answer": "La Ciencia de Datos es una disciplina que combina estadística, programación, matemática, conocimiento del negocio y pensamiento analítico para extraer valor a partir de los datos. Su objetivo principal no es simplemente almacenar datos, sino transformarlos en información útil para comprender fenómenos, tomar decisiones y, en muchos casos, construir modelos predictivos.\nPor ejemplo, una empresa puede usar Ciencia de Datos para analizar por qué algunos clientes dejan de comprar, qué productos tienen mayor demanda o qué variables influyen en el comportamiento de sus usuarios. En ese sentido, la Ciencia de Datos permite pasar de datos desordenados a conclusiones accionables.\nUn proyecto de Ciencia de Datos normalmente incluye varias etapas: definición del problema, recolección de datos, limpieza, análisis exploratorio, transformación de variables, modelado, evaluación e interpretación de resultados.", "formulae": []}, {"id": "1-2", "block": 1, "blockTitle": "Introducción a Ciencia de Datos", "qnum": 2, "question": "¿Cuál es la diferencia entre análisis descriptivo, diagnóstico, predictivo y prescriptivo?", "answer": "El análisis descriptivo responde a la pregunta: ¿qué ocurrió? Por ejemplo, cuántas ventas tuvo una empresa durante el último mes o cuál fue el promedio de edad de los clientes.\nEl análisis diagnóstico busca responder: ¿por qué ocurrió? Por ejemplo, analizar por qué bajaron las ventas en una región o por qué aumentó la cantidad de clientes que abandonan un servicio.\nEl análisis predictivo intenta responder: ¿qué podría ocurrir? Utiliza datos históricos para construir modelos que permitan anticipar eventos futuros, como la probabilidad de que un cliente compre, abandone un servicio o pague una deuda.\nEl análisis prescriptivo va un paso más allá y responde: ¿qué conviene hacer? Sugiere acciones posibles frente a un escenario esperado. Por ejemplo, recomendar qué clientes deberían recibir una promoción para reducir el abandono.", "formulae": []}, {"id": "1-3", "block": 1, "blockTitle": "Introducción a Ciencia de Datos", "qnum": 3, "question": "¿Por qué es importante definir correctamente el problema antes de analizar los datos?", "answer": "Definir correctamente el problema es fundamental porque todo el análisis depende de la pregunta inicial. Si la pregunta está mal formulada, el análisis puede ser técnicamente correcto pero inútil para la toma de decisiones.\nPor ejemplo, no es lo mismo preguntar “¿cuántos clientes compraron el mes pasado?” que preguntar “¿qué factores explican que algunos clientes compren más que otros?”. La primera pregunta requiere un análisis descriptivo; la segunda puede requerir análisis exploratorio, correlaciones o modelos predictivos.\nUna buena definición del problema permite seleccionar las variables adecuadas, elegir las métricas correctas y decidir qué tipo de modelo o análisis tiene sentido aplicar. En Ciencia de Datos, antes de usar algoritmos, hay que entender qué decisión se quiere mejorar.", "formulae": []}, {"id": "1-4", "block": 1, "blockTitle": "Introducción a Ciencia de Datos", "qnum": 4, "question": "¿Cuál es la diferencia entre datos, información y conocimiento?", "answer": "Los datos son registros sin interpretar. Pueden ser números, fechas, textos, categorías o mediciones. Por ejemplo, una tabla con edades, precios, fechas de compra y ciudades contiene datos.\nLa información aparece cuando esos datos se organizan y empiezan a tener significado. Por ejemplo, si calculamos que los clientes de una determinada región compran más que los de otra, ya estamos generando información.\nEl conocimiento surge cuando esa información se interpreta dentro de un contexto y permite tomar decisiones. Por ejemplo, si una empresa decide reforzar su estrategia comercial en una región porque detectó allí mayor demanda, está usando conocimiento derivado de los datos.\nLa Ciencia de Datos busca justamente recorrer ese camino: transformar datos en información y luego en conocimiento útil.", "formulae": []}, {"id": "1-5", "block": 1, "blockTitle": "Introducción a Ciencia de Datos", "qnum": 5, "question": "¿Qué significa que el aprendizaje automático permite reconocer patrones en los datos?", "answer": "El aprendizaje automático, o machine learning, permite entrenar modelos para identificar relaciones o patrones en los datos sin programar explícitamente cada regla. En lugar de decirle al sistema exactamente qué hacer en cada caso, se le muestran ejemplos para que aprenda regularidades.\nPor ejemplo, si se quiere predecir si un cliente comprará o no un producto, se puede entrenar un modelo con datos históricos de clientes que compraron y clientes que no compraron. El modelo intentará aprender qué características están asociadas a cada comportamiento.\nEsto no significa que el modelo “entienda” como una persona, sino que encuentra patrones estadísticos. Por eso, siempre es necesario evaluar sus resultados e interpretarlos con criterio.", "formulae": []}, {"id": "2-1", "block": 2, "blockTitle": "EDA - Análisis Exploratorio de Datos", "qnum": 1, "question": "¿Qué es el Análisis Exploratorio de Datos y cuál es su objetivo principal?", "answer": "El Análisis Exploratorio de Datos, conocido como EDA, es la etapa en la que se examina un conjunto de datos para comprender su estructura, calidad, distribución y relaciones principales. Su objetivo no es todavía construir un modelo, sino entender los datos antes de tomar decisiones analíticas.\nDurante el EDA se revisan aspectos como cantidad de filas y columnas, tipos de variables, valores faltantes, valores extremos, distribuciones, correlaciones y posibles errores.\nEl EDA es fundamental porque permite detectar problemas tempranos. Por ejemplo, puede mostrar que una columna tiene demasiados valores faltantes, que una variable tiene outliers importantes o que dos variables tienen una fuerte relación. Sin EDA, se corre el riesgo de construir modelos sobre datos mal comprendidos.", "formulae": []}, {"id": "2-2", "block": 2, "blockTitle": "EDA - Análisis Exploratorio de Datos", "qnum": 2, "question": "¿Cuáles son tres objetivos principales del EDA? Dé ejemplos.", "answer": "Un primer objetivo del EDA es detectar problemas de calidad de datos. Por ejemplo, valores nulos, datos duplicados, categorías mal escritas o valores imposibles como edades negativas.\nUn segundo objetivo es comprender la distribución de las variables. Por ejemplo, analizar si los ingresos de los clientes están concentrados en valores bajos o si existen pocos clientes con ingresos muy altos.\nUn tercer objetivo es identificar relaciones entre variables. Por ejemplo, observar si existe relación entre horas de estudio y calificación, entre precio y demanda, o entre antigüedad del cliente y probabilidad de abandono.\nEstos objetivos permiten formular hipótesis, preparar mejor los datos y decidir qué técnicas aplicar luego.", "formulae": []}, {"id": "2-3", "block": 2, "blockTitle": "EDA - Análisis Exploratorio de Datos", "qnum": 3, "question": "¿Qué gráfico es adecuado para analizar la distribución de una variable numérica y por qué?", "answer": "El histograma es uno de los gráficos más adecuados para analizar la distribución de una variable numérica. Permite observar cómo se concentran los valores, si la distribución es simétrica o asimétrica, si hay muchos valores bajos o altos y si existen posibles valores extremos.\nPor ejemplo, si se analiza la edad de un grupo de clientes, el histograma puede mostrar si la mayoría se concentra entre 25 y 40 años o si hay una distribución más amplia.\nEl histograma es útil porque permite ver patrones que no siempre aparecen al mirar una tabla. Es una herramienta básica del EDA porque ayuda a comprender el comportamiento general de una variable.", "formulae": []}, {"id": "2-4", "block": 2, "blockTitle": "EDA - Análisis Exploratorio de Datos", "qnum": 4, "question": "¿Qué gráfico es apropiado para analizar la relación entre dos variables numéricas?", "answer": "El gráfico de dispersión, o scatter plot, es el gráfico más apropiado para analizar la relación entre dos variables numéricas. Cada punto representa una observación y permite ver cómo se comportan dos variables al mismo tiempo.\nPor ejemplo, si se analiza la relación entre horas de estudio y nota obtenida, cada punto puede representar a un estudiante. Si los puntos tienden a subir de izquierda a derecha, puede existir una relación positiva.\nEl scatter plot también permite detectar patrones no lineales, grupos de observaciones y outliers. Es especialmente útil antes de aplicar modelos como regresión lineal, porque permite observar visualmente si una relación lineal parece razonable.", "formulae": []}, {"id": "2-5", "block": 2, "blockTitle": "EDA - Análisis Exploratorio de Datos", "qnum": 5, "question": "¿Qué representa un boxplot y por qué es útil en EDA?", "answer": "Un boxplot representa la mediana, los cuartiles y posibles valores atípicos de una variable numérica. La caja muestra el rango intercuartílico, es decir, la zona donde se encuentra el 50 % central de los datos. La línea dentro de la caja suele representar la mediana.\nLos “bigotes” indican el rango esperado de los datos según una regla estadística, y los puntos fuera de esos bigotes suelen interpretarse como posibles outliers.\nEl boxplot es útil porque resume mucha información en un solo gráfico. Permite comparar distribuciones, detectar asimetrías y observar valores extremos. Por ejemplo, se puede usar para comparar ingresos entre diferentes regiones o notas entre distintos grupos de estudiantes.", "formulae": []}, {"id": "3-1", "block": 3, "blockTitle": "Datos faltantes", "qnum": 1, "question": "¿Qué son los datos faltantes y por qué son importantes en Ciencia de Datos?", "answer": "Los datos faltantes son valores que no están registrados en una o más variables del conjunto de datos. Pueden aparecer como celdas vacías, valores nulos o marcas especiales como “sin dato”.\nSon importantes porque pueden afectar tanto el análisis exploratorio como el entrenamiento de modelos. Muchos algoritmos no pueden trabajar directamente con valores faltantes, y si no se los trata adecuadamente, pueden generar resultados sesgados o incorrectos.\nPor ejemplo, si falta el ingreso de muchos clientes, cualquier análisis sobre nivel socioeconómico puede quedar incompleto. Antes de decidir qué hacer con esos valores, hay que entender por qué faltan y qué proporción representan.", "formulae": []}, {"id": "3-2", "block": 3, "blockTitle": "Datos faltantes", "qnum": 2, "question": "¿Por qué pueden aparecer valores faltantes en un dataset?", "answer": "Los valores faltantes pueden aparecer por distintas razones. A veces se deben a errores de carga, fallas en sistemas, problemas al integrar distintas bases de datos o errores humanos.\nTambién pueden aparecer porque una persona no respondió una pregunta en una encuesta, porque una medición no fue realizada o porque cierta información no aplica a todos los casos.\nPor ejemplo, en una base médica puede faltar el resultado de un estudio porque el paciente nunca se lo realizó. En una base comercial puede faltar el teléfono de contacto porque el cliente no lo proporcionó.\nComprender la causa del valor faltante es importante porque no todos los casos deben tratarse de la misma manera.", "formulae": []}, {"id": "3-3", "block": 3, "blockTitle": "Datos faltantes", "qnum": 3, "question": "¿Cuáles son las desventajas de eliminar filas con valores faltantes?", "answer": "Eliminar filas con valores faltantes puede parecer una solución simple, pero tiene varias desventajas. La primera es la pérdida de información. Si se eliminan muchas filas, el dataset queda más pequeño y puede perder capacidad representativa.\nLa segunda desventaja es la posible introducción de sesgos. Si los valores faltantes no ocurren al azar, eliminar esas filas puede distorsionar el análisis. Por ejemplo, si las personas con menores ingresos tienden a no responder una pregunta sobre salario, eliminarlas podría hacer que el ingreso promedio parezca más alto de lo real.\nLa tercera desventaja es que puede afectar el entrenamiento de modelos. Menos datos pueden implicar menor capacidad de aprendizaje y peor generalización.\nPor eso, eliminar filas solo es recomendable cuando los faltantes son pocos, parecen aleatorios y no afectan variables críticas.", "formulae": []}, {"id": "3-4", "block": 3, "blockTitle": "Datos faltantes", "qnum": 4, "question": "¿Qué alternativas existen para tratar valores faltantes sin eliminar filas?", "answer": "Una alternativa es la imputación, que consiste en reemplazar los valores faltantes por un valor estimado. En variables numéricas se puede usar la media, la mediana o valores calculados a partir de otros grupos. En variables categóricas se puede usar la moda o crear una categoría llamada “desconocido”.\nOtra alternativa es reemplazar los faltantes por un valor constante, especialmente cuando la ausencia de dato tiene significado. Por ejemplo, si falta información sobre una compra anterior, podría indicarse “sin compra previa”.\nTambién se puede analizar si conviene eliminar una columna cuando tiene demasiados valores faltantes y no aporta información relevante.\nLa decisión depende del contexto, de la proporción de faltantes y del impacto que tenga esa variable en el análisis.", "formulae": []}, {"id": "3-5", "block": 3, "blockTitle": "Datos faltantes", "qnum": 5, "question": "¿Por qué imputar con la media no siempre es la mejor opción?", "answer": "Imputar con la media significa reemplazar los valores faltantes por el promedio de la variable. Aunque es una técnica simple, no siempre es adecuada.\nEl problema principal es que la media puede verse muy afectada por outliers. Por ejemplo, si se analiza el ingreso de personas y hay pocos ingresos extremadamente altos, la media puede ser mucho mayor que el valor típico. En ese caso, imputar con la media puede introducir valores poco representativos.\nAdemás, imputar muchos valores con la misma media reduce artificialmente la variabilidad de los datos. Esto puede afectar análisis posteriores y modelos predictivos.\nEn muchos casos, la mediana puede ser una opción más robusta, especialmente cuando la distribución es asimétrica o contiene valores extremos.", "formulae": []}, {"id": "4-1", "block": 4, "blockTitle": "Outliers", "qnum": 1, "question": "¿Qué es un outlier en el análisis de datos?", "answer": "Un outlier es un valor que se encuentra muy alejado del comportamiento general de los datos. También se lo llama valor atípico o extremo.\nPor ejemplo, si la mayoría de las personas de un dataset tienen entre 18 y 80 años, una edad de 250 años sería un outlier evidente. En cambio, si se analizan ingresos, una persona con ingresos muy altos puede ser un outlier, pero no necesariamente un error.\nLos outliers son importantes porque pueden afectar estadísticas como la media, la desviación estándar y algunos modelos, especialmente los modelos lineales.\nNo todo outlier debe eliminarse. Primero hay que analizar si representa un error o un caso real significativo.", "formulae": []}, {"id": "4-2", "block": 4, "blockTitle": "Outliers", "qnum": 2, "question": "¿Cuál es la diferencia entre un outlier y un error de datos?", "answer": "Un error de datos es un valor incorrecto. Por ejemplo, una edad negativa, una fecha imposible o un precio menor que cero cuando no tiene sentido comercial.\nUn outlier, en cambio, puede ser un valor extremo pero real. Por ejemplo, una venta excepcionalmente alta, un cliente con comportamiento inusual o una temperatura récord.\nLa diferencia es fundamental porque los errores deben corregirse o eliminarse, mientras que los outliers reales pueden contener información valiosa.\nEn Ciencia de Datos, eliminar automáticamente todos los valores extremos puede ser un error. A veces, justamente esos casos extremos permiten detectar fraude, oportunidades comerciales o fenómenos relevantes.", "formulae": []}, {"id": "4-3", "block": 4, "blockTitle": "Outliers", "qnum": 3, "question": "¿Cómo puede ayudar un boxplot a detectar outliers?", "answer": "El boxplot permite visualizar la mediana, los cuartiles, el rango intercuartílico y posibles valores extremos. Los puntos que aparecen fuera de los bigotes suelen considerarse posibles outliers.\nLos bigotes suelen extenderse hasta un rango calculado a partir del rango intercuartílico. Los valores que quedan fuera de ese rango merecen revisión.\nPor ejemplo, en un boxplot de salarios, algunos puntos muy por encima del bigote superior pueden representar salarios extremadamente altos. Esos casos deben analizarse para decidir si son errores, casos excepcionales o datos válidos.\nEl boxplot no decide automáticamente qué eliminar. Solo ayuda a detectar valores que requieren análisis.", "formulae": []}, {"id": "4-4", "block": 4, "blockTitle": "Outliers", "qnum": 4, "question": "¿Cómo pueden afectar los outliers a una regresión lineal?", "answer": "La regresión lineal puede ser sensible a los outliers porque intenta ajustar una recta minimizando los errores cuadrados. Al elevar los errores al cuadrado, los valores muy alejados pueden tener un peso muy grande en el cálculo.\nPor ejemplo, si se quiere explicar la relación entre horas de estudio y nota, un estudiante con muchísimas horas de estudio y una nota extremadamente baja puede modificar la pendiente de la recta.\nEsto puede generar un modelo que no represente bien a la mayoría de los datos. Por eso, antes de aplicar regresión lineal, conviene analizar la presencia de outliers mediante gráficos y estadísticas descriptivas.", "formulae": []}, {"id": "4-5", "block": 4, "blockTitle": "Outliers", "qnum": 5, "question": "¿Qué estrategias pueden utilizarse para tratar outliers?", "answer": "La estrategia depende de si el outlier es un error o un valor real. Si es un error evidente, puede corregirse o eliminarse. Si es un valor real, puede mantenerse porque podría contener información importante.\nOtra estrategia es aplicar transformaciones, como logaritmos, para reducir el impacto de valores muy grandes. También se pueden usar estadísticas robustas, como la mediana en lugar de la media.\nEn modelos predictivos, se pueden elegir algoritmos menos sensibles a outliers, como algunos modelos basados en árboles.\nLo importante es justificar la decisión. No se deben eliminar outliers automáticamente solo porque sean valores extremos.", "formulae": []}, {"id": "5-1", "block": 5, "blockTitle": "Transformación de variables", "qnum": 1, "question": "¿Qué significa transformar variables en Ciencia de Datos?", "answer": "Transformar variables significa modificar la forma en que una variable está representada para facilitar su análisis o mejorar el rendimiento de un modelo. Esto puede incluir cambiar la escala, aplicar logaritmos, convertir categorías en números o crear nuevas variables.\nPor ejemplo, a partir de una fecha se pueden crear variables como año, mes, día de la semana o si corresponde a fin de semana. A partir de precio y cantidad se puede crear una variable llamada monto total.\nLa transformación de variables es una etapa clave porque muchos algoritmos necesitan que los datos tengan un formato adecuado. Además, una buena transformación puede revelar patrones que no eran evidentes en los datos originales.", "formulae": []}, {"id": "5-2", "block": 5, "blockTitle": "Transformación de variables", "qnum": 2, "question": "¿Cuál es la diferencia entre normalización y estandarización?", "answer": "La normalización transforma los valores de una variable para llevarlos generalmente a un rango entre 0 y 1. Es útil cuando se quiere que todas las variables estén en una escala común.\nLa estandarización transforma una variable para que tenga media 0 y desviación estándar 1. Esto permite interpretar cada valor en relación con cuántas desviaciones estándar se aleja de la media.\nAmbas técnicas son importantes cuando se usan algoritmos sensibles a la escala, como K-Means o algunos modelos basados en distancia.\nPor ejemplo, si una variable mide ingresos en miles de pesos y otra mide edad entre 18 y 80 años, la variable ingreso puede dominar el análisis si no se escala correctamente.", "formulae": []}, {"id": "5-3", "block": 5, "blockTitle": "Transformación de variables", "qnum": 3, "question": "¿Qué es una variable dummy y por qué se utiliza?", "answer": "Una variable dummy es una variable numérica que representa una categoría mediante valores 0 y 1. Se utiliza para convertir variables categóricas en una forma que pueda ser utilizada por modelos matemáticos.\nPor ejemplo, si una variable indica si un cliente es “nuevo” o “recurrente”, se puede crear una variable dummy llamada cliente_recurrente, donde 1 indica que el cliente es recurrente y 0 indica que no lo es.\nEsto es necesario porque muchos modelos no pueden trabajar directamente con texto. La creación de variables dummy permite incorporar información categórica en modelos como regresión lineal, regresión logística o árboles de decisión.", "formulae": []}, {"id": "5-4", "block": 5, "blockTitle": "Transformación de variables", "qnum": 4, "question": "¿Para qué sirve una transformación logarítmica?", "answer": "Una transformación logarítmica se utiliza frecuentemente para reducir la asimetría de una variable y disminuir el impacto de valores extremadamente grandes.\nPor ejemplo, los ingresos, precios o montos de ventas suelen tener distribuciones muy asimétricas: muchas observaciones pequeñas y pocas muy grandes. Aplicar logaritmo puede hacer que la distribución sea más equilibrada.\nEsto puede ayudar a algunos modelos a capturar mejor las relaciones entre variables. También puede facilitar la interpretación cuando los cambios relativos son más importantes que los cambios absolutos.\nSin embargo, no debe aplicarse automáticamente. Hay que verificar que tenga sentido para la variable y recordar que no se puede aplicar logaritmo directamente a valores negativos o cero sin ajustes.", "formulae": []}, {"id": "5-5", "block": 5, "blockTitle": "Transformación de variables", "qnum": 5, "question": "¿Por qué la creación de nuevas variables puede mejorar un modelo?", "answer": "La creación de nuevas variables, también llamada feature engineering, puede mejorar un modelo porque permite representar mejor la información relevante del problema.\nPor ejemplo, en un dataset de compras, una fecha por sí sola puede no ser muy informativa. Pero si de esa fecha se extraen variables como mes, día de la semana o temporada, el modelo puede detectar patrones de consumo más claros.\nOtro ejemplo sería crear una variable “antigüedad del cliente” a partir de la fecha de alta. Esa variable puede ser mucho más útil que la fecha original.\nEn muchos proyectos de Ciencia de Datos, la calidad de las variables creadas puede ser tan importante como el algoritmo elegido.", "formulae": []}, {"id": "6-1", "block": 6, "blockTitle": "Regresión lineal", "qnum": 1, "question": "¿Qué es la regresión lineal y para qué se utiliza?", "answer": "La regresión lineal es un modelo estadístico utilizado para explicar o predecir una variable numérica a partir de una o más variables independientes.\nEn la regresión lineal simple o univariada, se analiza la relación entre una variable independiente X y una variable dependiente Y. Por ejemplo, se puede intentar predecir el precio de una vivienda a partir de su superficie.\nEl modelo busca ajustar una recta que represente la relación entre las variables. Esa recta permite estimar valores de Y para distintos valores de X.\nLa regresión lineal es importante porque es simple, interpretable y sirve como base para comprender modelos predictivos más avanzados.\ny = β₀ + β₁x + ε", "formulae": ["y = β₀ + β₁x + ε"]}, {"id": "6-2", "block": 6, "blockTitle": "Regresión lineal", "qnum": 2, "question": "¿Qué representan la pendiente y la ordenada al origen en una regresión lineal?", "answer": "La pendiente indica cuánto cambia la variable dependiente Y cuando la variable independiente X aumenta en una unidad.\nPor ejemplo, si un modelo predice el precio de una vivienda según sus metros cuadrados, la pendiente indicaría cuánto aumenta el precio estimado por cada metro cuadrado adicional.\nLa ordenada al origen, o intercepto, representa el valor estimado de Y cuando X vale cero. En algunos problemas tiene interpretación real, pero en otros solo cumple una función matemática dentro del modelo.\nInterpretar estos dos elementos permite comprender cómo el modelo relaciona las variables.\nŷ = β̂₀ + β̂₁x", "formulae": ["ŷ = β̂₀ + β̂₁x"]}, {"id": "6-3", "block": 6, "blockTitle": "Regresión lineal", "qnum": 3, "question": "¿Cuál es el objetivo del método de mínimos cuadrados ordinarios?", "answer": "El método de mínimos cuadrados ordinarios busca encontrar la recta que minimiza la suma de los errores al cuadrado entre los valores reales y los valores predichos por el modelo.\nLos errores también se llaman residuos. Un residuo es la diferencia entre el valor observado y el valor estimado por la recta.\nAl elevar los errores al cuadrado, se evita que errores positivos y negativos se cancelen entre sí. Además, se penalizan más los errores grandes.\nEl objetivo es encontrar los coeficientes de la recta que produzcan el menor error total posible dentro del conjunto de datos de entrenamiento.\nSSE = Σᵢ (yᵢ − ŷᵢ)²", "formulae": ["SSE = Σᵢ (yᵢ − ŷᵢ)²"]}, {"id": "6-4", "block": 6, "blockTitle": "Regresión lineal", "qnum": 4, "question": "¿Qué es el coeficiente de determinación R² y cómo se interpreta?", "answer": "El coeficiente de determinación R² indica qué proporción de la variabilidad de la variable dependiente es explicada por el modelo.\nUn R² cercano a 1 significa que el modelo explica una gran parte de la variación de los datos. Un R² cercano a 0 significa que el modelo explica poco más que un promedio simple.\nPor ejemplo, un R² de 0,80 puede interpretarse como que el modelo explica aproximadamente el 80 % de la variabilidad de la variable dependiente.\nSin embargo, un R² alto no garantiza que el modelo sea correcto. También hay que revisar residuos, supuestos, outliers, sobreajuste y sentido del problema.\nR² = 1 − SSE/SST", "formulae": ["R² = 1 − SSE/SST"]}, {"id": "6-5", "block": 6, "blockTitle": "Regresión lineal", "qnum": 5, "question": "¿Qué diferencia hay entre regresión lineal univariada y regresión lineal múltiple?", "answer": "La regresión lineal univariada utiliza una sola variable independiente para explicar o predecir una variable dependiente. Por ejemplo, predecir el precio de una vivienda usando únicamente la superficie.\nLa regresión lineal múltiple utiliza dos o más variables independientes. Por ejemplo, predecir el precio de una vivienda usando superficie, ubicación, antigüedad y cantidad de ambientes.\nLa diferencia es importante porque, a medida que se agregan variables, el modelo puede capturar más información, pero también aumenta la necesidad de evaluar si esas variables realmente aportan valor.\nEn regresión múltiple también es importante revisar problemas como multicolinealidad, interpretación de coeficientes y R² ajustado.\ny = β₀ + β₁x₁ + β₂x₂ + … + βₙxₙ + ε", "formulae": ["y = β₀ + β₁x₁ + β₂x₂ + … + βₙxₙ + ε"]}, {"id": "7-1", "block": 7, "blockTitle": "Correlación y métricas", "qnum": 1, "question": "¿Qué es la correlación y cómo se interpreta?", "answer": "La correlación mide el grado de asociación lineal entre dos variables numéricas. Indica si, cuando una variable aumenta, la otra tiende a aumentar, disminuir o no mostrar una relación clara.\nUn coeficiente de correlación cercano a 1 indica una relación positiva fuerte. Un coeficiente cercano a -1 indica una relación negativa fuerte. Un valor cercano a 0 indica poca relación lineal.\nPor ejemplo, puede existir correlación positiva entre horas de estudio y calificación: a mayor cantidad de horas, mayor nota esperada. Sin embargo, la correlación no prueba causalidad.\n−1 ≤ r ≤ 1", "formulae": ["−1 ≤ r ≤ 1"]}, {"id": "7-2", "block": 7, "blockTitle": "Correlación y métricas", "qnum": 2, "question": "¿Cuál es la diferencia entre correlación y causalidad?", "answer": "La correlación mide si dos variables tienden a moverse juntas, pero no demuestra que una cause a la otra.\nPor ejemplo, puede existir correlación entre ventas de helado y casos de insolación. Sin embargo, no significa que el helado cause insolación. Probablemente ambas variables aumentan cuando hace calor.\nEn Ciencia de Datos es fundamental distinguir asociación estadística de relación causal. Los modelos pueden encontrar patrones, pero la interpretación requiere conocimiento del contexto.", "formulae": []}, {"id": "7-3", "block": 7, "blockTitle": "Correlación y métricas", "qnum": 3, "question": "¿Qué son MAE, MSE y RMSE en modelos de regresión?", "answer": "MAE, MSE y RMSE son métricas utilizadas para evaluar modelos que predicen valores numéricos.\nEl MAE mide el promedio de los errores absolutos. Es fácil de interpretar porque conserva la unidad de la variable objetivo. El MSE calcula el promedio de los errores al cuadrado y penaliza más los errores grandes. El RMSE es la raíz cuadrada del MSE y vuelve a expresarse en la unidad original de la variable.\nEstas métricas permiten comparar modelos y evaluar cuán lejos están sus predicciones de los valores reales.\nMAE = (1/n) Σᵢ |yᵢ − ŷᵢ|\nMSE = (1/n) Σᵢ (yᵢ − ŷᵢ)²\nRMSE = √MSE", "formulae": ["MAE, MSE y RMSE son métricas utilizadas para evaluar modelos que predicen valores numéricos.", "MAE = (1/n) Σᵢ |yᵢ − ŷᵢ|", "MSE = (1/n) Σᵢ (yᵢ − ŷᵢ)²", "RMSE = √MSE"]}, {"id": "7-4", "block": 7, "blockTitle": "Correlación y métricas", "qnum": 4, "question": "¿Por qué una métrica debe elegirse según el problema?", "answer": "No todas las métricas evalúan lo mismo. Algunas penalizan más ciertos errores que otras, y por eso la elección depende del objetivo del análisis.\nPor ejemplo, si se quiere predecir el precio de una vivienda, puede ser útil mirar el MAE porque indica el error promedio en unidades monetarias. Si se quiere penalizar fuertemente errores grandes, el MSE o el RMSE pueden ser más adecuados.\nEn clasificación, métricas como accuracy, precision, recall o F1-score pueden llevar a conclusiones distintas. Por eso, elegir la métrica correcta es una decisión conceptual, no solo técnica.", "formulae": []}, {"id": "7-5", "block": 7, "blockTitle": "Correlación y métricas", "qnum": 5, "question": "¿Por qué el accuracy puede ser engañoso en problemas de clasificación desbalanceados?", "answer": "El accuracy mide el porcentaje total de aciertos del modelo, pero puede ser engañoso cuando una clase es mucho más frecuente que otra.\nPor ejemplo, si solo el 2 % de las transacciones son fraudulentas, un modelo que siempre predice “no fraude” tendría 98 % de accuracy, pero no detectaría ningún fraude.\nEn estos casos es necesario mirar otras métricas, como recall, precision, F1-score y matriz de confusión. Estas métricas permiten analizar qué tipo de errores comete el modelo.", "formulae": []}, {"id": "8-1", "block": 8, "blockTitle": "Validación cruzada", "qnum": 1, "question": "¿Qué es la validación cruzada?", "answer": "La validación cruzada es una técnica utilizada para evaluar qué tan bien generaliza un modelo a datos nuevos. En lugar de entrenar y evaluar el modelo una sola vez, se divide el conjunto de datos en varias partes y se repite el proceso de entrenamiento y evaluación varias veces.\nUna forma común es k-fold cross-validation. En este método, el dataset se divide en k partes. El modelo se entrena con k-1 partes y se evalúa con la parte restante. Esto se repite hasta que todas las partes hayan sido usadas como conjunto de evaluación.\nLuego se promedian los resultados. Esto permite obtener una medida más estable del rendimiento del modelo.", "formulae": []}, {"id": "8-2", "block": 8, "blockTitle": "Validación cruzada", "qnum": 2, "question": "¿Por qué no alcanza con evaluar un modelo sobre los mismos datos con los que fue entrenado?", "answer": "Porque el modelo puede aprender demasiado bien los datos de entrenamiento, incluyendo errores, ruido o patrones accidentales. Esto se llama sobreajuste u overfitting.\nSi se evalúa el modelo con los mismos datos que usó para aprender, el resultado puede ser demasiado optimista. El modelo puede parecer muy bueno, pero fallar cuando recibe datos nuevos.\nPor eso, es necesario separar los datos en entrenamiento y prueba, o utilizar validación cruzada. El objetivo es medir la capacidad de generalización del modelo, no su capacidad de memorizar los datos.", "formulae": []}, {"id": "8-3", "block": 8, "blockTitle": "Validación cruzada", "qnum": 3, "question": "¿Qué diferencia hay entre train-test split y validación cruzada?", "answer": "El train-test split divide los datos una sola vez en dos conjuntos: entrenamiento y prueba. El modelo aprende con el conjunto de entrenamiento y se evalúa con el conjunto de prueba.\nLa validación cruzada, en cambio, realiza varias divisiones. Esto permite evaluar el modelo en diferentes subconjuntos de datos y obtener un resultado más robusto.\nEl train-test split es simple y rápido, pero puede depender mucho de cómo se realizó la división. La validación cruzada reduce esa dependencia porque prueba el modelo varias veces.\nEn general, train-test split es útil como evaluación inicial, mientras que validación cruzada es más confiable para comparar modelos o ajustar hiperparámetros.", "formulae": []}, {"id": "8-4", "block": 8, "blockTitle": "Validación cruzada", "qnum": 4, "question": "¿Qué es el overfitting y cómo se relaciona con la validación cruzada?", "answer": "El overfitting ocurre cuando un modelo aprende demasiado bien los datos de entrenamiento, incluyendo ruido o detalles específicos que no se repiten en datos nuevos.\nUn modelo con overfitting suele tener muy buen rendimiento en entrenamiento, pero mal rendimiento en prueba. Esto indica que no aprendió patrones generales, sino particularidades del conjunto de entrenamiento.\nLa validación cruzada ayuda a detectar este problema porque evalúa el modelo en distintas particiones del dataset. Si el rendimiento varía mucho o cae significativamente en las partes de validación, puede haber indicios de sobreajuste.\nPor eso, la validación cruzada es una herramienta clave para estimar la capacidad real de generalización de un modelo.", "formulae": []}, {"id": "8-5", "block": 8, "blockTitle": "Validación cruzada", "qnum": 5, "question": "¿Qué es el underfitting?", "answer": "El underfitting ocurre cuando un modelo es demasiado simple para capturar la estructura de los datos. A diferencia del overfitting, el modelo no logra aprender bien ni siquiera en el conjunto de entrenamiento.\nPor ejemplo, si se intenta representar una relación claramente curva con una regresión lineal simple, el modelo puede cometer errores importantes tanto en entrenamiento como en prueba.\nEl underfitting indica falta de complejidad o mala representación del problema. Puede solucionarse usando mejores variables, transformaciones adecuadas o modelos más flexibles.\nUn buen modelo debe encontrar un equilibrio: no ser tan simple que no aprenda, ni tan complejo que memorice.", "formulae": []}, {"id": "9-1", "block": 9, "blockTitle": "Series de tiempo", "qnum": 1, "question": "¿Qué es una serie de tiempo?", "answer": "Una serie de tiempo es una secuencia de observaciones ordenadas temporalmente. Cada dato está asociado a un momento específico.\nEjemplos de series de tiempo son las ventas mensuales de una empresa, la temperatura diaria, el precio de una acción, la demanda eléctrica por hora o la cantidad de visitas a un sitio web por semana.\nLa característica principal de una serie temporal es que el orden importa. No se pueden mezclar las observaciones como si fueran independientes, porque el pasado puede influir sobre el presente y el presente sobre el futuro.\nPor eso, las series de tiempo requieren técnicas específicas de análisis.", "formulae": []}, {"id": "9-2", "block": 9, "blockTitle": "Series de tiempo", "qnum": 2, "question": "¿Cuáles son los componentes principales de una serie de tiempo?", "answer": "Una serie de tiempo puede tener tendencia, estacionalidad, ciclos y ruido.\nLa tendencia representa la dirección general de largo plazo. Puede ser creciente, decreciente o estable. Por ejemplo, las ventas de una empresa pueden crecer año tras año.\nLa estacionalidad representa patrones que se repiten en períodos regulares. Por ejemplo, mayores ventas en diciembre o mayor consumo eléctrico en verano.\nLos ciclos son fluctuaciones de mayor duración, muchas veces relacionadas con fenómenos económicos. El ruido representa variaciones irregulares que no siguen un patrón claro.\nIdentificar estos componentes permite comprender mejor la evolución temporal de los datos.", "formulae": []}, {"id": "9-3", "block": 9, "blockTitle": "Series de tiempo", "qnum": 3, "question": "¿Qué es la estacionalidad y cómo se diferencia de un ciclo?", "answer": "La estacionalidad es un patrón que se repite en intervalos regulares y previsibles. Por ejemplo, las ventas de juguetes suelen aumentar todos los años en diciembre. Ese comportamiento se repite con una frecuencia clara.\nUn ciclo, en cambio, también implica subidas y bajadas, pero no necesariamente con una periodicidad fija. Por ejemplo, los ciclos económicos pueden durar varios años y no repetirse exactamente con la misma duración.\nLa diferencia principal es que la estacionalidad tiene una frecuencia más regular, mientras que los ciclos son más irregulares y suelen depender de factores económicos, sociales o estructurales.", "formulae": []}, {"id": "9-4", "block": 9, "blockTitle": "Series de tiempo", "qnum": 4, "question": "¿Por qué no conviene dividir aleatoriamente una serie de tiempo entre entrenamiento y prueba?", "answer": "En una serie de tiempo, el orden temporal es fundamental. Si se dividen los datos aleatoriamente, puede ocurrir que el modelo entrene con datos del futuro y se evalúe con datos del pasado.\nEsto genera fuga de información, también llamada data leakage. El modelo estaría usando información que en una situación real no estaría disponible.\nPor ejemplo, si queremos predecir las ventas de junio, no deberíamos entrenar el modelo con datos de julio o agosto. Lo correcto es entrenar con datos anteriores y evaluar con datos posteriores.\nPor eso, en series temporales se respeta el orden cronológico: el pasado se usa para entrenar y el futuro para evaluar.", "formulae": []}, {"id": "9-5", "block": 9, "blockTitle": "Series de tiempo", "qnum": 5, "question": "¿Para qué sirven los promedios móviles en series de tiempo?", "answer": "Los promedios móviles sirven para suavizar las fluctuaciones de una serie de tiempo y observar mejor su tendencia general.\nPor ejemplo, si las ventas diarias varían mucho de un día a otro, un promedio móvil de 7 días puede ayudar a ver si la demanda está creciendo, bajando o manteniéndose estable.\nEl promedio móvil no elimina la variabilidad, pero reduce el ruido de corto plazo. Esto facilita la interpretación visual y puede ayudar a identificar patrones.\nEs una herramienta simple pero muy útil en el análisis exploratorio de series temporales.", "formulae": []}, {"id": "10-1", "block": 10, "blockTitle": "Regresión logística", "qnum": 1, "question": "¿Qué es la regresión logística y para qué se utiliza?", "answer": "La regresión logística es un modelo utilizado para problemas de clasificación, especialmente cuando la variable objetivo es binaria. Es decir, cuando se quiere predecir si ocurre o no ocurre un evento.\nPor ejemplo, puede utilizarse para predecir si un cliente abandona una empresa, si una transacción es fraudulenta, si un correo es spam o si un paciente presenta una determinada condición.\nAunque se llama “regresión”, no se utiliza para predecir un valor numérico continuo, sino una probabilidad. Luego esa probabilidad se transforma en una clase mediante un umbral.", "formulae": []}, {"id": "10-2", "block": 10, "blockTitle": "Regresión logística", "qnum": 2, "question": "¿Qué diferencia hay entre regresión lineal y regresión logística?", "answer": "La regresión lineal se utiliza para predecir valores numéricos continuos. Por ejemplo, precio, temperatura, ventas o ingresos.\nLa regresión logística se utiliza para clasificación. Su objetivo es predecir la probabilidad de pertenecer a una clase. Por ejemplo, sí/no, compra/no compra, fraude/no fraude.\nOtra diferencia importante es que la regresión logística utiliza una función sigmoide para transformar la salida del modelo en un valor entre 0 y 1.\nPor eso, aunque ambos modelos tienen una base estadística relacionada, se aplican a problemas diferentes.", "formulae": []}, {"id": "10-3", "block": 10, "blockTitle": "Regresión logística", "qnum": 3, "question": "¿Qué función cumple la función sigmoide en regresión logística?", "answer": "La función sigmoide transforma una combinación lineal de variables en una probabilidad entre 0 y 1.\nEn regresión logística, el modelo primero calcula una expresión lineal con las variables independientes. Luego, la función sigmoide convierte ese resultado en una probabilidad.\nPor ejemplo, si el modelo estima una probabilidad de 0,80, puede interpretarse como que hay un 80 % de probabilidad de que ocurra el evento analizado.\nEsto permite usar la regresión logística para problemas binarios, como fraude/no fraude o compra/no compra.\np = P(y = 1 | x) = 1 / (1 + e^(−z))\nz = β₀ + β₁x₁ + … + βₙxₙ", "formulae": ["p = P(y = 1 | x) = 1 / (1 + e^(−z))", "z = β₀ + β₁x₁ + … + βₙxₙ"]}, {"id": "10-4", "block": 10, "blockTitle": "Regresión logística", "qnum": 4, "question": "¿Qué es una matriz de confusión y por qué es importante?", "answer": "La matriz de confusión es una tabla que compara las predicciones del modelo con los valores reales. Permite observar cuántos casos fueron clasificados correctamente y qué tipos de errores cometió el modelo.\nIncluye cuatro elementos: verdaderos positivos, verdaderos negativos, falsos positivos y falsos negativos.\nPor ejemplo, en detección de fraude, un verdadero positivo sería una transacción fraudulenta correctamente detectada. Un falso negativo sería una transacción fraudulenta clasificada como legítima.\nLa matriz de confusión es importante porque el accuracy general puede ser engañoso, especialmente cuando las clases están desbalanceadas.", "formulae": []}, {"id": "10-5", "block": 10, "blockTitle": "Regresión logística", "qnum": 5, "question": "En un problema de fraude, ¿por qué un modelo con alto accuracy puede no ser confiable?", "answer": "En problemas de fraude, normalmente hay muchas más transacciones legítimas que fraudulentas. Esto genera un desbalance de clases.\nPor ejemplo, si el 98 % de las transacciones son legítimas, un modelo que siempre predice “legítima” tendría 98 % de accuracy, pero no detectaría ningún fraude.\nPor eso, en este tipo de problemas no alcanza con mirar la exactitud general. También hay que analizar métricas como recall, precision, F1-score y la matriz de confusión.\nUn modelo confiable no solo debe acertar mucho en general, sino detectar correctamente los casos importantes, como las transacciones fraudulentas.", "formulae": []}, {"id": "11-1", "block": 11, "blockTitle": "Árboles de decisión", "qnum": 1, "question": "¿Qué es un árbol de decisión?", "answer": "Un árbol de decisión es un modelo que realiza predicciones mediante una secuencia de preguntas o reglas. Cada nodo representa una condición sobre una variable, cada rama representa una respuesta posible y cada hoja representa una predicción final.\nPor ejemplo, un árbol puede preguntar si un cliente tiene más de cierta edad, luego si compró previamente y finalmente predecir si comprará nuevamente.\nLos árboles de decisión son intuitivos porque se parecen a un razonamiento paso a paso. Por eso son muy útiles para introducir conceptos de machine learning.", "formulae": []}, {"id": "11-2", "block": 11, "blockTitle": "Árboles de decisión", "qnum": 2, "question": "¿Qué es una hoja en un árbol de decisión?", "answer": "Una hoja es un nodo final del árbol, donde ya no se realizan más divisiones. En ese punto, el árbol emite una predicción.\nEn un problema de clasificación, la hoja puede indicar una clase, como “compra” o “no compra”. En un problema de regresión, puede indicar un valor numérico estimado, como un precio o una cantidad.\nLas hojas son importantes porque representan las reglas finales aprendidas por el modelo. Cada observación recorre el árbol desde la raíz hasta una hoja, siguiendo las condiciones que cumple.\nLa predicción final depende de la hoja a la que llega la observación.", "formulae": []}, {"id": "11-3", "block": 11, "blockTitle": "Árboles de decisión", "qnum": 3, "question": "¿Qué son los criterios de Gini y Entropía en árboles de decisión?", "answer": "Gini y Entropía son criterios utilizados para medir la impureza de un nodo. La impureza indica qué tan mezcladas están las clases dentro de ese nodo.\nUn nodo es puro si contiene observaciones de una sola clase. Es impuro si contiene una mezcla de clases.\nEl índice de Gini mide la probabilidad de clasificar incorrectamente una observación si se asignara una clase al azar según la distribución del nodo. La Entropía mide el grado de desorden o incertidumbre.\nAmbos criterios buscan lo mismo: encontrar divisiones que separen mejor las clases y generen nodos más homogéneos.", "formulae": []}, {"id": "11-4", "block": 11, "blockTitle": "Árboles de decisión", "qnum": 4, "question": "¿Qué significa que un árbol de decisión tenga overfitting?", "answer": "Un árbol de decisión tiene overfitting cuando aprende demasiado bien los datos de entrenamiento, incluyendo ruido, errores o detalles específicos que no se repiten en datos nuevos.\nEsto suele ocurrir cuando el árbol crece demasiado, tiene mucha profundidad o genera hojas con muy pocas observaciones.\nUn árbol sobreajustado puede tener excelente desempeño en entrenamiento, pero mal rendimiento en datos de prueba.\nPara evitarlo, se pueden usar hiperparámetros como max_depth, min_samples_split o min_samples_leaf, que limitan la complejidad del árbol.", "formulae": []}, {"id": "11-5", "block": 11, "blockTitle": "Árboles de decisión", "qnum": 5, "question": "¿Qué hiperparámetros controlan la complejidad de un árbol de decisión?", "answer": "Algunos hiperparámetros importantes son max_depth, min_samples_split, min_samples_leaf y criterion.\nmax_depth limita la profundidad máxima del árbol. Es uno de los controles más directos contra el sobreajuste.\nmin_samples_split indica cuántas observaciones mínimas debe tener un nodo para poder dividirse. min_samples_leaf indica cuántas observaciones mínimas debe tener una hoja.\nEl parámetro criterion define cómo se mide la calidad de una división, por ejemplo usando Gini o Entropía.\nEstos hiperparámetros permiten construir árboles más simples y con mejor capacidad de generalización.", "formulae": []}, {"id": "12-1", "block": 12, "blockTitle": "Random Forest", "qnum": 1, "question": "¿Qué es Random Forest?", "answer": "Random Forest es un modelo de ensamble que combina muchos árboles de decisión para producir una predicción más robusta.\nEn lugar de depender de un único árbol, Random Forest construye varios árboles y combina sus resultados. En clasificación, suele usar votación mayoritaria. En regresión, suele promediar las predicciones.\nLa idea es que muchos árboles, aunque individualmente puedan cometer errores, pueden generar una predicción más estable cuando se combinan.\nRandom Forest suele tener mejor capacidad de generalización que un árbol individual.", "formulae": []}, {"id": "12-2", "block": 12, "blockTitle": "Random Forest", "qnum": 2, "question": "¿Cuáles son las dos principales fuentes de aleatoriedad en Random Forest?", "answer": "Las dos principales fuentes de aleatoriedad son el muestreo bootstrap y la selección aleatoria de variables en cada división del árbol.\nEl muestreo bootstrap consiste en crear muestras aleatorias con reemplazo a partir del dataset original. Cada árbol se entrena con una muestra diferente.\nLa selección aleatoria de variables significa que, en cada división, el árbol no evalúa todas las variables disponibles, sino solo un subconjunto aleatorio.\nEstas dos fuentes de aleatoriedad hacen que los árboles sean diferentes entre sí. Esa diversidad es clave para que el ensamble funcione bien.", "formulae": []}, {"id": "12-3", "block": 12, "blockTitle": "Random Forest", "qnum": 3, "question": "¿Qué es el bootstrapping en Random Forest?", "answer": "El bootstrapping es un procedimiento de muestreo con reemplazo. Esto significa que, para entrenar cada árbol, se toma una muestra aleatoria del dataset original, donde algunas observaciones pueden repetirse y otras pueden quedar fuera.\nCada árbol del bosque se entrena con una muestra bootstrap distinta. Como consecuencia, cada árbol ve una versión diferente de los datos.\nEsto introduce diversidad entre los árboles. Si todos los árboles fueran entrenados con los mismos datos y las mismas variables, serían demasiado parecidos y el ensamble aportaría menos valor.\nEl bootstrapping es una de las razones por las cuales Random Forest reduce la varianza respecto de un árbol individual.", "formulae": []}, {"id": "12-4", "block": 12, "blockTitle": "Random Forest", "qnum": 4, "question": "¿Cómo reduce Random Forest la varianza de un árbol de decisión individual?", "answer": "Un árbol de decisión profundo suele tener alta varianza. Esto significa que puede cambiar mucho si cambian un poco los datos de entrenamiento.\nRandom Forest reduce esa varianza entrenando muchos árboles diferentes y combinando sus predicciones. Cada árbol puede cometer errores distintos, pero al promediar o votar, los errores individuales tienden a compensarse.\nAdemás, el uso de bootstrap y selección aleatoria de variables evita que todos los árboles sean iguales. Esa diversidad mejora la estabilidad del modelo.\nEn síntesis, Random Forest no busca que cada árbol sea perfecto, sino que el conjunto de árboles produzca una predicción más confiable.", "formulae": []}, {"id": "12-5", "block": 12, "blockTitle": "Random Forest", "qnum": 5, "question": "¿Cuáles son ventajas y desventajas de Random Forest frente a un árbol de decisión?", "answer": "Una ventaja de Random Forest es que suele tener mejor rendimiento predictivo que un único árbol. También es menos propenso al sobreajuste, porque combina muchos árboles y reduce la varianza.\nOtra ventaja es que puede calcular medidas de importancia de variables, lo que ayuda a interpretar qué características influyen más en la predicción.\nSin embargo, Random Forest es menos interpretable que un árbol individual. Un árbol puede visualizarse y explicarse regla por regla, mientras que un bosque con muchos árboles es más difícil de explicar globalmente.\nTambién requiere más recursos computacionales porque entrena muchos modelos en lugar de uno solo.", "formulae": []}, {"id": "13-1", "block": 13, "blockTitle": "Clustering K-Means y Jerárquico", "qnum": 1, "question": "¿Qué es el clustering?", "answer": "El clustering es una técnica de aprendizaje no supervisado que busca agrupar observaciones similares entre sí. A diferencia de la clasificación, en clustering no existen etiquetas previas.\nEl algoritmo intenta descubrir grupos naturales dentro de los datos. Por ejemplo, una empresa puede usar clustering para segmentar clientes según comportamiento de compra, frecuencia de uso o nivel de gasto.\nEl objetivo no es predecir una variable conocida, sino encontrar estructura en los datos.\nEl clustering es útil para exploración, segmentación, análisis de patrones y comprensión de poblaciones heterogéneas.", "formulae": []}, {"id": "13-2", "block": 13, "blockTitle": "Clustering K-Means y Jerárquico", "qnum": 2, "question": "¿Qué es K-Means y cómo funciona?", "answer": "K-Means es un algoritmo de clustering que divide los datos en K grupos. El número K debe definirse antes de ejecutar el algoritmo.\nPrimero, el algoritmo inicializa K centroides. Luego asigna cada observación al centroide más cercano. Después recalcula los centroides en función de los puntos asignados a cada grupo. Este proceso se repite hasta que los grupos se estabilizan.\nUn centroide representa el centro promedio de un cluster.\nK-Means es simple y eficiente, pero su resultado depende de la elección de K, de la escala de las variables y de la forma de los grupos.", "formulae": []}, {"id": "13-3", "block": 13, "blockTitle": "Clustering K-Means y Jerárquico", "qnum": 3, "question": "¿Por qué es importante escalar las variables antes de aplicar K-Means?", "answer": "K-Means se basa en distancias. Si las variables tienen escalas muy diferentes, una variable puede dominar el cálculo de distancia.\nPor ejemplo, si una variable es edad y otra es ingreso, el ingreso puede tener valores mucho más grandes. Si no se escalan las variables, el algoritmo puede formar clusters casi exclusivamente en función del ingreso.\nEscalar las variables permite que todas tengan una influencia más equilibrada.\nPor eso, antes de aplicar K-Means, suele ser recomendable normalizar o estandarizar los datos.", "formulae": []}, {"id": "13-4", "block": 13, "blockTitle": "Clustering K-Means y Jerárquico", "qnum": 4, "question": "¿Qué es el clustering jerárquico?", "answer": "El clustering jerárquico es un método de agrupamiento que construye una estructura de grupos en forma de árbol. Una forma común es el enfoque aglomerativo.\nEn el enfoque aglomerativo, cada observación comienza como su propio cluster. Luego, los clusters más similares se van fusionando paso a paso hasta formar grupos más grandes.\nEl resultado puede representarse mediante un dendrograma, que muestra cómo se van uniendo las observaciones o grupos.\nUna ventaja del clustering jerárquico es que permite analizar distintos niveles de agrupamiento sin definir desde el inicio un único número de clusters.", "formulae": []}, {"id": "13-5", "block": 13, "blockTitle": "Clustering K-Means y Jerárquico", "qnum": 5, "question": "¿Cuál es la diferencia entre K-Means y clustering jerárquico?", "answer": "K-Means requiere definir previamente el número de clusters K. Trabaja asignando observaciones a centroides y recalculando esos centroides hasta que los grupos se estabilizan.\nEl clustering jerárquico no necesita definir inicialmente un número fijo de clusters. Construye una estructura de agrupamiento que puede analizarse mediante un dendrograma.\nK-Means suele ser más eficiente para datasets grandes, pero puede ser sensible a la escala y a la elección de K.\nEl clustering jerárquico suele ser más interpretativo, especialmente en datasets pequeños o medianos, porque permite observar cómo se forman los grupos en distintos niveles.", "formulae": []}]</script>
+  <script id="blocksData" type="application/json">[{"block": 1, "title": "Introducción a Ciencia de Datos", "count": 5}, {"block": 2, "title": "EDA - Análisis Exploratorio de Datos", "count": 5}, {"block": 3, "title": "Datos faltantes", "count": 5}, {"block": 4, "title": "Outliers", "count": 5}, {"block": 5, "title": "Transformación de variables", "count": 5}, {"block": 6, "title": "Regresión lineal", "count": 5}, {"block": 7, "title": "Correlación y métricas", "count": 5}, {"block": 8, "title": "Validación cruzada", "count": 5}, {"block": 9, "title": "Series de tiempo", "count": 5}, {"block": 10, "title": "Regresión logística", "count": 5}, {"block": 11, "title": "Árboles de decisión", "count": 5}, {"block": 12, "title": "Random Forest", "count": 5}, {"block": 13, "title": "Clustering K-Means y Jerárquico", "count": 5}]</script>
+  <script>
+    "use strict";
+
+    const QUESTIONS = JSON.parse(document.getElementById("questionsData").textContent);
+    const BLOCKS = JSON.parse(document.getElementById("blocksData").textContent);
+    const $ = (id) => document.getElementById(id);
+    const STORE_KEY = "ds_parcial_v2_studied";
+    let activeBlock = "all";
+    let viewMode = "all";
+    let labTimer = null;
+    let studied = new Set(JSON.parse(localStorage.getItem(STORE_KEY) || "[]"));
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, function(ch) {
+        return ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "\"":"&quot;", "'":"&#039;" })[ch];
+      });
+    }
+
+    function isFormulaLine(line) {
+      const s = line.trim();
+      if (!s || s.length > 160) return false;
+      const starts = ["y =", "ŷ", "SSE", "R²", "MAE", "MSE", "RMSE", "p =", "z =", "−1"];
+      if (starts.some(function(prefix) { return s.startsWith(prefix); })) return true;
+      return /[β₀₁₂ₙᵢ²εΣ√≤]/.test(s) && s.includes("=");
+    }
+
+    function answerToHTML(text) {
+      return text.split(/\n+/).map(function(line) {
+        const s = line.trim();
+        if (!s) return "";
+        if (isFormulaLine(s)) return '<div class="formula">' + escapeHTML(s) + '</div>';
+        return '<p>' + escapeHTML(s) + '</p>';
+      }).join("");
+    }
+
+    function currentQuestions() {
+      const term = $("searchInput").value.trim().toLowerCase();
+      return QUESTIONS.filter(function(q) {
+        const blockOk = activeBlock === "all" || String(q.block) === String(activeBlock);
+        const text = (q.question + " " + q.answer + " " + q.blockTitle).toLowerCase();
+        const searchOk = !term || text.includes(term);
+        const studiedOk = viewMode === "all" || (viewMode === "studied" ? studied.has(q.id) : !studied.has(q.id));
+        return blockOk && searchOk && studiedOk;
+      });
+    }
+
+    function renderFilters() {
+      const filters = $("filters");
+      const total = QUESTIONS.length;
+      const rows = [
+        '<button class="filterBtn active" data-block="all"><span>Todos los bloques</span><span class="count">' + total + '</span></button>'
+      ].concat(BLOCKS.map(function(b) {
+        return '<button class="filterBtn" data-block="' + b.block + '"><span>' + b.block + '. ' + escapeHTML(b.title) + '</span><span class="count">' + b.count + '</span></button>';
+      }));
+      filters.innerHTML = rows.join("");
+      filters.querySelectorAll(".filterBtn").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          activeBlock = btn.dataset.block;
+          filters.querySelectorAll(".filterBtn").forEach(function(b) { b.classList.remove("active"); });
+          btn.classList.add("active");
+          renderQuestions();
+        });
+      });
+    }
+
+    function renderBlockMap() {
+      $("blockMap").innerHTML = BLOCKS.map(function(b) {
+        return '<div class="mapNode"><b>' + b.block + '. ' + escapeHTML(b.title) + '</b><small>' + b.count + ' preguntas con respuestas desarrolladas</small></div>';
+      }).join("");
+    }
+
+    function renderQuestions() {
+      const list = currentQuestions();
+      $("empty").style.display = list.length ? "none" : "block";
+      $("questionGrid").innerHTML = list.map(function(q) {
+        const isStudied = studied.has(q.id);
+        return '<article class="qCard" data-id="' + q.id + '">' +
+          '<div class="qHead" role="button" tabindex="0">' +
+            '<div class="qBadge">' + q.block + '.' + q.qnum + '</div>' +
+            '<div class="qTitle">' +
+              '<h4>' + escapeHTML(q.question) + '</h4>' +
+              '<div class="meta"><span class="tag">' + escapeHTML(q.blockTitle) + '</span><span>Pregunta ' + q.qnum + '</span></div>' +
+            '</div>' +
+            '<div class="qActions">' +
+              '<button class="markBtn ' + (isStudied ? "studied" : "") + '" data-id="' + q.id + '" type="button">' + (isStudied ? "Estudiada" : "Marcar") + '</button>' +
+              '<span class="chev">⌄</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="qBody"><div class="answer">' + answerToHTML(q.answer) + '</div></div>' +
+        '</article>';
+      }).join("");
+
+      document.querySelectorAll(".qHead").forEach(function(head) {
+        head.addEventListener("click", function(e) {
+          if (e.target.closest("button")) return;
+          head.closest(".qCard").classList.toggle("open");
+        });
+        head.addEventListener("keydown", function(e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            head.closest(".qCard").classList.toggle("open");
+          }
+        });
+      });
+
+      document.querySelectorAll(".markBtn").forEach(function(btn) {
+        btn.addEventListener("click", function(e) {
+          e.stopPropagation();
+          const id = btn.dataset.id;
+          if (studied.has(id)) studied.delete(id); else studied.add(id);
+          localStorage.setItem(STORE_KEY, JSON.stringify(Array.from(studied)));
+          updateProgress();
+          renderQuestions();
+        });
+      });
+    }
+
+    function updateProgress() {
+      const n = studied.size;
+      $("progressText").textContent = n + "/" + QUESTIONS.length;
+      $("progressBar").style.width = (100 * n / QUESTIONS.length).toFixed(1) + "%";
+    }
+
+    function setViewMode(mode) {
+      viewMode = mode;
+      ["allBtn","pendingBtn","studiedBtn"].forEach(function(id) { $(id).classList.remove("active"); });
+      if (mode === "all") $("allBtn").classList.add("active");
+      if (mode === "pending") $("pendingBtn").classList.add("active");
+      if (mode === "studied") $("studiedBtn").classList.add("active");
+      renderQuestions();
+    }
+
+    function randomQuestion() {
+      const list = currentQuestions();
+      if (!list.length) return;
+      const q = list[Math.floor(Math.random() * list.length)];
+      activeBlock = String(q.block);
+      document.querySelectorAll(".filterBtn").forEach(function(btn) {
+        btn.classList.toggle("active", btn.dataset.block === String(q.block));
+      });
+      $("searchInput").value = "";
+      viewMode = "all";
+      renderQuestions();
+      setTimeout(function() {
+        const card = document.querySelector('.qCard[data-id="' + q.id + '"]');
+        if (card) {
+          card.classList.add("open");
+          card.scrollIntoView({ behavior:"smooth", block:"center" });
+        }
+      }, 60);
+    }
+
+    function generateExam() {
+      const pool = currentQuestions().slice();
+      if (!pool.length) return;
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      const selected = pool.slice(0, Math.min(10, pool.length));
+      $("examBox").classList.add("active");
+      $("examList").innerHTML = selected.map(function(q, idx) {
+        return '<div class="examItem">' +
+          '<b>' + (idx + 1) + '. ' + escapeHTML(q.blockTitle) + '</b>' +
+          '<p style="margin:8px 0 0;color:var(--text);font-weight:850">' + escapeHTML(q.question) + '</p>' +
+          '<button class="answerToggle" type="button">Ver respuesta guía</button>' +
+          '<div class="answer" style="display:none;margin-top:10px">' + answerToHTML(q.answer) + '</div>' +
+        '</div>';
+      }).join("");
+      $("examList").querySelectorAll(".answerToggle").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          const ans = btn.nextElementSibling;
+          const show = ans.style.display === "none";
+          ans.style.display = show ? "block" : "none";
+          btn.textContent = show ? "Ocultar respuesta" : "Ver respuesta guía";
+        });
+      });
+      $("examBox").scrollIntoView({ behavior:"smooth", block:"start" });
+    }
+
+    function copyVisible() {
+      const list = currentQuestions();
+      const text = list.map(function(q) {
+        return q.block + "." + q.qnum + " " + q.question + "\nRespuesta:\n" + q.answer;
+      }).join("\n\n---\n\n");
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      $("copyBtn").textContent = "Copiado";
+      setTimeout(function() { $("copyBtn").textContent = "Copiar visibles"; }, 1200);
+    }
+
+    function resizeCanvas(canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      return { ctx, w: rect.width, h: rect.height };
+    }
+
+    function css(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    function drawGrid(ctx,w,h) {
+      ctx.save();
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--line");
+      ctx.globalAlpha = .35;
+      for (let x=0; x<w; x+=40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
+      for (let y=0; y<h; y+=40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+      ctx.restore();
+    }
+
+    function drawHero() {
+      const c = $("heroCanvas");
+      const {ctx,w,h} = resizeCanvas(c);
+      ctx.clearRect(0,0,w,h);
+      drawGrid(ctx,w,h);
+      const nodes = BLOCKS.map(function(b,i) {
+        const angle = -Math.PI/2 + i * Math.PI*2 / BLOCKS.length;
+        const rx = w*.36, ry = h*.34;
+        return { x: w/2 + Math.cos(angle)*rx, y:h/2 + Math.sin(angle)*ry, title:b.block };
+      });
+      ctx.lineWidth = 1.5;
+      for (let i=0;i<nodes.length;i++) {
+        for (let j=i+1;j<nodes.length;j++) {
+          if (Math.abs(i-j)===1 || Math.random() < .08) {
+            ctx.strokeStyle = "rgba(56,189,248,.18)";
+            ctx.beginPath(); ctx.moveTo(nodes[i].x,nodes[i].y); ctx.lineTo(nodes[j].x,nodes[j].y); ctx.stroke();
+          }
+        }
+      }
+      nodes.forEach(function(n,i) {
+        const grad = ctx.createLinearGradient(n.x-20,n.y-20,n.x+20,n.y+20);
+        grad.addColorStop(0, css("--primary"));
+        grad.addColorStop(1, css("--primary2"));
+        ctx.fillStyle = grad;
+        ctx.beginPath(); ctx.arc(n.x,n.y,17,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle = "white"; ctx.font = "900 12px Inter, system-ui"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(n.title,n.x,n.y);
+      });
+      ctx.fillStyle = css("--text");
+      ctx.font = "900 18px Inter, system-ui";
+      ctx.textAlign = "center";
+      ctx.fillText("Mapa integral del parcial", w/2, h/2 - 8);
+      ctx.fillStyle = css("--muted");
+      ctx.font = "800 12px Inter, system-ui";
+      ctx.fillText("13 bloques conectados · 65 respuestas desarrolladas", w/2, h/2 + 16);
+    }
+
+    function rand(seed) {
+      let x = Math.sin(seed) * 10000;
+      return x - Math.floor(x);
+    }
+
+    function drawLab() {
+      const mode = $("labMode").value;
+      const intensity = Number($("labIntensity").value);
+      const c = $("labCanvas");
+      const {ctx,w,h} = resizeCanvas(c);
+      ctx.clearRect(0,0,w,h);
+      drawGrid(ctx,w,h);
+      if (mode === "eda") drawEDA(ctx,w,h,intensity);
+      if (mode === "regression") drawRegression(ctx,w,h,intensity);
+      if (mode === "logistic") drawLogistic(ctx,w,h,intensity);
+      if (mode === "tree") drawTree(ctx,w,h,intensity);
+      if (mode === "forest") drawForest(ctx,w,h,intensity);
+      if (mode === "series") drawSeries(ctx,w,h,intensity);
+      if (mode === "cluster") drawCluster(ctx,w,h,intensity);
+      updateLabLabels(mode);
+    }
+
+    function axis(ctx,w,h) {
+      ctx.strokeStyle = css("--line");
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(50,h-45); ctx.lineTo(w-25,h-45); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(50,25); ctx.lineTo(50,h-45); ctx.stroke();
+    }
+
+    function drawEDA(ctx,w,h,k) {
+      axis(ctx,w,h);
+      const bins = 14;
+      for (let i=0;i<bins;i++) {
+        const val = Math.exp(-Math.pow((i-6.5)/3,2)) * (80 + k*7) + (i===13 ? 55 : 0);
+        const bw = (w-95)/bins;
+        const x = 55 + i*bw;
+        const bh = val;
+        ctx.fillStyle = i===13 ? css("--bad") : "rgba(56,189,248,.72)";
+        ctx.fillRect(x,h-45-bh,bw-5,bh);
+      }
+      ctx.fillStyle = css("--text"); ctx.font="900 16px Inter,system-ui"; ctx.fillText("Histograma + outlier", 62, 42);
+      ctx.strokeStyle = css("--good"); ctx.lineWidth=4;
+      const y = 70;
+      ctx.strokeRect(w*.55,y,150,42);
+      ctx.beginPath(); ctx.moveTo(w*.55+75,y); ctx.lineTo(w*.55+75,y+42); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(w*.55-45,y+21); ctx.lineTo(w*.55,y+21); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(w*.55+150,y+21); ctx.lineTo(w*.55+205,y+21); ctx.stroke();
+      ctx.fillStyle = css("--bad"); ctx.beginPath(); ctx.arc(w*.55+245,y+21,5,0,Math.PI*2); ctx.fill();
+    }
+
+    function drawRegression(ctx,w,h,k) {
+      axis(ctx,w,h);
+      let pts=[];
+      for (let i=0;i<45;i++) {
+        const x = 60 + i*(w-100)/44;
+        const noise = (rand(i*13+k)-.5)*60;
+        const y = h-70 - (i*(h-130)/50) - noise;
+        pts.push({x,y});
+      }
+      ctx.fillStyle = "rgba(56,189,248,.8)";
+      pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);ctx.fill();});
+      ctx.strokeStyle = css("--good"); ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(58,h-78); ctx.lineTo(w-35,70); ctx.stroke();
+      ctx.strokeStyle = "rgba(251,113,133,.55)"; ctx.lineWidth=1;
+      pts.slice(0,12).forEach(function(p) {
+        const yhat = h-78 - ((p.x-58)/(w-93))*(h-148);
+        ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x,yhat); ctx.stroke();
+      });
+      ctx.fillStyle=css("--text"); ctx.font="900 16px Inter,system-ui"; ctx.fillText("Regresión lineal: recta y residuos",62,42);
+    }
+
+    function drawLogistic(ctx,w,h,k) {
+      axis(ctx,w,h);
+      ctx.strokeStyle = css("--good"); ctx.lineWidth=4; ctx.beginPath();
+      for (let i=0;i<=200;i++) {
+        const x = 50 + i*(w-90)/200;
+        const z = (i-100)/(18-k);
+        const p = 1/(1+Math.exp(-z));
+        const y = h-45 - p*(h-80);
+        if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+      const th = h-45-.5*(h-80);
+      ctx.strokeStyle = css("--warn"); ctx.setLineDash([7,6]); ctx.beginPath(); ctx.moveTo(50,th); ctx.lineTo(w-30,th); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle=css("--text"); ctx.font="900 16px Inter,system-ui"; ctx.fillText("Sigmoide: probabilidad y umbral",62,42);
+      ctx.fillStyle=css("--muted"); ctx.font="800 12px Inter,system-ui"; ctx.fillText("p = 0.5",w-82,th-8);
+    }
+
+    function roundedRect(ctx,x,y,w,h,r) {
+      ctx.beginPath();
+      ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+      ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+    }
+
+    function nodeBox(ctx,x,y,text,color) {
+      roundedRect(ctx,x-70,y-22,140,44,14);
+      ctx.fillStyle=color; ctx.fill(); ctx.strokeStyle=css("--line"); ctx.stroke();
+      ctx.fillStyle="white"; ctx.font="900 12px Inter,system-ui"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(text,x,y);
+    }
+
+    function drawTree(ctx,w,h,k) {
+      ctx.strokeStyle=css("--line"); ctx.lineWidth=2;
+      const root=[w/2,60], left=[w*.32,155], right=[w*.68,155], ll=[w*.22,260], lr=[w*.42,260], rl=[w*.58,260], rr=[w*.78,260];
+      [[root,left],[root,right],[left,ll],[left,lr],[right,rl],[right,rr]].forEach(function(e){ctx.beginPath();ctx.moveTo(e[0][0],e[0][1]+22);ctx.lineTo(e[1][0],e[1][1]-22);ctx.stroke();});
+      nodeBox(ctx,root[0],root[1],"edad > 35",css("--primary2"));
+      nodeBox(ctx,left[0],left[1],"gasto alto",css("--primary"));
+      nodeBox(ctx,right[0],right[1],"frecuencia",css("--primary"));
+      [ll,lr,rl,rr].forEach(function(p,i){ nodeBox(ctx,p[0],p[1], i%2 ? "No compra":"Compra", i%2 ? css("--bad"):css("--good")); });
+      ctx.fillStyle=css("--text"); ctx.font="900 16px Inter,system-ui"; ctx.fillText("Árbol de decisión: reglas sucesivas",62,42);
+    }
+
+    function drawForest(ctx,w,h,k) {
+      ctx.fillStyle=css("--text"); ctx.font="900 16px Inter,system-ui"; ctx.fillText("Random Forest: muchos árboles votan",62,42);
+      for (let t=0;t<7;t++) {
+        const x = 85 + t*(w-160)/6;
+        const y = 120 + (t%2)*25;
+        nodeBox(ctx,x,y,"T"+(t+1),css("--primary"));
+        ctx.strokeStyle=css("--line"); ctx.beginPath(); ctx.moveTo(x,y+25); ctx.lineTo(w/2,h-80); ctx.stroke();
+      }
+      nodeBox(ctx,w/2,h-80,"Votación / promedio",css("--primary2"));
+      nodeBox(ctx,w/2,h-25,"Predicción robusta",css("--good"));
+    }
+
+    function drawSeries(ctx,w,h,k) {
+      axis(ctx,w,h);
+      const pts=[];
+      for (let i=0;i<90;i++) {
+        const x=55+i*(w-95)/89;
+        const trend=(i/89)*(h*.34);
+        const season=Math.sin(i/6)*(22+k*2);
+        const noise=(rand(i*41+k)-.5)*25;
+        const y=h-75-trend-season-noise;
+        pts.push({x,y});
+      }
+      ctx.strokeStyle="rgba(56,189,248,.55)"; ctx.lineWidth=2; ctx.beginPath();
+      pts.forEach((p,i)=> i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y)); ctx.stroke();
+      ctx.strokeStyle=css("--good"); ctx.lineWidth=4; ctx.beginPath();
+      pts.forEach(function(p,i) {
+        const start=Math.max(0,i-5); const subset=pts.slice(start,i+1); const avg=subset.reduce((a,b)=>a+b.y,0)/subset.length;
+        if(i===0) ctx.moveTo(p.x,avg); else ctx.lineTo(p.x,avg);
+      });
+      ctx.stroke();
+      ctx.fillStyle=css("--text"); ctx.font="900 16px Inter,system-ui"; ctx.fillText("Serie temporal y promedio móvil",62,42);
+    }
+
+    function drawCluster(ctx,w,h,k) {
+      axis(ctx,w,h);
+      const centers = [[w*.3,h*.65],[w*.65,h*.35],[w*.72,h*.72]];
+      centers.forEach(function(c,ci) {
+        for (let i=0;i<26;i++) {
+          const x=c[0]+(rand(ci*100+i*7)-.5)*(45+k*8);
+          const y=c[1]+(rand(ci*200+i*9)-.5)*(45+k*8);
+          ctx.fillStyle = ["rgba(56,189,248,.75)","rgba(139,92,246,.75)","rgba(52,211,153,.75)"][ci];
+          ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.fill();
+        }
+        ctx.strokeStyle="white"; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(c[0],c[1],10,0,Math.PI*2); ctx.stroke();
+      });
+      ctx.fillStyle=css("--text"); ctx.font="900 16px Inter,system-ui"; ctx.fillText("K-Means: puntos, centroides y clusters",62,42);
+    }
+
+    function updateLabLabels(mode) {
+      const info = {
+        eda:["EDA","Explorar calidad","No mirar distribución"],
+        regression:["Regresión","Predecir valor numérico","Outliers y linealidad"],
+        logistic:["Logística","Clasificar por probabilidad","Accuracy engañoso"],
+        tree:["Árbol","Explicar reglas","Overfitting"],
+        forest:["Random Forest","Reducir varianza","Menor interpretabilidad"],
+        series:["Series","Respetar tiempo","Data leakage"],
+        cluster:["Clustering","Descubrir grupos","Escala de variables"]
+      }[mode];
+      $("labReading").textContent = info[0];
+      $("labUse").textContent = info[1];
+      $("labRisk").textContent = info[2];
+    }
+
+    function animateLab() {
+      if (labTimer) { clearInterval(labTimer); labTimer = null; $("labAnimate").textContent = "Animar"; return; }
+      $("labAnimate").textContent = "Detener";
+      labTimer = setInterval(function() {
+        const r = $("labIntensity");
+        let v = Number(r.value) + 1;
+        if (v > 10) v = 1;
+        r.value = v;
+        drawLab();
+      }, 650);
+    }
+
+    function updateTopProgress() {
+      const doc = document.documentElement;
+      const scrolled = doc.scrollTop / Math.max(1, doc.scrollHeight - doc.clientHeight);
+      $("progressTop").style.width = (scrolled * 100).toFixed(2) + "%";
+    }
+
+    function init() {
+      renderFilters();
+      renderBlockMap();
+      renderQuestions();
+      updateProgress();
+      drawHero();
+      drawLab();
+
+      $("searchInput").addEventListener("input", renderQuestions);
+      $("themeBtn").addEventListener("click", function() {
+        const html = document.documentElement;
+        html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
+        drawHero(); drawLab();
+      });
+      $("printBtn").addEventListener("click", function() { window.print(); });
+      $("expandBtn").addEventListener("click", function() { document.querySelectorAll(".qCard").forEach(c=>c.classList.add("open")); });
+      $("collapseBtn").addEventListener("click", function() { document.querySelectorAll(".qCard").forEach(c=>c.classList.remove("open")); });
+      $("randomBtn").addEventListener("click", randomQuestion);
+      $("examBtn").addEventListener("click", generateExam);
+      $("copyBtn").addEventListener("click", copyVisible);
+      $("allBtn").addEventListener("click", function() { setViewMode("all"); });
+      $("pendingBtn").addEventListener("click", function() { setViewMode("pending"); });
+      $("studiedBtn").addEventListener("click", function() { setViewMode("studied"); });
+      $("labMode").addEventListener("change", drawLab);
+      $("labIntensity").addEventListener("input", drawLab);
+      $("labRedraw").addEventListener("click", drawLab);
+      $("labAnimate").addEventListener("click", animateLab);
+      window.addEventListener("resize", function() { drawHero(); drawLab(); });
+      window.addEventListener("scroll", updateTopProgress, { passive:true });
+      updateTopProgress();
+    }
+
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>

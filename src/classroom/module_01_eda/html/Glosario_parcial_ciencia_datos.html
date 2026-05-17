@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glosario de Ciencia de Datos · Parcial · Versión 2.0</title>
+  <meta name="description" content="Glosario interactivo para parcial de Ciencia de Datos: EDA, datos faltantes, outliers, regresión, validación, series, clasificación, árboles, Random Forest y clustering." />
+  <style>
+    :root{
+      --bg:#07111f;--bg2:#0b1728;--panel:rgba(17,33,54,.84);--panel2:rgba(23,43,69,.96);--text:#eef6ff;--muted:#a8bad1;
+      --line:rgba(255,255,255,.13);--accent:#38bdf8;--accent2:#8b5cf6;--accent3:#34d399;--warn:#fbbf24;--danger:#fb7185;
+      --shadow:0 22px 70px rgba(0,0,0,.38);--radius:26px;--code:#06101c;--chip:rgba(56,189,248,.13);
+      --ok:#34d399;--card-grad:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.025));
+    }
+    html[data-theme="light"]{
+      --bg:#f3f7fb;--bg2:#e9f0f8;--panel:rgba(255,255,255,.9);--panel2:rgba(255,255,255,.98);--text:#102033;--muted:#4c6178;
+      --line:rgba(16,32,51,.14);--accent:#0077b6;--accent2:#6947d8;--accent3:#008f5f;--warn:#a66a00;--danger:#c73555;
+      --shadow:0 22px 70px rgba(39,58,84,.18);--code:#eef5fb;--chip:rgba(0,119,182,.1);
+      --card-grad:linear-gradient(145deg,rgba(255,255,255,.96),rgba(255,255,255,.78));
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);min-height:100vh;
+      background:
+        radial-gradient(circle at 10% 0%,rgba(56,189,248,.18),transparent 34%),
+        radial-gradient(circle at 92% 8%,rgba(139,92,246,.20),transparent 34%),
+        radial-gradient(circle at 45% 78%,rgba(52,211,153,.12),transparent 36%),
+        linear-gradient(180deg,var(--bg),var(--bg2) 72%,var(--bg));
+    }
+    .top-progress{position:fixed;top:0;left:0;height:4px;width:0%;z-index:999;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));box-shadow:0 0 18px rgba(56,189,248,.5)}
+    .container{width:min(1280px,calc(100% - 28px));margin:0 auto}
+    header.hero{padding:64px 0 24px}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.18fr) 360px;gap:22px;align-items:stretch}
+    .hero-card,.side-panel,.section-card,.term-card,.lab-card{background:var(--card-grad);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(18px)}
+    .hero-card{border-radius:34px;padding:34px;overflow:hidden;position:relative}
+    .hero-card:after{content:"";position:absolute;right:-120px;bottom:-140px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.18),transparent 70%);pointer-events:none}
+    .side-panel{border-radius:30px;padding:22px;min-height:100%}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:999px;background:var(--chip);color:var(--accent);font-size:.82rem;font-weight:900;letter-spacing:.05em;text-transform:uppercase;margin-bottom:16px}
+    h1{font-size:clamp(2.3rem,5vw,5rem);line-height:.96;margin:0 0 18px;letter-spacing:-.065em}
+    h2{font-size:clamp(1.55rem,2.8vw,2.45rem);letter-spacing:-.035em;margin:0 0 12px}
+    h3{margin:0 0 10px;font-size:1.18rem;letter-spacing:-.02em}
+    p{color:var(--muted);line-height:1.72;margin:0 0 12px}
+    .lead{font-size:1.08rem;max-width:850px}
+    .highlight{color:var(--text);font-weight:900}
+    .hero-actions,.chips,.toolbar,.filter-row,.lab-actions{display:flex;flex-wrap:wrap;gap:10px}
+    .hero-actions{margin-top:22px}
+    .chips{margin-top:16px}
+    .chip,.tag{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--chip);border-radius:999px;color:var(--text);font-weight:850;font-size:.82rem;padding:8px 11px}
+    button,.btn{
+      appearance:none;border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:999px;padding:10px 14px;min-height:42px;
+      font-weight:850;cursor:pointer;transition:.18s ease;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none
+    }
+    button:hover,.btn:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 14px 30px rgba(56,189,248,.13)}
+    button.primary,.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:white}
+    button.active{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:white}
+    .metric{display:grid;grid-template-columns:1fr auto;gap:8px;padding:11px 0;border-bottom:1px solid var(--line);color:var(--muted);font-size:.92rem}
+    .metric:last-child{border-bottom:none}
+    .metric strong{color:var(--text)}
+    .formula-strip{font-family:Cambria,Georgia,serif;color:var(--accent3);background:var(--code);border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin:16px 0;line-height:1.7;overflow:auto}
+    nav.toc{position:sticky;top:8px;z-index:100;margin:14px auto 26px;background:rgba(7,17,31,.66);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:999px;padding:8px;display:flex;gap:8px;overflow-x:auto;box-shadow:var(--shadow)}
+    html[data-theme="light"] nav.toc{background:rgba(255,255,255,.72)}
+    nav.toc a{color:var(--muted);text-decoration:none;white-space:nowrap;padding:8px 11px;border-radius:999px;font-weight:850;font-size:.88rem}
+    nav.toc a:hover{background:var(--chip);color:var(--text)}
+    section{padding:28px 0}
+    .section-card{border-radius:var(--radius);padding:24px}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .summary-card{background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:18px}
+    .summary-card b{display:block;font-size:1.6rem;margin-bottom:4px}
+    .summary-card span{color:var(--muted);font-weight:780}
+    .searchbar{display:grid;grid-template-columns:1fr auto auto;gap:10px;margin:18px 0}
+    .searchbar input,.searchbar select{
+      width:100%;border:1px solid var(--line);border-radius:18px;background:var(--panel2);color:var(--text);padding:12px 14px;font-weight:760;outline:none
+    }
+    .filter-row{margin:12px 0 18px}
+    .filter-btn{font-size:.84rem;padding:8px 11px}
+    .layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:18px}
+    .sidebar{position:sticky;top:76px;align-self:start;background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow);max-height:calc(100vh - 92px);overflow:auto}
+    .mini-toc{display:grid;gap:8px;margin-top:12px}
+    .mini-toc a{color:var(--muted);text-decoration:none;border:1px solid transparent;border-radius:14px;padding:9px 10px;font-weight:820;font-size:.9rem}
+    .mini-toc a:hover{background:var(--chip);color:var(--text);border-color:var(--line)}
+    .progress-box{margin:14px 0;padding:14px;border:1px solid var(--line);border-radius:18px;background:var(--chip)}
+    .progress-label{display:flex;justify-content:space-between;color:var(--muted);font-weight:850;font-size:.85rem;margin-bottom:8px}
+    .bar{height:9px;border-radius:999px;background:rgba(100,116,139,.24);overflow:hidden}
+    .bar span{display:block;height:100%;width:0%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--accent3));transition:width .25s ease}
+    .terms-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .term-card{border-radius:22px;overflow:hidden;transition:.18s ease;box-shadow:0 14px 34px rgba(0,0,0,.14)}
+    .term-card:hover{transform:translateY(-2px);border-color:var(--accent)}
+    .term-head{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;padding:16px;cursor:pointer}
+    .term-num{width:42px;height:42px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-weight:950}
+    .term-title b{font-size:1.04rem}
+    .term-title small{display:block;color:var(--muted);font-weight:800;margin-top:4px}
+    .status-dot{width:12px;height:12px;border-radius:999px;background:rgba(148,163,184,.55);box-shadow:0 0 0 4px rgba(148,163,184,.10)}
+    .term-card.done .status-dot{background:var(--ok);box-shadow:0 0 0 4px rgba(52,211,153,.15)}
+    .chev{color:var(--muted);font-weight:900;transition:.2s ease}
+    .term-card.open .chev{transform:rotate(180deg)}
+    .term-body{display:none;padding:0 18px 18px 72px}
+    .term-card.open .term-body{display:block}
+    .term-body h4{margin:16px 0 8px;color:var(--accent);font-size:.95rem;text-transform:uppercase;letter-spacing:.06em}
+    .term-body .formula{font-family:Cambria,Georgia,serif;color:var(--accent3);background:var(--code);border:1px solid var(--line);border-radius:15px;padding:12px 14px;margin:10px 0;overflow:auto;font-weight:800}
+    .callout{padding:14px 15px;border-radius:18px;border:1px solid var(--line);background:var(--chip);margin:12px 0}
+    .callout strong{color:var(--text)}
+    .tagline{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+    .empty{display:none;text-align:center;color:var(--muted);padding:36px;border:1px dashed var(--line);border-radius:22px}
+    .flash-modal{position:fixed;inset:0;background:rgba(0,0,0,.58);display:none;align-items:center;justify-content:center;z-index:9999;padding:18px}
+    .flash-modal.show{display:flex}
+    .flash-card{width:min(780px,100%);background:var(--panel2);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:30px;padding:26px}
+    .flash-answer{display:none;margin-top:14px}
+    .flash-answer.show{display:block}
+    canvas{width:100%;height:440px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015)),var(--code);border:1px solid var(--line);border-radius:22px;display:block}
+    .lab-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px}
+    .control-panel{background:var(--panel2);border:1px solid var(--line);border-radius:22px;padding:18px}
+    .control-panel label{display:block;font-size:.78rem;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.06em;margin:12px 0 6px}
+    .control-panel select,.control-panel input[type=range]{width:100%}
+    .control-panel select{background:var(--bg2);border:1px solid var(--line);color:var(--text);padding:10px;border-radius:14px;font-weight:800}
+    input[type=range]{accent-color:var(--accent)}
+    .matrix-wrap{overflow:auto;margin:12px 0;border-radius:18px;border:1px solid var(--line)}
+    table{width:100%;border-collapse:collapse;background:var(--panel2)}
+    th,td{text-align:left;vertical-align:top;padding:13px 14px;border-bottom:1px solid var(--line);color:var(--muted);font-size:.92rem}
+    th{color:var(--text);background:var(--chip);font-weight:900}
+    tr:last-child td{border-bottom:none}
+    td strong{color:var(--text)}
+    .print-note{display:none}
+    @media (max-width:1050px){.hero-grid,.layout,.lab-grid,.grid-2,.grid-3{grid-template-columns:1fr}.sidebar{position:relative;top:auto;max-height:none}.terms-grid{grid-template-columns:1fr}.searchbar{grid-template-columns:1fr}header.hero{padding-top:42px}}
+    @media (max-width:700px){.container{width:min(100% - 18px,1280px)}.hero-card{padding:22px}.term-head{grid-template-columns:38px 1fr}.term-body{padding:0 16px 16px}.status-dot{display:none}nav.toc{border-radius:18px}.side-panel{padding:18px}canvas{height:360px}}
+    @media print{
+      nav.toc,.sidebar,.hero-actions,.toolbar,.searchbar,.filter-row,.lab-card button,.control-panel,.flash-modal{display:none!important}
+      body{background:white!important;color:#111!important}.hero-card,.side-panel,.section-card,.term-card,.lab-card{box-shadow:none!important;break-inside:avoid;background:white!important;border-color:#ddd!important}
+      .term-body{display:block!important;padding:0 12px 16px!important}.terms-grid{display:block}.term-card{margin:10px 0}.print-note{display:block}
+    }
+  </style>
+</head>
+<body>
+  <div class="top-progress" id="topProgress"></div>
+
+  <header class="hero">
+    <div class="container hero-grid">
+      <div class="hero-card">
+        <div class="eyebrow">Versión 2.0 · Glosario de parcial</div>
+        <h1>Glosario Interactivo de Ciencia de Datos</h1>
+        <p class="lead">
+          Recurso de estudio ampliado para un parcial introductorio: conceptos, ejemplos, cuidados de interpretación,
+          fórmulas estables y laboratorios visuales para conectar <span class="highlight">EDA</span>,
+          <span class="highlight">modelos</span>, <span class="highlight">validación</span>,
+          <span class="highlight">series de tiempo</span>, <span class="highlight">árboles</span>,
+          <span class="highlight">Random Forest</span> y <span class="highlight">clustering</span>.
+        </p>
+        <div class="formula-strip">Dato → Información → Conocimiento → EDA → Preprocesamiento → Modelo → Validación → Interpretación → Decisión</div>
+        <div class="hero-actions">
+          <a class="btn primary" href="#glosario">Explorar glosario</a>
+          <a class="btn" href="#laboratorio">Laboratorio visual</a>
+          <button id="themeBtn" type="button">Cambiar tema</button>
+          <button id="printBtn" type="button">Imprimir / PDF</button>
+        </div>
+        <div class="chips">
+          <span class="chip">130 conceptos</span>
+          <span class="chip">12 unidades</span>
+          <span class="chip">modo flashcards</span>
+          <span class="chip">progreso guardado</span>
+          <span class="chip">sin dependencias externas</span>
+        </div>
+      </div>
+      <aside class="side-panel">
+        <h3>Panel de estudio</h3>
+        <p>Diseñado para repasar rápido antes del parcial y profundizar cuando una definición requiere más contexto.</p>
+        <div class="metric"><span>Conceptos cargados</span><strong id="totalTerms">0</strong></div>
+        <div class="metric"><span>Unidades</span><strong id="totalSections">0</strong></div>
+        <div class="metric"><span>Estudiados</span><strong id="doneTotal">0</strong></div>
+        <div class="metric"><span>Vista actual</span><strong id="visibleTotal">0</strong></div>
+        <div class="progress-box">
+          <div class="progress-label"><span>Progreso total</span><strong id="progressText">0%</strong></div>
+          <div class="bar"><span id="studyBar"></span></div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <div class="container">
+    <nav class="toc" aria-label="Navegación principal">
+      <a href="#mapa">Mapa conceptual</a>
+      <a href="#glosario">Glosario</a>
+      <a href="#laboratorio">Laboratorio</a>
+      <a href="#sintesis">Síntesis</a>
+    </nav>
+  </div>
+
+  <main>
+    <section id="mapa">
+      <div class="container">
+        <div class="section-card">
+          <h2>Mapa de lectura para el parcial</h2>
+          <p>El glosario está organizado como un recorrido completo: primero se define el problema y los datos; luego se exploran, limpian y transforman; finalmente se modela, evalúa e interpreta.</p>
+          <div class="grid-3" id="sectionCards"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="glosario">
+      <div class="container layout">
+        <aside class="sidebar">
+          <h3>Herramientas</h3>
+          <div class="toolbar">
+            <button id="expandAllBtn">Expandir</button>
+            <button id="collapseAllBtn">Contraer</button>
+            <button id="randomBtn" class="primary">Azar</button>
+            <button id="flashBtn">Flashcards</button>
+            <button id="copyBtn">Copiar visibles</button>
+            <button id="resetProgressBtn">Reiniciar progreso</button>
+          </div>
+          <div class="progress-box">
+            <div class="progress-label"><span>Estudio</span><strong id="sideProgress">0/0</strong></div>
+            <div class="bar"><span id="sideBar"></span></div>
+          </div>
+          <h3 style="margin-top:18px">Unidades</h3>
+          <div class="mini-toc" id="miniToc"></div>
+        </aside>
+
+        <div>
+          <div class="section-card">
+            <h2>Glosario ampliado</h2>
+            <p>Buscá un concepto, filtrá por unidad temática o marcá términos como estudiados. Cada tarjeta incluye definición base, ampliación didáctica, ejemplo aplicado y cuidado de interpretación.</p>
+            <div class="searchbar">
+              <input id="searchInput" placeholder="Buscar: R², outlier, sigmoide, Random Forest, K-Means..." />
+              <select id="sectionSelect"><option value="all">Todas las unidades</option></select>
+              <select id="tagSelect"><option value="all">Todos los tipos</option></select>
+            </div>
+            <div class="filter-row" id="quickFilters"></div>
+          </div>
+          <div class="empty" id="emptyState">No se encontraron conceptos con ese filtro.</div>
+          <div class="terms-grid" id="termsGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="laboratorio">
+      <div class="container">
+        <div class="section-card lab-card">
+          <h2>Laboratorio visual de conceptos</h2>
+          <p>Este laboratorio no reemplaza los modelos reales, pero ayuda a fijar la intuición: distribución, relación entre variables, frontera de decisión, árboles, ensambles, series temporales y clusters.</p>
+          <div class="lab-grid">
+            <canvas id="conceptCanvas" aria-label="Laboratorio visual de Ciencia de Datos"></canvas>
+            <div class="control-panel">
+              <h3>Controles</h3>
+              <label for="labMode">Tema visual</label>
+              <select id="labMode">
+                <option value="pipeline">Pipeline de Ciencia de Datos</option>
+                <option value="eda">EDA: histograma y boxplot</option>
+                <option value="missing">Datos faltantes e imputación</option>
+                <option value="outliers">Outliers</option>
+                <option value="regression">Regresión lineal y residuos</option>
+                <option value="validation">Train-test y validación cruzada</option>
+                <option value="timeseries">Serie de tiempo</option>
+                <option value="logistic">Regresión logística</option>
+                <option value="tree">Árbol de decisión</option>
+                <option value="forest">Random Forest</option>
+                <option value="clustering">Clustering K-Means</option>
+              </select>
+              <label for="labIntensity">Intensidad / complejidad</label>
+              <input id="labIntensity" type="range" min="1" max="10" value="5" />
+              <div class="lab-actions" style="margin-top:14px">
+                <button id="labAnimateBtn" class="primary">Animar</button>
+                <button id="labStepBtn">Paso</button>
+                <button id="labResetBtn">Reiniciar</button>
+              </div>
+              <div style="margin-top:16px">
+                <div class="metric"><span>Concepto</span><strong id="labConcept">Pipeline</strong></div>
+                <div class="metric"><span>Lectura</span><strong id="labReading">proceso</strong></div>
+                <div class="metric"><span>Paso</span><strong id="labStep">0</strong></div>
+              </div>
+              <div class="callout">
+                <strong>Uso didáctico:</strong>
+                <p id="labText" style="margin-top:6px">Elegí un tema y observá la visualización. Luego relacioná la imagen con las definiciones del glosario.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sintesis">
+      <div class="container">
+        <div class="section-card">
+          <h2>Síntesis final</h2>
+          <p>El parcial puede pensarse como un recorrido integral: entender datos, explorar calidad, transformar variables, construir modelos, evaluar desempeño y comunicar resultados con criterio.</p>
+          <div class="matrix-wrap">
+            <table>
+              <thead><tr><th>Bloque</th><th>Pregunta central</th><th>Riesgo frecuente</th></tr></thead>
+              <tbody>
+                <tr><td><strong>EDA</strong></td><td>¿Qué estructura, distribución y problemas tienen los datos?</td><td>Modelar sin mirar los datos.</td></tr>
+                <tr><td><strong>Preprocesamiento</strong></td><td>¿Qué datos faltan, sobran, están mal escalados o necesitan transformación?</td><td>Corregir automáticamente sin justificar.</td></tr>
+                <tr><td><strong>Modelado</strong></td><td>¿Qué modelo responde mejor al tipo de problema?</td><td>Usar algoritmos sin distinguir regresión, clasificación y clustering.</td></tr>
+                <tr><td><strong>Evaluación</strong></td><td>¿El modelo generaliza o solo memoriza?</td><td>Confiar solo en métricas de entrenamiento.</td></tr>
+                <tr><td><strong>Interpretación</strong></td><td>¿Qué significa el resultado y qué decisión permite tomar?</td><td>Confundir correlación, predicción y causalidad.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout">
+            <strong>Frase de repaso:</strong>
+            <p>Un buen análisis de Ciencia de Datos no termina en el modelo; termina cuando el resultado se interpreta, se valida y se convierte en una decisión comprensible.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="flash-modal" id="flashModal" role="dialog" aria-modal="true" aria-label="Modo flashcards">
+    <div class="flash-card">
+      <div class="eyebrow">Flashcard</div>
+      <h2 id="flashTerm">Concepto</h2>
+      <p id="flashSection">Unidad</p>
+      <div class="flash-answer" id="flashAnswer"></div>
+      <div class="hero-actions">
+        <button id="showFlashAnswer" class="primary">Mostrar respuesta</button>
+        <button id="nextFlash">Siguiente</button>
+        <button id="closeFlash">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="container" style="padding:34px 0 60px;text-align:center;color:var(--muted)">
+    Material elaborado por el profesor <strong>Sergio Gevatschnaider</strong> · Glosario de Ciencia de Datos para parcial introductorio.
+  </footer>
+
+  <script id="glossaryData" type="application/json">[{"id": "t001", "n": 1, "term": "Ciencia de Datos", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["La Ciencia de Datos es una disciplina que busca extraer conocimiento útil a partir de datos. Combina estadística, matemática, programación, visualización, aprendizaje automático y conocimiento del problema que se quiere resolver. Su objetivo no es simplemente acumular datos, sino analizarlos para comprender fenómenos, detectar patrones, explicar comportamientos y tomar mejores decisiones.", "Por ejemplo, una empresa puede usar Ciencia de Datos para predecir ventas, segmentar clientes, detectar fraude o estimar la probabilidad de abandono de usuarios. La Ciencia de Datos suele trabajar con un proceso que incluye definición del problema, recolección de datos, limpieza, análisis exploratorio, transformación de variables, construcción de modelos, evaluación e interpretación de resultados."], "formulas": [], "ampliacion": "Es una práctica interdisciplinaria: el valor no aparece solo por aplicar modelos, sino por formular buenas preguntas y convertir resultados en decisiones.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "Confundir Ciencia de Datos con usar una librería puede llevar a proyectos técnicamente prolijos pero irrelevantes para el problema.", "tags": ["conceptual"]}, {"id": "t002", "n": 2, "term": "Dato", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["Un dato es una unidad básica de información. Puede ser un número, una palabra, una fecha, una categoría o una medición. Por ejemplo, la edad de una persona, el precio de un producto, la fecha de una compra o el país de residencia de un cliente son datos. Por sí solo, un dato puede no decir demasiado. Su valor aparece cuando se lo organiza, compara y analiza junto con otros datos. En Ciencia de Datos, los datos son la materia prima del análisis."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["conceptual"]}, {"id": "t003", "n": 3, "term": "Información", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["La información surge cuando los datos se organizan y adquieren significado. Por ejemplo, una lista de ventas individuales son datos, pero el total de ventas mensuales por región ya es información. La información permite describir una situación. Saber que las ventas crecieron un 15 % en un trimestre permite entender mejor el comportamiento del negocio. En Ciencia de Datos, transformar datos en información es una etapa clave para llegar luego a conclusiones útiles."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["conceptual"]}, {"id": "t004", "n": 4, "term": "Conocimiento", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["El conocimiento aparece cuando la información se interpreta dentro de un contexto y permite tomar decisiones. Por ejemplo, si una empresa observa que las ventas aumentan en determinado segmento y decide reforzar su estrategia comercial allí, está usando conocimiento derivado de los datos. El conocimiento requiere análisis, interpretación y criterio. No alcanza con tener números; hay que comprender qué significan, por qué importan y qué acciones permiten tomar."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["conceptual"]}, {"id": "t005", "n": 5, "term": "Dataset", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["Un dataset es un conjunto de datos organizado, normalmente en forma de tabla. En esa tabla, las filas suelen representar observaciones y las columnas representan variables. Por ejemplo, un dataset de clientes puede tener una fila por cliente y columnas como edad, ciudad, ingreso, cantidad de compras y estado de fidelización. El dataset es la base sobre la cual se realiza el análisis exploratorio, la limpieza de datos, la transformación de variables y el entrenamiento de modelos."], "formulas": [], "ampliacion": "Pensalo como la mesa de trabajo: antes de modelar, hay que conocer filas, columnas, tipos de datos, calidad y contexto de recolección.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "Un dataset grande no garantiza calidad; puede tener sesgos, duplicados, errores o variables mal definidas.", "tags": ["conceptual"]}, {"id": "t006", "n": 6, "term": "Observación", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["Una observación es cada unidad individual registrada en un dataset. Generalmente corresponde a una fila. En un dataset de estudiantes, cada estudiante es una observación. En un dataset de ventas, cada operación de venta puede ser una observación. En un dataset de transacciones bancarias, cada transacción es una observación. Cada observación contiene valores para distintas variables."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["conceptual"]}, {"id": "t007", "n": 7, "term": "Variable", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["Una variable es una característica o atributo que se mide o registra en cada observación. Por ejemplo, edad, ingreso, precio, categoría de producto, país o fecha de compra. Las variables pueden ser numéricas o categóricas. También pueden cumplir distintos roles dentro de un modelo: algunas pueden ser variables explicativas y otra puede ser la variable objetivo que se quiere predecir."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["conceptual"]}, {"id": "t008", "n": 8, "term": "Variable numérica", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["Una variable numérica representa cantidades medibles. Puede tomar valores como edad, precio, ingreso, temperatura, cantidad de ventas o tiempo de espera. Las variables numéricas permiten realizar cálculos matemáticos como promedio, mediana, desviación estándar, mínimo, máximo o correlación. En modelos predictivos, las variables numéricas suelen ser utilizadas directamente, aunque muchas veces requieren transformaciones o escalado."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["conceptual"]}, {"id": "t009", "n": 9, "term": "Variable categórica", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["Una variable categórica representa grupos, clases o etiquetas. Por ejemplo, país, género, tipo de cliente, rubro de actividad, categoría de producto o nivel educativo. No tiene sentido calcular un promedio de una variable categórica, pero sí se puede contar cuántas observaciones hay en cada categoría. Para algunos modelos, las variables categóricas deben transformarse en variables numéricas mediante técnicas como variables dummy o codificación."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["conceptual"]}, {"id": "t010", "n": 10, "term": "Variable dependiente", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["La variable dependiente es la variable que se quiere explicar o predecir. También se la llama variable objetivo, target o respuesta. Por ejemplo, si queremos predecir el precio de una vivienda, el precio es la variable dependiente. Si queremos predecir si un cliente abandona o no un servicio, la variable dependiente es el abandono. En un modelo supervisado, la variable dependiente es central porque permite entrenar y evaluar el modelo."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["regresión"]}, {"id": "t011", "n": 11, "term": "Variable independiente", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["La variable independiente es una variable que se utiliza para explicar o predecir la variable dependiente. Por ejemplo, si se quiere predecir el precio de una vivienda, variables como superficie, ubicación, cantidad de ambientes y antigüedad pueden ser variables independientes. En un modelo, estas variables también se llaman variables explicativas, predictoras o features."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["regresión"]}, {"id": "t012", "n": 12, "term": "Feature", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["Una feature es una variable utilizada por un modelo para aprender patrones y hacer predicciones. En español puede traducirse como característica, atributo o variable predictora. Por ejemplo, en un modelo para predecir si un cliente comprará un producto, pueden ser features la edad, la cantidad de compras anteriores, el monto gastado y la frecuencia de visitas. La calidad de las features suele ser fundamental para el desempeño del modelo."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["conceptual"]}, {"id": "t013", "n": 13, "term": "Target", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["El target es la variable objetivo que el modelo intenta predecir. En regresión, el target suele ser un valor numérico continuo. En clasificación, suele ser una categoría o clase. Por ejemplo, en un modelo de regresión para predecir ventas, el target puede ser el monto vendido. En un modelo de clasificación para detectar fraude, el target puede ser “fraude” o “no fraude”."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["conceptual"]}, {"id": "t014", "n": 14, "term": "Modelo", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["Un modelo es una representación simplificada de la realidad que intenta capturar relaciones entre variables. En Ciencia de Datos, un modelo puede servir para explicar, clasificar, predecir o agrupar datos. Por ejemplo, una regresión lineal es un modelo que representa la relación entre variables mediante una ecuación lineal. Un árbol de decisión representa decisiones mediante reglas. Un clustering agrupa observaciones similares.", "Un modelo no es la realidad completa: es una herramienta para aproximarse a ella de manera útil."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["conceptual"]}, {"id": "t015", "n": 15, "term": "Aprendizaje supervisado", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["El aprendizaje supervisado es un tipo de machine learning donde el modelo aprende a partir de ejemplos que ya tienen una respuesta conocida. Por ejemplo, si se quiere predecir si una transacción es fraudulenta, se entrena el modelo con transacciones históricas ya clasificadas como fraudulentas o legítimas. El aprendizaje supervisado incluye problemas de regresión y clasificación."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["conceptual"]}, {"id": "t016", "n": 16, "term": "Aprendizaje no supervisado", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["El aprendizaje no supervisado se utiliza cuando los datos no tienen una etiqueta o respuesta conocida. El objetivo no es predecir una variable específica, sino encontrar patrones o estructuras ocultas. Un ejemplo típico es el clustering, donde se agrupan clientes similares sin saber previamente a qué grupo pertenece cada uno. Es muy útil para segmentación, exploración y reducción de complejidad."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["conceptual"]}, {"id": "t017", "n": 17, "term": "Análisis descriptivo", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["El análisis descriptivo responde a la pregunta: ¿qué ocurrió? Se utiliza para resumir datos históricos mediante tablas, gráficos y estadísticas. Por ejemplo, ventas totales, cantidad de clientes, promedio de edad o distribución de ingresos. Es una de las formas más básicas pero importantes de análisis, porque permite comprender el estado actual o pasado de un fenómeno."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["conceptual"]}, {"id": "t018", "n": 18, "term": "Análisis diagnóstico", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["El análisis diagnóstico responde a la pregunta: ¿por qué ocurrió? Busca explicar causas o factores asociados a un resultado. Por ejemplo, si las ventas bajaron, el análisis diagnóstico puede investigar si fue por caída de demanda, aumento de precios, problemas de stock o pérdida de clientes. Este análisis suele combinar EDA, comparación entre grupos, correlaciones y conocimiento del negocio."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["conceptual"]}, {"id": "t019", "n": 19, "term": "Análisis predictivo", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["El análisis predictivo responde a la pregunta: ¿qué podría ocurrir? Utiliza datos históricos para construir modelos que permitan estimar eventos futuros. Por ejemplo, predecir ventas, demanda, abandono de clientes, riesgo crediticio o probabilidad de fraude. El análisis predictivo no elimina la incertidumbre, pero permite tomar decisiones con más información."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["conceptual"]}, {"id": "t020", "n": 20, "term": "Análisis prescriptivo", "section": "Introducción a Ciencia de Datos", "section_id": 1, "icon": "🧭", "definition": ["El análisis prescriptivo responde a la pregunta: ¿qué conviene hacer? No solo intenta anticipar un resultado, sino recomendar una acción. Por ejemplo, si un modelo predice que ciertos clientes tienen alto riesgo de abandono, el análisis prescriptivo podría sugerir ofrecerles una promoción o contacto personalizado. Es una etapa más avanzada porque conecta predicción con decisión."], "formulas": [], "ampliacion": "Ubicá este concepto dentro del ciclo completo de un proyecto: pregunta, datos, análisis, modelo, evaluación y decisión.", "ejemplo": "Ejemplo aplicado: en una empresa, este concepto ayuda a pasar de registros sueltos a una pregunta analítica útil.", "cuidado": "En el parcial, conviene responder conectando definición, ejemplo y utilidad.", "tags": ["conceptual"]}, {"id": "t021", "n": 21, "term": "EDA", "section": "EDA - Análisis Exploratorio de Datos", "section_id": 2, "icon": "🔎", "definition": ["EDA significa Análisis Exploratorio de Datos. Es la etapa en la que se examinan los datos para comprender su estructura, calidad, distribución y relaciones principales. El EDA permite detectar valores faltantes, outliers, errores, duplicados, variables mal codificadas y relaciones entre variables. También ayuda a formular hipótesis antes de construir modelos. Un buen EDA evita aplicar algoritmos de manera automática sin comprender previamente los datos."], "formulas": [], "ampliacion": "El EDA es el momento de mirar los datos antes de confiar en ellos. Permite descubrir problemas que ningún modelo corrige automáticamente.", "ejemplo": "Ejemplo aplicado: durante el EDA, este concepto ayuda a decidir qué mirar antes de entrenar un modelo.", "cuidado": "Saltar el EDA suele producir modelos que funcionan sobre supuestos equivocados.", "tags": ["conceptual"]}, {"id": "t022", "n": 22, "term": "Estadística descriptiva", "section": "EDA - Análisis Exploratorio de Datos", "section_id": 2, "icon": "🔎", "definition": ["La estadística descriptiva reúne herramientas que permiten resumir y describir datos. Incluye medidas como media, mediana, moda, mínimo, máximo, percentiles, varianza y desviación estándar. Su objetivo es ofrecer una primera comprensión del dataset. Por ejemplo, permite saber cuál es el ingreso promedio, cuál es la edad mediana o qué tan dispersas están las ventas. Es una parte central del EDA."], "formulas": [], "ampliacion": "Este término pertenece al EDA, la etapa donde se entiende el dataset antes de modelar.", "ejemplo": "Ejemplo aplicado: durante el EDA, este concepto ayuda a decidir qué mirar antes de entrenar un modelo.", "cuidado": "Siempre conviene acompañar la definición con qué gráfico o estadística usarías.", "tags": ["conceptual"]}, {"id": "t023", "n": 23, "term": "Media", "section": "EDA - Análisis Exploratorio de Datos", "section_id": 2, "icon": "🔎", "definition": ["La media es el promedio aritmético de un conjunto de valores. Se calcula sumando todos los valores y dividiendo por la cantidad total de observaciones. Por ejemplo, si tres estudiantes tienen notas 6, 8 y 10, la media es 8. La media es útil para resumir una variable, pero puede verse afectada por valores extremos. Si hay outliers, puede dejar de representar adecuadamente el valor típico."], "formulas": [], "ampliacion": "La media resume el centro de una variable, pero representa bien los datos solo cuando la distribución no está muy deformada por extremos.", "ejemplo": "Ejemplo aplicado: durante el EDA, este concepto ayuda a decidir qué mirar antes de entrenar un modelo.", "cuidado": "En distribuciones muy asimétricas, la mediana suele ser más informativa.", "tags": ["estadística"]}, {"id": "t024", "n": 24, "term": "Mediana", "section": "EDA - Análisis Exploratorio de Datos", "section_id": 2, "icon": "🔎", "definition": ["La mediana es el valor central de un conjunto de datos ordenados. Divide los datos en dos partes: 50 % de los valores queda por debajo y 50 % por encima. La mediana es especialmente útil cuando hay valores extremos o distribuciones asimétricas. Por ejemplo, en variables como ingresos o precios de viviendas, la mediana suele representar mejor el valor típico que la media."], "formulas": [], "ampliacion": "La mediana es robusta porque depende del orden y no de la magnitud extrema de unos pocos valores.", "ejemplo": "Ejemplo aplicado: durante el EDA, este concepto ayuda a decidir qué mirar antes de entrenar un modelo.", "cuidado": "No describe toda la distribución; debe complementarse con dispersión y gráficos.", "tags": ["estadística"]}, {"id": "t025", "n": 25, "term": "Moda", "section": "EDA - Análisis Exploratorio de Datos", "section_id": 2, "icon": "🔎", "definition": ["La moda es el valor que aparece con mayor frecuencia en un conjunto de datos. En variables categóricas, la moda permite identificar la categoría más común. Por ejemplo, el país con más clientes o el producto más vendido. En variables numéricas también puede calcularse, aunque no siempre es tan informativa como la media o la mediana."], "formulas": [], "ampliacion": "Este término pertenece al EDA, la etapa donde se entiende el dataset antes de modelar.", "ejemplo": "Ejemplo aplicado: durante el EDA, este concepto ayuda a decidir qué mirar antes de entrenar un modelo.", "cuidado": "Siempre conviene acompañar la definición con qué gráfico o estadística usarías.", "tags": ["conceptual"]}, {"id": "t026", "n": 26, "term": "Varianza", "section": "EDA - Análisis Exploratorio de Datos", "section_id": 2, "icon": "🔎", "definition": ["La varianza mide cuánto se alejan los valores respecto de la media. Si los datos están muy concentrados cerca del promedio, la varianza es baja. Si están muy dispersos, la varianza es alta. Es una medida importante para comprender la variabilidad de una variable. Sin embargo, como está expresada en unidades al cuadrado, puede ser menos intuitiva que la desviación estándar."], "formulas": [], "ampliacion": "Este término pertenece al EDA, la etapa donde se entiende el dataset antes de modelar.", "ejemplo": "Ejemplo aplicado: durante el EDA, este concepto ayuda a decidir qué mirar antes de entrenar un modelo.", "cuidado": "Siempre conviene acompañar la definición con qué gráfico o estadística usarías.", "tags": ["estadística"]}, {"id": "t027", "n": 27, "term": "Desviación estándar", "section": "EDA - Análisis Exploratorio de Datos", "section_id": 2, "icon": "🔎", "definition": ["La desviación estándar mide la dispersión de los datos respecto de la media. A diferencia de la varianza, está expresada en la misma unidad que la variable original. Por ejemplo, si analizamos notas de estudiantes, una desviación estándar baja indica que las notas están concentradas cerca del promedio. Una desviación estándar alta indica que hay mucha diferencia entre estudiantes."], "formulas": [], "ampliacion": "Este término pertenece al EDA, la etapa donde se entiende el dataset antes de modelar.", "ejemplo": "Ejemplo aplicado: durante el EDA, este concepto ayuda a decidir qué mirar antes de entrenar un modelo.", "cuidado": "Siempre conviene acompañar la definición con qué gráfico o estadística usarías.", "tags": ["estadística"]}, {"id": "t028", "n": 28, "term": "Percentil", "section": "EDA - Análisis Exploratorio de Datos", "section_id": 2, "icon": "🔎", "definition": ["Un percentil indica el valor por debajo del cual se encuentra cierto porcentaje de los datos. Por ejemplo, el percentil 25 indica que el 25 % de los valores está por debajo de ese punto. El percentil 50 coincide con la mediana. Los percentiles son útiles para analizar distribución, detectar extremos y comparar posiciones relativas dentro de un conjunto de datos."], "formulas": [], "ampliacion": "Este término pertenece al EDA, la etapa donde se entiende el dataset antes de modelar.", "ejemplo": "Ejemplo aplicado: durante el EDA, este concepto ayuda a decidir qué mirar antes de entrenar un modelo.", "cuidado": "Siempre conviene acompañar la definición con qué gráfico o estadística usarías.", "tags": ["estadística"]}, {"id": "t029", "n": 29, "term": "Cuartiles", "section": "EDA - Análisis Exploratorio de Datos", "section_id": 2, "icon": "🔎", "definition": ["Los cuartiles dividen los datos ordenados en cuatro partes. El primer cuartil, Q1, marca el punto por debajo del cual está el 25 % de los datos. El segundo cuartil, Q2, es la mediana. El tercer cuartil, Q3, marca el punto por debajo del cual está el 75 % de los datos. Los cuartiles son muy usados en boxplots y en la detección de outliers mediante el rango intercuartílico."], "formulas": [], "ampliacion": "Este término pertenece al EDA, la etapa donde se entiende el dataset antes de modelar.", "ejemplo": "Ejemplo aplicado: durante el EDA, este concepto ayuda a decidir qué mirar antes de entrenar un modelo.", "cuidado": "Siempre conviene acompañar la definición con qué gráfico o estadística usarías.", "tags": ["estadística"]}, {"id": "t030", "n": 30, "term": "Rango intercuartílico", "section": "EDA - Análisis Exploratorio de Datos", "section_id": 2, "icon": "🔎", "definition": ["El rango intercuartílico, o IQR, mide la distancia entre el tercer cuartil y el primer cuartil. Representa la amplitud del 50 % central de los datos. Es una medida robusta de dispersión porque no se ve tan afectada por valores extremos. Se utiliza frecuentemente para detectar posibles outliers."], "formulas": ["IQR = Q3 − Q1"], "ampliacion": "El IQR se concentra en el 50 % central de los datos. Por eso es útil para detectar extremos sin dejarse dominar por ellos.", "ejemplo": "Ejemplo aplicado: durante el EDA, este concepto ayuda a decidir qué mirar antes de entrenar un modelo.", "cuidado": "Un punto fuera del rango esperado es un candidato a outlier, no una orden automática de eliminación.", "tags": ["conceptual"]}, {"id": "t031", "n": 31, "term": "Histograma", "section": "EDA - Análisis Exploratorio de Datos", "section_id": 2, "icon": "🔎", "definition": ["Un histograma es un gráfico que muestra la distribución de una variable numérica. Agrupa los valores en intervalos y muestra cuántas observaciones caen en cada intervalo. Sirve para ver si una variable tiene distribución simétrica, asimétrica, concentrada, dispersa o con posibles valores extremos. Por ejemplo, un histograma de edades permite observar si la mayoría de las personas se concentra en determinados rangos."], "formulas": [], "ampliacion": "Este término pertenece al EDA, la etapa donde se entiende el dataset antes de modelar.", "ejemplo": "Ejemplo aplicado: durante el EDA, este concepto ayuda a decidir qué mirar antes de entrenar un modelo.", "cuidado": "Siempre conviene acompañar la definición con qué gráfico o estadística usarías.", "tags": ["árboles"]}, {"id": "t032", "n": 32, "term": "Gráfico de dispersión", "section": "EDA - Análisis Exploratorio de Datos", "section_id": 2, "icon": "🔎", "definition": ["El gráfico de dispersión, o scatter plot, muestra la relación entre dos variables numéricas. Cada punto representa una observación. Es útil para detectar relaciones positivas, negativas, no lineales, agrupamientos y outliers. Por ejemplo, puede mostrar si existe relación entre horas de estudio y calificación obtenida."], "formulas": [], "ampliacion": "Este término pertenece al EDA, la etapa donde se entiende el dataset antes de modelar.", "ejemplo": "Ejemplo aplicado: durante el EDA, este concepto ayuda a decidir qué mirar antes de entrenar un modelo.", "cuidado": "Siempre conviene acompañar la definición con qué gráfico o estadística usarías.", "tags": ["conceptual"]}, {"id": "t033", "n": 33, "term": "Boxplot", "section": "EDA - Análisis Exploratorio de Datos", "section_id": 2, "icon": "🔎", "definition": ["El boxplot es un gráfico que resume la distribución de una variable numérica mediante mediana, cuartiles, rango intercuartílico, bigotes y posibles outliers. Es útil para comparar distribuciones entre grupos y detectar valores extremos. Por ejemplo, se puede usar un boxplot para comparar salarios por sector o notas por comisión."], "formulas": [], "ampliacion": "Este término pertenece al EDA, la etapa donde se entiende el dataset antes de modelar.", "ejemplo": "Ejemplo aplicado: durante el EDA, este concepto ayuda a decidir qué mirar antes de entrenar un modelo.", "cuidado": "Siempre conviene acompañar la definición con qué gráfico o estadística usarías.", "tags": ["outliers"]}, {"id": "t034", "n": 34, "term": "Heatmap", "section": "EDA - Análisis Exploratorio de Datos", "section_id": 2, "icon": "🔎", "definition": ["Un heatmap, o mapa de calor, es una visualización que usa colores para representar valores. En Ciencia de Datos se usa frecuentemente para mostrar matrices de correlación. Por ejemplo, un heatmap puede mostrar qué variables tienen relaciones más fuertes entre sí. Los colores más intensos suelen indicar valores más altos o más bajos. Es una herramienta útil para detectar patrones de manera visual."], "formulas": [], "ampliacion": "Este término pertenece al EDA, la etapa donde se entiende el dataset antes de modelar.", "ejemplo": "Ejemplo aplicado: durante el EDA, este concepto ayuda a decidir qué mirar antes de entrenar un modelo.", "cuidado": "Siempre conviene acompañar la definición con qué gráfico o estadística usarías.", "tags": ["conceptual"]}, {"id": "t035", "n": 35, "term": "Valor faltante", "section": "Datos faltantes", "section_id": 3, "icon": "🧩", "definition": ["Un valor faltante es un dato que no está registrado en una observación. Puede aparecer como una celda vacía, un valor nulo o una marca especial. Los valores faltantes pueden deberse a errores de carga, encuestas incompletas, fallas de medición o situaciones donde la información no aplica. Son importantes porque pueden afectar el análisis y los modelos si no se tratan adecuadamente."], "formulas": [], "ampliacion": "Los faltantes también son información: a veces indican problemas de carga, pero otras veces revelan un comportamiento del proceso de recolección.", "ejemplo": "Ejemplo aplicado: en una encuesta o base comercial, un valor ausente puede requerir imputación, eliminación o una categoría especial.", "cuidado": "Imputar sin entender por qué falta el dato puede crear conclusiones falsas.", "tags": ["faltantes"]}, {"id": "t036", "n": 36, "term": "Dato nulo", "section": "Datos faltantes", "section_id": 3, "icon": "🧩", "definition": ["Un dato nulo representa la ausencia de valor. No significa cero. Cero es un valor numérico válido, mientras que nulo significa que no hay dato registrado. Por ejemplo, si una persona no informa su edad, ese campo está nulo. Si informa que tiene 0 hijos, ese valor no es nulo; es un dato válido. Distinguir entre cero y nulo es fundamental para evitar errores de interpretación."], "formulas": [], "ampliacion": "Nulo significa ausencia de registro. Esta diferencia es crucial en programación, estadística y bases de datos.", "ejemplo": "Ejemplo aplicado: en una encuesta o base comercial, un valor ausente puede requerir imputación, eliminación o una categoría especial.", "cuidado": "No reemplaces nulos por cero salvo que el cero sea conceptualmente correcto.", "tags": ["faltantes"]}, {"id": "t037", "n": 37, "term": "Imputación", "section": "Datos faltantes", "section_id": 3, "icon": "🧩", "definition": ["La imputación es el proceso de reemplazar valores faltantes por valores estimados. Se puede imputar con la media, la mediana, la moda, un valor constante o métodos más avanzados. Por ejemplo, si falta la edad de algunos clientes, se podría reemplazar por la mediana de edad del grupo. La imputación permite conservar observaciones, pero debe aplicarse con cuidado porque puede modificar la distribución de los datos."], "formulas": [], "ampliacion": "La imputación conserva filas, pero modifica el dataset. Debe documentarse porque altera distribuciones y puede afectar modelos.", "ejemplo": "Ejemplo aplicado: en una encuesta o base comercial, un valor ausente puede requerir imputación, eliminación o una categoría especial.", "cuidado": "No existe una imputación universalmente correcta; depende de la variable, el porcentaje de faltantes y el contexto.", "tags": ["faltantes"]}, {"id": "t038", "n": 38, "term": "Imputación con media", "section": "Datos faltantes", "section_id": 3, "icon": "🧩", "definition": ["La imputación con media consiste en reemplazar valores faltantes por el promedio de la variable. Es simple, pero puede ser problemática si la variable tiene outliers o distribución asimétrica. En esos casos, la media puede no representar bien el valor típico. Además, si se imputan muchos valores con la media, se reduce artificialmente la variabilidad de la variable."], "formulas": [], "ampliacion": "Este concepto afecta la calidad de los datos y puede cambiar conclusiones si se trata mal.", "ejemplo": "Ejemplo aplicado: en una encuesta o base comercial, un valor ausente puede requerir imputación, eliminación o una categoría especial.", "cuidado": "Antes de aplicar una técnica, preguntá si el faltante es aleatorio o tiene significado.", "tags": ["estadística", "faltantes"]}, {"id": "t039", "n": 39, "term": "Imputación con mediana", "section": "Datos faltantes", "section_id": 3, "icon": "🧩", "definition": ["La imputación con mediana reemplaza valores faltantes por el valor central de la variable. Es más robusta que la media cuando existen outliers o distribuciones asimétricas. Por ejemplo, en variables como ingresos, precios o montos de venta, la mediana suele ser una mejor opción. No obstante, también debe justificarse según el contexto."], "formulas": [], "ampliacion": "Este concepto afecta la calidad de los datos y puede cambiar conclusiones si se trata mal.", "ejemplo": "Ejemplo aplicado: en una encuesta o base comercial, un valor ausente puede requerir imputación, eliminación o una categoría especial.", "cuidado": "Antes de aplicar una técnica, preguntá si el faltante es aleatorio o tiene significado.", "tags": ["estadística", "faltantes"]}, {"id": "t040", "n": 40, "term": "Imputación con moda", "section": "Datos faltantes", "section_id": 3, "icon": "🧩", "definition": ["La imputación con moda se utiliza principalmente para variables categóricas. Consiste en reemplazar los valores faltantes por la categoría más frecuente. Por ejemplo, si la mayoría de los clientes pertenecen a una categoría determinada, los faltantes podrían imputarse con esa categoría. El problema es que puede aumentar artificialmente la frecuencia de la categoría dominante."], "formulas": [], "ampliacion": "Este concepto afecta la calidad de los datos y puede cambiar conclusiones si se trata mal.", "ejemplo": "Ejemplo aplicado: en una encuesta o base comercial, un valor ausente puede requerir imputación, eliminación o una categoría especial.", "cuidado": "Antes de aplicar una técnica, preguntá si el faltante es aleatorio o tiene significado.", "tags": ["faltantes"]}, {"id": "t041", "n": 41, "term": "Eliminación de filas", "section": "Datos faltantes", "section_id": 3, "icon": "🧩", "definition": ["La eliminación de filas consiste en quitar del dataset las observaciones que contienen valores faltantes. Puede ser adecuada si la cantidad de valores faltantes es pequeña y parece aleatoria. Sin embargo, puede generar pérdida de información, reducción del tamaño de la muestra y sesgos. Por eso no debe aplicarse automáticamente."], "formulas": [], "ampliacion": "Este concepto afecta la calidad de los datos y puede cambiar conclusiones si se trata mal.", "ejemplo": "Ejemplo aplicado: en una encuesta o base comercial, un valor ausente puede requerir imputación, eliminación o una categoría especial.", "cuidado": "Antes de aplicar una técnica, preguntá si el faltante es aleatorio o tiene significado.", "tags": ["conceptual"]}, {"id": "t042", "n": 42, "term": "Sesgo por datos faltantes", "section": "Datos faltantes", "section_id": 3, "icon": "🧩", "definition": ["El sesgo por datos faltantes ocurre cuando los datos ausentes no son aleatorios y su eliminación o tratamiento altera la representatividad del dataset. Por ejemplo, si las personas con menores ingresos tienden a no responder una encuesta sobre salario, eliminar esas filas puede hacer que el ingreso promedio parezca más alto de lo real. Este sesgo puede afectar conclusiones y modelos."], "formulas": [], "ampliacion": "Este concepto afecta la calidad de los datos y puede cambiar conclusiones si se trata mal.", "ejemplo": "Ejemplo aplicado: en una encuesta o base comercial, un valor ausente puede requerir imputación, eliminación o una categoría especial.", "cuidado": "Antes de aplicar una técnica, preguntá si el faltante es aleatorio o tiene significado.", "tags": ["faltantes"]}, {"id": "t043", "n": 43, "term": "Outlier", "section": "Outliers", "section_id": 4, "icon": "⚠️", "definition": ["Un outlier es un valor que se aleja mucho del comportamiento general de los datos. También se lo llama valor atípico o extremo. Puede representar un error, pero también puede ser un caso real e importante. Por ejemplo, una edad de 250 años probablemente sea un error, pero una venta extraordinariamente alta puede ser real. Los outliers deben analizarse antes de decidir eliminarlos."], "formulas": [], "ampliacion": "Un outlier puede ser error, anomalía o señal valiosa. La tarea analítica es distinguir esos casos.", "ejemplo": "Ejemplo aplicado: un valor extremo en ventas puede ser error de carga, venta extraordinaria o señal de fraude.", "cuidado": "Eliminar extremos automáticamente puede borrar fraude, oportunidades o fenómenos raros importantes.", "tags": ["outliers"]}, {"id": "t044", "n": 44, "term": "Valor extremo", "section": "Outliers", "section_id": 4, "icon": "⚠️", "definition": ["Un valor extremo es un dato ubicado en los límites de la distribución. No siempre es un error ni necesariamente un outlier problemático. Por ejemplo, el cliente que más compra o el producto más caro pueden ser valores extremos reales. En Ciencia de Datos, los valores extremos pueden ser relevantes para detectar oportunidades, riesgos o comportamientos inusuales."], "formulas": [], "ampliacion": "Los outliers no son solo un problema: también pueden ser señales importantes.", "ejemplo": "Ejemplo aplicado: un valor extremo en ventas puede ser error de carga, venta extraordinaria o señal de fraude.", "cuidado": "La clave es decidir si son errores, casos reales o fenómenos excepcionales.", "tags": ["outliers"]}, {"id": "t045", "n": 45, "term": "Error de datos", "section": "Outliers", "section_id": 4, "icon": "⚠️", "definition": ["Un error de datos es un valor incorrecto. Puede deberse a errores de carga, medición, codificación o integración. Por ejemplo, una edad negativa, una fecha imposible o un precio mal escrito. A diferencia de un outlier real, un error de datos debe corregirse o eliminarse porque no representa correctamente la realidad."], "formulas": [], "ampliacion": "Los outliers no son solo un problema: también pueden ser señales importantes.", "ejemplo": "Ejemplo aplicado: un valor extremo en ventas puede ser error de carga, venta extraordinaria o señal de fraude.", "cuidado": "La clave es decidir si son errores, casos reales o fenómenos excepcionales.", "tags": ["conceptual"]}, {"id": "t046", "n": 46, "term": "Bigotes del boxplot", "section": "Outliers", "section_id": 4, "icon": "⚠️", "definition": ["Los bigotes del boxplot muestran el rango esperado de los datos según una regla estadística basada en el rango intercuartílico. Los puntos que quedan fuera de los bigotes suelen considerarse posibles outliers. Los bigotes ayudan a visualizar rápidamente qué valores están dentro del comportamiento habitual y cuáles merecen revisión."], "formulas": [], "ampliacion": "Los outliers no son solo un problema: también pueden ser señales importantes.", "ejemplo": "Ejemplo aplicado: un valor extremo en ventas puede ser error de carga, venta extraordinaria o señal de fraude.", "cuidado": "La clave es decidir si son errores, casos reales o fenómenos excepcionales.", "tags": ["outliers"]}, {"id": "t047", "n": 47, "term": "Tratamiento de outliers", "section": "Outliers", "section_id": 4, "icon": "⚠️", "definition": ["El tratamiento de outliers consiste en decidir qué hacer con valores extremos. Las opciones incluyen mantenerlos, eliminarlos, corregirlos, transformarlos o usar modelos menos sensibles. La decisión depende de si el outlier es un error o un caso real. Eliminar outliers sin análisis puede hacer que se pierda información valiosa."], "formulas": [], "ampliacion": "Los outliers no son solo un problema: también pueden ser señales importantes.", "ejemplo": "Ejemplo aplicado: un valor extremo en ventas puede ser error de carga, venta extraordinaria o señal de fraude.", "cuidado": "La clave es decidir si son errores, casos reales o fenómenos excepcionales.", "tags": ["outliers"]}, {"id": "t048", "n": 48, "term": "Transformación de variables", "section": "Transformación de variables", "section_id": 5, "icon": "🔧", "definition": ["La transformación de variables consiste en modificar la forma en que una variable está representada para mejorar su análisis o su uso en modelos. Puede incluir escalado, normalización, estandarización, codificación de categorías, transformación logarítmica o creación de nuevas variables. Es una etapa fundamental porque muchos modelos requieren que las variables estén en formatos adecuados."], "formulas": [], "ampliacion": "Las transformaciones preparan las variables para que los modelos trabajen mejor.", "ejemplo": "Ejemplo aplicado: transformar ingresos, fechas o categorías puede hacer que el modelo capture mejor los patrones.", "cuidado": "No transformes por rutina: justificá según escala, distribución o requerimientos del algoritmo.", "tags": ["preprocesamiento"]}, {"id": "t049", "n": 49, "term": "Escalado", "section": "Transformación de variables", "section_id": 5, "icon": "🔧", "definition": ["El escalado consiste en ajustar la escala de las variables para que puedan compararse o utilizarse correctamente en ciertos algoritmos. Es especialmente importante en modelos basados en distancia, como K-Means. Si una variable tiene valores muy grandes y otra valores pequeños, la primera puede dominar el análisis si no se escala."], "formulas": [], "ampliacion": "Las transformaciones preparan las variables para que los modelos trabajen mejor.", "ejemplo": "Ejemplo aplicado: transformar ingresos, fechas o categorías puede hacer que el modelo capture mejor los patrones.", "cuidado": "No transformes por rutina: justificá según escala, distribución o requerimientos del algoritmo.", "tags": ["preprocesamiento"]}, {"id": "t050", "n": 50, "term": "Normalización", "section": "Transformación de variables", "section_id": 5, "icon": "🔧", "definition": ["La normalización transforma los valores de una variable para llevarlos generalmente a un rango entre 0 y 1. Es útil cuando se desea que todas las variables tengan una escala común. Por ejemplo, si una variable mide ingresos y otra edad, normalizar puede evitar que los ingresos dominen los cálculos por tener valores numéricamente más grandes."], "formulas": [], "ampliacion": "Las transformaciones preparan las variables para que los modelos trabajen mejor.", "ejemplo": "Ejemplo aplicado: transformar ingresos, fechas o categorías puede hacer que el modelo capture mejor los patrones.", "cuidado": "No transformes por rutina: justificá según escala, distribución o requerimientos del algoritmo.", "tags": ["preprocesamiento"]}, {"id": "t051", "n": 51, "term": "Estandarización", "section": "Transformación de variables", "section_id": 5, "icon": "🔧", "definition": ["La estandarización transforma una variable para que tenga media 0 y desviación estándar 1. Esto permite interpretar los valores en función de cuántas desviaciones estándar están por encima o por debajo de la media. Es útil en modelos sensibles a escala y en análisis donde se comparan variables con unidades diferentes."], "formulas": [], "ampliacion": "Las transformaciones preparan las variables para que los modelos trabajen mejor.", "ejemplo": "Ejemplo aplicado: transformar ingresos, fechas o categorías puede hacer que el modelo capture mejor los patrones.", "cuidado": "No transformes por rutina: justificá según escala, distribución o requerimientos del algoritmo.", "tags": ["preprocesamiento"]}, {"id": "t052", "n": 52, "term": "Variable dummy", "section": "Transformación de variables", "section_id": 5, "icon": "🔧", "definition": ["Una variable dummy es una variable que toma valores 0 o 1 para representar una categoría. Por ejemplo, si una variable indica tipo de cliente con categorías “nuevo” y “recurrente”, puede crearse una dummy donde 1 significa cliente recurrente y 0 significa que no lo es. Sirve para transformar variables categóricas en variables numéricas."], "formulas": [], "ampliacion": "Las transformaciones preparan las variables para que los modelos trabajen mejor.", "ejemplo": "Ejemplo aplicado: transformar ingresos, fechas o categorías puede hacer que el modelo capture mejor los patrones.", "cuidado": "No transformes por rutina: justificá según escala, distribución o requerimientos del algoritmo.", "tags": ["preprocesamiento"]}, {"id": "t053", "n": 53, "term": "Encoding", "section": "Transformación de variables", "section_id": 5, "icon": "🔧", "definition": ["Encoding significa codificar variables categóricas para que puedan ser utilizadas por modelos matemáticos. Una forma común es el one-hot encoding, que crea una variable dummy para cada categoría. Por ejemplo, una variable “país” con Argentina, Chile y Uruguay puede transformarse en tres columnas binarias."], "formulas": [], "ampliacion": "Las transformaciones preparan las variables para que los modelos trabajen mejor.", "ejemplo": "Ejemplo aplicado: transformar ingresos, fechas o categorías puede hacer que el modelo capture mejor los patrones.", "cuidado": "No transformes por rutina: justificá según escala, distribución o requerimientos del algoritmo.", "tags": ["preprocesamiento"]}, {"id": "t054", "n": 54, "term": "Transformación logarítmica", "section": "Transformación de variables", "section_id": 5, "icon": "🔧", "definition": ["La transformación logarítmica aplica logaritmos a una variable numérica. Se utiliza para reducir asimetrías y disminuir el impacto de valores extremos. Es común en variables como ingresos, precios, ventas o población. No debe aplicarse automáticamente, porque no tiene sentido para valores negativos y requiere cuidado con valores cero."], "formulas": [], "ampliacion": "El logaritmo comprime valores grandes y ayuda cuando importan cambios relativos más que diferencias absolutas.", "ejemplo": "Ejemplo aplicado: transformar ingresos, fechas o categorías puede hacer que el modelo capture mejor los patrones.", "cuidado": "No se aplica directamente a cero o negativos; requiere criterio y, a veces, transformaciones como log(1+x).", "tags": ["preprocesamiento"]}, {"id": "t055", "n": 55, "term": "Feature engineering", "section": "Transformación de variables", "section_id": 5, "icon": "🔧", "definition": ["Feature engineering es el proceso de crear, modificar o seleccionar variables para mejorar el análisis o el rendimiento de un modelo. Por ejemplo, a partir de una fecha se pueden crear variables como mes, trimestre o día de la semana. Una buena creación de variables puede mejorar mucho más el resultado que cambiar de algoritmo."], "formulas": [], "ampliacion": "Muchas mejoras de modelos vienen más de crear buenas variables que de cambiar el algoritmo.", "ejemplo": "Ejemplo aplicado: transformar ingresos, fechas o categorías puede hacer que el modelo capture mejor los patrones.", "cuidado": "Crear variables usando información del futuro puede generar data leakage.", "tags": ["preprocesamiento"]}, {"id": "t056", "n": 56, "term": "Regresión", "section": "Regresión lineal, correlación y métricas", "section_id": 6, "icon": "📈", "definition": ["La regresión es una técnica de machine learning supervisado utilizada para predecir valores numéricos continuos. Por ejemplo, predecir precio, ventas, temperatura, demanda o ingresos. La regresión se diferencia de la clasificación porque la salida esperada no es una categoría, sino un número."], "formulas": [], "ampliacion": "Estos conceptos conectan modelos numéricos, interpretación de coeficientes y evaluación de error.", "ejemplo": "Ejemplo aplicado: en predicción de precios o ventas, este concepto ayuda a evaluar o interpretar el modelo.", "cuidado": "Una buena respuesta debe distinguir ajuste, predicción, interpretación y métrica.", "tags": ["regresión"]}, {"id": "t057", "n": 57, "term": "Regresión lineal", "section": "Regresión lineal, correlación y métricas", "section_id": 6, "icon": "📈", "definition": ["La regresión lineal es un modelo que intenta explicar o predecir una variable numérica mediante una relación lineal con una o más variables independientes. En su forma simple, se representa mediante una ecuación lineal que combina intercepto, pendiente, variable independiente y error."], "formulas": ["y = β₀ + β₁x + ε"], "ampliacion": "Su fuerza está en la interpretación: permite explicar dirección e intensidad de relaciones mediante coeficientes.", "ejemplo": "Ejemplo aplicado: en predicción de precios o ventas, este concepto ayuda a evaluar o interpretar el modelo.", "cuidado": "Una recta puede ser simple pero incorrecta si la relación es no lineal o hay outliers influyentes.", "tags": ["regresión"]}, {"id": "t058", "n": 58, "term": "Regresión lineal univariada", "section": "Regresión lineal, correlación y métricas", "section_id": 6, "icon": "📈", "definition": ["La regresión lineal univariada utiliza una sola variable independiente para explicar o predecir una variable dependiente. Por ejemplo, predecir el precio de una vivienda usando solamente su superficie. Es útil para introducir la lógica de la regresión porque permite visualizar la relación mediante una recta."], "formulas": [], "ampliacion": "Estos conceptos conectan modelos numéricos, interpretación de coeficientes y evaluación de error.", "ejemplo": "Ejemplo aplicado: en predicción de precios o ventas, este concepto ayuda a evaluar o interpretar el modelo.", "cuidado": "Una buena respuesta debe distinguir ajuste, predicción, interpretación y métrica.", "tags": ["regresión"]}, {"id": "t059", "n": 59, "term": "Regresión lineal múltiple", "section": "Regresión lineal, correlación y métricas", "section_id": 6, "icon": "📈", "definition": ["La regresión lineal múltiple utiliza varias variables independientes para explicar o predecir una variable dependiente. Por ejemplo, predecir el precio de una vivienda usando superficie, ubicación, cantidad de ambientes y antigüedad. Permite representar problemas más realistas, donde un fenómeno depende de varios factores."], "formulas": [], "ampliacion": "Estos conceptos conectan modelos numéricos, interpretación de coeficientes y evaluación de error.", "ejemplo": "Ejemplo aplicado: en predicción de precios o ventas, este concepto ayuda a evaluar o interpretar el modelo.", "cuidado": "Una buena respuesta debe distinguir ajuste, predicción, interpretación y métrica.", "tags": ["regresión"]}, {"id": "t060", "n": 60, "term": "Pendiente", "section": "Regresión lineal, correlación y métricas", "section_id": 6, "icon": "📈", "definition": ["La pendiente, representada como β₁ en una regresión lineal simple, indica cuánto cambia la variable dependiente cuando la variable independiente aumenta en una unidad. Por ejemplo, si la pendiente es 500, significa que por cada unidad adicional de X, el valor esperado de Y aumenta en 500 unidades. La pendiente permite interpretar la dirección e intensidad de la relación."], "formulas": [], "ampliacion": "Estos conceptos conectan modelos numéricos, interpretación de coeficientes y evaluación de error.", "ejemplo": "Ejemplo aplicado: en predicción de precios o ventas, este concepto ayuda a evaluar o interpretar el modelo.", "cuidado": "Una buena respuesta debe distinguir ajuste, predicción, interpretación y métrica.", "tags": ["regresión"]}, {"id": "t061", "n": 61, "term": "Intercepto", "section": "Regresión lineal, correlación y métricas", "section_id": 6, "icon": "📈", "definition": ["El intercepto, representado como β₀, es el valor estimado de la variable dependiente cuando la variable independiente vale cero. En algunos casos tiene sentido práctico; en otros, solo es necesario para construir la ecuación del modelo. Por ejemplo, en una regresión entre superficie y precio de vivienda, el intercepto sería el precio estimado cuando la superficie es cero, lo cual puede no tener interpretación real."], "formulas": [], "ampliacion": "Estos conceptos conectan modelos numéricos, interpretación de coeficientes y evaluación de error.", "ejemplo": "Ejemplo aplicado: en predicción de precios o ventas, este concepto ayuda a evaluar o interpretar el modelo.", "cuidado": "Una buena respuesta debe distinguir ajuste, predicción, interpretación y métrica.", "tags": ["regresión"]}, {"id": "t062", "n": 62, "term": "Residuo", "section": "Regresión lineal, correlación y métricas", "section_id": 6, "icon": "📈", "definition": ["El residuo es la diferencia entre el valor real y el valor predicho por el modelo. Analizar residuos permite evaluar si el modelo está funcionando bien o si hay patrones que no está capturando."], "formulas": ["residuo = y − ŷ"], "ampliacion": "Estos conceptos conectan modelos numéricos, interpretación de coeficientes y evaluación de error.", "ejemplo": "Ejemplo aplicado: en predicción de precios o ventas, este concepto ayuda a evaluar o interpretar el modelo.", "cuidado": "Una buena respuesta debe distinguir ajuste, predicción, interpretación y métrica.", "tags": ["regresión"]}, {"id": "t063", "n": 63, "term": "Mínimos cuadrados ordinarios", "section": "Regresión lineal, correlación y métricas", "section_id": 6, "icon": "📈", "definition": ["El método de mínimos cuadrados ordinarios busca encontrar la recta que minimiza la suma de los residuos al cuadrado. Su objetivo es ajustar los coeficientes del modelo para reducir la diferencia entre valores reales y predichos. Al elevar los errores al cuadrado, se penalizan más los errores grandes y se evita que errores positivos y negativos se cancelen entre sí.", "El coeficiente de determinación R² mide qué proporción de la variabilidad de la variable dependiente es explicada por el modelo. Un R² cercano a 1 indica mayor capacidad explicativa. Un R² cercano a 0 indica baja capacidad explicativa. Sin embargo, un R² alto no garantiza que el modelo sea adecuado; también deben revisarse residuos, supuestos, outliers y sentido del problema.", "El R² ajustado es una versión del R² que penaliza la inclusión de variables que no aportan valor al modelo. Es especialmente útil en regresión múltiple, porque el R² común tiende a aumentar cuando se agregan variables, aunque esas variables no sean realmente importantes. El R² ajustado ayuda a evaluar si agregar variables mejora de verdad el modelo."], "formulas": ["R²", "R² = 1 − SSE / SST", "R² ajustado"], "ampliacion": "Estos conceptos conectan modelos numéricos, interpretación de coeficientes y evaluación de error.", "ejemplo": "Ejemplo aplicado: en predicción de precios o ventas, este concepto ayuda a evaluar o interpretar el modelo.", "cuidado": "Una buena respuesta debe distinguir ajuste, predicción, interpretación y métrica.", "tags": ["conceptual"]}, {"id": "t064", "n": 64, "term": "Correlación", "section": "Regresión lineal, correlación y métricas", "section_id": 6, "icon": "📈", "definition": ["La correlación mide la relación lineal entre dos variables numéricas. Puede ser positiva, negativa o cercana a cero. Una correlación positiva indica que ambas variables tienden a aumentar juntas. Una correlación negativa indica que una aumenta cuando la otra disminuye. La correlación no implica causalidad."], "formulas": [], "ampliacion": "Es una medida de asociación lineal: ayuda a detectar relaciones, pero no explica por sí sola el mecanismo causal.", "ejemplo": "Ejemplo aplicado: en predicción de precios o ventas, este concepto ayuda a evaluar o interpretar el modelo.", "cuidado": "Correlación no implica causalidad.", "tags": ["regresión"]}, {"id": "t065", "n": 65, "term": "Causalidad", "section": "Regresión lineal, correlación y métricas", "section_id": 6, "icon": "📈", "definition": ["La causalidad implica que una variable produce o influye directamente sobre otra. Es diferente de la correlación. Dos variables pueden estar correlacionadas sin que una cause la otra. Por ejemplo, ventas de helado e insolaciones pueden estar correlacionadas porque ambas aumentan con el calor, pero el helado no causa insolación.", "MAE significa Mean Absolute Error, o error absoluto medio. Mide el promedio de las diferencias absolutas entre valores reales y predichos. Es fácil de interpretar porque está en la misma unidad que la variable objetivo. Por ejemplo, si se predicen precios y el MAE es 1000, significa que el modelo se equivoca en promedio en 1000 unidades monetarias.", "MSE significa Mean Squared Error, o error cuadrático medio. Calcula el promedio de los errores al cuadrado. Penaliza más los errores grandes porque eleva cada error al cuadrado. Es útil para comparar modelos, pero su unidad queda elevada al cuadrado, por lo que puede ser menos intuitivo.", "RMSE significa Root Mean Squared Error, o raíz del error cuadrático medio. Se obtiene calculando la raíz cuadrada del MSE. Tiene la ventaja de volver a la misma unidad de la variable objetivo. Penaliza errores grandes más que el MAE, pero es más interpretable que el MSE."], "formulas": ["MAE", "MSE", "RMSE"], "ampliacion": "Estos conceptos conectan modelos numéricos, interpretación de coeficientes y evaluación de error.", "ejemplo": "Ejemplo aplicado: en predicción de precios o ventas, este concepto ayuda a evaluar o interpretar el modelo.", "cuidado": "Una buena respuesta debe distinguir ajuste, predicción, interpretación y métrica.", "tags": ["conceptual"]}, {"id": "t066", "n": 66, "term": "Train-test split", "section": "Validación cruzada", "section_id": 7, "icon": "🧪", "definition": ["Train-test split es una técnica que divide el dataset en dos partes: entrenamiento y prueba. El conjunto de entrenamiento se usa para ajustar el modelo. El conjunto de prueba se usa para evaluar cómo funciona con datos no vistos. Es una forma básica de medir la capacidad de generalización."], "formulas": [], "ampliacion": "La validación mide si el modelo generaliza y no solo si memoriza.", "ejemplo": "Ejemplo aplicado: al comparar modelos, este concepto ayuda a estimar si funcionarán con datos nuevos.", "cuidado": "Separar entrenamiento y evaluación es central para evitar conclusiones optimistas.", "tags": ["conceptual"]}, {"id": "t067", "n": 67, "term": "Conjunto de entrenamiento", "section": "Validación cruzada", "section_id": 7, "icon": "🧪", "definition": ["El conjunto de entrenamiento es la parte del dataset que el modelo utiliza para aprender patrones. Durante el entrenamiento, el modelo ajusta sus parámetros para reducir errores. Si el modelo aprende demasiado bien este conjunto, puede caer en overfitting."], "formulas": [], "ampliacion": "La validación mide si el modelo generaliza y no solo si memoriza.", "ejemplo": "Ejemplo aplicado: al comparar modelos, este concepto ayuda a estimar si funcionarán con datos nuevos.", "cuidado": "Separar entrenamiento y evaluación es central para evitar conclusiones optimistas.", "tags": ["conceptual"]}, {"id": "t068", "n": 68, "term": "Conjunto de prueba", "section": "Validación cruzada", "section_id": 7, "icon": "🧪", "definition": ["El conjunto de prueba es la parte del dataset que se reserva para evaluar el modelo después del entrenamiento. El modelo no debe ver estos datos durante el entrenamiento. Esto permite estimar cómo funcionaría con datos nuevos."], "formulas": [], "ampliacion": "La validación mide si el modelo generaliza y no solo si memoriza.", "ejemplo": "Ejemplo aplicado: al comparar modelos, este concepto ayuda a estimar si funcionarán con datos nuevos.", "cuidado": "Separar entrenamiento y evaluación es central para evitar conclusiones optimistas.", "tags": ["conceptual"]}, {"id": "t069", "n": 69, "term": "Validación cruzada", "section": "Validación cruzada", "section_id": 7, "icon": "🧪", "definition": ["La validación cruzada es una técnica de evaluación que divide el dataset en varias partes y entrena/evalúa el modelo varias veces. Permite obtener una estimación más robusta del rendimiento del modelo que una única división train-test. Es especialmente útil cuando el dataset no es muy grande."], "formulas": [], "ampliacion": "Permite estimar rendimiento de forma más estable que una sola división train-test.", "ejemplo": "Ejemplo aplicado: al comparar modelos, este concepto ayuda a estimar si funcionarán con datos nuevos.", "cuidado": "No reemplaza el juicio: si hay series temporales o grupos dependientes, la partición debe respetar esa estructura.", "tags": ["conceptual"]}, {"id": "t070", "n": 70, "term": "K-fold cross-validation", "section": "Validación cruzada", "section_id": 7, "icon": "🧪", "definition": ["K-fold cross-validation divide el dataset en K partes o folds. El modelo se entrena K veces. En cada repetición, usa K−1 partes para entrenar y una parte para validar. Al final se promedian los resultados. Esto permite evaluar el modelo de forma más estable."], "formulas": [], "ampliacion": "La validación mide si el modelo generaliza y no solo si memoriza.", "ejemplo": "Ejemplo aplicado: al comparar modelos, este concepto ayuda a estimar si funcionarán con datos nuevos.", "cuidado": "Separar entrenamiento y evaluación es central para evitar conclusiones optimistas.", "tags": ["conceptual"]}, {"id": "t071", "n": 71, "term": "Generalización", "section": "Validación cruzada", "section_id": 7, "icon": "🧪", "definition": ["La generalización es la capacidad de un modelo para funcionar bien con datos nuevos, no vistos durante el entrenamiento. Un buen modelo no debe memorizar los datos, sino aprender patrones que se repitan en casos futuros. La generalización es uno de los objetivos centrales del machine learning."], "formulas": [], "ampliacion": "La validación mide si el modelo generaliza y no solo si memoriza.", "ejemplo": "Ejemplo aplicado: al comparar modelos, este concepto ayuda a estimar si funcionarán con datos nuevos.", "cuidado": "Separar entrenamiento y evaluación es central para evitar conclusiones optimistas.", "tags": ["conceptual"]}, {"id": "t072", "n": 72, "term": "Overfitting", "section": "Validación cruzada", "section_id": 7, "icon": "🧪", "definition": ["El overfitting ocurre cuando un modelo aprende demasiado bien los datos de entrenamiento, incluyendo ruido y detalles accidentales. Tiene buen desempeño en entrenamiento, pero mal desempeño en datos nuevos. Es común en modelos demasiado complejos, como árboles de decisión muy profundos."], "formulas": [], "ampliacion": "El modelo memoriza detalles del entrenamiento y pierde capacidad de generalizar.", "ejemplo": "Ejemplo aplicado: al comparar modelos, este concepto ayuda a estimar si funcionarán con datos nuevos.", "cuidado": "Un rendimiento perfecto en entrenamiento puede ser una señal de alarma, no de éxito.", "tags": ["conceptual"]}, {"id": "t073", "n": 73, "term": "Underfitting", "section": "Validación cruzada", "section_id": 7, "icon": "🧪", "definition": ["El underfitting ocurre cuando un modelo es demasiado simple para capturar la estructura de los datos. Tiene mal desempeño tanto en entrenamiento como en prueba. Puede ocurrir si se elige un modelo inadecuado, faltan variables importantes o no se realizan transformaciones necesarias."], "formulas": [], "ampliacion": "El modelo es demasiado simple o las variables no capturan la estructura del problema.", "ejemplo": "Ejemplo aplicado: al comparar modelos, este concepto ayuda a estimar si funcionarán con datos nuevos.", "cuidado": "Agregar datos no siempre corrige underfitting si el modelo o las variables son inadecuados.", "tags": ["conceptual"]}, {"id": "t074", "n": 74, "term": "Serie de tiempo", "section": "Series de tiempo", "section_id": 8, "icon": "⏱️", "definition": ["Una serie de tiempo es una secuencia de datos ordenados temporalmente. Ejemplos: ventas mensuales, temperatura diaria, precio de una acción, demanda eléctrica por hora o visitas semanales a un sitio web. En series de tiempo, el orden importa. No se deben mezclar las observaciones aleatoriamente como en otros datasets."], "formulas": [], "ampliacion": "En series temporales, el orden de los datos forma parte del dato mismo.", "ejemplo": "Ejemplo aplicado: al pronosticar ventas mensuales, este concepto ayuda a respetar la dinámica temporal.", "cuidado": "Dividir aleatoriamente puede introducir información del futuro y contaminar la evaluación.", "tags": ["series"]}, {"id": "t075", "n": 75, "term": "Tendencia", "section": "Series de tiempo", "section_id": 8, "icon": "⏱️", "definition": ["La tendencia es la dirección general de largo plazo de una serie de tiempo. Puede ser creciente, decreciente o estable. Por ejemplo, si las ventas de una empresa aumentan sostenidamente durante varios años, existe una tendencia creciente."], "formulas": [], "ampliacion": "En series de tiempo, el orden temporal cambia la forma de analizar y validar.", "ejemplo": "Ejemplo aplicado: al pronosticar ventas mensuales, este concepto ayuda a respetar la dinámica temporal.", "cuidado": "La regla básica es entrenar con pasado y evaluar con futuro.", "tags": ["series"]}, {"id": "t076", "n": 76, "term": "Estacionalidad", "section": "Series de tiempo", "section_id": 8, "icon": "⏱️", "definition": ["La estacionalidad es un patrón que se repite en períodos regulares. Por ejemplo, mayores ventas en diciembre, más turismo en verano o mayor consumo de calefacción en invierno. La estacionalidad permite anticipar comportamientos recurrentes."], "formulas": [], "ampliacion": "En series de tiempo, el orden temporal cambia la forma de analizar y validar.", "ejemplo": "Ejemplo aplicado: al pronosticar ventas mensuales, este concepto ayuda a respetar la dinámica temporal.", "cuidado": "La regla básica es entrenar con pasado y evaluar con futuro.", "tags": ["series"]}, {"id": "t077", "n": 77, "term": "Ciclo", "section": "Series de tiempo", "section_id": 8, "icon": "⏱️", "definition": ["Un ciclo es una fluctuación que se repite, pero no necesariamente con periodicidad fija. A diferencia de la estacionalidad, los ciclos suelen estar asociados a fenómenos económicos o estructurales más largos. Por ejemplo, ciclos de expansión y recesión económica."], "formulas": [], "ampliacion": "En series de tiempo, el orden temporal cambia la forma de analizar y validar.", "ejemplo": "Ejemplo aplicado: al pronosticar ventas mensuales, este concepto ayuda a respetar la dinámica temporal.", "cuidado": "La regla básica es entrenar con pasado y evaluar con futuro.", "tags": ["conceptual"]}, {"id": "t078", "n": 78, "term": "Ruido", "section": "Series de tiempo", "section_id": 8, "icon": "⏱️", "definition": ["El ruido representa variaciones irregulares que no siguen un patrón claro. Puede deberse a factores aleatorios, errores de medición o eventos inesperados. En análisis de series de tiempo, muchas técnicas buscan separar señal de ruido."], "formulas": [], "ampliacion": "En series de tiempo, el orden temporal cambia la forma de analizar y validar.", "ejemplo": "Ejemplo aplicado: al pronosticar ventas mensuales, este concepto ayuda a respetar la dinámica temporal.", "cuidado": "La regla básica es entrenar con pasado y evaluar con futuro.", "tags": ["conceptual"]}, {"id": "t079", "n": 79, "term": "Forecasting", "section": "Series de tiempo", "section_id": 8, "icon": "⏱️", "definition": ["Forecasting significa pronóstico. Consiste en estimar valores futuros de una serie temporal usando información pasada. Por ejemplo, predecir ventas del próximo mes o demanda de energía de la próxima semana. Es útil para planificación, inventario, presupuestos y toma de decisiones."], "formulas": [], "ampliacion": "En series de tiempo, el orden temporal cambia la forma de analizar y validar.", "ejemplo": "Ejemplo aplicado: al pronosticar ventas mensuales, este concepto ayuda a respetar la dinámica temporal.", "cuidado": "La regla básica es entrenar con pasado y evaluar con futuro.", "tags": ["series"]}, {"id": "t080", "n": 80, "term": "Promedio móvil", "section": "Series de tiempo", "section_id": 8, "icon": "⏱️", "definition": ["El promedio móvil suaviza una serie de tiempo calculando promedios sobre ventanas temporales. Por ejemplo, un promedio móvil de 7 días reduce fluctuaciones diarias y ayuda a observar la tendencia. Es una herramienta simple y útil para análisis exploratorio temporal."], "formulas": [], "ampliacion": "En series de tiempo, el orden temporal cambia la forma de analizar y validar.", "ejemplo": "Ejemplo aplicado: al pronosticar ventas mensuales, este concepto ayuda a respetar la dinámica temporal.", "cuidado": "La regla básica es entrenar con pasado y evaluar con futuro.", "tags": ["series"]}, {"id": "t081", "n": 81, "term": "Data leakage temporal", "section": "Series de tiempo", "section_id": 8, "icon": "⏱️", "definition": ["El data leakage temporal ocurre cuando un modelo usa información del futuro para predecir el pasado o el presente. En series temporales, esto puede ocurrir si se dividen los datos aleatoriamente. Para evitarlo, se debe entrenar con datos pasados y evaluar con datos posteriores."], "formulas": [], "ampliacion": "Es uno de los errores más graves en modelos temporales: parece mejorar métricas, pero destruye realismo.", "ejemplo": "Ejemplo aplicado: al pronosticar ventas mensuales, este concepto ayuda a respetar la dinámica temporal.", "cuidado": "Siempre separar entrenamiento y prueba respetando el tiempo.", "tags": ["series"]}, {"id": "t082", "n": 82, "term": "Clasificación", "section": "Regresión logística", "section_id": 9, "icon": "🎯", "definition": ["La clasificación es una tarea de aprendizaje supervisado donde el objetivo es predecir una categoría o clase. Por ejemplo, fraude/no fraude, compra/no compra, aprobado/desaprobado o spam/no spam. Se diferencia de la regresión porque la salida no es un número continuo, sino una clase."], "formulas": [], "ampliacion": "La clasificación requiere mirar probabilidades, umbrales y tipos de errores.", "ejemplo": "Ejemplo aplicado: en fraude, abandono de clientes o spam, este concepto ayuda a entender aciertos y errores de clasificación.", "cuidado": "No alcanza con accuracy cuando hay clases desbalanceadas.", "tags": ["clasificación"]}, {"id": "t083", "n": 83, "term": "Regresión logística", "section": "Regresión logística", "section_id": 9, "icon": "🎯", "definition": ["La regresión logística es un modelo de clasificación utilizado especialmente para problemas binarios. Predice la probabilidad de que ocurra un evento. Por ejemplo, puede estimar la probabilidad de que una transacción sea fraudulenta o de que un cliente abandone un servicio."], "formulas": [], "ampliacion": "Aunque se llame regresión, se usa principalmente para clasificación y produce probabilidades.", "ejemplo": "Ejemplo aplicado: en fraude, abandono de clientes o spam, este concepto ayuda a entender aciertos y errores de clasificación.", "cuidado": "El umbral de decisión debe elegirse según el costo de falsos positivos y falsos negativos.", "tags": ["regresión", "clasificación"]}, {"id": "t084", "n": 84, "term": "Evento binario", "section": "Regresión logística", "section_id": 9, "icon": "🎯", "definition": ["Un evento binario es un resultado con dos posibles clases. Por ejemplo, sí/no, 1/0, compra/no compra, fraude/no fraude. La regresión logística es especialmente adecuada para este tipo de problemas."], "formulas": [], "ampliacion": "La clasificación requiere mirar probabilidades, umbrales y tipos de errores.", "ejemplo": "Ejemplo aplicado: en fraude, abandono de clientes o spam, este concepto ayuda a entender aciertos y errores de clasificación.", "cuidado": "No alcanza con accuracy cuando hay clases desbalanceadas.", "tags": ["conceptual"]}, {"id": "t085", "n": 85, "term": "Función sigmoide", "section": "Regresión logística", "section_id": 9, "icon": "🎯", "definition": ["La función sigmoide transforma cualquier valor numérico en un valor entre 0 y 1. En regresión logística, se utiliza para convertir la salida lineal del modelo en una probabilidad."], "formulas": ["p = 1 / (1 + e⁻ᶻ)"], "ampliacion": "Convierte un score lineal en una probabilidad entre 0 y 1, lo que permite tomar decisiones con umbral.", "ejemplo": "Ejemplo aplicado: en fraude, abandono de clientes o spam, este concepto ayuda a entender aciertos y errores de clasificación.", "cuidado": "La probabilidad estimada debe calibrarse si se necesita interpretación probabilística rigurosa.", "tags": ["clasificación"]}, {"id": "t086", "n": 86, "term": "Probabilidad estimada", "section": "Regresión logística", "section_id": 9, "icon": "🎯", "definition": ["La probabilidad estimada es el valor que produce la regresión logística antes de convertirlo en clase. Por ejemplo, si el modelo estima 0,82, puede interpretarse como 82 % de probabilidad de que ocurra el evento. Luego se aplica un umbral para decidir la clase final."], "formulas": [], "ampliacion": "La clasificación requiere mirar probabilidades, umbrales y tipos de errores.", "ejemplo": "Ejemplo aplicado: en fraude, abandono de clientes o spam, este concepto ayuda a entender aciertos y errores de clasificación.", "cuidado": "No alcanza con accuracy cuando hay clases desbalanceadas.", "tags": ["conceptual"]}, {"id": "t087", "n": 87, "term": "Umbral de clasificación", "section": "Regresión logística", "section_id": 9, "icon": "🎯", "definition": ["El umbral de clasificación es el valor a partir del cual una probabilidad se convierte en una clase. Por ejemplo, con un umbral de 0,5, si la probabilidad estimada es mayor o igual a 0,5, se predice clase positiva. El umbral puede ajustarse según el problema. En detección de fraude o salud, a veces conviene modificarlo para reducir falsos negativos."], "formulas": [], "ampliacion": "La clasificación requiere mirar probabilidades, umbrales y tipos de errores.", "ejemplo": "Ejemplo aplicado: en fraude, abandono de clientes o spam, este concepto ayuda a entender aciertos y errores de clasificación.", "cuidado": "No alcanza con accuracy cuando hay clases desbalanceadas.", "tags": ["clasificación"]}, {"id": "t088", "n": 88, "term": "Matriz de confusión", "section": "Regresión logística", "section_id": 9, "icon": "🎯", "definition": ["La matriz de confusión compara las predicciones del modelo con los valores reales. Permite contar verdaderos positivos, verdaderos negativos, falsos positivos y falsos negativos. Es muy útil porque muestra no solo cuántos aciertos hubo, sino qué tipo de errores cometió el modelo."], "formulas": [], "ampliacion": "Muestra qué errores comete el modelo, no solo cuántos aciertos logra.", "ejemplo": "Ejemplo aplicado: en fraude, abandono de clientes o spam, este concepto ayuda a entender aciertos y errores de clasificación.", "cuidado": "Es indispensable cuando las clases están desbalanceadas.", "tags": ["clasificación"]}, {"id": "t089", "n": 89, "term": "Verdadero positivo", "section": "Regresión logística", "section_id": 9, "icon": "🎯", "definition": ["Un verdadero positivo ocurre cuando el modelo predice correctamente la clase positiva. Por ejemplo, una transacción fraudulenta que el modelo detecta como fraudulenta."], "formulas": [], "ampliacion": "La clasificación requiere mirar probabilidades, umbrales y tipos de errores.", "ejemplo": "Ejemplo aplicado: en fraude, abandono de clientes o spam, este concepto ayuda a entender aciertos y errores de clasificación.", "cuidado": "No alcanza con accuracy cuando hay clases desbalanceadas.", "tags": ["clasificación"]}, {"id": "t090", "n": 90, "term": "Verdadero negativo", "section": "Regresión logística", "section_id": 9, "icon": "🎯", "definition": ["Un verdadero negativo ocurre cuando el modelo predice correctamente la clase negativa. Por ejemplo, una transacción legítima que el modelo clasifica como legítima."], "formulas": [], "ampliacion": "La clasificación requiere mirar probabilidades, umbrales y tipos de errores.", "ejemplo": "Ejemplo aplicado: en fraude, abandono de clientes o spam, este concepto ayuda a entender aciertos y errores de clasificación.", "cuidado": "No alcanza con accuracy cuando hay clases desbalanceadas.", "tags": ["clasificación"]}, {"id": "t091", "n": 91, "term": "Falso positivo", "section": "Regresión logística", "section_id": 9, "icon": "🎯", "definition": ["Un falso positivo ocurre cuando el modelo predice positiva una observación que en realidad es negativa. Por ejemplo, clasificar como fraudulenta una transacción legítima. Puede generar costos operativos o molestias para usuarios."], "formulas": [], "ampliacion": "La clasificación requiere mirar probabilidades, umbrales y tipos de errores.", "ejemplo": "Ejemplo aplicado: en fraude, abandono de clientes o spam, este concepto ayuda a entender aciertos y errores de clasificación.", "cuidado": "No alcanza con accuracy cuando hay clases desbalanceadas.", "tags": ["clasificación"]}, {"id": "t092", "n": 92, "term": "Falso negativo", "section": "Regresión logística", "section_id": 9, "icon": "🎯", "definition": ["Un falso negativo ocurre cuando el modelo predice negativa una observación que en realidad es positiva. Por ejemplo, clasificar como legítima una transacción fraudulenta. En muchos problemas, como fraude o salud, los falsos negativos pueden ser especialmente graves."], "formulas": [], "ampliacion": "La clasificación requiere mirar probabilidades, umbrales y tipos de errores.", "ejemplo": "Ejemplo aplicado: en fraude, abandono de clientes o spam, este concepto ayuda a entender aciertos y errores de clasificación.", "cuidado": "No alcanza con accuracy cuando hay clases desbalanceadas.", "tags": ["clasificación"]}, {"id": "t093", "n": 93, "term": "Accuracy", "section": "Regresión logística", "section_id": 9, "icon": "🎯", "definition": ["Accuracy, o exactitud, mide el porcentaje total de predicciones correctas. Es útil cuando las clases están balanceadas, pero puede ser engañosa cuando hay desbalance. Por ejemplo, si el 98 % de las transacciones son legítimas, un modelo que siempre predice “legítima” puede tener alto accuracy pero no detectar fraude."], "formulas": [], "ampliacion": "Es intuitiva, pero solo es confiable si las clases tienen proporciones razonablemente equilibradas.", "ejemplo": "Ejemplo aplicado: en fraude, abandono de clientes o spam, este concepto ayuda a entender aciertos y errores de clasificación.", "cuidado": "En fraude o salud puede ser engañosa.", "tags": ["clasificación"]}, {"id": "t094", "n": 94, "term": "Precision", "section": "Regresión logística", "section_id": 9, "icon": "🎯", "definition": ["Precision mide, entre todos los casos que el modelo predijo como positivos, cuántos realmente eran positivos. Es importante cuando los falsos positivos son costosos. Por ejemplo, si se bloquean transacciones legítimas por error, la precisión es relevante."], "formulas": [], "ampliacion": "Sirve cuando duele mucho acusar falsamente a un caso negativo.", "ejemplo": "Ejemplo aplicado: en fraude, abandono de clientes o spam, este concepto ayuda a entender aciertos y errores de clasificación.", "cuidado": "Subir precision puede bajar recall si el modelo se vuelve demasiado conservador.", "tags": ["clasificación"]}, {"id": "t095", "n": 95, "term": "Recall", "section": "Regresión logística", "section_id": 9, "icon": "🎯", "definition": ["Recall mide, entre todos los casos positivos reales, cuántos fueron detectados por el modelo. Es importante cuando los falsos negativos son costosos. Por ejemplo, en fraude, un recall bajo significa que muchas operaciones fraudulentas no fueron detectadas."], "formulas": [], "ampliacion": "Sirve cuando importa detectar la mayor cantidad posible de positivos reales.", "ejemplo": "Ejemplo aplicado: en fraude, abandono de clientes o spam, este concepto ayuda a entender aciertos y errores de clasificación.", "cuidado": "Subir recall puede aumentar falsos positivos.", "tags": ["clasificación"]}, {"id": "t096", "n": 96, "term": "F1-score", "section": "Regresión logística", "section_id": 9, "icon": "🎯", "definition": ["F1-score combina precision y recall en una sola métrica. Es útil cuando se necesita balancear ambos criterios, especialmente en datasets desbalanceados. Un F1-score alto indica que el modelo logra buen equilibrio entre detectar positivos y evitar falsas alarmas."], "formulas": [], "ampliacion": "Resume precision y recall cuando se necesita equilibrio entre ambos.", "ejemplo": "Ejemplo aplicado: en fraude, abandono de clientes o spam, este concepto ayuda a entender aciertos y errores de clasificación.", "cuidado": "No muestra por separado qué tipo de error domina; conviene mirarlo junto con la matriz de confusión.", "tags": ["clasificación"]}, {"id": "t097", "n": 97, "term": "Árbol de decisión", "section": "Árboles de decisión", "section_id": 10, "icon": "🌳", "definition": ["Un árbol de decisión es un modelo que realiza predicciones mediante una secuencia de reglas. Cada nodo plantea una condición, cada rama representa una respuesta y cada hoja contiene una predicción. Es un modelo intuitivo porque se parece a un proceso de toma de decisiones paso a paso."], "formulas": [], "ampliacion": "Su ventaja pedagógica es que convierte un modelo en reglas legibles.", "ejemplo": "Ejemplo aplicado: en un árbol, cada regla divide los datos para llegar a una predicción interpretable.", "cuidado": "Un árbol profundo puede sobreajustar con mucha facilidad.", "tags": ["árboles"]}, {"id": "t098", "n": 98, "term": "Nodo raíz", "section": "Árboles de decisión", "section_id": 10, "icon": "🌳", "definition": ["El nodo raíz es el primer nodo del árbol. Desde allí comienza el proceso de decisión. Contiene la primera condición que divide los datos. La elección de esta primera división es importante porque influye en toda la estructura posterior del árbol."], "formulas": [], "ampliacion": "Los árboles son modelos basados en reglas, intuitivos pero sensibles a la complejidad.", "ejemplo": "Ejemplo aplicado: en un árbol, cada regla divide los datos para llegar a una predicción interpretable.", "cuidado": "Controlar profundidad y tamaño de hojas ayuda a evitar overfitting.", "tags": ["árboles"]}, {"id": "t099", "n": 99, "term": "Nodo interno", "section": "Árboles de decisión", "section_id": 10, "icon": "🌳", "definition": ["Un nodo interno es un punto del árbol donde todavía se realiza una división. Cada nodo interno contiene una regla basada en una variable. Por ejemplo: “edad menor o igual a 30” o “ingreso mayor a cierto valor”."], "formulas": [], "ampliacion": "Los árboles son modelos basados en reglas, intuitivos pero sensibles a la complejidad.", "ejemplo": "Ejemplo aplicado: en un árbol, cada regla divide los datos para llegar a una predicción interpretable.", "cuidado": "Controlar profundidad y tamaño de hojas ayuda a evitar overfitting.", "tags": ["árboles"]}, {"id": "t100", "n": 100, "term": "Rama", "section": "Árboles de decisión", "section_id": 10, "icon": "🌳", "definition": ["Una rama conecta nodos del árbol y representa el resultado de una condición. Por ejemplo, si un nodo pregunta si la edad es menor o igual a 30, puede haber una rama para “sí” y otra para “no”. Las ramas guían el recorrido de cada observación hasta una hoja."], "formulas": [], "ampliacion": "Los árboles son modelos basados en reglas, intuitivos pero sensibles a la complejidad.", "ejemplo": "Ejemplo aplicado: en un árbol, cada regla divide los datos para llegar a una predicción interpretable.", "cuidado": "Controlar profundidad y tamaño de hojas ayuda a evitar overfitting.", "tags": ["árboles"]}, {"id": "t101", "n": 101, "term": "Hoja", "section": "Árboles de decisión", "section_id": 10, "icon": "🌳", "definition": ["Una hoja es un nodo final donde el árbol ya no realiza más divisiones. En una hoja se produce la predicción final. En clasificación, la hoja contiene una clase. En regresión, puede contener un valor numérico estimado."], "formulas": [], "ampliacion": "Los árboles son modelos basados en reglas, intuitivos pero sensibles a la complejidad.", "ejemplo": "Ejemplo aplicado: en un árbol, cada regla divide los datos para llegar a una predicción interpretable.", "cuidado": "Controlar profundidad y tamaño de hojas ayuda a evitar overfitting.", "tags": ["árboles"]}, {"id": "t102", "n": 102, "term": "Impureza", "section": "Árboles de decisión", "section_id": 10, "icon": "🌳", "definition": ["La impureza mide qué tan mezcladas están las clases dentro de un nodo. Un nodo puro contiene observaciones de una sola clase. Un nodo impuro contiene una mezcla de clases. Los árboles buscan divisiones que reduzcan la impureza.", "Índice Gini", "El índice Gini mide la impureza de un nodo. Indica qué tan probable sería clasificar incorrectamente una observación si se asignara una clase al azar según la distribución del nodo. Un Gini bajo indica un nodo más puro. En clasificación binaria, el valor máximo habitual es 0,5 cuando las clases están completamente mezcladas."], "formulas": [], "ampliacion": "Los árboles son modelos basados en reglas, intuitivos pero sensibles a la complejidad.", "ejemplo": "Ejemplo aplicado: en un árbol, cada regla divide los datos para llegar a una predicción interpretable.", "cuidado": "Controlar profundidad y tamaño de hojas ayuda a evitar overfitting.", "tags": ["conceptual"]}, {"id": "t103", "n": 103, "term": "Entropía", "section": "Árboles de decisión", "section_id": 10, "icon": "🌳", "definition": ["La entropía mide el desorden o incertidumbre de un nodo. Si todas las observaciones pertenecen a la misma clase, la entropía es baja. Si las clases están muy mezcladas, la entropía es alta. Se usa para decidir qué divisiones reducen más la incertidumbre."], "formulas": [], "ampliacion": "Mide incertidumbre: alta cuando las clases están mezcladas, baja cuando un nodo es puro.", "ejemplo": "Ejemplo aplicado: en un árbol, cada regla divide los datos para llegar a una predicción interpretable.", "cuidado": "Es similar en objetivo a Gini, aunque usa una escala conceptual distinta.", "tags": ["árboles"]}, {"id": "t104", "n": 104, "term": "Ganancia de información", "section": "Árboles de decisión", "section_id": 10, "icon": "🌳", "definition": ["La ganancia de información mide cuánto se reduce la impureza después de dividir un nodo. Una buena división es aquella que genera grupos más puros que el nodo original. Los árboles buscan maximizar esta reducción de impureza."], "formulas": [], "ampliacion": "Los árboles son modelos basados en reglas, intuitivos pero sensibles a la complejidad.", "ejemplo": "Ejemplo aplicado: en un árbol, cada regla divide los datos para llegar a una predicción interpretable.", "cuidado": "Controlar profundidad y tamaño de hojas ayuda a evitar overfitting.", "tags": ["conceptual"]}, {"id": "t105", "n": 105, "term": "Profundidad del árbol", "section": "Árboles de decisión", "section_id": 10, "icon": "🌳", "definition": ["La profundidad del árbol indica cuántos niveles tiene desde la raíz hasta las hojas. Un árbol muy profundo puede capturar detalles muy específicos del entrenamiento y caer en overfitting. Limitar la profundidad es una forma de controlar la complejidad."], "formulas": [], "ampliacion": "Los árboles son modelos basados en reglas, intuitivos pero sensibles a la complejidad.", "ejemplo": "Ejemplo aplicado: en un árbol, cada regla divide los datos para llegar a una predicción interpretable.", "cuidado": "Controlar profundidad y tamaño de hojas ayuda a evitar overfitting.", "tags": ["árboles"]}, {"id": "t106", "n": 106, "term": "max_depth", "section": "Árboles de decisión", "section_id": 10, "icon": "🌳", "definition": ["max_depth es un hiperparámetro que limita la profundidad máxima del árbol. Es uno de los controles más directos contra el sobreajuste. Un valor bajo produce árboles más simples. Un valor alto permite árboles más complejos."], "formulas": [], "ampliacion": "Los árboles son modelos basados en reglas, intuitivos pero sensibles a la complejidad.", "ejemplo": "Ejemplo aplicado: en un árbol, cada regla divide los datos para llegar a una predicción interpretable.", "cuidado": "Controlar profundidad y tamaño de hojas ayuda a evitar overfitting.", "tags": ["conceptual"]}, {"id": "t107", "n": 107, "term": "min_samples_split", "section": "Árboles de decisión", "section_id": 10, "icon": "🌳", "definition": ["min_samples_split indica la cantidad mínima de observaciones que debe tener un nodo para poder dividirse. Si el valor es alto, el árbol hará menos divisiones y será más simple. Ayuda a controlar la complejidad, aunque no limita directamente la profundidad como max_depth."], "formulas": [], "ampliacion": "Los árboles son modelos basados en reglas, intuitivos pero sensibles a la complejidad.", "ejemplo": "Ejemplo aplicado: en un árbol, cada regla divide los datos para llegar a una predicción interpretable.", "cuidado": "Controlar profundidad y tamaño de hojas ayuda a evitar overfitting.", "tags": ["conceptual"]}, {"id": "t108", "n": 108, "term": "min_samples_leaf", "section": "Árboles de decisión", "section_id": 10, "icon": "🌳", "definition": ["min_samples_leaf indica la cantidad mínima de observaciones que debe tener una hoja. Evita que el árbol genere hojas con muy pocos casos, lo cual puede reducir el sobreajuste. Es útil para lograr árboles más estables."], "formulas": [], "ampliacion": "Los árboles son modelos basados en reglas, intuitivos pero sensibles a la complejidad.", "ejemplo": "Ejemplo aplicado: en un árbol, cada regla divide los datos para llegar a una predicción interpretable.", "cuidado": "Controlar profundidad y tamaño de hojas ayuda a evitar overfitting.", "tags": ["conceptual"]}, {"id": "t109", "n": 109, "term": "Random Forest", "section": "Random Forest", "section_id": 11, "icon": "🌲", "definition": ["Random Forest es un modelo de ensamble que combina muchos árboles de decisión. Cada árbol realiza una predicción y el bosque combina los resultados. En clasificación usa votación mayoritaria. En regresión promedia las predicciones. Suele tener mejor rendimiento y mayor estabilidad que un único árbol."], "formulas": [], "ampliacion": "Promedia o vota entre muchos árboles para reducir inestabilidad de un árbol individual.", "ejemplo": "Ejemplo aplicado: en Random Forest, muchos árboles distintos producen una predicción más estable.", "cuidado": "Gana robustez, pero pierde interpretabilidad respecto de un solo árbol.", "tags": ["árboles"]}, {"id": "t110", "n": 110, "term": "Ensamble", "section": "Random Forest", "section_id": 11, "icon": "🌲", "definition": ["Un ensamble es un modelo que combina varios modelos individuales para obtener una predicción más robusta. La idea es que un conjunto de modelos puede funcionar mejor que un único modelo. Random Forest es un ejemplo de ensamble basado en árboles."], "formulas": [], "ampliacion": "Random Forest mejora árboles individuales combinando diversidad y votación/promedio.", "ejemplo": "Ejemplo aplicado: en Random Forest, muchos árboles distintos producen una predicción más estable.", "cuidado": "La idea central es reducir varianza mediante muchos árboles diferentes.", "tags": ["conceptual"]}, {"id": "t111", "n": 111, "term": "Bagging", "section": "Random Forest", "section_id": 11, "icon": "🌲", "definition": ["Bagging significa Bootstrap Aggregating. Es una técnica que entrena varios modelos sobre diferentes muestras bootstrap del dataset y luego combina sus resultados. Su objetivo principal es reducir la varianza. Random Forest utiliza bagging como parte de su funcionamiento."], "formulas": [], "ampliacion": "Reduce varianza al entrenar modelos en muestras diferentes y combinar resultados.", "ejemplo": "Ejemplo aplicado: en Random Forest, muchos árboles distintos producen una predicción más estable.", "cuidado": "Funciona mejor cuando los modelos individuales son diversos.", "tags": ["árboles"]}, {"id": "t112", "n": 112, "term": "Bootstrap", "section": "Random Forest", "section_id": 11, "icon": "🌲", "definition": ["Bootstrap es un método de muestreo con reemplazo. En Random Forest, cada árbol se entrena con una muestra bootstrap distinta. Eso significa que algunas observaciones pueden repetirse y otras quedar fuera. Esto genera diversidad entre los árboles."], "formulas": [], "ampliacion": "Permite crear muchas muestras alternativas de un dataset usando reemplazo.", "ejemplo": "Ejemplo aplicado: en Random Forest, muchos árboles distintos producen una predicción más estable.", "cuidado": "Algunas observaciones se repiten y otras quedan fuera de cada muestra.", "tags": ["árboles"]}, {"id": "t113", "n": 113, "term": "Muestreo con reemplazo", "section": "Random Forest", "section_id": 11, "icon": "🌲", "definition": ["El muestreo con reemplazo permite seleccionar una observación más de una vez en una muestra. Por ejemplo, si se toma una muestra de clientes con reemplazo, un mismo cliente puede aparecer varias veces y otro puede no aparecer. Este proceso es clave en el bootstrap."], "formulas": [], "ampliacion": "Random Forest mejora árboles individuales combinando diversidad y votación/promedio.", "ejemplo": "Ejemplo aplicado: en Random Forest, muchos árboles distintos producen una predicción más estable.", "cuidado": "La idea central es reducir varianza mediante muchos árboles diferentes.", "tags": ["conceptual"]}, {"id": "t114", "n": 114, "term": "Selección aleatoria de variables", "section": "Random Forest", "section_id": 11, "icon": "🌲", "definition": ["En Random Forest, cada división de un árbol evalúa solo un subconjunto aleatorio de variables. Esto evita que todos los árboles dependan siempre de las mismas variables dominantes. Aumenta la diversidad del bosque y mejora la estabilidad del modelo."], "formulas": [], "ampliacion": "Random Forest mejora árboles individuales combinando diversidad y votación/promedio.", "ejemplo": "Ejemplo aplicado: en Random Forest, muchos árboles distintos producen una predicción más estable.", "cuidado": "La idea central es reducir varianza mediante muchos árboles diferentes.", "tags": ["conceptual"]}, {"id": "t115", "n": 115, "term": "n_estimators", "section": "Random Forest", "section_id": 11, "icon": "🌲", "definition": ["n_estimators indica la cantidad de árboles que tendrá el Random Forest. Más árboles suelen mejorar la estabilidad hasta cierto punto, pero también aumentan el tiempo de cómputo. Cuando el error se estabiliza, agregar más árboles puede no aportar mejora significativa."], "formulas": [], "ampliacion": "Random Forest mejora árboles individuales combinando diversidad y votación/promedio.", "ejemplo": "Ejemplo aplicado: en Random Forest, muchos árboles distintos producen una predicción más estable.", "cuidado": "La idea central es reducir varianza mediante muchos árboles diferentes.", "tags": ["conceptual"]}, {"id": "t116", "n": 116, "term": "max_features", "section": "Random Forest", "section_id": 11, "icon": "🌲", "definition": ["max_features indica cuántas variables se consideran en cada división del árbol. Controla la aleatoriedad del modelo. Si se consideran menos variables, los árboles serán más diversos. Es un hiperparámetro importante para equilibrar rendimiento y diversidad."], "formulas": [], "ampliacion": "Random Forest mejora árboles individuales combinando diversidad y votación/promedio.", "ejemplo": "Ejemplo aplicado: en Random Forest, muchos árboles distintos producen una predicción más estable.", "cuidado": "La idea central es reducir varianza mediante muchos árboles diferentes.", "tags": ["conceptual"]}, {"id": "t117", "n": 117, "term": "Feature importance", "section": "Random Forest", "section_id": 11, "icon": "🌲", "definition": ["Feature importance es una medida que indica qué variables fueron más relevantes para las predicciones del modelo. En Random Forest, puede ayudar a interpretar qué características influyen más en la decisión. No explica cada predicción individual, pero ofrece una visión global del modelo."], "formulas": [], "ampliacion": "Ayuda a entender qué variables influyen más en el modelo a nivel global.", "ejemplo": "Ejemplo aplicado: en Random Forest, muchos árboles distintos producen una predicción más estable.", "cuidado": "No explica causalidad ni necesariamente cada predicción individual.", "tags": ["conceptual"]}, {"id": "t118", "n": 118, "term": "Reducción de varianza", "section": "Random Forest", "section_id": 11, "icon": "🌲", "definition": ["Random Forest reduce la varianza combinando muchos árboles diferentes. Un árbol individual puede ser inestable, pero al promediar o votar entre muchos árboles, los errores individuales tienden a compensarse. Por eso Random Forest suele generalizar mejor que un árbol único."], "formulas": [], "ampliacion": "Random Forest mejora árboles individuales combinando diversidad y votación/promedio.", "ejemplo": "Ejemplo aplicado: en Random Forest, muchos árboles distintos producen una predicción más estable.", "cuidado": "La idea central es reducir varianza mediante muchos árboles diferentes.", "tags": ["estadística"]}, {"id": "t119", "n": 119, "term": "Clustering", "section": "Clustering K-Means y Jerárquico", "section_id": 12, "icon": "🧬", "definition": ["El clustering es una técnica de aprendizaje no supervisado que agrupa observaciones similares entre sí. No utiliza una variable objetivo conocida. Busca descubrir estructuras ocultas en los datos. Se usa para segmentar clientes, agrupar productos, detectar patrones o explorar datos."], "formulas": [], "ampliacion": "Busca grupos sin etiqueta previa; por eso requiere mucha interpretación posterior.", "ejemplo": "Ejemplo aplicado: en segmentación de clientes, este concepto ayuda a formar grupos interpretables y accionables.", "cuidado": "Un cluster matemático no siempre es un segmento útil.", "tags": ["clustering"]}, {"id": "t120", "n": 120, "term": "Cluster", "section": "Clustering K-Means y Jerárquico", "section_id": 12, "icon": "🧬", "definition": ["Un cluster es un grupo de observaciones que son similares entre sí y diferentes de las observaciones de otros grupos. Por ejemplo, en una segmentación de clientes, un cluster puede representar clientes frecuentes de alto gasto y otro clientes ocasionales de bajo gasto. La interpretación de los clusters depende del contexto."], "formulas": [], "ampliacion": "El clustering descubre grupos sin etiquetas y exige interpretación posterior.", "ejemplo": "Ejemplo aplicado: en segmentación de clientes, este concepto ayuda a formar grupos interpretables y accionables.", "cuidado": "Escala, distancia y elección de clusters son decisiones críticas.", "tags": ["clustering"]}, {"id": "t121", "n": 121, "term": "Similitud", "section": "Clustering K-Means y Jerárquico", "section_id": 12, "icon": "🧬", "definition": ["La similitud mide qué tan parecidas son dos observaciones. En clustering, las observaciones más similares tienden a quedar en el mismo grupo. La similitud suele medirse mediante distancias entre variables."], "formulas": [], "ampliacion": "El clustering descubre grupos sin etiquetas y exige interpretación posterior.", "ejemplo": "Ejemplo aplicado: en segmentación de clientes, este concepto ayuda a formar grupos interpretables y accionables.", "cuidado": "Escala, distancia y elección de clusters son decisiones críticas.", "tags": ["conceptual"]}, {"id": "t122", "n": 122, "term": "Distancia", "section": "Clustering K-Means y Jerárquico", "section_id": 12, "icon": "🧬", "definition": ["La distancia mide qué tan lejos están dos observaciones en el espacio de variables. En K-Means, las observaciones se asignan al centroide más cercano según una medida de distancia. Si las variables no están escaladas, la distancia puede verse dominada por variables de mayor escala."], "formulas": [], "ampliacion": "El clustering descubre grupos sin etiquetas y exige interpretación posterior.", "ejemplo": "Ejemplo aplicado: en segmentación de clientes, este concepto ayuda a formar grupos interpretables y accionables.", "cuidado": "Escala, distancia y elección de clusters son decisiones críticas.", "tags": ["conceptual"]}, {"id": "t123", "n": 123, "term": "K-Means", "section": "Clustering K-Means y Jerárquico", "section_id": 12, "icon": "🧬", "definition": ["K-Means es un algoritmo de clustering que divide los datos en K grupos. El usuario define K antes de ejecutar el algoritmo. Luego, K-Means asigna observaciones a centroides y recalcula esos centroides hasta estabilizar los grupos. Es simple, rápido y útil, pero sensible a la escala y a la elección de K."], "formulas": [], "ampliacion": "Agrupa alrededor de centroides y funciona bien con grupos compactos y variables escaladas.", "ejemplo": "Ejemplo aplicado: en segmentación de clientes, este concepto ayuda a formar grupos interpretables y accionables.", "cuidado": "Es sensible a K, escala, inicialización y outliers.", "tags": ["clustering"]}, {"id": "t124", "n": 124, "term": "K", "section": "Clustering K-Means y Jerárquico", "section_id": 12, "icon": "🧬", "definition": ["K representa la cantidad de clusters que se quiere formar en K-Means. Elegir K es una decisión importante. Si K es muy bajo, los grupos pueden ser demasiado generales. Si K es muy alto, los grupos pueden ser excesivamente específicos. Existen métodos como el método del codo para ayudar a elegir K."], "formulas": [], "ampliacion": "El clustering descubre grupos sin etiquetas y exige interpretación posterior.", "ejemplo": "Ejemplo aplicado: en segmentación de clientes, este concepto ayuda a formar grupos interpretables y accionables.", "cuidado": "Escala, distancia y elección de clusters son decisiones críticas.", "tags": ["conceptual"]}, {"id": "t125", "n": 125, "term": "Centroide", "section": "Clustering K-Means y Jerárquico", "section_id": 12, "icon": "🧬", "definition": ["El centroide es el centro promedio de un cluster. En K-Means, cada observación se asigna al centroide más cercano. Luego los centroides se recalculan según las observaciones asignadas. El algoritmo repite este proceso hasta que los centroides se estabilizan."], "formulas": [], "ampliacion": "Es el promedio multivariable del cluster; funciona como representante geométrico del grupo.", "ejemplo": "Ejemplo aplicado: en segmentación de clientes, este concepto ayuda a formar grupos interpretables y accionables.", "cuidado": "Puede no corresponder a una observación real.", "tags": ["clustering"]}, {"id": "t126", "n": 126, "term": "Método del codo", "section": "Clustering K-Means y Jerárquico", "section_id": 12, "icon": "🧬", "definition": ["El método del codo ayuda a elegir el número K en K-Means. Consiste en probar distintos valores de K y observar cómo disminuye la suma de distancias internas dentro de los clusters. El “codo” aparece cuando agregar más clusters deja de mejorar significativamente el resultado."], "formulas": [], "ampliacion": "Ayuda a elegir K mirando cuándo disminuye poco la mejora interna.", "ejemplo": "Ejemplo aplicado: en segmentación de clientes, este concepto ayuda a formar grupos interpretables y accionables.", "cuidado": "El codo puede ser ambiguo; debe combinarse con interpretación y otras métricas.", "tags": ["conceptual"]}, {"id": "t127", "n": 127, "term": "Clustering jerárquico", "section": "Clustering K-Means y Jerárquico", "section_id": 12, "icon": "🧬", "definition": ["El clustering jerárquico construye una estructura de grupos en forma de árbol. Puede comenzar con cada observación como un grupo separado e ir fusionando los grupos más similares. Es útil porque permite observar distintos niveles de agrupamiento."], "formulas": [], "ampliacion": "El clustering descubre grupos sin etiquetas y exige interpretación posterior.", "ejemplo": "Ejemplo aplicado: en segmentación de clientes, este concepto ayuda a formar grupos interpretables y accionables.", "cuidado": "Escala, distancia y elección de clusters son decisiones críticas.", "tags": ["clustering"]}, {"id": "t128", "n": 128, "term": "Clustering aglomerativo", "section": "Clustering K-Means y Jerárquico", "section_id": 12, "icon": "🧬", "definition": ["El clustering aglomerativo es una forma de clustering jerárquico que empieza con cada observación como un cluster individual. Luego fusiona progresivamente los clusters más parecidos hasta formar grupos más grandes. Es uno de los enfoques más comunes de clustering jerárquico."], "formulas": [], "ampliacion": "El clustering descubre grupos sin etiquetas y exige interpretación posterior.", "ejemplo": "Ejemplo aplicado: en segmentación de clientes, este concepto ayuda a formar grupos interpretables y accionables.", "cuidado": "Escala, distancia y elección de clusters son decisiones críticas.", "tags": ["clustering"]}, {"id": "t129", "n": 129, "term": "Dendrograma", "section": "Clustering K-Means y Jerárquico", "section_id": 12, "icon": "🧬", "definition": ["El dendrograma es una visualización en forma de árbol que muestra cómo se agrupan las observaciones en clustering jerárquico. Permite ver qué observaciones se unen primero y en qué nivel se forman grupos más grandes. Es útil para decidir cuántos clusters elegir."], "formulas": [], "ampliacion": "Cuenta la historia de cómo se fusionan las observaciones o grupos.", "ejemplo": "Ejemplo aplicado: en segmentación de clientes, este concepto ayuda a formar grupos interpretables y accionables.", "cuidado": "El corte elegido debe tener sentido analítico, no solo visual.", "tags": ["árboles", "clustering"]}, {"id": "t130", "n": 130, "term": "Segmentación", "section": "Clustering K-Means y Jerárquico", "section_id": 12, "icon": "🧬", "definition": ["La segmentación consiste en dividir una población en grupos con características similares. En Ciencia de Datos, el clustering se usa frecuentemente para segmentar clientes, productos, usuarios o comportamientos. Una buena segmentación permite diseñar estrategias más específicas y efectivas."], "formulas": [], "ampliacion": "El clustering descubre grupos sin etiquetas y exige interpretación posterior.", "ejemplo": "Ejemplo aplicado: en segmentación de clientes, este concepto ayuda a formar grupos interpretables y accionables.", "cuidado": "Escala, distancia y elección de clusters son decisiones críticas.", "tags": ["clustering"]}]</script>
+  <script id="sectionData" type="application/json">[{"id": 1, "title": "Introducción a Ciencia de Datos", "icon": "🧭", "count": 20}, {"id": 2, "title": "EDA - Análisis Exploratorio de Datos", "icon": "🔎", "count": 14}, {"id": 3, "title": "Datos faltantes", "icon": "🧩", "count": 8}, {"id": 4, "title": "Outliers", "icon": "⚠️", "count": 5}, {"id": 5, "title": "Transformación de variables", "icon": "🔧", "count": 8}, {"id": 6, "title": "Regresión lineal, correlación y métricas", "icon": "📈", "count": 10}, {"id": 7, "title": "Validación cruzada", "icon": "🧪", "count": 8}, {"id": 8, "title": "Series de tiempo", "icon": "⏱️", "count": 8}, {"id": 9, "title": "Regresión logística", "icon": "🎯", "count": 15}, {"id": 10, "title": "Árboles de decisión", "icon": "🌳", "count": 12}, {"id": 11, "title": "Random Forest", "icon": "🌲", "count": 10}, {"id": 12, "title": "Clustering K-Means y Jerárquico", "icon": "🧬", "count": 12}]</script>
+  <script>
+    const DATA = JSON.parse(document.getElementById("glossaryData").textContent);
+    const SECTIONS = JSON.parse(document.getElementById("sectionData").textContent);
+    const $ = (id) => document.getElementById(id);
+    const STORAGE_KEY = "glosario_parcial_cd_v2_done";
+    let done = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
+    let current = DATA.slice();
+    let flashIndex = 0;
+    let labTimer = null;
+    let labTick = 0;
+
+    function saveDone(){ localStorage.setItem(STORAGE_KEY, JSON.stringify([...done])); }
+    function escapeHTML(s){
+      return String(s).replace(/[&<>"']/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[ch]));
+    }
+    function pct(n,d){ return d ? Math.round((n/d)*100) : 0; }
+
+    function updateTopProgress(){
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      const percent = max > 0 ? (doc.scrollTop / max) * 100 : 0;
+      $("topProgress").style.width = percent + "%";
+    }
+
+    function updateProgress(){
+      const p = pct(done.size, DATA.length);
+      ["studyBar","sideBar"].forEach(id => $(id).style.width = p + "%");
+      $("progressText").textContent = p + "%";
+      $("sideProgress").textContent = done.size + "/" + DATA.length;
+      $("doneTotal").textContent = done.size;
+    }
+
+    function buildSectionCards(){
+      $("totalTerms").textContent = DATA.length;
+      $("totalSections").textContent = SECTIONS.length;
+      const box = $("sectionCards");
+      box.innerHTML = SECTIONS.map(s => `
+        <div class="summary-card">
+          <b>${s.icon} ${s.count}</b>
+          <span>${escapeHTML(s.title)}</span>
+        </div>
+      `).join("");
+      $("sectionSelect").innerHTML = `<option value="all">Todas las unidades</option>` + SECTIONS.map(s => `<option value="${s.id}">${s.icon} ${escapeHTML(s.title)}</option>`).join("");
+      $("miniToc").innerHTML = SECTIONS.map(s => `<a href="#glosario" data-section="${s.id}">${s.icon} ${escapeHTML(s.title)} · ${s.count}</a>`).join("");
+      document.querySelectorAll(".mini-toc a").forEach(a => a.addEventListener("click", () => {
+        $("sectionSelect").value = a.dataset.section;
+        applyFilters();
+      }));
+      const tags = [...new Set(DATA.flatMap(d => d.tags))].sort();
+      $("tagSelect").innerHTML = `<option value="all">Todos los tipos</option>` + tags.map(t => `<option value="${escapeHTML(t)}">${escapeHTML(t)}</option>`).join("");
+      const quick = ["conceptual","estadística","regresión","clasificación","árboles","clustering","series","faltantes","outliers","preprocesamiento"];
+      $("quickFilters").innerHTML = `<button class="filter-btn active" data-tag="all">Todo</button>` + quick.map(t => `<button class="filter-btn" data-tag="${t}">${t}</button>`).join("");
+      document.querySelectorAll(".filter-btn").forEach(btn => btn.addEventListener("click", () => {
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        $("tagSelect").value = btn.dataset.tag;
+        applyFilters();
+      }));
+    }
+
+    function renderTerms(list){
+      current = list;
+      $("visibleTotal").textContent = list.length;
+      $("emptyState").style.display = list.length ? "none" : "block";
+      const grid = $("termsGrid");
+      grid.innerHTML = list.map(item => {
+        const def = item.definition.map(p => `<p>${escapeHTML(p)}</p>`).join("");
+        const formulas = item.formulas.map(f => `<div class="formula">${escapeHTML(f)}</div>`).join("");
+        const tags = item.tags.map(t => `<span class="tag">${escapeHTML(t)}</span>`).join("");
+        const doneClass = done.has(item.id) ? "done" : "";
+        return `
+          <article class="term-card ${doneClass}" data-id="${item.id}" data-section="${item.section_id}">
+            <div class="term-head" tabindex="0" role="button" aria-expanded="false">
+              <div class="term-num">${item.n}</div>
+              <div class="term-title">
+                <b>${escapeHTML(item.term)}</b>
+                <small>${item.icon} ${escapeHTML(item.section)}</small>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px"><span class="status-dot" title="Estado de estudio"></span><span class="chev">⌄</span></div>
+            </div>
+            <div class="term-body">
+              <div class="tagline">${tags}</div>
+              <h4>Definición base</h4>
+              ${def}
+              ${formulas ? `<h4>Fórmula o notación clave</h4>${formulas}` : ""}
+              <h4>Ampliación didáctica</h4>
+              <div class="callout"><p>${escapeHTML(item.ampliacion)}</p></div>
+              <h4>Ejemplo aplicado</h4>
+              <p>${escapeHTML(item.ejemplo)}</p>
+              <h4>Cuidado de interpretación</h4>
+              <p>${escapeHTML(item.cuidado)}</p>
+              <div class="hero-actions">
+                <button class="markBtn" data-id="${item.id}">${done.has(item.id) ? "Marcar como no estudiado" : "Marcar como estudiado"}</button>
+                <button class="copyTermBtn" data-id="${item.id}">Copiar concepto</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+      bindTermEvents();
+      updateProgress();
+    }
+
+    function bindTermEvents(){
+      document.querySelectorAll(".term-head").forEach(head => {
+        const toggle = () => {
+          const card = head.closest(".term-card");
+          const open = card.classList.toggle("open");
+          head.setAttribute("aria-expanded", open ? "true" : "false");
+        };
+        head.addEventListener("click", toggle);
+        head.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); toggle(); } });
+      });
+      document.querySelectorAll(".markBtn").forEach(btn => btn.addEventListener("click", e => {
+        e.stopPropagation();
+        const id = btn.dataset.id;
+        if(done.has(id)) done.delete(id); else done.add(id);
+        saveDone();
+        renderTerms(current);
+      }));
+      document.querySelectorAll(".copyTermBtn").forEach(btn => btn.addEventListener("click", e => {
+        e.stopPropagation();
+        const item = DATA.find(d => d.id === btn.dataset.id);
+        if(!item) return;
+        const txt = `${item.term}\n\n${item.definition.join("\n\n")}\n\nAmpliación: ${item.ampliacion}\n\nEjemplo: ${item.ejemplo}\n\nCuidado: ${item.cuidado}`;
+        navigator.clipboard.writeText(txt).then(() => { btn.textContent = "Copiado"; setTimeout(()=>btn.textContent="Copiar concepto", 1000); });
+      }));
+    }
+
+    function applyFilters(){
+      const q = $("searchInput").value.trim().toLowerCase();
+      const sec = $("sectionSelect").value;
+      const tag = $("tagSelect").value;
+      const list = DATA.filter(item => {
+        const corpus = [item.term, item.section, item.definition.join(" "), item.ampliacion, item.ejemplo, item.cuidado, item.tags.join(" ")].join(" ").toLowerCase();
+        const okQ = !q || corpus.includes(q);
+        const okS = sec === "all" || String(item.section_id) === sec;
+        const okT = tag === "all" || item.tags.includes(tag);
+        return okQ && okS && okT;
+      });
+      renderTerms(list);
+    }
+
+    function expandAll(){ document.querySelectorAll(".term-card").forEach(c => c.classList.add("open")); }
+    function collapseAll(){ document.querySelectorAll(".term-card").forEach(c => c.classList.remove("open")); }
+
+    function randomTerm(){
+      const list = current.length ? current : DATA;
+      const item = list[Math.floor(Math.random()*list.length)];
+      if(!item) return;
+      $("searchInput").value = item.term;
+      $("sectionSelect").value = "all";
+      $("tagSelect").value = "all";
+      applyFilters();
+      setTimeout(() => {
+        const card = document.querySelector(`.term-card[data-id="${item.id}"]`);
+        if(card){ card.classList.add("open"); card.scrollIntoView({behavior:"smooth", block:"center"}); }
+      }, 60);
+    }
+
+    function copyVisible(){
+      const txt = current.map(item => `${item.n}. ${item.term}\nUnidad: ${item.section}\n${item.definition.join("\n")}\nAmpliación: ${item.ampliacion}\nCuidado: ${item.cuidado}`).join("\n\n---\n\n");
+      navigator.clipboard.writeText(txt).then(() => {
+        const btn = $("copyBtn");
+        const old = btn.textContent;
+        btn.textContent = "Copiado";
+        setTimeout(() => btn.textContent = old, 1000);
+      });
+    }
+
+    function openFlash(){
+      $("flashModal").classList.add("show");
+      flashIndex = Math.floor(Math.random()*DATA.length);
+      renderFlash();
+    }
+    function renderFlash(){
+      const item = DATA[flashIndex % DATA.length];
+      $("flashTerm").textContent = item.term;
+      $("flashSection").textContent = item.icon + " " + item.section;
+      $("flashAnswer").classList.remove("show");
+      $("flashAnswer").innerHTML = `
+        ${item.definition.map(p => `<p>${escapeHTML(p)}</p>`).join("")}
+        <div class="callout"><strong>Ampliación:</strong><p>${escapeHTML(item.ampliacion)}</p></div>
+        <p><strong>Cuidado:</strong> ${escapeHTML(item.cuidado)}</p>`;
+    }
+
+    function initControls(){
+      $("searchInput").addEventListener("input", applyFilters);
+      $("sectionSelect").addEventListener("change", applyFilters);
+      $("tagSelect").addEventListener("change", applyFilters);
+      $("expandAllBtn").addEventListener("click", expandAll);
+      $("collapseAllBtn").addEventListener("click", collapseAll);
+      $("randomBtn").addEventListener("click", randomTerm);
+      $("copyBtn").addEventListener("click", copyVisible);
+      $("resetProgressBtn").addEventListener("click", () => { if(confirm("¿Reiniciar progreso de estudio?")){ done.clear(); saveDone(); renderTerms(current); } });
+      $("themeBtn").addEventListener("click", () => {
+        const root = document.documentElement;
+        root.dataset.theme = root.dataset.theme === "light" ? "dark" : "light";
+        drawLab();
+      });
+      $("printBtn").addEventListener("click", () => window.print());
+      $("flashBtn").addEventListener("click", openFlash);
+      $("closeFlash").addEventListener("click", () => $("flashModal").classList.remove("show"));
+      $("showFlashAnswer").addEventListener("click", () => $("flashAnswer").classList.add("show"));
+      $("nextFlash").addEventListener("click", () => { flashIndex = (flashIndex + 1) % DATA.length; renderFlash(); });
+      $("flashModal").addEventListener("click", e => { if(e.target.id === "flashModal") $("flashModal").classList.remove("show"); });
+      window.addEventListener("scroll", updateTopProgress);
+      window.addEventListener("resize", drawLab);
+    }
+
+    function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+    function resizeCanvas(canvas){
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.max(320, Math.floor(rect.width * dpr));
+      canvas.height = Math.max(260, Math.floor(rect.height * dpr));
+      const ctx = canvas.getContext("2d");
+      if(!ctx) return null;
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx,w:rect.width,h:rect.height};
+    }
+    function rand(seed){
+      let x = Math.sin(seed * 999.97) * 10000;
+      return x - Math.floor(x);
+    }
+    function drawGrid(ctx,w,h){
+      ctx.save();
+      ctx.strokeStyle = document.documentElement.dataset.theme === "light" ? "rgba(16,32,51,.07)" : "rgba(255,255,255,.06)";
+      for(let x=0;x<w;x+=36){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+      for(let y=0;y<h;y+=36){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+      ctx.restore();
+    }
+    function drawText(ctx,txt,x,y,size=13,color=null,bold=false){
+      ctx.save();
+      ctx.fillStyle = color || cssVar("--text");
+      ctx.font = `${bold ? 800 : 600} ${size}px Inter, system-ui, sans-serif`;
+      ctx.fillText(txt,x,y);
+      ctx.restore();
+    }
+    function circle(ctx,x,y,r,color){
+      ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
+    }
+    function line(ctx,x1,y1,x2,y2,color,width=2){
+      ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
+    }
+    function drawAxes(ctx,w,h){
+      const m=48;
+      line(ctx,m,h-m,w-m,h-m,"rgba(148,163,184,.45)",1.5);
+      line(ctx,m,h-m,m,m,"rgba(148,163,184,.45)",1.5);
+    }
+    function drawLab(){
+      const canvas = $("conceptCanvas");
+      const pack = resizeCanvas(canvas);
+      if(!pack) return;
+      const {ctx,w,h} = pack;
+      ctx.clearRect(0,0,w,h);
+      drawGrid(ctx,w,h);
+      const mode = $("labMode").value;
+      const intensity = Number($("labIntensity").value);
+      $("labStep").textContent = labTick;
+      const accent = cssVar("--accent"), accent2 = cssVar("--accent2"), accent3 = cssVar("--accent3"), danger = cssVar("--danger"), warn=cssVar("--warn"), text=cssVar("--text"), muted=cssVar("--muted");
+      ctx.lineCap="round";
+      if(mode === "pipeline"){
+        $("labConcept").textContent = "Pipeline";
+        $("labReading").textContent = "flujo de trabajo";
+        $("labText").textContent = "La Ciencia de Datos puede estudiarse como una secuencia: problema, datos, EDA, transformación, modelo, validación e interpretación.";
+        const steps=["Problema","Datos","EDA","Transformar","Modelo","Validar","Decidir"];
+        const y=h/2, margin=48, gap=(w-2*margin)/(steps.length-1);
+        steps.forEach((s,i)=>{
+          const x=margin+i*gap;
+          if(i>0) line(ctx, margin+(i-1)*gap+24, y, x-24, y, i <= (labTick%8) ? accent3 : "rgba(148,163,184,.35)", 4);
+          circle(ctx,x,y,25, i <= (labTick%8) ? accent : "rgba(148,163,184,.22)");
+          drawText(ctx,String(i+1),x-5,y+5,14,"white",true);
+          drawText(ctx,s,x-34,y+48,12,text,true);
+        });
+      }
+      if(mode === "eda"){
+        $("labConcept").textContent = "EDA";
+        $("labReading").textContent = "distribución";
+        $("labText").textContent = "El histograma permite ver concentración, asimetría y posibles extremos; el boxplot resume mediana, cuartiles y outliers.";
+        drawAxes(ctx,w,h);
+        const bins = 14;
+        const baseX=60, baseY=h-60, bw=(w-140)/bins;
+        for(let i=0;i<bins;i++){
+          const height=(40+Math.sin((i+labTick*.15)/2)*22+Math.exp(-Math.pow(i-6,2)/15)*130)*(intensity/7);
+          ctx.fillStyle = i>11 ? danger : accent;
+          ctx.globalAlpha=.78;
+          ctx.fillRect(baseX+i*bw, baseY-height, bw-5, height);
+          ctx.globalAlpha=1;
+        }
+        const boxY=90, x1=w*.58, x2=w*.86, med=w*.70;
+        line(ctx,x1-45,boxY,x2+35,boxY,muted,2);
+        ctx.strokeStyle=accent3;ctx.lineWidth=3;ctx.strokeRect(x1,boxY-24,x2-x1,48);
+        line(ctx,med,boxY-24,med,boxY+24,warn,4);
+        circle(ctx,x2+55,boxY,5,danger);circle(ctx,x2+78,boxY+7,5,danger);
+        drawText(ctx,"Histograma + boxplot",58,36,16,text,true);
+      }
+      if(mode === "missing"){
+        $("labConcept").textContent = "Datos faltantes";
+        $("labReading").textContent = "calidad de datos";
+        $("labText").textContent = "Los valores faltantes requieren diagnóstico: no es lo mismo un dato ausente al azar que una ausencia con significado.";
+        const rows=8, cols=10, cw=(w-80)/cols, ch=(h-100)/rows;
+        for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+          const miss = rand(r*17+c*31+labTick) < .16 + intensity*.015;
+          ctx.fillStyle = miss ? danger : (rand(r+c*3)<.5 ? accent : accent3);
+          ctx.globalAlpha = miss ? .9 : .45;
+          ctx.fillRect(40+c*cw,60+r*ch,cw-5,ch-5);
+          if(miss) drawText(ctx,"NA",44+c*cw,60+r*ch+22,11,"white",true);
+        }
+        ctx.globalAlpha=1;
+        drawText(ctx,"Matriz de datos: celdas faltantes",40,36,16,text,true);
+      }
+      if(mode === "outliers"){
+        $("labConcept").textContent = "Outliers";
+        $("labReading").textContent = "valores extremos";
+        $("labText").textContent = "Un outlier puede ser error o señal valiosa. Primero se analiza; después se decide si corregir, transformar, mantener o eliminar.";
+        drawAxes(ctx,w,h);
+        for(let i=0;i<70;i++){
+          const x=80+rand(i)*w*.48, y=h-80-rand(i+3)*h*.55;
+          circle(ctx,x,y,4,accent);
+        }
+        const outs=[[w*.72,h*.22],[w*.82,h*.78],[w*.70,h*.68]];
+        outs.forEach(p=>{circle(ctx,p[0],p[1],8,danger); line(ctx,p[0]-13,p[1]-13,p[0]+13,p[1]+13,danger,2); line(ctx,p[0]+13,p[1]-13,p[0]-13,p[1]+13,danger,2);});
+        drawText(ctx,"Nube de puntos con outliers",58,36,16,text,true);
+      }
+      if(mode === "regression"){
+        $("labConcept").textContent = "Regresión lineal";
+        $("labReading").textContent = "recta y residuos";
+        $("labText").textContent = "La regresión lineal ajusta una recta; los residuos muestran cuánto se alejan las observaciones de la predicción.";
+        drawAxes(ctx,w,h);
+        const m=48;
+        const points=[];
+        for(let i=0;i<32;i++){
+          const x=m+20+i*(w-120)/32;
+          const y=h-m-(35+i*7 + (rand(i+labTick)-.5)*intensity*24);
+          points.push([x,y]);
+          circle(ctx,x,y,4,accent);
+        }
+        const y1=h-m-40, y2=h-m-(35+32*7);
+        line(ctx,m+10,y1,w-m,y2,accent3,3);
+        for(let i=0;i<points.length;i+=4){
+          const [x,y]=points[i]; const t=(x-(m+10))/(w-2*m); const yhat=y1+(y2-y1)*t;
+          line(ctx,x,y,x,yhat,danger,1.5);
+        }
+        drawText(ctx,"ŷ = β₀ + β₁x",60,36,18,text,true);
+      }
+      if(mode === "validation"){
+        $("labConcept").textContent = "Validación cruzada";
+        $("labReading").textContent = "generalización";
+        $("labText").textContent = "La validación cruzada evalúa el modelo en varias particiones para estimar mejor cómo funcionaría con datos nuevos.";
+        const folds=5; const x=60, y=80, bw=(w-120)/folds, bh=42;
+        for(let round=0; round<folds; round++){
+          drawText(ctx,"Fold "+(round+1),x-6,y+round*62+27,12,muted,true);
+          for(let f=0; f<folds; f++){
+            ctx.fillStyle = f===round ? danger : accent;
+            ctx.globalAlpha = f===round ? .85 : .5;
+            ctx.fillRect(x+f*bw,y+round*62,bw-8,bh);
+            drawText(ctx,f===round?"test":"train",x+f*bw+10,y+round*62+26,12,"white",true);
+          }
+        }
+        ctx.globalAlpha=1;
+      }
+      if(mode === "timeseries"){
+        $("labConcept").textContent = "Serie de tiempo";
+        $("labReading").textContent = "orden temporal";
+        $("labText").textContent = "En series temporales el orden importa: se entrena con pasado y se evalúa con futuro para evitar leakage temporal.";
+        drawAxes(ctx,w,h);
+        let prev=null;
+        for(let i=0;i<110;i++){
+          const x=50+i*(w-100)/109;
+          const trend=i*.9;
+          const seasonal=Math.sin((i+labTick)/7)*28;
+          const noise=(rand(i*3+labTick)-.5)*12*intensity/5;
+          const y=h-70-(45+trend+seasonal+noise);
+          if(prev) line(ctx,prev[0],prev[1],x,y,accent,2);
+          prev=[x,y];
+        }
+        line(ctx,w*.72,55,w*.72,h-50,danger,3);
+        drawText(ctx,"corte temporal: pasado → futuro",w*.72+8,72,13,danger,true);
+      }
+      if(mode === "logistic"){
+        $("labConcept").textContent = "Regresión logística";
+        $("labReading").textContent = "probabilidad y umbral";
+        $("labText").textContent = "La sigmoide convierte un score en probabilidad. El umbral decide cuándo esa probabilidad se transforma en clase.";
+        drawAxes(ctx,w,h);
+        let prev=null;
+        for(let i=0;i<120;i++){
+          const x=50+i*(w-100)/119;
+          const z=(i-60)/12;
+          const p=1/(1+Math.exp(-z));
+          const y=h-60-p*(h-110);
+          if(prev) line(ctx,prev[0],prev[1],x,y,accent3,3);
+          prev=[x,y];
+        }
+        line(ctx,50,h/2,w-50,h/2,warn,2);
+        drawText(ctx,"umbral 0,5",w-138,h/2-8,13,warn,true);
+        drawText(ctx,"p = 1 / (1 + e⁻ᶻ)",60,38,18,text,true);
+      }
+      if(mode === "tree"){
+        $("labConcept").textContent = "Árbol de decisión";
+        $("labReading").textContent = "reglas";
+        $("labText").textContent = "Un árbol divide los datos mediante reglas hasta llegar a hojas con predicciones.";
+        const cx=w/2, y=60;
+        function node(x,y,label,color){ctx.fillStyle=color;ctx.fillRect(x-55,y-20,110,40);ctx.strokeStyle="rgba(255,255,255,.22)";ctx.strokeRect(x-55,y-20,110,40);drawText(ctx,label,x-43,y+5,12,"white",true);}
+        node(cx,y,"edad ≤ 30",accent);
+        line(ctx,cx,y+22,cx-150,y+105,muted,2); line(ctx,cx,y+22,cx+150,y+105,muted,2);
+        node(cx-150,y+125,"gasto ≤ 100",accent2); node(cx+150,y+125,"frecuencia > 5",accent2);
+        for(const dx of [-230,-70,70,230]){
+          line(ctx,cx+(dx<0?-150:150),y+147,cx+dx,y+230,muted,2);
+          node(cx+dx,y+250,dx<0?"No compra":"Compra",dx<0?danger:accent3);
+        }
+      }
+      if(mode === "forest"){
+        $("labConcept").textContent = "Random Forest";
+        $("labReading").textContent = "ensamble";
+        $("labText").textContent = "Random Forest combina muchos árboles entrenados con muestras y variables aleatorias para reducir varianza.";
+        const trees=7;
+        for(let i=0;i<trees;i++){
+          const x=70+i*(w-140)/(trees-1), y=110+(i%2)*50;
+          line(ctx,x,y,x-28,y+62,muted,2); line(ctx,x,y,x+28,y+62,muted,2);
+          circle(ctx,x,y,16,accent); circle(ctx,x-28,y+70,13,accent3); circle(ctx,x+28,y+70,13,accent3);
+          drawText(ctx,"T"+(i+1),x-9,y+5,12,"white",true);
+        }
+        line(ctx,80,h-90,w-80,h-90,accent2,5);
+        drawText(ctx,"votación / promedio del bosque",w/2-105,h-62,15,text,true);
+      }
+      if(mode === "clustering"){
+        $("labConcept").textContent = "Clustering";
+        $("labReading").textContent = "grupos sin etiqueta";
+        $("labText").textContent = "K-Means agrupa por cercanía a centroides. Escala, distancia y elección de K cambian el resultado.";
+        drawAxes(ctx,w,h);
+        const centers=[[w*.28,h*.35],[w*.60,h*.30],[w*.50,h*.70]];
+        centers.forEach((c,ci)=>{
+          for(let i=0;i<28;i++){
+            const a=rand(ci*100+i)*Math.PI*2;
+            const r=20+rand(ci*11+i)*intensity*8;
+            circle(ctx,c[0]+Math.cos(a)*r,c[1]+Math.sin(a)*r,4,[accent,accent2,accent3][ci]);
+          }
+          ctx.strokeStyle="white";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(c[0]-10,c[1]);ctx.lineTo(c[0]+10,c[1]);ctx.moveTo(c[0],c[1]-10);ctx.lineTo(c[0],c[1]+10);ctx.stroke();
+          drawText(ctx,"centroide",c[0]+12,c[1]-12,11,text,true);
+        });
+      }
+    }
+
+    function initLab(){
+      $("labMode").addEventListener("change", () => { labTick=0; drawLab(); });
+      $("labIntensity").addEventListener("input", drawLab);
+      $("labStepBtn").addEventListener("click", () => { labTick++; drawLab(); });
+      $("labResetBtn").addEventListener("click", () => { labTick=0; if(labTimer){clearInterval(labTimer);labTimer=null;} drawLab(); });
+      $("labAnimateBtn").addEventListener("click", () => {
+        if(labTimer){ clearInterval(labTimer); labTimer=null; $("labAnimateBtn").textContent="Animar"; return; }
+        $("labAnimateBtn").textContent="Pausar";
+        labTimer=setInterval(()=>{ labTick++; drawLab(); }, 520);
+      });
+      drawLab();
+    }
+
+    function boot(){
+      buildSectionCards();
+      initControls();
+      initLab();
+      renderTerms(DATA);
+      updateProgress();
+      updateTopProgress();
+    }
+    document.addEventListener("DOMContentLoaded", boot);
+  </script>
+</body>
+</html>
