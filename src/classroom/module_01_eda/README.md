@@ -97,6 +97,24 @@ En esta sección encontrarás dashboards, simulaciones y recursos aplicados para
 | **Glosario del Paradigma EDA (HTML Interactivo)** <br><br> <details><summary><strong>Resumen:</strong> <em>(haz clic para expandir)</em></summary><p>Glosario interactivo orientado a consolidar los conceptos fundamentales del paradigma EDA. Reúne definiciones clave, lenguaje técnico y nociones analíticas necesarias para comprender con mayor precisión el análisis exploratorio de datos en contextos académicos y aplicados.</p></details> | [![Ver HTML](https://img.shields.io/badge/Ver%20HTML-Glosario-blue?style=for-the-badge&logo=google-chrome)](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sgevatschnaider/data-science-for-business-models/b7f8849b5b88795e5cc8513bfa74db314063b54b/src/classroom/module_01_eda/html/EDA_%20Glosario.html) |
 | **Cuestionario del Paradigma EDA (HTML Interactivo)** <br><br> <details><summary><strong>Resumen:</strong> <em>(haz clic para expandir)</em></summary><p>Cuestionario interactivo diseñado para repasar y afianzar los ejes centrales del paradigma EDA. Integra preguntas conceptuales con desarrollo explicativo sobre variables, distribuciones, valores atípicos, datos faltantes, correlación, calidad del dato y decisiones de preprocesamiento.</p></details> | [![Ver HTML](https://img.shields.io/badge/Ver%20HTML-Cuestionario-green?style=for-the-badge&logo=google-chrome)](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sgevatschnaider/data-science-for-business-models/b7f8849b5b88795e5cc8513bfa74db314063b54b/src/classroom/module_01_eda/html/EDA_Cuestionario.html) |
 
+## 💼 Aplicaciones en negocios
+
+El paradigma EDA tiene aplicaciones directas y tangibles:
+* **Marketing:** Comportamiento de clientes, respuesta a campañas, canales de conversión.
+* **Finanzas:** Concentración de riesgo, anomalías transaccionales, perfiles de morosidad.
+* **Operaciones:** Cuellos de botella, variabilidad en tiempos, patrones de demanda.
+* **Producto:** Uso, retención, comportamiento por cohortes, señales de abandono.
+* **Ventas:** Dispersión comercial, performance por equipo, ticket promedio.
+
+---
+
+## 🛠️ Herramientas y técnicas habituales
+
+* **Manipulación:** `pandas` (limpieza y transformación inicial), `numpy` (operaciones numéricas).
+* **Visualización:** `matplotlib`, `seaborn` (histogramas, boxplots, scatter plots, heatmaps).
+* **Análisis:** Tablas de frecuencia, profiling inicial, matrices de correlación, agrupaciones.
+* 
+
 | 📄 Recurso | 📥 Acceso |
 | :--- | :--- |
 | **Missing_Data_Marco_Conceptual.ipynb (Notebook Interactivo)** <br><br> <details><summary><strong>Resumen:</strong> <em>(haz clic para expandir)</em></summary><p>Notebook teórico–conceptual dedicado a desarrollar de manera integral el problema de los <strong>missing data</strong> desde una perspectiva estadística, organizacional y económica. El material presenta los datos faltantes no solo como un inconveniente técnico de limpieza de bases, sino como una manifestación de fricciones informacionales, fallas de captura, asimetrías de información y limitaciones en los procesos de decisión dentro de una organización.</p><p>A lo largo del desarrollo se explican los principales marcos conceptuales para comprender el fenómeno, incluyendo la definición de datos faltantes, sus causas más frecuentes en contextos empresariales, la diferencia entre ausencia estructural y omisión problemática, y la tipología clásica <code>MCAR</code>, <code>MAR</code> y <code>MNAR</code>. Además, se vincula el tratamiento de missing data con la calidad de datos, la gobernanza de la información, la analítica de negocios y el impacto sobre métricas, segmentaciones, modelos predictivos y decisiones estratégicas.</p><p>El notebook funciona como base teórica para cursos de ciencia de datos, estadística aplicada y analítica de negocios, permitiendo comprender por qué los datos faltantes deben interpretarse en su contexto y no resolverse de manera automática o mecánica.</p></details> | [![Missing_Data_Marco_Conceptual.ipynb](https://img.shields.io/badge/Missing_Data_Marco_Conceptual-Notebook-blue?style=for-the-badge&logo=jupyter)](https://colab.research.google.com/drive/1_ldjrvEBsIlo3_GvoKJ3tUXdmjG_Nvq2?usp=sharing) |
@@ -163,42 +181,6 @@ Este bloque reúne los recursos interactivos sobre **Random Forest**, organizado
         ↓
 7. Glosario Interactivo
 
-## 💼 Aplicaciones en negocios
 
-El paradigma EDA tiene aplicaciones directas y tangibles:
-* **Marketing:** Comportamiento de clientes, respuesta a campañas, canales de conversión.
-* **Finanzas:** Concentración de riesgo, anomalías transaccionales, perfiles de morosidad.
-* **Operaciones:** Cuellos de botella, variabilidad en tiempos, patrones de demanda.
-* **Producto:** Uso, retención, comportamiento por cohortes, señales de abandono.
-* **Ventas:** Dispersión comercial, performance por equipo, ticket promedio.
 
----
-
-## 🛠️ Herramientas y técnicas habituales
-
-* **Manipulación:** `pandas` (limpieza y transformación inicial), `numpy` (operaciones numéricas).
-* **Visualización:** `matplotlib`, `seaborn` (histogramas, boxplots, scatter plots, heatmaps).
-* **Análisis:** Tablas de frecuencia, profiling inicial, matrices de correlación, agrupaciones.
-
----
-
-## 📂 Estructura sugerida del módulo
-
-```text
-module_01_eda/
-├── README.md
-├── notebooks/
-│   ├── 01_dataset_overview.ipynb
-│   ├── 02_data_quality.ipynb
-│   ├── 03_distributions.ipynb
-│   ├── 04_outliers_and_anomalies.ipynb
-│   ├── 05_relationships_and_segments.ipynb
-│   └── 06_business_insights.ipynb
-├── data/
-│   └── sample_dataset.csv
-├── assets/
-│   ├── charts/
-│   └── diagrams/
-└── docs/
-    └── notes.md
 
