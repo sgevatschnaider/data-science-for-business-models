@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clustering K-Means y Jerárquico · Laboratorio Interactivo</title>
+  <meta name="description" content="Guía interactiva y visual sobre clustering no supervisado, K-Means, clustering jerárquico, dendrogramas, distancia, escala, codo y silhouette." />
+  <style>
+    :root {
+      --bg:#07111f; --bg2:#0b1628; --panel:rgba(16,30,50,.84); --panel2:rgba(21,40,65,.95); --glass:rgba(255,255,255,.055);
+      --text:#ecf5ff; --muted:#a9bad0; --line:rgba(255,255,255,.14); --accent:#35d0ff; --accent2:#9d7cff; --accent3:#39e6a2;
+      --warning:#ffd166; --danger:#ff6b6b; --orange:#ffb86b; --shadow:0 24px 70px rgba(0,0,0,.38); --radius:26px; --code:#06101d;
+      --c0:#35d0ff; --c1:#9d7cff; --c2:#39e6a2; --c3:#ffd166; --c4:#ff6b6b; --c5:#ffb86b; --c6:#7dd3fc; --c7:#f0abfc;
+    }
+    html[data-theme="light"] {
+      --bg:#f4f7fb; --bg2:#e9f0f8; --panel:rgba(255,255,255,.9); --panel2:#fff; --glass:rgba(16,32,51,.05);
+      --text:#102033; --muted:#52677d; --line:rgba(16,32,51,.15); --accent:#0077b6; --accent2:#6747d8; --accent3:#008f5f;
+      --warning:#a36b00; --danger:#c73535; --orange:#bd6500; --shadow:0 24px 70px rgba(39,58,84,.17); --code:#eef4fb;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at 10% 0%,rgba(53,208,255,.19),transparent 31%),radial-gradient(circle at 90% 8%,rgba(157,124,255,.20),transparent 34%),radial-gradient(circle at 52% 82%,rgba(57,230,162,.12),transparent 35%),linear-gradient(180deg,var(--bg),var(--bg2) 68%,var(--bg));min-height:100vh}
+    .progress{position:fixed;inset:0 auto auto 0;height:4px;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));z-index:1000;box-shadow:0 0 18px rgba(53,208,255,.45)}
+    .container{width:min(1260px,calc(100% - 32px));margin:0 auto}.hero{padding:64px 0 26px}.hero-grid{display:grid;grid-template-columns:1.18fr .82fr;gap:24px;align-items:stretch}.hero-card,.side-card,.section-card{background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.025));border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(18px)}.hero-card{border-radius:34px;padding:36px}.side-card{border-radius:30px;padding:24px}.section-card{border-radius:var(--radius);padding:28px;margin:26px 0}.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(53,208,255,.13);color:var(--accent);border-radius:999px;padding:8px 12px;font-size:.84rem;font-weight:900;text-transform:uppercase;letter-spacing:.05em;margin-bottom:18px}
+    h1{font-size:clamp(2.25rem,5.2vw,5.15rem);line-height:.96;margin:0 0 18px;letter-spacing:-.065em} h2{font-size:clamp(1.55rem,3vw,2.55rem);letter-spacing:-.04em;margin:0 0 14px} h3{margin:0 0 10px;font-size:1.18rem;letter-spacing:-.02em} h4{margin:0 0 8px} p{color:var(--muted);line-height:1.72;margin:0 0 14px}.lead{font-size:1.12rem;max-width:850px}.highlight{color:var(--text);font-weight:900}.formula{background:var(--code);border:1px solid var(--line);border-radius:19px;padding:16px 18px;margin:16px 0;color:var(--accent3);font-family:Cambria,Georgia,"Times New Roman",serif;font-size:1.14rem;font-weight:800;line-height:1.65;overflow-x:auto}.formula.small{font-size:1rem}.mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}.kbd{background:var(--code);border:1px solid var(--line);padding:2px 7px;border-radius:8px;color:var(--accent);font-weight:900}.chips,.actions,.tabbar,.control-row,.toggle-row{display:flex;flex-wrap:wrap;gap:10px}.chips{margin-top:17px}.chip{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid var(--line);background:rgba(53,208,255,.12);border-radius:999px;color:var(--text);font-size:.86rem;font-weight:900}.actions{margin-top:22px}button,.btn{appearance:none;border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:999px;padding:10px 15px;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;transition:.2s ease}button:hover,.btn:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 14px 34px rgba(53,208,255,.12)}button.primary,.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border-color:transparent}button.active{background:rgba(53,208,255,.16);border-color:var(--accent)}button.ghost{background:transparent}.metric{display:grid;grid-template-columns:1fr auto;gap:8px;border-bottom:1px solid var(--line);padding:10px 0;color:var(--muted);font-size:.92rem}.metric:last-child{border-bottom:0}.metric strong{color:var(--text)}
+    .toc{position:sticky;top:10px;z-index:80;margin:8px auto 22px;background:rgba(7,17,31,.66);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:999px;padding:9px;display:flex;gap:8px;overflow-x:auto;box-shadow:var(--shadow)}html[data-theme="light"] .toc{background:rgba(255,255,255,.75)}.toc a{white-space:nowrap;text-decoration:none;color:var(--muted);font-weight:900;padding:9px 12px;border-radius:999px;font-size:.89rem}.toc a:hover{background:rgba(53,208,255,.13);color:var(--text)}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.grid-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.card{background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:19px;min-height:100%;position:relative;overflow:hidden}.card::after{content:"";position:absolute;right:-54px;bottom:-68px;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(53,208,255,.16),transparent 70%);pointer-events:none}.num{width:38px;height:38px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-weight:950;margin-bottom:12px}.callout{border:1px solid rgba(53,208,255,.32);border-left:5px solid var(--accent);background:rgba(53,208,255,.115);border-radius:18px;padding:17px;margin:17px 0}.callout p{margin:0;color:var(--text)}
+    .map-board{margin-top:18px;border:1px solid var(--line);background:var(--panel2);border-radius:24px;padding:22px;overflow:hidden}.flow{display:flex;align-items:stretch;gap:10px;min-width:1040px}.scroll-x{overflow-x:auto;padding-bottom:6px}.flow-node{flex:1;min-width:122px;text-align:center;background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:15px 12px}.flow-node strong{display:block;color:var(--text);margin-bottom:7px}.flow-node small{display:block;color:var(--muted);line-height:1.42}.arrow{display:grid;place-items:center;color:var(--accent);font-size:1.4rem;font-weight:950;min-width:20px}.matrix{overflow-x:auto;margin-top:15px}table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:18px;overflow:hidden;font-size:.94rem}th,td{text-align:left;vertical-align:top;padding:13px 14px;border-bottom:1px solid var(--line);color:var(--muted);line-height:1.55}th{background:rgba(53,208,255,.13);color:var(--text);font-weight:950}tr:last-child td{border-bottom:0}td strong{color:var(--text)}
+    .lab-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:stretch}.canvas-wrap{display:grid;gap:14px}.canvas-card{border:1px solid var(--line);background:var(--code);border-radius:22px;padding:12px}canvas{width:100%;min-height:430px;display:block;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015)),var(--code)}#dendroCanvas,#scoreCanvas{min-height:260px}.control-panel{background:var(--panel2);border:1px solid var(--line);border-radius:22px;padding:18px}.control-panel label{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:.82rem;font-weight:950;text-transform:uppercase;letter-spacing:.045em;margin:14px 0 7px}select,input[type="range"]{width:100%}select{background:var(--bg2);color:var(--text);border:1px solid var(--line);border-radius:13px;padding:10px;font-weight:850}input[type="range"]{accent-color:var(--accent)}.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.legend span{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:.86rem}.legend i{width:11px;height:11px;border-radius:50%;display:inline-block}.mini-note{font-size:.86rem;color:var(--muted);line-height:1.55;margin-top:12px}.pillbox{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.pill{border:1px solid var(--line);border-radius:16px;background:var(--glass);padding:11px}.pill b{display:block;color:var(--text);font-size:1.12rem}.pill span{color:var(--muted);font-size:.8rem;font-weight:800}.cluster-summary{display:grid;gap:9px;margin-top:12px}.summary-row{display:grid;grid-template-columns:12px 1fr auto;gap:8px;align-items:center;border:1px solid var(--line);background:var(--glass);border-radius:14px;padding:9px}.dot{width:11px;height:11px;border-radius:50%}.summary-row span{color:var(--muted);font-size:.85rem}.summary-row strong{color:var(--text)}
+    .concept-tabs{display:grid;grid-template-columns:280px 1fr;gap:18px}.tab-list{display:grid;gap:10px}.tab-list button{border-radius:16px;justify-content:flex-start;text-align:left}.tab-content{background:var(--panel2);border:1px solid var(--line);border-radius:22px;padding:22px}.steps{display:grid;gap:10px}.step{display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:18px;padding:13px}.step .bubble{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(53,208,255,.13);color:var(--accent);font-weight:950}details{background:var(--panel2);border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin:11px 0}summary{cursor:pointer;color:var(--text);font-weight:950}details p{margin-top:12px}.footer{padding:42px 0 64px;text-align:center;color:var(--muted)}.print-note{display:none}
+    @media(max-width:1050px){.hero-grid,.grid-2,.grid-3,.grid-4,.lab-layout,.concept-tabs{grid-template-columns:1fr}.hero{padding-top:42px}.lab-layout{gap:14px}.flow{min-width:980px}canvas{min-height:360px}.control-panel{order:-1}.toc{border-radius:22px}}
+    @media(max-width:700px){.container{width:min(100% - 20px,1260px)}.hero-card,.section-card{padding:21px}.pillbox{grid-template-columns:1fr}.actions button,.actions .btn{width:100%}.formula{font-size:1rem}.flow{min-width:860px}}
+    @media print{.toc,.actions,.control-panel,button{display:none!important}.section-card,.hero-card,.side-card{box-shadow:none!important;break-inside:avoid}.print-note{display:block}body{background:white!important;color:#111!important}}
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <header class="hero">
+    <div class="container hero-grid">
+      <div class="hero-card">
+        <div class="eyebrow">Clustering · K-Means · Jerárquico · Dendrograma</div>
+        <h1>Aprender a agrupar sin etiquetas</h1>
+        <p class="lead">Una guía visual e interactiva para comprender <span class="highlight">clustering no supervisado</span>, comparar <span class="highlight">K-Means</span> con <span class="highlight">clustering jerárquico</span>, interpretar centroides, dendrogramas, distancia, escala, método del codo y silhouette.</p>
+        <div class="formula">Clustering = descubrir estructura latente en datos sin una etiqueta previa</div>
+        <div class="actions">
+          <a class="btn primary" href="#laboratorio">Abrir laboratorio</a>
+          <a class="btn" href="#comparacion">Comparar métodos</a>
+          <a class="btn" href="#guia">Guía didáctica</a>
+          <button id="themeBtn" type="button">Cambiar tema</button>
+          <button id="printBtn" type="button">Imprimir / PDF</button>
+        </div>
+        <div class="chips">
+          <span class="chip">Segmentación de clientes</span><span class="chip">Centroides</span><span class="chip">Dendrograma</span><span class="chip">Distancia</span><span class="chip">Escalado</span><span class="chip">Silhouette</span>
+        </div>
+      </div>
+      <aside class="side-card">
+        <h3>Idea central</h3>
+        <p>K-Means agrupa por proximidad a centros. El clustering jerárquico construye una historia de semejanzas entre observaciones hasta formar un árbol.</p>
+        <div class="metric"><span>Tipo de aprendizaje</span><strong>No supervisado</strong></div>
+        <div class="metric"><span>K-Means necesita K inicial</span><strong>Sí</strong></div>
+        <div class="metric"><span>Jerárquico produce</span><strong>Dendrograma</strong></div>
+        <div class="metric"><span>Variable crítica</span><strong>Distancia</strong></div>
+        <div class="metric"><span>Riesgo común</span><strong>No escalar</strong></div>
+        <div class="callout"><p><strong>Nota:</strong> K-Means no es KNN. KNN es supervisado; K-Means es clustering no supervisado.</p></div>
+      </aside>
+    </div>
+  </header>
+
+  <div class="container">
+    <nav class="toc" aria-label="Navegación principal">
+      <a href="#mapa">Mapa conceptual</a>
+      <a href="#laboratorio">Laboratorio</a>
+      <a href="#comparacion">Comparación</a>
+      <a href="#guia">Guía didáctica</a>
+      <a href="#evaluacion">Evaluación</a>
+      <a href="#glosario">Glosario</a>
+    </nav>
+  </div>
+
+  <main>
+    <section id="mapa">
+      <div class="container section-card">
+        <h2>1. Mapa conceptual del clustering</h2>
+        <p>El clustering parte de datos sin etiquetas y busca grupos usando una noción de semejanza. Esa semejanza depende de las variables elegidas, la escala, la métrica de distancia y el algoritmo.</p>
+        <div class="map-board">
+          <div class="scroll-x">
+            <div class="flow">
+              <div class="flow-node"><strong>Datos</strong><small>clientes, compras, edad, ingresos, frecuencia</small></div><div class="arrow">→</div>
+              <div class="flow-node"><strong>Variables</strong><small>qué dimensiones describen cada caso</small></div><div class="arrow">→</div>
+              <div class="flow-node"><strong>Escalado</strong><small>evita que una variable domine</small></div><div class="arrow">→</div>
+              <div class="flow-node"><strong>Distancia</strong><small>cercanía entre observaciones</small></div><div class="arrow">→</div>
+              <div class="flow-node"><strong>Algoritmo</strong><small>K-Means o jerárquico</small></div><div class="arrow">→</div>
+              <div class="flow-node"><strong>Clusters</strong><small>segmentos interpretables</small></div><div class="arrow">→</div>
+              <div class="flow-node"><strong>Decisión</strong><small>estrategia, marketing, análisis</small></div>
+            </div>
+          </div>
+        </div>
+        <div class="grid-3" style="margin-top:18px">
+          <div class="card"><div class="num">1</div><h3>Similitud</h3><p>Dos observaciones se consideran parecidas si están cerca según una métrica. La distancia euclídea es común, pero no siempre es la única opción.</p></div>
+          <div class="card"><div class="num">2</div><h3>Forma de los grupos</h3><p>K-Means funciona mejor con grupos compactos. Jerárquico puede revelar estructura multinivel, aunque puede ser más costoso.</p></div>
+          <div class="card"><div class="num">3</div><h3>Interpretación</h3><p>El resultado debe traducirse a lenguaje de negocio: clientes frecuentes, nuevos, inactivos, de alto valor o exploradores.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="laboratorio">
+      <div class="container section-card">
+        <h2>2. Laboratorio interactivo: K-Means vs. Jerárquico</h2>
+        <p>Probá distintos conjuntos de datos, cambiá K, elegí linkage y observá cómo cambian los grupos. El laboratorio está pensado para enseñar, no para reemplazar una librería profesional.</p>
+        <div class="tabbar" style="margin:16px 0">
+          <button class="modeBtn active" data-mode="kmeans">K-Means</button>
+          <button class="modeBtn" data-mode="hierarchical">Jerárquico</button>
+          <button class="modeBtn" data-mode="scores">Codo y silhouette</button>
+        </div>
+        <div class="lab-layout">
+          <div class="canvas-wrap">
+            <div class="canvas-card"><canvas id="scatterCanvas" aria-label="Gráfico de clusters"></canvas></div>
+            <div class="grid-2">
+              <div class="canvas-card"><canvas id="dendroCanvas" aria-label="Dendrograma"></canvas></div>
+              <div class="canvas-card"><canvas id="scoreCanvas" aria-label="Métricas de codo y silhouette"></canvas></div>
+            </div>
+          </div>
+          <aside class="control-panel">
+            <h3>Controles</h3>
+            <label for="datasetSelect">Datos <span id="datasetLabel">Clientes</span></label>
+            <select id="datasetSelect">
+              <option value="clientes">Clientes compactos</option>
+              <option value="elongados">Grupos alargados</option>
+              <option value="outliers">Clientes con outliers</option>
+              <option value="jerarquia">Estructura jerárquica</option>
+            </select>
+            <label for="kRange">Número de clusters K <span id="kValue">3</span></label>
+            <input id="kRange" type="range" min="2" max="7" value="3" />
+            <label for="initSelect">Inicialización K-Means <span id="initLabel">k-means++</span></label>
+            <select id="initSelect"><option value="plus">k-means++ conceptual</option><option value="random">aleatoria</option></select>
+            <label for="linkageSelect">Linkage jerárquico <span id="linkageLabel">ward</span></label>
+            <select id="linkageSelect"><option value="ward">ward</option><option value="single">single</option><option value="complete">complete</option><option value="average">average</option></select>
+            <div class="toggle-row" style="margin-top:12px"><button id="scaleBtn" class="active" type="button">Escalar variables</button><button id="linesBtn" type="button">Ver líneas</button></div>
+            <div class="control-row" style="margin-top:12px"><button id="stepBtn" class="primary">Paso</button><button id="playBtn">Iniciar</button><button id="resetBtn">Reiniciar</button></div>
+            <div class="pillbox">
+              <div class="pill"><b id="iterMetric">0</b><span>iteración</span></div>
+              <div class="pill"><b id="inertiaMetric">0.000</b><span>inercia</span></div>
+              <div class="pill"><b id="silMetric">0.000</b><span>silhouette</span></div>
+              <div class="pill"><b id="mergeMetric">0</b><span>fusiones</span></div>
+            </div>
+            <div class="cluster-summary" id="clusterSummary"></div>
+            <p class="mini-note" id="stepExplanation">Presioná “Paso” para ver cómo K-Means asigna puntos al centroide más cercano y luego recalcula centroides.</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="comparacion">
+      <div class="container section-card">
+        <h2>3. Diferencia principal entre K-Means y clustering jerárquico</h2>
+        <p>Ambos agrupan por semejanza, pero construyen el agrupamiento de manera diferente.</p>
+        <div class="matrix">
+          <table>
+            <thead><tr><th>Aspecto</th><th>K-Means</th><th>Jerárquico aglomerativo</th><th>Lectura didáctica</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Tipo</strong></td><td>Particional</td><td>Jerárquico</td><td>K-Means entrega una partición; jerárquico entrega una historia de fusiones.</td></tr>
+              <tr><td><strong>Entrada clave</strong></td><td>K definido al inicio</td><td>Distancia y linkage; K puede decidirse cortando el árbol</td><td>En K-Means se decide antes; en jerárquico se explora la estructura.</td></tr>
+              <tr><td><strong>Representación</strong></td><td>Centroides</td><td>Dendrograma</td><td>Centroides resumen el grupo; dendrograma muestra relaciones multinivel.</td></tr>
+              <tr><td><strong>Forma esperada</strong></td><td>Compacta, aproximadamente redondeada</td><td>Depende del linkage</td><td>Single puede encadenar; complete forma grupos más compactos; ward reduce varianza.</td></tr>
+              <tr><td><strong>Escalabilidad</strong></td><td>Generalmente mejor para muchos datos</td><td>Más costoso en grandes volúmenes</td><td>Jerárquico es muy interpretativo, pero puede ser pesado.</td></tr>
+              <tr><td><strong>Uso típico</strong></td><td>Segmentación rápida</td><td>Análisis exploratorio profundo</td><td>Uno prioriza operación; el otro comprensión estructural.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout"><p><strong>Regla práctica:</strong> usá K-Means si necesitás segmentar rápido y tenés una idea de K; usá jerárquico si querés entender niveles de semejanza y decidir K mirando el dendrograma.</p></div>
+      </div>
+    </section>
+
+    <section id="guia">
+      <div class="container section-card">
+        <h2>4. Guía didáctica ampliada</h2>
+        <div class="concept-tabs">
+          <div class="tab-list">
+            <button class="topicBtn active" data-topic="clustering">¿Qué es clustering?</button>
+            <button class="topicBtn" data-topic="kmeans">K-Means paso a paso</button>
+            <button class="topicBtn" data-topic="jerarquico">Clustering jerárquico</button>
+            <button class="topicBtn" data-topic="distancia">Distancia y escala</button>
+            <button class="topicBtn" data-topic="evaluar">Cómo elegir K</button>
+            <button class="topicBtn" data-topic="errores">Errores comunes</button>
+          </div>
+          <div class="tab-content" id="topicContent"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="evaluacion">
+      <div class="container section-card">
+        <h2>5. Preguntas de autoevaluación con respuestas guía</h2>
+        <details open><summary>1. ¿Por qué clustering es aprendizaje no supervisado?</summary><p>Porque el algoritmo recibe observaciones sin etiqueta previa. No se le dice qué cliente pertenece a qué segmento; debe descubrir grupos según similitud.</p></details>
+        <details><summary>2. ¿Qué significa K en K-Means?</summary><p>K es el número de grupos que se quiere formar. Si K = 3, el algoritmo buscará tres centroides y asignará cada observación al centroide más cercano.</p></details>
+        <details><summary>3. ¿Qué es un centroide?</summary><p>Es el punto promedio de un cluster. En un conjunto de clientes, puede representar el perfil medio de edad, ingreso y frecuencia de compra de ese segmento.</p></details>
+        <details><summary>4. ¿Qué muestra un dendrograma?</summary><p>Muestra el orden en que se fusionan observaciones o clusters. Las fusiones a baja altura indican mayor semejanza; las fusiones a mayor altura indican mayor diferencia.</p></details>
+        <details><summary>5. ¿Por qué la escala de las variables importa?</summary><p>Porque una variable con valores numéricos más grandes puede dominar la distancia. Por ejemplo, ingresos en pesos puede pesar mucho más que frecuencia de compra si no se escala.</p></details>
+        <details><summary>6. ¿Cuándo K-Means puede fallar?</summary><p>Puede fallar cuando los grupos no son compactos, cuando hay outliers fuertes, cuando K está mal elegido o cuando las variables no están correctamente escaladas.</p></details>
+        <details><summary>7. ¿Qué diferencia hay entre single, complete, average y ward?</summary><p>Single usa la menor distancia entre puntos de dos clusters; complete usa la mayor; average usa la distancia promedio; ward busca fusionar grupos minimizando el aumento de varianza interna.</p></details>
+        <details><summary>8. ¿Qué es silhouette?</summary><p>Es una medida que compara qué tan cerca está una observación de su propio cluster frente a otros clusters. Valores altos sugieren clusters más separados y coherentes.</p></details>
+      </div>
+    </section>
+
+    <section id="glosario">
+      <div class="container section-card">
+        <h2>6. Glosario esencial</h2>
+        <div class="grid-3">
+          <div class="card"><h3>Cluster</h3><p>Grupo de observaciones similares entre sí según una distancia o criterio de semejanza.</p></div>
+          <div class="card"><h3>Centroide</h3><p>Punto promedio que representa el centro de un cluster en K-Means.</p></div>
+          <div class="card"><h3>Inercia</h3><p>Suma de distancias cuadráticas entre puntos y su centroide asignado. K-Means intenta reducirla.</p></div>
+          <div class="card"><h3>Dendrograma</h3><p>Árbol que muestra cómo se van fusionando observaciones o grupos en clustering jerárquico.</p></div>
+          <div class="card"><h3>Linkage</h3><p>Criterio que define la distancia entre clusters: single, complete, average o ward.</p></div>
+          <div class="card"><h3>Método del codo</h3><p>Heurística para elegir K observando cuándo la reducción de inercia empieza a desacelerarse.</p></div>
+          <div class="card"><h3>Silhouette</h3><p>Índice que evalúa cohesión interna y separación externa de los clusters.</p></div>
+          <div class="card"><h3>Escalado</h3><p>Transformación de variables para que ninguna domine artificialmente la distancia.</p></div>
+          <div class="card"><h3>KNN</h3><p>Algoritmo supervisado de vecinos más cercanos. No debe confundirse con K-Means.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container section-card">
+        <h2>7. Síntesis final</h2>
+        <div class="formula">K-Means agrupa por proximidad a centroides · Jerárquico agrupa construyendo un árbol de semejanzas</div>
+        <p>En ciencia de datos, el clustering no termina cuando el algoritmo devuelve etiquetas. Termina cuando los grupos se interpretan, se validan y se transforman en una decisión útil.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><div class="container">Material elaborado por el profesor <strong>Sergio Gevatschnaider</strong> · Clustering, Ciencia de Datos y Aprendizaje No Supervisado.</div></footer>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const root = document.documentElement;
+    const colors = ["#35d0ff", "#9d7cff", "#39e6a2", "#ffd166", "#ff6b6b", "#ffb86b", "#7dd3fc", "#f0abfc"];
+    let points = [], rawPoints = [];
+    let mode = "kmeans", k = 3, useScale = true, showLines = false, timer = null;
+    let km = { centroids: [], labels: [], iter: 0, phase: "assign", inertia: 0, silhouette: 0 };
+    let hc = { tree: null, merges: [], labels: [], maxH: 1, linkage: "ward" };
+
+    function css(name){ return getComputedStyle(root).getPropertyValue(name).trim(); }
+    function clamp(x,a,b){ return Math.max(a, Math.min(b,x)); }
+    function randn(){ let u=0,v=0; while(u===0)u=Math.random(); while(v===0)v=Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+    function dist(a,b){ const dx=a[0]-b[0], dy=a[1]-b[1]; return Math.sqrt(dx*dx+dy*dy); }
+    function d2(a,b){ const dx=a[0]-b[0], dy=a[1]-b[1]; return dx*dx+dy*dy; }
+    function resizeCanvas(canvas){ const rect=canvas.getBoundingClientRect(); const dpr=window.devicePixelRatio||1; canvas.width=Math.floor(rect.width*dpr); canvas.height=Math.floor(rect.height*dpr); const ctx=canvas.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); return {ctx,w:rect.width,h:rect.height}; }
+    function drawGrid(ctx,w,h){ ctx.save(); ctx.strokeStyle = root.dataset.theme === "light" ? "rgba(16,32,51,.07)" : "rgba(255,255,255,.06)"; ctx.lineWidth=1; for(let x=0;x<w;x+=36){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();} for(let y=0;y<h;y+=36){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();} ctx.restore(); }
+
+    function generateDataset(type){
+      const arr=[];
+      function addCluster(cx,cy,n,sx,sy,label){ for(let i=0;i<n;i++){ arr.push({x:clamp(cx+randn()*sx,0.03,0.97), y:clamp(cy+randn()*sy,0.03,0.97), label}); } }
+      if(type === "clientes"){
+        addCluster(.23,.72,36,.055,.075,"Frecuentes"); addCluster(.55,.38,36,.07,.065,"Ocasionales"); addCluster(.79,.77,34,.06,.055,"Alto valor");
+      } else if(type === "elongados"){
+        for(let i=0;i<48;i++){ const t=i/47; arr.push({x:.12+t*.72+randn()*.025,y:.20+t*.50+randn()*.045,label:"Diagonal A"}); }
+        for(let i=0;i<48;i++){ const t=i/47; arr.push({x:.15+t*.72+randn()*.025,y:.82-t*.48+randn()*.045,label:"Diagonal B"}); }
+        addCluster(.55,.52,18,.045,.045,"Centro");
+      } else if(type === "outliers"){
+        addCluster(.24,.28,32,.055,.055,"Bajo"); addCluster(.58,.65,38,.07,.06,"Medio"); addCluster(.82,.32,30,.055,.07,"Alto");
+        for(let i=0;i<10;i++) arr.push({x:Math.random()*.94+.03,y:Math.random()*.94+.03,label:"Outlier"});
+      } else {
+        addCluster(.26,.75,24,.035,.04,"Joven frecuente"); addCluster(.36,.62,22,.035,.04,"Joven ocasional"); addCluster(.70,.34,25,.04,.04,"Adulto medio"); addCluster(.82,.48,24,.035,.04,"Adulto alto valor"); addCluster(.53,.78,18,.035,.035,"Puente");
+      }
+      rawPoints = arr.map((p,i)=>({...p,id:i})); points = rawPoints.map(p=>({...p}));
+    }
+
+    function stats(){ const mx=points.reduce((s,p)=>s+p.x,0)/points.length; const my=points.reduce((s,p)=>s+p.y,0)/points.length; const sx=Math.sqrt(points.reduce((s,p)=>s+(p.x-mx)**2,0)/points.length)||1; const sy=Math.sqrt(points.reduce((s,p)=>s+(p.y-my)**2,0)/points.length)||1; return {mx,my,sx,sy}; }
+    function featurePoints(){ const st=stats(); return points.map(p=> useScale ? [(p.x-st.mx)/st.sx,(p.y-st.my)/st.sy] : [p.x,p.y]); }
+    function inverseFeature(c){ const st=stats(); return useScale ? {x:c[0]*st.sx+st.mx,y:c[1]*st.sy+st.my} : {x:c[0],y:c[1]}; }
+
+    function initKMeans(){ const feats=featurePoints(); km={centroids:[],labels:Array(points.length).fill(0),iter:0,phase:"assign",inertia:0,silhouette:0}; if($("initSelect").value === "random"){ const chosen=[]; while(km.centroids.length<k){ const idx=Math.floor(Math.random()*feats.length); if(!chosen.includes(idx)){chosen.push(idx);km.centroids.push([...feats[idx]]);} } } else { let idx=Math.floor(Math.random()*feats.length); km.centroids.push([...feats[idx]]); while(km.centroids.length<k){ const weights=feats.map(f=>Math.min(...km.centroids.map(c=>d2(f,c)))); const total=weights.reduce((a,b)=>a+b,0)||1; let r=Math.random()*total, pick=0; for(let i=0;i<weights.length;i++){ r-=weights[i]; if(r<=0){pick=i;break;} } km.centroids.push([...feats[pick]]); } } assignKMeans(); updateAll(); }
+    function assignKMeans(){ const feats=featurePoints(); let inertia=0; for(let i=0;i<feats.length;i++){ let best=0,bd=Infinity; for(let j=0;j<km.centroids.length;j++){ const dd=d2(feats[i],km.centroids[j]); if(dd<bd){bd=dd;best=j;} } km.labels[i]=best; inertia+=bd; } km.inertia=inertia; km.silhouette=silhouette(km.labels,feats,k); }
+    function recomputeKMeans(){ const feats=featurePoints(); const sums=Array.from({length:k},()=>[0,0,0]); for(let i=0;i<feats.length;i++){ const l=km.labels[i]; sums[l][0]+=feats[i][0]; sums[l][1]+=feats[i][1]; sums[l][2]++; } for(let j=0;j<k;j++){ if(sums[j][2]>0) km.centroids[j]=[sums[j][0]/sums[j][2],sums[j][1]/sums[j][2]]; else km.centroids[j]=[...feats[Math.floor(Math.random()*feats.length)]]; } km.iter++; assignKMeans(); }
+    function kmeansStep(){ if(km.phase==="assign"){ assignKMeans(); km.phase="recompute"; $("stepExplanation").textContent="Asignación realizada: cada punto fue vinculado al centroide más cercano. El siguiente paso recalcula los centroides."; } else { recomputeKMeans(); km.phase="assign"; $("stepExplanation").textContent="Centroides recalculados: cada centro se movió al promedio de su grupo. El siguiente paso vuelve a asignar puntos."; } updateAll(); }
+
+    function silhouette(labels, feats, kk){ if(kk<2) return 0; let total=0,count=0; for(let i=0;i<feats.length;i++){ const own=labels[i]; let a=0,ac=0; const bsum=Array(kk).fill(0), bc=Array(kk).fill(0); for(let j=0;j<feats.length;j++){ if(i===j) continue; const dd=dist(feats[i],feats[j]); if(labels[j]===own){a+=dd;ac++;} else {bsum[labels[j]]+=dd;bc[labels[j]]++;} } a=ac?a/ac:0; let b=Infinity; for(let c=0;c<kk;c++) if(c!==own && bc[c]>0) b=Math.min(b,bsum[c]/bc[c]); if(isFinite(b)){ total += (b-a)/Math.max(a,b); count++; } } return count?total/count:0; }
+
+    function clusterDistance(ca,cb,feats,linkage){ if(linkage==="ward"){ const ma=centroidIds(ca.ids,feats), mb=centroidIds(cb.ids,feats); return (ca.ids.length*cb.ids.length)/(ca.ids.length+cb.ids.length)*d2(ma,mb); } let vals=[]; for(const i of ca.ids) for(const j of cb.ids) vals.push(dist(feats[i],feats[j])); if(linkage==="single") return Math.min(...vals); if(linkage==="complete") return Math.max(...vals); return vals.reduce((a,b)=>a+b,0)/vals.length; }
+    function centroidIds(ids,feats){ let x=0,y=0; ids.forEach(id=>{x+=feats[id][0];y+=feats[id][1];}); return [x/ids.length,y/ids.length]; }
+    function buildHierarchical(){ const feats=featurePoints(); const linkage=$("linkageSelect").value; let clusters=points.map((p,i)=>({ids:[i],node:{id:i,leaf:true,ids:[i],height:0}})); const merges=[]; while(clusters.length>1){ let bi=0,bj=1,bd=Infinity; for(let i=0;i<clusters.length;i++) for(let j=i+1;j<clusters.length;j++){ const dd=clusterDistance(clusters[i],clusters[j],feats,linkage); if(dd<bd){bd=dd;bi=i;bj=j;} } const a=clusters[bi], b=clusters[bj]; const merged={ids:[...a.ids,...b.ids],node:{leaf:false,left:a.node,right:b.node,ids:[...a.ids,...b.ids],height:Math.sqrt(bd)}}; merges.push({a:a.ids,b:b.ids,ids:merged.ids,height:merged.node.height}); clusters=clusters.filter((_,idx)=>idx!==bi && idx!==bj); clusters.push(merged); }
+      hc.tree=clusters[0].node; hc.merges=merges; hc.maxH=Math.max(...merges.map(m=>m.height),1); cutHierarchical(k); }
+    function cutHierarchical(kk){ const labels=Array(points.length).fill(0); let clusters=points.map((p,i)=>[i]); for(let m=0;m<hc.merges.length && clusters.length>kk;m++){ const merge=hc.merges[m]; let ia=clusters.findIndex(c=>sameSet(c,merge.a)), ib=clusters.findIndex(c=>sameSet(c,merge.b)); if(ia<0 || ib<0){ ia=clusters.findIndex(c=>merge.a.every(x=>c.includes(x))); ib=clusters.findIndex(c=>merge.b.every(x=>c.includes(x))); }
+        const combined=[...clusters[ia],...clusters[ib]]; clusters=clusters.filter((_,idx)=>idx!==ia && idx!==ib); clusters.push(combined); }
+      clusters.forEach((ids,lab)=>ids.forEach(id=>labels[id]=lab)); hc.labels=labels; $("mergeMetric").textContent = Math.max(0, points.length-clusters.length); }
+    function sameSet(a,b){ return a.length===b.length && a.every(x=>b.includes(x)); }
+
+    function toPix(p,w,h){ const m=34; return {x:m+p.x*(w-2*m), y:h-m-p.y*(h-2*m)}; }
+    function drawScatter(){ const {ctx,w,h}=resizeCanvas($("scatterCanvas")); ctx.clearRect(0,0,w,h); drawGrid(ctx,w,h); ctx.save(); ctx.strokeStyle=css('--line'); ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(34,h-34); ctx.lineTo(w-24,h-34); ctx.moveTo(34,h-34); ctx.lineTo(34,24); ctx.stroke(); ctx.fillStyle=css('--muted'); ctx.font='12px Inter, sans-serif'; ctx.fillText('Gasto / ingresos normalizados', w-205, h-12); ctx.save(); ctx.translate(14,165); ctx.rotate(-Math.PI/2); ctx.fillText('Frecuencia de compra', 0,0); ctx.restore(); ctx.restore();
+      const labels = mode==="hierarchical" ? hc.labels : km.labels;
+      if(showLines && mode==="kmeans" && km.centroids.length){ ctx.save(); ctx.strokeStyle=root.dataset.theme==="light"?'rgba(0,119,182,.16)':'rgba(53,208,255,.15)'; points.forEach((p,i)=>{ const pp=toPix(p,w,h), c=toPix(inverseFeature(km.centroids[km.labels[i]]),w,h); ctx.beginPath();ctx.moveTo(pp.x,pp.y);ctx.lineTo(c.x,c.y);ctx.stroke(); }); ctx.restore(); }
+      points.forEach((p,i)=>{ const pp=toPix(p,w,h); ctx.beginPath(); ctx.fillStyle=colors[labels[i]%colors.length]; ctx.globalAlpha=.9; ctx.arc(pp.x,pp.y,5.5,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1; ctx.strokeStyle=root.dataset.theme==="light"?'rgba(16,32,51,.35)':'rgba(255,255,255,.45)'; ctx.stroke(); });
+      if(mode==="kmeans" && km.centroids.length){ km.centroids.forEach((c,j)=>{ const cp=toPix(inverseFeature(c),w,h); ctx.save(); ctx.translate(cp.x,cp.y); ctx.strokeStyle=colors[j%colors.length]; ctx.fillStyle=colors[j%colors.length]; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(0,0,12,0,Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(-10,0);ctx.lineTo(10,0);ctx.moveTo(0,-10);ctx.lineTo(0,10);ctx.stroke(); ctx.font='900 12px Inter'; ctx.fillText('C'+(j+1),14,4); ctx.restore(); }); }
+      ctx.fillStyle=css('--text'); ctx.font='900 15px Inter'; ctx.fillText(mode==="hierarchical"?'Clusters jerárquicos por corte del dendrograma':'Clusters K-Means por centroides', 44, 30);
+    }
+
+    function drawDendrogram(){ const {ctx,w,h}=resizeCanvas($("dendroCanvas")); ctx.clearRect(0,0,w,h); drawGrid(ctx,w,h); ctx.fillStyle=css('--text'); ctx.font='900 14px Inter'; ctx.fillText('Dendrograma jerárquico',18,24); if(!hc.tree){return;} const leaves=[]; function collect(n){ if(n.leaf) leaves.push(n.id); else {collect(n.left);collect(n.right);} } collect(hc.tree); leaves.sort((a,b)=>points[a].x-points[b].x); const pos={}; const margin=30; leaves.forEach((id,i)=>{pos[id]=margin+i*(w-2*margin)/(leaves.length-1);}); function yFor(height){ return h-28-(height/hc.maxH)*(h-72); }
+      ctx.strokeStyle=css('--line'); ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(margin, yFor(hc.maxH*(k/8))); ctx.lineTo(w-margin, yFor(hc.maxH*(k/8))); ctx.stroke();
+      function drawNode(n){ if(n.leaf){ return {x:pos[n.id], y:h-28}; } const l=drawNode(n.left), r=drawNode(n.right); const y=yFor(n.height); ctx.strokeStyle=css('--accent'); ctx.lineWidth=1.8; ctx.beginPath(); ctx.moveTo(l.x,l.y); ctx.lineTo(l.x,y); ctx.lineTo(r.x,y); ctx.lineTo(r.x,r.y); ctx.stroke(); return {x:(l.x+r.x)/2,y}; } drawNode(hc.tree); ctx.fillStyle=css('--muted'); ctx.font='11px Inter'; for(let i=0;i<leaves.length;i+=Math.ceil(leaves.length/18)){ ctx.fillText(String(leaves[i]+1), pos[leaves[i]]-4, h-8); } }
+
+    function quickKMeans(kk){ const oldK=k; k=kk; const feats=featurePoints(); let cents=[]; let idx=Math.floor(Math.random()*feats.length); cents.push([...feats[idx]]); while(cents.length<kk){ const weights=feats.map(f=>Math.min(...cents.map(c=>d2(f,c)))); const total=weights.reduce((a,b)=>a+b,0)||1; let r=Math.random()*total,pick=0; for(let i=0;i<weights.length;i++){r-=weights[i]; if(r<=0){pick=i;break;}} cents.push([...feats[pick]]); }
+      let labels=Array(points.length).fill(0), inertia=0; for(let it=0;it<12;it++){ inertia=0; for(let i=0;i<feats.length;i++){ let best=0,bd=Infinity; for(let j=0;j<cents.length;j++){ const dd=d2(feats[i],cents[j]); if(dd<bd){bd=dd;best=j;} } labels[i]=best; inertia+=bd; } const sums=Array.from({length:kk},()=>[0,0,0]); for(let i=0;i<feats.length;i++){ const l=labels[i]; sums[l][0]+=feats[i][0];sums[l][1]+=feats[i][1];sums[l][2]++; } for(let j=0;j<kk;j++) if(sums[j][2]) cents[j]=[sums[j][0]/sums[j][2],sums[j][1]/sums[j][2]]; }
+      k=oldK; return {inertia, sil:silhouette(labels,feats,kk)}; }
+    function drawScores(){ const {ctx,w,h}=resizeCanvas($("scoreCanvas")); ctx.clearRect(0,0,w,h); drawGrid(ctx,w,h); ctx.fillStyle=css('--text'); ctx.font='900 14px Inter'; ctx.fillText('Codo e índice silhouette',18,24); const vals=[]; for(let kk=1;kk<=7;kk++) vals.push({k:kk,...quickKMeans(kk)}); const maxI=Math.max(...vals.map(v=>v.inertia)); const minI=Math.min(...vals.map(v=>v.inertia)); const m=38; function px(i){ return m+(i-1)*(w-2*m)/6; } function pyI(val){ return h-m-((val-minI)/(maxI-minI||1))*(h-82); } function pyS(val){ return h-m-((val+1)/2)*(h-82); }
+      ctx.strokeStyle=css('--accent'); ctx.lineWidth=2.5; ctx.beginPath(); vals.forEach((v,i)=>{ const x=px(v.k), y=pyI(v.inertia); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke(); ctx.strokeStyle=css('--accent2'); ctx.beginPath(); vals.slice(1).forEach((v,i)=>{ const x=px(v.k), y=pyS(v.sil); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke(); vals.forEach(v=>{ const x=px(v.k); ctx.fillStyle=css('--muted'); ctx.font='11px Inter'; ctx.fillText('K='+v.k,x-12,h-12); ctx.fillStyle=css('--accent'); ctx.beginPath();ctx.arc(x,pyI(v.inertia),4,0,Math.PI*2);ctx.fill(); if(v.k>1){ctx.fillStyle=css('--accent2');ctx.beginPath();ctx.arc(x,pyS(v.sil),4,0,Math.PI*2);ctx.fill();} }); ctx.fillStyle=css('--accent'); ctx.fillText('Inercia', w-120, 44); ctx.fillStyle=css('--accent2'); ctx.fillText('Silhouette', w-120, 62); }
+
+    function updateClusterSummary(){ const labels=mode==="hierarchical"?hc.labels:km.labels; const kk=k; const box=$("clusterSummary"); const rows=[]; for(let c=0;c<kk;c++){ const ids=labels.map((l,i)=>l===c?i:-1).filter(i=>i>=0); if(!ids.length) continue; const ax=ids.reduce((s,i)=>s+points[i].x,0)/ids.length; const ay=ids.reduce((s,i)=>s+points[i].y,0)/ids.length; rows.push(`<div class="summary-row"><span class="dot" style="background:${colors[c%colors.length]}"></span><span>Cluster ${c+1}: ${ids.length} casos · gasto ${(ax*100).toFixed(0)} · frecuencia ${(ay*100).toFixed(0)}</span><strong>${ids.length}</strong></div>`); }
+      box.innerHTML=rows.join(''); }
+    function updateMetrics(){ $("kValue").textContent=k; $("iterMetric").textContent=km.iter; $("inertiaMetric").textContent=km.inertia.toFixed(3); $("silMetric").textContent=km.silhouette.toFixed(3); $("datasetLabel").textContent=$("datasetSelect").selectedOptions[0].textContent; $("initLabel").textContent=$("initSelect").selectedOptions[0].textContent.replace(' conceptual',''); $("linkageLabel").textContent=$("linkageSelect").value; }
+    function updateAll(){ cutHierarchical(k); updateMetrics(); drawScatter(); drawDendrogram(); drawScores(); updateClusterSummary(); }
+    function resetAll(){ stopPlay(); generateDataset($("datasetSelect").value); k=Number($("kRange").value); initKMeans(); buildHierarchical(); if(mode==="hierarchical") $("stepExplanation").textContent="En el modo jerárquico, el dendrograma se construye fusionando los clusters más cercanos. Cambiá K para cortar el árbol en otro nivel."; updateAll(); }
+    function stopPlay(){ if(timer){clearInterval(timer);timer=null;$("playBtn").textContent="Iniciar";} }
+
+    const topicText = {
+      clustering:`<h3>¿Qué es clustering?</h3><p>Clustering es una técnica de aprendizaje no supervisado que busca agrupar observaciones similares sin usar una etiqueta previa.</p><div class="formula small">datos sin etiqueta → medida de similitud → grupos interpretables</div><p>En segmentación de clientes, permite descubrir patrones de comportamiento: frecuencia de compra, gasto, antigüedad, sensibilidad al precio o intensidad de uso.</p>`,
+      kmeans:`<h3>K-Means paso a paso</h3><div class="steps"><div class="step"><div class="bubble">1</div><div><strong>Elegir K</strong><br><span>Se define cuántos grupos se desean.</span></div></div><div class="step"><div class="bubble">2</div><div><strong>Inicializar centroides</strong><br><span>Se ubican centros iniciales, idealmente con k-means++.</span></div></div><div class="step"><div class="bubble">3</div><div><strong>Asignar puntos</strong><br><span>Cada dato se asigna al centroide más cercano.</span></div></div><div class="step"><div class="bubble">4</div><div><strong>Recalcular</strong><br><span>Cada centroide pasa al promedio de su grupo.</span></div></div><div class="step"><div class="bubble">5</div><div><strong>Repetir</strong><br><span>El proceso continúa hasta estabilizarse.</span></div></div></div>`,
+      jerarquico:`<h3>Clustering jerárquico</h3><p>El enfoque aglomerativo empieza con cada observación como un cluster separado. En cada paso fusiona los dos clusters más parecidos y registra esa fusión en un dendrograma.</p><div class="formula small">n observaciones → n clusters → fusiones sucesivas → árbol</div><p>La gran ventaja pedagógica es que permite ver niveles de semejanza: grupos pequeños, subgrupos y familias de grupos.</p>`,
+      distancia:`<h3>Distancia y escala</h3><p>Los algoritmos de clustering dependen de la distancia. Si una variable tiene una escala mucho más grande que otra, puede dominar artificialmente el resultado.</p><div class="formula small">distancia euclídea = √((x₁−x₂)² + (y₁−y₂)²)</div><p>Por eso, en datos reales suele ser recomendable estandarizar o normalizar variables antes de agrupar.</p>`,
+      evaluar:`<h3>Cómo elegir K</h3><p>Dos herramientas habituales son el método del codo y silhouette. El codo observa cuándo la reducción de inercia empieza a desacelerarse. Silhouette compara cohesión interna y separación externa.</p><p>No hay una regla automática universal: la elección debe combinar métrica, visualización y sentido del problema.</p>`,
+      errores:`<h3>Errores comunes</h3><ul><li>Confundir K-Means con KNN.</li><li>No escalar variables antes de calcular distancias.</li><li>Elegir K solo porque “queda lindo”.</li><li>Interpretar clusters sin revisar tamaños, outliers y variables dominantes.</li><li>Usar K-Means en datos claramente no compactos sin comparar alternativas.</li></ul>`
+    };
+    function setTopic(t){ document.querySelectorAll('.topicBtn').forEach(b=>b.classList.toggle('active',b.dataset.topic===t)); $('topicContent').innerHTML=topicText[t]; }
+
+    document.addEventListener('DOMContentLoaded',()=>{
+      $('themeBtn').addEventListener('click',()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark'; updateAll();});
+      $('printBtn').addEventListener('click',()=>window.print());
+      window.addEventListener('scroll',()=>{$('progress').style.width=(window.scrollY/(document.documentElement.scrollHeight-window.innerHeight)*100)+'%';});
+      document.querySelectorAll('.modeBtn').forEach(btn=>btn.addEventListener('click',()=>{mode=btn.dataset.mode; document.querySelectorAll('.modeBtn').forEach(b=>b.classList.toggle('active',b===btn)); if(mode==='hierarchical') $('stepExplanation').textContent='Modo jerárquico: cambiá K para cortar el dendrograma y linkage para cambiar el criterio de fusión.'; if(mode==='scores') $('stepExplanation').textContent='Modo métricas: observá la curva de inercia y silhouette para comparar posibles valores de K.'; updateAll();}));
+      $('datasetSelect').addEventListener('change',resetAll); $('kRange').addEventListener('input',e=>{k=Number(e.target.value); updateAll();}); $('initSelect').addEventListener('change',initKMeans); $('linkageSelect').addEventListener('change',()=>{buildHierarchical(); updateAll();});
+      $('scaleBtn').addEventListener('click',()=>{useScale=!useScale; $('scaleBtn').classList.toggle('active',useScale); initKMeans(); buildHierarchical(); updateAll();});
+      $('linesBtn').addEventListener('click',()=>{showLines=!showLines; $('linesBtn').classList.toggle('active',showLines); drawScatter();});
+      $('stepBtn').addEventListener('click',()=>{mode==='kmeans'?kmeansStep():updateAll();});
+      $('playBtn').addEventListener('click',()=>{ if(timer){stopPlay();return;} $('playBtn').textContent='Pausar'; timer=setInterval(()=>{ if(mode==='kmeans') kmeansStep(); else {k= k>=7?2:k+1; $('kRange').value=k; updateAll();} },800);});
+      $('resetBtn').addEventListener('click',resetAll); window.addEventListener('resize',updateAll); document.querySelectorAll('.topicBtn').forEach(btn=>btn.addEventListener('click',()=>setTopic(btn.dataset.topic)));
+      setTopic('clustering'); resetAll();
+    });
+  </script>
+</body>
+</html>
