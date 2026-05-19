@@ -1558,12 +1558,15 @@ Los archivos incluidos en este bloque son:
 Banco_preguntas_parcial_ciencia_datos.html
 Glosario_parcial_ciencia_datos.html
 ```
-Abajo tenés el **Markdown completo para copiar y pegar en GitHub**, ordenado para presentar el módulo de **Clustering Jerárquico**, con botones, descripción didáctica, enlaces a los HTML que subiste y enlace a Colab.
+Claro. Abajo te dejo el **Markdown completo corregido**, con los **botones bien armados para GitHub**, incluyendo:
+
+* Botón para abrir cada HTML interactivo con `htmlpreview.github.io`.
+* Botón para ver el código en GitHub.
+* Botón para abrir el notebook en Colab.
+* Estructura ordenada para pegar directamente en el `README.md` o en el markdown del módulo.
 
 ````markdown
-# Clustering Jerárquico: teoría, simulación, cuestionario y glosario
-
-> Material elaborado por el profesor Sergio Gevatschnaider
+# Clustering Jerárquico: teoría, simulación, cuestionario, glosario y Colab
 
 Este bloque reúne los recursos principales para estudiar **Clustering Jerárquico** dentro del módulo de aprendizaje no supervisado.  
 El recorrido está organizado para avanzar desde la intuición conceptual hasta la simulación interactiva, el cuestionario de repaso, el glosario técnico y el ejemplo práctico en Google Colab.
@@ -1590,95 +1593,99 @@ A diferencia de K-Means, donde el análisis se organiza alrededor de centroides 
 
 ---
 
-## Recursos interactivos
+# Recursos interactivos
 
-### 1. Clase teórica visual
+---
+
+## 1. Clase teórica visual
 
 Este recurso introduce los conceptos fundamentales antes de ejecutar la simulación.  
 Explica qué problema resuelve el clustering jerárquico, cómo se calculan las distancias, qué son las fusiones, qué representa la matriz linkage, cómo se interpreta el dendrograma y cómo se decide el corte del árbol.
 
 <p align="center">
   <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Clustering%20Jer%C3%A1rquico%20Clase%20te%C3%B3rica%20visual.html" target="_blank">
-    <img src="https://img.shields.io/badge/Ver%20HTML-Clase%20te%C3%B3rica%20visual-2563EB?style=for-the-badge&logo=html5&logoColor=white" />
+    <img src="https://img.shields.io/badge/ABRIR%20CLASE%20TE%C3%93RICA-HTML%20INTERACTIVO-2563EB?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir clase teórica visual" />
   </a>
   <a href="https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Clustering%20Jer%C3%A1rquico%20Clase%20te%C3%B3rica%20visual.html" target="_blank">
-    <img src="https://img.shields.io/badge/C%C3%B3digo-GitHub-111827?style=for-the-badge&logo=github&logoColor=white" />
+    <img src="https://img.shields.io/badge/VER%20C%C3%93DIGO-GITHUB-111827?style=for-the-badge&logo=github&logoColor=white" alt="Ver código en GitHub" />
   </a>
 </p>
 
 ---
 
-### 2. Simulación interactiva de fusiones, linkage y dendrograma
+## 2. Simulación interactiva de fusiones, linkage y dendrograma
 
 Este recurso muestra el algoritmo como proceso visual.  
 Cada punto comienza como un cluster individual, luego el algoritmo realiza fusiones sucesivas, registra esas fusiones en la matriz linkage y construye el dendrograma. También permite trabajar con distintos métodos de linkage como **single**, **complete**, **average** y **Ward**.
 
 <p align="center">
   <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Clustering%20Jer%C3%A1rquico%20Interactivo%20fusiones%2C%20linkage%20y%20dendrograma.html" target="_blank">
-    <img src="https://img.shields.io/badge/Ver%20HTML-Simulaci%C3%B3n%20interactiva-06B6D4?style=for-the-badge&logo=javascript&logoColor=white" />
+    <img src="https://img.shields.io/badge/ABRIR%20SIMULACI%C3%93N-HTML%20INTERACTIVO-06B6D4?style=for-the-badge&logo=javascript&logoColor=white" alt="Abrir simulación interactiva" />
   </a>
   <a href="https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Clustering%20Jer%C3%A1rquico%20Interactivo%20fusiones%2C%20linkage%20y%20dendrograma.html" target="_blank">
-    <img src="https://img.shields.io/badge/C%C3%B3digo-GitHub-111827?style=for-the-badge&logo=github&logoColor=white" />
+    <img src="https://img.shields.io/badge/VER%20C%C3%93DIGO-GITHUB-111827?style=for-the-badge&logo=github&logoColor=white" alt="Ver código en GitHub" />
   </a>
 </p>
 
 ---
 
-### 3. Cuestionario de Clustering Jerárquico
+## 3. Cuestionario de Clustering Jerárquico
 
 Este cuestionario contiene preguntas y respuestas desarrolladas para repasar los conceptos centrales del tema.  
 Incluye aprendizaje no supervisado, distancias, fusiones, linkage, Ward, matriz linkage, dendrograma, corte del árbol, ventajas, limitaciones y comparación con K-Means.
 
 <p align="center">
   <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Clustering%20Jer%C3%A1rquico_Cuestionario.html" target="_blank">
-    <img src="https://img.shields.io/badge/Ver%20HTML-Cuestionario-7C3AED?style=for-the-badge&logo=html5&logoColor=white" />
+    <img src="https://img.shields.io/badge/ABRIR%20CUESTIONARIO-HTML%20INTERACTIVO-7C3AED?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir cuestionario HTML" />
   </a>
   <a href="https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Clustering%20Jer%C3%A1rquico_Cuestionario.html" target="_blank">
-    <img src="https://img.shields.io/badge/C%C3%B3digo-GitHub-111827?style=for-the-badge&logo=github&logoColor=white" />
+    <img src="https://img.shields.io/badge/VER%20C%C3%93DIGO-GITHUB-111827?style=for-the-badge&logo=github&logoColor=white" alt="Ver código en GitHub" />
   </a>
 </p>
 
 ---
 
-### 4. Glosario de Clustering Jerárquico
+## 4. Glosario de Clustering Jerárquico
 
 El glosario desarrolla los conceptos técnicos esenciales para estudiar y explicar clustering jerárquico.  
 Incluye términos como observación, cluster, distancia, matriz de distancias, fusión, linkage, single linkage, complete linkage, average linkage, Ward, matriz linkage, dendrograma, altura de fusión, corte del árbol, estandarización y limitaciones.
 
 <p align="center">
   <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Clustering%20Jer%C3%A1rquico_Glosario.html" target="_blank">
-    <img src="https://img.shields.io/badge/Ver%20HTML-Glosario-22C55E?style=for-the-badge&logo=readme&logoColor=white" />
+    <img src="https://img.shields.io/badge/ABRIR%20GLOSARIO-HTML%20INTERACTIVO-22C55E?style=for-the-badge&logo=readme&logoColor=white" alt="Abrir glosario HTML" />
   </a>
   <a href="https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Clustering%20Jer%C3%A1rquico_Glosario.html" target="_blank">
-    <img src="https://img.shields.io/badge/C%C3%B3digo-GitHub-111827?style=for-the-badge&logo=github&logoColor=white" />
+    <img src="https://img.shields.io/badge/VER%20C%C3%93DIGO-GITHUB-111827?style=for-the-badge&logo=github&logoColor=white" alt="Ver código en GitHub" />
   </a>
 </p>
 
 ---
 
-## Notebook en Google Colab
+## 5. Notebook en Google Colab
 
 El notebook permite aplicar clustering jerárquico con Python.  
 Incluye generación de datos, estandarización, cálculo de distancias, matriz linkage, dendrograma completo, dendrograma truncado, corte del árbol, asignación de clusters y evaluación mediante silhouette score.
 
 <p align="center">
   <a href="https://colab.research.google.com/drive/1CiEih8HEVCWCQHWoBQnRGfosDcfiINFi?usp=sharing" target="_blank">
-    <img src="https://img.shields.io/badge/Abrir%20en-Google%20Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=black" />
+    <img src="https://img.shields.io/badge/ABRIR%20NOTEBOOK-GOOGLE%20COLAB-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=black" alt="Abrir notebook en Google Colab" />
   </a>
 </p>
 
 ---
 
-## Conceptos centrales del módulo
+# Conceptos centrales del módulo
 
-### Clustering jerárquico
+---
+
+## Clustering jerárquico
 
 El clustering jerárquico es una técnica de aprendizaje no supervisado que agrupa observaciones según su similitud y construye una estructura en forma de árbol.  
 En la versión aglomerativa, cada observación comienza como un cluster individual y luego el algoritmo va fusionando puntos o grupos hasta formar un árbol completo.
 
 ---
 
-### Fusión
+## Fusión
 
 Una fusión es el momento en que el algoritmo une dos elementos.  
 Esos elementos pueden ser:
@@ -1693,7 +1700,7 @@ Cada fusión reduce en uno la cantidad de clusters existentes y queda registrada
 
 ---
 
-### Matriz linkage
+## Matriz linkage
 
 La matriz linkage es la tabla que guarda la historia completa de las fusiones.
 Cada fila indica:
@@ -1712,7 +1719,7 @@ Esto significa que la observación 107 se fusionó con la observación 114 a una
 
 ---
 
-### Dendrograma
+## Dendrograma
 
 El dendrograma es la representación visual de la matriz linkage.
 Permite observar el orden de las fusiones y la altura a la que se producen.
@@ -1724,7 +1731,7 @@ Fusión alta  → grupos más diferentes
 
 ---
 
-### Corte del árbol
+## Corte del árbol
 
 Cortar el dendrograma significa trazar una línea horizontal para obtener una cantidad concreta de clusters finales.
 
@@ -1738,7 +1745,7 @@ La decisión de corte combina interpretación visual, métricas y conocimiento d
 
 ---
 
-## Comparación rápida con K-Means
+# Comparación rápida con K-Means
 
 | Aspecto              | K-Means                                     | Clustering Jerárquico                    |
 | -------------------- | ------------------------------------------- | ---------------------------------------- |
@@ -1751,7 +1758,7 @@ La decisión de corte combina interpretación visual, métricas y conocimiento d
 
 ---
 
-## Orden sugerido para clase
+# Orden sugerido para clase
 
 1. Presentar la clase teórica visual para introducir la lógica del algoritmo.
 2. Mostrar la simulación interactiva y avanzar paso a paso por las fusiones.
@@ -1763,7 +1770,7 @@ La decisión de corte combina interpretación visual, métricas y conocimiento d
 
 ---
 
-## Archivos incluidos
+# Archivos incluidos
 
 ```text
 Clustering Jerárquico Clase teórica visual.html
@@ -1775,22 +1782,16 @@ Google Colab: clustering jerárquico aplicado con Python
 
 ---
 
-## Cierre conceptual
+# Cierre conceptual
 
 El clustering jerárquico permite comprender los datos como una estructura progresiva de semejanzas.
 Su mayor valor no está solamente en obtener clusters finales, sino en observar cómo esos clusters se forman, qué grupos se parecen primero, qué grupos se mantienen separados hasta el final y dónde conviene cortar el dendrograma para construir una interpretación útil.
 
-
+> Material elaborado por el profesor Sergio Gevatschnaider
 
 ```
 ```
 
-
-## 🧠 Frase síntesis
-
-> Clustering es descubrir grupos; K-Means los busca alrededor de centros; el clustering jerárquico los construye como una historia de semejanzas.
-
----
 
 
 
