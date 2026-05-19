@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>K-Means | Clase teórica visual</title>
+
+  <style>
+    :root {
+      --bg: #eef3f8;
+      --card: #ffffff;
+      --card2: #f7fafc;
+      --text: #172033;
+      --muted: #5f6f86;
+      --border: #d7e0ea;
+      --accent: #2563eb;
+      --accent2: #06b6d4;
+      --accent3: #7c3aed;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+      --formula-bg: #eef6ff;
+      --hero-gradient: linear-gradient(135deg, #2563eb, #06b6d4, #7c3aed);
+    }
+
+    body.dark {
+      --bg: #07111f;
+      --card: #101b2d;
+      --card2: #132238;
+      --text: #eef6ff;
+      --muted: #9fb1c9;
+      --border: #223555;
+      --accent: #38bdf8;
+      --accent2: #a78bfa;
+      --accent3: #f0abfc;
+      --success: #4ade80;
+      --warning: #facc15;
+      --danger: #fb7185;
+      --shadow: 0 18px 45px rgba(0,0,0,.35);
+      --formula-bg: #10263f;
+      --hero-gradient: linear-gradient(135deg, #38bdf8, #a78bfa, #f0abfc);
+    }
+
+    body.academic {
+      --bg: #e9eef2;
+      --card: #ffffff;
+      --card2: #f3f7f8;
+      --text: #17252f;
+      --muted: #60717d;
+      --border: #ccd8df;
+      --accent: #006d77;
+      --accent2: #0a9396;
+      --accent3: #005f73;
+      --success: #2a9d8f;
+      --warning: #ca6702;
+      --danger: #ae2012;
+      --shadow: 0 18px 45px rgba(0, 64, 77, .13);
+      --formula-bg: #edf7f6;
+      --hero-gradient: linear-gradient(135deg, #006d77, #0a9396, #005f73);
+    }
+
+    body.neon {
+      --bg: #060018;
+      --card: #12072b;
+      --card2: #1b0b3d;
+      --text: #fbf7ff;
+      --muted: #c4b5fd;
+      --border: #3b1b73;
+      --accent: #f0abfc;
+      --accent2: #22d3ee;
+      --accent3: #fb7185;
+      --success: #34d399;
+      --warning: #fde047;
+      --danger: #fb7185;
+      --shadow: 0 18px 45px rgba(168,85,247,.25);
+      --formula-bg: #1d0b37;
+      --hero-gradient: linear-gradient(135deg, #f0abfc, #22d3ee, #fb7185);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 18%, transparent), transparent 32%),
+        radial-gradient(circle at bottom right, color-mix(in srgb, var(--accent2) 16%, transparent), transparent 30%),
+        var(--bg);
+      min-height: 100vh;
+    }
+
+    .reading-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 5px;
+      width: 0%;
+      background: var(--hero-gradient);
+      z-index: 1000;
+      transition: width .1s linear;
+    }
+
+    .app {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+      position: sticky;
+      top: 10px;
+      z-index: 20;
+      background: color-mix(in srgb, var(--card) 82%, transparent);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+      border-radius: 999px;
+      padding: 10px 12px 10px 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      font-weight: 950;
+      letter-spacing: -.03em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--hero-gradient);
+      box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 15%, transparent);
+    }
+
+    .theme-switch {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .theme-switch button {
+      border: 1px solid var(--border);
+      background: var(--card2);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 9px 13px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 850;
+      transition: transform .15s ease, border-color .15s ease, background .15s ease;
+    }
+
+    .theme-switch button:hover {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+    }
+
+    .theme-switch button.active {
+      background: var(--hero-gradient);
+      color: white;
+      border-color: transparent;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .hero-card,
+    .visual-card,
+    .nav-card,
+    .section-card,
+    .theory-card,
+    .callout,
+    .mini-card {
+      background: color-mix(in srgb, var(--card) 94%, transparent);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      padding: 34px;
+      position: relative;
+      overflow: hidden;
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -90px;
+      top: -90px;
+      width: 330px;
+      height: 330px;
+      border-radius: 50%;
+      background: var(--hero-gradient);
+      opacity: .14;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--accent);
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: .78rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .kicker::before {
+      content: "";
+      width: 26px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--hero-gradient);
+    }
+
+    h1 {
+      margin: 16px 0 14px;
+      font-size: clamp(2.2rem, 4vw, 4.8rem);
+      line-height: 1.02;
+      letter-spacing: -0.065em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .lead {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: 1.08rem;
+      max-width: 850px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .pill {
+      padding: 9px 13px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 10%, var(--card));
+      border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--border));
+      color: var(--accent);
+      font-weight: 950;
+      font-size: .84rem;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.5rem;
+      letter-spacing: -.04em;
+      color: var(--text);
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: .86rem;
+      line-height: 1.4;
+      margin-top: 4px;
+    }
+
+    .visual-card {
+      padding: 24px;
+      min-height: 520px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .visual-card h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      letter-spacing: -.03em;
+    }
+
+    .visual-card p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .concept-map {
+      position: relative;
+      min-height: 320px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, color-mix(in srgb, var(--accent) 9%, transparent), transparent),
+        var(--card2);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .node {
+      position: absolute;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 26px rgba(15, 23, 42, .08);
+      font-weight: 950;
+      font-size: .9rem;
+      text-align: center;
+      min-width: 118px;
+    }
+
+    .node.main {
+      background: var(--hero-gradient);
+      color: white;
+      border: 0;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.05rem;
+      min-width: 150px;
+      box-shadow: 0 18px 38px color-mix(in srgb, var(--accent) 30%, transparent);
+    }
+
+    .node.n1 { left: 7%; top: 10%; }
+    .node.n2 { right: 7%; top: 10%; }
+    .node.n3 { left: 7%; bottom: 12%; }
+    .node.n4 { right: 7%; bottom: 12%; }
+    .node.n5 { left: 50%; top: 8%; transform: translateX(-50%); }
+    .node.n6 { left: 50%; bottom: 8%; transform: translateX(-50%); }
+
+    .line {
+      position: absolute;
+      height: 2px;
+      background: color-mix(in srgb, var(--accent) 38%, transparent);
+      transform-origin: left center;
+    }
+
+    .l1 { left: 23%; top: 24%; width: 28%; transform: rotate(30deg); }
+    .l2 { right: 23%; top: 24%; width: 28%; transform: rotate(150deg); }
+    .l3 { left: 23%; bottom: 25%; width: 28%; transform: rotate(-30deg); }
+    .l4 { right: 23%; bottom: 25%; width: 28%; transform: rotate(210deg); }
+    .l5 { left: 50%; top: 24%; width: 2px; height: 70px; transform: translateX(-50%); }
+    .l6 { left: 50%; bottom: 24%; width: 2px; height: 70px; transform: translateX(-50%); }
+
+    .process-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .process-item {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      text-align: center;
+      font-weight: 900;
+      color: var(--text);
+      font-size: .86rem;
+      line-height: 1.35;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .nav-card {
+      padding: 16px;
+      position: sticky;
+      top: 88px;
+    }
+
+    .nav-card h2 {
+      margin: 0 0 12px;
+      font-size: 1.1rem;
+      letter-spacing: -.02em;
+    }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .nav-grid a {
+      text-decoration: none;
+      color: var(--text);
+      background: var(--card2);
+      border: 1px solid var(--border);
+      padding: 11px 12px;
+      border-radius: 14px;
+      font-weight: 850;
+      transition: transform .15s ease, border-color .15s ease;
+      display: block;
+      font-size: .9rem;
+    }
+
+    .nav-grid a:hover {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+    }
+
+    .section-card {
+      padding: 30px;
+      margin-bottom: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 6px;
+      height: 100%;
+      background: var(--hero-gradient);
+      opacity: .85;
+    }
+
+    .section-card h2 {
+      margin: 0 0 14px;
+      font-size: clamp(1.45rem, 2.4vw, 2.45rem);
+      letter-spacing: -.05em;
+    }
+
+    .section-card h3 {
+      margin: 24px 0 9px;
+      font-size: 1.18rem;
+      letter-spacing: -.02em;
+    }
+
+    .section-card p,
+    .section-card li {
+      color: var(--muted);
+      line-height: 1.78;
+      font-size: 1rem;
+    }
+
+    .section-card p {
+      margin: 0 0 14px;
+    }
+
+    strong {
+      color: var(--text);
+    }
+
+    .theory-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .theory-card {
+      padding: 18px;
+      box-shadow: none;
+      background: var(--card2);
+      transition: transform .15s ease, border-color .15s ease;
+    }
+
+    .theory-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+    }
+
+    .theory-card .icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: var(--hero-gradient);
+      color: white;
+      font-weight: 950;
+      margin-bottom: 12px;
+    }
+
+    .theory-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .theory-card p {
+      margin: 0;
+      font-size: .94rem;
+    }
+
+    .formula {
+      margin: 12px 0 18px;
+      padding: 16px;
+      border-radius: 18px;
+      background: var(--formula-bg);
+      border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .93rem;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+
+    .callout {
+      padding: 18px;
+      margin: 18px 0;
+      box-shadow: none;
+      background: color-mix(in srgb, var(--accent) 8%, var(--card));
+      border-color: color-mix(in srgb, var(--accent) 26%, var(--border));
+    }
+
+    .callout.warning {
+      background: color-mix(in srgb, var(--warning) 10%, var(--card));
+      border-color: color-mix(in srgb, var(--warning) 30%, var(--border));
+    }
+
+    .callout.danger {
+      background: color-mix(in srgb, var(--danger) 8%, var(--card));
+      border-color: color-mix(in srgb, var(--danger) 28%, var(--border));
+    }
+
+    .callout.success {
+      background: color-mix(in srgb, var(--success) 8%, var(--card));
+      border-color: color-mix(in srgb, var(--success) 28%, var(--border));
+    }
+
+    .callout h3 {
+      margin: 0 0 8px;
+    }
+
+    .callout p {
+      margin: 0;
+    }
+
+    .steps {
+      counter-reset: step;
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .step {
+      counter-increment: step;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .step::before {
+      content: counter(step);
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      background: var(--hero-gradient);
+      color: white;
+      font-weight: 950;
+      font-size: 1.05rem;
+    }
+
+    .step h3 {
+      margin: 0 0 6px;
+    }
+
+    .step p {
+      margin: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+    }
+
+    th,
+    td {
+      padding: 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--card2);
+      color: var(--text);
+      font-size: .9rem;
+    }
+
+    td {
+      color: var(--muted);
+      line-height: 1.62;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    details {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 15px;
+      margin-top: 10px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 950;
+      color: var(--text);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .mini-card {
+      padding: 18px;
+      box-shadow: none;
+      background: var(--card2);
+    }
+
+    .mini-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .mini-card p {
+      margin: 0;
+      font-size: .94rem;
+    }
+
+    .flow-diagram {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .flow-box {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px;
+      text-align: center;
+      position: relative;
+    }
+
+    .flow-box:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-weight: 950;
+      font-size: 1.3rem;
+      z-index: 2;
+    }
+
+    .flow-box strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .flow-box span {
+      color: var(--muted);
+      font-size: .86rem;
+      line-height: 1.45;
+    }
+
+    .quiz {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .quiz button {
+      text-align: left;
+      background: var(--card2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      cursor: pointer;
+      font-weight: 850;
+      font-family: inherit;
+      transition: transform .15s ease, border-color .15s ease;
+    }
+
+    .quiz button:hover {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+    }
+
+    .quiz-result {
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 16px;
+      background: var(--formula-bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      line-height: 1.65;
+      min-height: 54px;
+    }
+
+    .spacer-final {
+      height: 24px;
+    }
+
+    @media (max-width: 1180px) {
+      .hero,
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-card {
+        position: static;
+      }
+
+      .theory-grid,
+      .two-col,
+      .flow-diagram,
+      .process-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-box:not(:last-child)::after {
+        content: "↓";
+        right: 50%;
+        top: auto;
+        bottom: -18px;
+        transform: translateX(50%);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        padding: 12px;
+      }
+
+      .topbar {
+        border-radius: 22px;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hero-card,
+      .visual-card,
+      .section-card {
+        padding: 22px;
+      }
+
+      .hero-card,
+      .visual-card {
+        min-height: auto;
+      }
+
+      .concept-map {
+        min-height: 430px;
+      }
+
+      .node {
+        min-width: 100px;
+        font-size: .78rem;
+      }
+
+      .node.n1 { left: 5%; top: 11%; }
+      .node.n2 { right: 5%; top: 11%; }
+      .node.n3 { left: 5%; bottom: 12%; }
+      .node.n4 { right: 5%; bottom: 12%; }
+      .node.n5 { top: 2%; }
+      .node.n6 { bottom: 3%; }
+
+      .step {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="reading-bar" id="readingBar"></div>
+
+  <div class="app">
+
+    <div class="topbar">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        K-Means | Clase teórica visual
+      </div>
+
+      <div class="theme-switch">
+        <button onclick="setTheme('', this)" class="active">Claro</button>
+        <button onclick="setTheme('academic', this)">Académico</button>
+        <button onclick="setTheme('dark', this)">Oscuro</button>
+        <button onclick="setTheme('neon', this)">Neón</button>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="hero-card">
+        <div>
+          <div class="kicker">Aprendizaje no supervisado</div>
+
+          <h1>K-Means antes de la simulación</h1>
+
+          <p class="lead">
+            Esta clase introduce la lógica completa del algoritmo K-Means antes de pasar a la simulación interactiva.
+            El foco está en comprender qué significa agrupar datos sin etiquetas, por qué aparecen los centroides,
+            cómo se asignan los puntos, cómo se recalculan los centros, qué mide la inercia y por qué el resultado
+            necesita interpretación analítica.
+          </p>
+
+          <div class="pill-row">
+            <span class="pill">Clustering</span>
+            <span class="pill">K-Means</span>
+            <span class="pill">Centroides</span>
+            <span class="pill">Distancia</span>
+            <span class="pill">Inercia</span>
+            <span class="pill">Convergencia</span>
+            <span class="pill">Limitaciones</span>
+          </div>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat">
+            <strong>1</strong>
+            <span>Problema central: agrupar datos sin etiquetas.</span>
+          </div>
+          <div class="stat">
+            <strong>K</strong>
+            <span>Cantidad de grupos que el algoritmo intentará formar.</span>
+          </div>
+          <div class="stat">
+            <strong>μ</strong>
+            <span>Centroide calculado como promedio del cluster.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="visual-card">
+        <div>
+          <h2>Mapa conceptual de la clase</h2>
+          <p>
+            El algoritmo puede entenderse como una secuencia de decisiones geométricas:
+            elegir centros, asignar puntos, recalcular promedios y repetir.
+          </p>
+        </div>
+
+        <div class="concept-map">
+          <div class="line l1"></div>
+          <div class="line l2"></div>
+          <div class="line l3"></div>
+          <div class="line l4"></div>
+          <div class="line l5"></div>
+          <div class="line l6"></div>
+
+          <div class="node main">K-Means</div>
+          <div class="node n1">Datos sin etiquetas</div>
+          <div class="node n2">K clusters</div>
+          <div class="node n3">Asignación por distancia</div>
+          <div class="node n4">Recalcular centroides</div>
+          <div class="node n5">Inercia</div>
+          <div class="node n6">Convergencia</div>
+        </div>
+
+        <div class="process-strip">
+          <div class="process-item">Elegir K</div>
+          <div class="process-item">Inicializar</div>
+          <div class="process-item">Asignar</div>
+          <div class="process-item">Actualizar</div>
+          <div class="process-item">Converger</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <aside class="nav-card">
+        <h2>Índice</h2>
+        <div class="nav-grid">
+          <a href="#problema">1. Problema</a>
+          <a href="#intuicion">2. Intuición</a>
+          <a href="#conceptos">3. Conceptos</a>
+          <a href="#algoritmo">4. Algoritmo</a>
+          <a href="#formulas">5. Fórmulas</a>
+          <a href="#ejemplo">6. Ejemplo</a>
+          <a href="#inercia">7. Inercia</a>
+          <a href="#interpretacion">8. Interpretación</a>
+          <a href="#limitaciones">9. Limitaciones</a>
+          <a href="#guion">10. Guion docente</a>
+          <a href="#glosario">11. Glosario</a>
+          <a href="#repaso">12. Repaso</a>
+        </div>
+      </aside>
+
+      <main>
+
+        <section id="problema" class="section-card">
+          <h2>1. El problema del clustering</h2>
+
+          <p>
+            El <strong>clustering</strong> es una familia de técnicas que busca agrupar observaciones parecidas entre sí.
+            A diferencia de la clasificación supervisada, no parte de etiquetas conocidas. El algoritmo no recibe una
+            respuesta correcta previa, sino que intenta descubrir una estructura posible dentro de los datos.
+          </p>
+
+          <p>
+            Esto significa que el clustering no responde una pregunta del tipo “¿a qué categoría conocida pertenece este dato?”,
+            sino una pregunta más exploratoria: “¿qué grupos parecen emerger de la forma en que los datos están distribuidos?”.
+            Por eso es una herramienta poderosa para análisis exploratorio, segmentación de clientes, organización de documentos,
+            reducción conceptual de bases de datos y detección de patrones iniciales.
+          </p>
+
+          <div class="callout">
+            <h3>Idea clave</h3>
+            <p>
+              En clustering no se predice una etiqueta previamente definida. Se propone una organización posible de los datos.
+              Esa organización debe interpretarse después con criterio estadístico y conocimiento del problema.
+            </p>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Enfoque</th>
+                <th>Datos disponibles</th>
+                <th>Objetivo</th>
+                <th>Ejemplo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Aprendizaje supervisado</td>
+                <td>Datos con etiquetas</td>
+                <td>Aprender una relación entre variables y una salida conocida</td>
+                <td>Predecir si un correo es spam</td>
+              </tr>
+              <tr>
+                <td>Aprendizaje no supervisado</td>
+                <td>Datos sin etiquetas</td>
+                <td>Descubrir grupos, patrones o estructuras internas</td>
+                <td>Agrupar clientes según comportamiento</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="intuicion" class="section-card">
+          <h2>2. Intuición general de K-Means</h2>
+
+          <p>
+            K-Means intenta organizar los datos alrededor de centros. Esos centros se llaman <strong>centroides</strong>.
+            La lógica básica consiste en ubicar K centroides, asignar cada punto al centroide más cercano, recalcular cada
+            centroide como promedio de los puntos asignados y repetir este procedimiento hasta que los centroides se estabilicen.
+          </p>
+
+          <p>
+            La palabra <strong>K</strong> indica la cantidad de grupos que queremos formar. Si elegimos K = 3, el algoritmo
+            intentará construir tres clusters. Si elegimos K = 5, intentará construir cinco. Por eso K no es un detalle técnico,
+            sino una decisión analítica que condiciona el resultado.
+          </p>
+
+          <div class="flow-diagram">
+            <div class="flow-box">
+              <strong>Datos</strong>
+              <span>Puntos sin etiquetas conocidas</span>
+            </div>
+            <div class="flow-box">
+              <strong>K</strong>
+              <span>Cantidad de grupos buscados</span>
+            </div>
+            <div class="flow-box">
+              <strong>Centroides</strong>
+              <span>Centros iniciales del algoritmo</span>
+            </div>
+            <div class="flow-box">
+              <strong>Asignación</strong>
+              <span>Cada punto va al centroide más cercano</span>
+            </div>
+            <div class="flow-box">
+              <strong>Actualización</strong>
+              <span>Cada centroide se mueve al promedio</span>
+            </div>
+          </div>
+
+          <div class="callout success">
+            <h3>Frase simple para exponer</h3>
+            <p>
+              K-Means busca K centros, agrupa cada punto alrededor del centro más cercano, mueve cada centro al promedio
+              de su grupo y repite el proceso hasta que los centros casi no cambian.
+            </p>
+          </div>
+        </section>
+
+        <section id="conceptos" class="section-card">
+          <h2>3. Conceptos fundamentales</h2>
+
+          <div class="theory-grid">
+            <div class="theory-card">
+              <div class="icon">X</div>
+              <h3>Dato u observación</h3>
+              <p>
+                Es la unidad de análisis. Puede representar un cliente, libro, empresa, película, transacción o estudiante.
+                Para K-Means, cada observación debe estar representada por variables numéricas.
+              </p>
+            </div>
+
+            <div class="theory-card">
+              <div class="icon">V</div>
+              <h3>Espacio de características</h3>
+              <p>
+                Es el espacio donde ubicamos los datos. Cada dimensión corresponde a una variable. En dos dimensiones se ve
+                como un plano; en muchas dimensiones ya no se visualiza fácilmente, pero el algoritmo sigue usando distancias.
+              </p>
+            </div>
+
+            <div class="theory-card">
+              <div class="icon">C</div>
+              <h3>Cluster</h3>
+              <p>
+                Es un grupo de puntos que el algoritmo considera similares. En K-Means, esa similitud se define por cercanía
+                al mismo centroide.
+              </p>
+            </div>
+
+            <div class="theory-card">
+              <div class="icon">μ</div>
+              <h3>Centroide</h3>
+              <p>
+                Es el centro geométrico de un cluster. Se calcula como promedio de las coordenadas de los puntos asignados.
+                No tiene por qué coincidir con un dato real.
+              </p>
+            </div>
+
+            <div class="theory-card">
+              <div class="icon">d</div>
+              <h3>Distancia</h3>
+              <p>
+                Permite decidir qué punto está más cerca de qué centroide. En la versión clásica se usa distancia euclídea,
+                aunque existen variantes con otras métricas.
+              </p>
+            </div>
+
+            <div class="theory-card">
+              <div class="icon">Σ</div>
+              <h3>Inercia</h3>
+              <p>
+                Mide la compactación interna de los clusters. Es la suma de las distancias cuadradas entre cada punto y
+                su centroide.
+              </p>
+            </div>
+          </div>
+
+          <h3>Asignación</h3>
+          <p>
+            La asignación es el paso en el que cada punto se vincula con el centroide más cercano. Esta asignación es
+            provisional porque puede cambiar cuando los centroides se actualizan.
+          </p>
+
+          <h3>Actualización</h3>
+          <p>
+            La actualización es el paso en el que cada centroide se recalcula como promedio de los puntos asignados a su
+            cluster. Esta es la razón por la cual los centroides se mueven durante el algoritmo.
+          </p>
+
+          <h3>Convergencia</h3>
+          <p>
+            La convergencia ocurre cuando los centroides dejan de moverse de manera significativa. En ese momento, el
+            algoritmo considera que alcanzó una partición estable.
+          </p>
+        </section>
+
+        <section id="algoritmo" class="section-card">
+          <h2>4. El algoritmo paso a paso</h2>
+
+          <div class="steps">
+            <div class="step">
+              <div>
+                <h3>Elegir K</h3>
+                <p>
+                  Primero se decide cuántos clusters se quieren formar. Esta decisión puede basarse en conocimiento del dominio,
+                  exploración visual, método del codo, silhouette score u otros criterios.
+                </p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div>
+                <h3>Inicializar centroides</h3>
+                <p>
+                  Se colocan K centroides iniciales. Pueden elegirse de manera aleatoria o mediante métodos más robustos,
+                  como K-Means++. Esta etapa importa porque diferentes puntos de partida pueden producir soluciones diferentes.
+                </p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div>
+                <h3>Asignar puntos al centroide más cercano</h3>
+                <p>
+                  Cada punto calcula su distancia a todos los centroides y se asigna al cluster cuyo centroide esté más cerca.
+                  En esta etapa aparecen las primeras agrupaciones.
+                </p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div>
+                <h3>Recalcular centroides</h3>
+                <p>
+                  Para cada cluster, se calcula el promedio de los puntos asignados. Ese promedio se convierte en la nueva
+                  posición del centroide.
+                </p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div>
+                <h3>Repetir</h3>
+                <p>
+                  Como los centroides cambiaron, algunos puntos pueden quedar ahora más cerca de otro centroide. Por eso
+                  el algoritmo vuelve a asignar y vuelve a recalcular.
+                </p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div>
+                <h3>Detener</h3>
+                <p>
+                  El proceso termina cuando los centroides casi no cambian o cuando se alcanza un número máximo de iteraciones.
+                  El resultado final es una partición de los datos en K grupos.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout warning">
+            <h3>Advertencia importante</h3>
+            <p>
+              K-Means siempre devuelve una partición si se le da un valor de K, incluso si los datos no tienen grupos reales.
+              Por eso el resultado debe interpretarse, no aceptarse automáticamente.
+            </p>
+          </div>
+        </section>
+
+        <section id="formulas" class="section-card">
+          <h2>5. Formulación matemática esencial</h2>
+
+          <h3>Representación de los datos</h3>
+          <p>
+            Supongamos que tenemos un conjunto de datos con n observaciones. Cada observación puede escribirse como un vector:
+          </p>
+
+          <div class="formula">
+            X = {x₁, x₂, ..., xₙ}
+          </div>
+
+          <p>
+            Si cada dato tiene dos variables, cada punto puede representarse así:
+          </p>
+
+          <div class="formula">
+            xᵢ = (xᵢ₁, xᵢ₂)
+          </div>
+
+          <h3>Distancia euclídea</h3>
+          <p>
+            Para decidir qué centroide está más cerca de un punto, K-Means suele usar distancia euclídea:
+          </p>
+
+          <div class="formula">
+            d(x, μ) = √[(x₁ − μ₁)² + (x₂ − μ₂)²]
+          </div>
+
+          <h3>Regla de asignación</h3>
+          <p>
+            Cada punto se asigna al centroide que minimiza la distancia:
+          </p>
+
+          <div class="formula">
+            cluster(xᵢ) = argminⱼ ||xᵢ − μⱼ||²
+          </div>
+
+          <h3>Cálculo del centroide</h3>
+          <p>
+            Una vez asignados los puntos, cada centroide se recalcula como promedio:
+          </p>
+
+          <div class="formula">
+            μⱼ = (1 / |Cⱼ|) Σ xᵢ, para todos los xᵢ pertenecientes a Cⱼ
+          </div>
+
+          <h3>Función objetivo</h3>
+          <p>
+            K-Means intenta minimizar la suma de las distancias cuadradas entre cada punto y el centroide de su cluster:
+          </p>
+
+          <div class="formula">
+            minimizar Σⱼ Σₓᵢ∈Cⱼ ||xᵢ − μⱼ||²
+          </div>
+        </section>
+
+        <section id="ejemplo" class="section-card">
+          <h2>6. Ejemplo didáctico con libros</h2>
+
+          <p>
+            Imaginemos que queremos agrupar libros según dos variables: cantidad de páginas y dificultad conceptual.
+            Cada libro se ubica como un punto. El eje horizontal representa páginas y el eje vertical representa dificultad.
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Libro</th>
+                <th>Páginas</th>
+                <th>Dificultad</th>
+                <th>Lectura intuitiva</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Libro A</td>
+                <td>120</td>
+                <td>2</td>
+                <td>Corto y fácil</td>
+              </tr>
+              <tr>
+                <td>Libro B</td>
+                <td>150</td>
+                <td>3</td>
+                <td>Corto y relativamente simple</td>
+              </tr>
+              <tr>
+                <td>Libro C</td>
+                <td>310</td>
+                <td>5</td>
+                <td>Intermedio</td>
+              </tr>
+              <tr>
+                <td>Libro D</td>
+                <td>480</td>
+                <td>8</td>
+                <td>Largo y difícil</td>
+              </tr>
+              <tr>
+                <td>Libro E</td>
+                <td>560</td>
+                <td>9</td>
+                <td>Muy largo y muy difícil</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>
+            Si elegimos K = 3, el algoritmo podría formar tres grupos: libros cortos y fáciles, libros intermedios,
+            y libros largos y difíciles. Pero si elegimos K = 2, los libros intermedios podrían quedar absorbidos por
+            alguno de los extremos. Si elegimos K = 5, cada libro podría quedar casi separado.
+          </p>
+
+          <div class="callout">
+            <h3>Interpretación del ejemplo</h3>
+            <p>
+              El algoritmo no sabe qué significa “fácil”, “difícil”, “literario” o “técnico”. Solo observa números,
+              calcula distancias y propone grupos. La interpretación conceptual la hace el analista.
+            </p>
+          </div>
+        </section>
+
+        <section id="inercia" class="section-card">
+          <h2>7. Inercia y método del codo</h2>
+
+          <p>
+            La <strong>inercia</strong> mide qué tan compactos son los clusters. Formalmente, es la suma de las distancias
+            cuadradas entre cada punto y el centroide del cluster al que pertenece.
+          </p>
+
+          <div class="formula">
+            Inercia = Σⱼ Σₓᵢ∈Cⱼ ||xᵢ − μⱼ||²
+          </div>
+
+          <p>
+            Una inercia baja significa que los puntos están cerca de sus centroides. Una inercia alta significa que los puntos
+            están más dispersos dentro de sus clusters.
+          </p>
+
+          <h3>Ejemplo numérico simple</h3>
+
+          <p>
+            Supongamos un centroide ubicado en el valor 10 y tres puntos ubicados en 8, 10 y 13.
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Punto</th>
+                <th>Distancia al centroide</th>
+                <th>Distancia al cuadrado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>8</td>
+                <td>2</td>
+                <td>4</td>
+              </tr>
+              <tr>
+                <td>10</td>
+                <td>0</td>
+                <td>0</td>
+              </tr>
+              <tr>
+                <td>13</td>
+                <td>3</td>
+                <td>9</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>
+            La inercia del cluster sería:
+          </p>
+
+          <div class="formula">
+            4 + 0 + 9 = 13
+          </div>
+
+          <h3>Método del codo</h3>
+
+          <p>
+            La inercia casi siempre baja cuando aumenta K, porque al tener más clusters cada punto puede quedar más cerca
+            de algún centroide. Por eso no alcanza con elegir el K que produce la menor inercia. El método del codo busca
+            el punto donde agregar más clusters deja de mejorar mucho la compactación.
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>K</th>
+                <th>Inercia hipotética</th>
+                <th>Lectura</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>1000</td>
+                <td>Todos los datos están forzados a un solo grupo.</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>520</td>
+                <td>Mejora importante.</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>260</td>
+                <td>Otra mejora relevante.</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>230</td>
+                <td>La mejora empieza a ser menor.</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>215</td>
+                <td>Más clusters, pero poca ganancia adicional.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="interpretacion" class="section-card">
+          <h2>8. Cómo interpretar el resultado</h2>
+
+          <p>
+            El resultado de K-Means no debe interpretarse como una verdad automática. El algoritmo devuelve grupos,
+            pero esos grupos son particiones geométricas construidas bajo ciertas decisiones: el K elegido, la escala
+            de las variables, la inicialización, la distancia utilizada y la forma de los datos.
+          </p>
+
+          <div class="two-col">
+            <div class="mini-card">
+              <h3>Buena interpretación</h3>
+              <p>
+                “El algoritmo sugiere tres segmentos diferenciados por gasto y frecuencia, y esos segmentos son coherentes
+                con patrones comerciales observables.”
+              </p>
+            </div>
+
+            <div class="mini-card">
+              <h3>Mala interpretación</h3>
+              <p>
+                “El algoritmo encontró tres grupos, por lo tanto existen exactamente tres tipos reales de clientes.”
+              </p>
+            </div>
+          </div>
+
+          <h3>Preguntas que debe hacerse el analista</h3>
+
+          <ul>
+            <li>¿El valor de K tiene sentido para el problema?</li>
+            <li>¿Las variables fueron escaladas correctamente?</li>
+            <li>¿Hay outliers que puedan estar arrastrando centroides?</li>
+            <li>¿Los clusters tienen formas compactas o son alargados y curvos?</li>
+            <li>¿La partición es estable si se cambia la inicialización?</li>
+            <li>¿Los grupos encontrados tienen interpretación práctica?</li>
+          </ul>
+        </section>
+
+        <section id="limitaciones" class="section-card">
+          <h2>9. Limitaciones y errores frecuentes</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Limitación</th>
+                <th>Qué significa</th>
+                <th>Cómo explicarlo en clase</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Elegir K de antemano</td>
+                <td>El algoritmo necesita que el usuario indique la cantidad de clusters.</td>
+                <td>K-Means no descubre automáticamente cuántos grupos hay; se lo tenemos que indicar.</td>
+              </tr>
+              <tr>
+                <td>Sensibilidad a la escala</td>
+                <td>Variables con valores grandes pueden dominar la distancia.</td>
+                <td>Si una variable va de 0 a 10 y otra de 0 a 10.000, la segunda puede pesar demasiado.</td>
+              </tr>
+              <tr>
+                <td>Sensibilidad a outliers</td>
+                <td>Los valores extremos pueden desplazar los centroides.</td>
+                <td>Como el centroide es un promedio, un dato extremo puede arrastrar el centro del grupo.</td>
+              </tr>
+              <tr>
+                <td>Forma de los clusters</td>
+                <td>Funciona mejor con clusters compactos y aproximadamente esféricos.</td>
+                <td>Si los grupos tienen forma de luna, anillo o curva, K-Means puede separarlos mal.</td>
+              </tr>
+              <tr>
+                <td>Óptimos locales</td>
+                <td>Distintas inicializaciones pueden producir soluciones diferentes.</td>
+                <td>El algoritmo puede estabilizarse en una solución buena, pero no necesariamente óptima.</td>
+              </tr>
+              <tr>
+                <td>Interpretación automática</td>
+                <td>El algoritmo devuelve números y grupos, no significado.</td>
+                <td>El significado lo construye el analista con conocimiento del problema.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <details>
+            <summary>¿Por qué los outliers afectan tanto?</summary>
+            <p>
+              Porque el centroide se calcula como promedio. Si la mayoría de los puntos están cerca, pero aparece un valor
+              extremo muy alejado, ese valor puede desplazar el promedio hacia una zona que no representa bien a la mayoría
+              del cluster.
+            </p>
+          </details>
+
+          <details>
+            <summary>¿Por qué hay que escalar las variables?</summary>
+            <p>
+              Porque K-Means se basa en distancias. Si una variable tiene una escala mucho mayor que otra, puede dominar
+              el cálculo de distancia y distorsionar los clusters.
+            </p>
+          </details>
+
+          <details>
+            <summary>¿Qué significa que K-Means pueda caer en un óptimo local?</summary>
+            <p>
+              Significa que el algoritmo puede encontrar una solución estable, pero no necesariamente la mejor solución posible.
+              Para reducir este problema, se prueban varias inicializaciones y se elige la que obtiene menor inercia.
+            </p>
+          </details>
+        </section>
+
+        <section id="guion" class="section-card">
+          <h2>10. Guion docente antes de la simulación</h2>
+
+          <p>
+            “Antes de ver la simulación, necesitamos entender qué problema intenta resolver K-Means. En muchos casos tenemos
+            datos sin etiquetas: clientes, libros, empresas, películas o transacciones, pero no sabemos de antemano a qué grupo
+            pertenece cada observación. K-Means intenta descubrir una forma de agrupar esos datos usando distancias.”
+          </p>
+
+          <p>
+            “La idea principal es representar cada observación como un punto en un espacio de características. Si usamos dos
+            variables, podemos imaginar un plano; si usamos más variables, ya no podemos verlo fácilmente, pero la lógica
+            matemática sigue siendo la misma.”
+          </p>
+
+          <p>
+            “Luego elegimos K, que representa la cantidad de grupos que queremos formar. Esta decisión es importante porque
+            el algoritmo va a construir exactamente esa cantidad de grupos. Si elegimos mal K, el resultado puede ser poco útil
+            aunque matemáticamente el algoritmo haya funcionado.”
+          </p>
+
+          <p>
+            “Después el algoritmo coloca centroides iniciales. Un centroide es el centro de un cluster, pero al comienzo es
+            solo una posición provisoria. Cada punto se asigna al centroide más cercano, y después cada centroide se recalcula
+            como el promedio de los puntos que quedaron en su grupo.”
+          </p>
+
+          <div class="callout success">
+            <h3>Frase de transición hacia la simulación</h3>
+            <p>
+              Ahora que entendimos la lógica teórica, vamos a ver la simulación para observar cómo estas ideas aparecen
+              visualmente: primero los centroides, luego la asignación por distancia, después el movimiento hacia el promedio
+              y finalmente la convergencia.
+            </p>
+          </div>
+        </section>
+
+        <section id="glosario" class="section-card">
+          <h2>11. Glosario completo</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Concepto</th>
+                <th>Definición desarrollada</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Aprendizaje no supervisado</td>
+                <td>
+                  Rama del machine learning en la que los datos no tienen etiquetas previas. El objetivo es descubrir patrones,
+                  estructuras o grupos internos.
+                </td>
+              </tr>
+              <tr>
+                <td>Clustering</td>
+                <td>
+                  Técnica que agrupa observaciones similares entre sí. No predice una categoría conocida, sino que propone una
+                  organización de los datos.
+                </td>
+              </tr>
+              <tr>
+                <td>K</td>
+                <td>
+                  Número de clusters que el algoritmo debe formar. Es una decisión del analista y condiciona fuertemente el resultado.
+                </td>
+              </tr>
+              <tr>
+                <td>Centroide</td>
+                <td>
+                  Punto que representa el centro geométrico de un cluster. Se calcula como promedio de las coordenadas de los puntos asignados.
+                </td>
+              </tr>
+              <tr>
+                <td>Distancia euclídea</td>
+                <td>
+                  Medida de distancia en línea recta entre dos puntos. Es la distancia más habitual en K-Means.
+                </td>
+              </tr>
+              <tr>
+                <td>Asignación</td>
+                <td>
+                  Paso en el cual cada punto se vincula con el centroide más cercano.
+                </td>
+              </tr>
+              <tr>
+                <td>Actualización</td>
+                <td>
+                  Paso en el cual cada centroide se recalcula a partir del promedio de los puntos asignados.
+                </td>
+              </tr>
+              <tr>
+                <td>Inercia</td>
+                <td>
+                  Suma de las distancias cuadradas entre los puntos y sus centroides. Mide compactación interna.
+                </td>
+              </tr>
+              <tr>
+                <td>Convergencia</td>
+                <td>
+                  Estado en el que los centroides ya casi no se mueven y la partición se estabiliza.
+                </td>
+              </tr>
+              <tr>
+                <td>Outlier</td>
+                <td>
+                  Observación extrema que se aleja mucho del patrón general y puede alterar el cálculo de centroides.
+                </td>
+              </tr>
+              <tr>
+                <td>Escalado</td>
+                <td>
+                  Transformación de variables para que estén en rangos comparables. Es importante porque K-Means usa distancias.
+                </td>
+              </tr>
+              <tr>
+                <td>Método del codo</td>
+                <td>
+                  Técnica para elegir K observando cómo cambia la inercia al aumentar la cantidad de clusters.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="repaso" class="section-card">
+          <h2>12. Preguntas de repaso</h2>
+
+          <p>
+            Estas preguntas sirven para cerrar la parte teórica antes de pasar a la simulación o a Google Colab.
+          </p>
+
+          <div class="quiz">
+            <button onclick="showAnswer(0)">1. ¿Por qué K-Means es aprendizaje no supervisado?</button>
+            <button onclick="showAnswer(1)">2. ¿Qué significa K dentro del algoritmo?</button>
+            <button onclick="showAnswer(2)">3. ¿Qué es un centroide y cómo se calcula?</button>
+            <button onclick="showAnswer(3)">4. ¿Cómo decide K-Means a qué cluster pertenece cada punto?</button>
+            <button onclick="showAnswer(4)">5. ¿Por qué los centroides se mueven?</button>
+            <button onclick="showAnswer(5)">6. ¿Qué mide la inercia?</button>
+            <button onclick="showAnswer(6)">7. ¿Por qué no conviene elegir K solo mirando que la inercia baje?</button>
+            <button onclick="showAnswer(7)">8. ¿Qué problemas generan los outliers?</button>
+            <button onclick="showAnswer(8)">9. ¿Por qué es importante escalar las variables?</button>
+            <button onclick="showAnswer(9)">10. ¿Qué significa que K-Means haya convergido?</button>
+          </div>
+
+          <div class="quiz-result" id="quizResult">
+            Seleccioná una pregunta para ver una respuesta modelo.
+          </div>
+        </section>
+
+      </main>
+    </section>
+
+    <div class="spacer-final"></div>
+  </div>
+
+  <script>
+    function setTheme(themeName, button) {
+      document.body.className = themeName;
+
+      document.querySelectorAll(".theme-switch button").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      button.classList.add("active");
+    }
+
+    const quizAnswers = [
+      "K-Means es aprendizaje no supervisado porque trabaja con datos sin etiquetas previas. No se le indica cuál es la clase correcta de cada observación, sino que intenta descubrir agrupamientos posibles a partir de distancias entre los datos.",
+      "K representa la cantidad de clusters que queremos formar. Si K = 3, el algoritmo intentará dividir los datos en tres grupos. Esta decisión es central porque condiciona toda la partición resultante.",
+      "Un centroide es el centro geométrico de un cluster. Se calcula como el promedio de las coordenadas de todos los puntos asignados a ese cluster. No necesariamente coincide con una observación real.",
+      "Cada punto calcula su distancia a todos los centroides y se asigna al centroide más cercano. En la versión clásica de K-Means se usa distancia euclídea.",
+      "Los centroides se mueven porque, después de asignar los puntos, cada cluster tiene una composición determinada. El centroide debe recalcularse como el promedio de los puntos que quedaron dentro de ese grupo.",
+      "La inercia mide la suma de las distancias cuadradas entre cada punto y el centroide de su cluster. Una inercia menor indica clusters más compactos, aunque no necesariamente un mejor modelo en términos interpretativos.",
+      "Porque la inercia casi siempre baja cuando aumenta K. Si usamos demasiados clusters, podemos obtener una inercia muy baja pero una segmentación poco útil o artificial.",
+      "Los outliers pueden desplazar los centroides porque el centroide se calcula como un promedio. Un valor extremo puede arrastrar el centro del cluster y afectar la asignación de otros puntos.",
+      "Es importante escalar las variables porque K-Means depende de distancias. Si una variable tiene una escala mucho mayor que otra, puede dominar el cálculo de distancia y distorsionar los clusters.",
+      "La convergencia significa que los centroides casi no cambian de posición entre una iteración y otra, por lo que la asignación de puntos se estabiliza bajo las condiciones elegidas."
+    ];
+
+    function showAnswer(index) {
+      document.getElementById("quizResult").innerHTML = quizAnswers[index];
+    }
+
+    window.addEventListener("scroll", () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      document.getElementById("readingBar").style.width = progress + "%";
+    });
+  </script>
+</body>
+</html>

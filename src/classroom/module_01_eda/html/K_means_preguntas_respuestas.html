@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preguntas y respuestas sobre K-Means | Versión 2.0</title>
+  <style>
+    :root{
+      --bg:#08111f; --bg2:#0d1b2f; --card:rgba(255,255,255,.08); --card2:rgba(255,255,255,.12);
+      --text:#f4f7fb; --muted:#b8c4d8; --line:rgba(255,255,255,.16);
+      --accent:#36d4ff; --accent2:#8b5cf6; --good:#3ee88a; --warn:#ffcf5a; --bad:#ff6b8a;
+      --shadow:0 20px 70px rgba(0,0,0,.35); --radius:24px;
+      --code:#101a2d; --table:rgba(255,255,255,.06);
+    }
+    html[data-theme="light"]{
+      --bg:#f5f7fb; --bg2:#ffffff; --card:rgba(255,255,255,.84); --card2:#ffffff;
+      --text:#162033; --muted:#536079; --line:rgba(22,32,51,.14);
+      --accent:#0077ff; --accent2:#7c3aed; --good:#0a9f58; --warn:#b7791f; --bad:#c53055;
+      --shadow:0 18px 60px rgba(30,50,90,.16); --code:#eef3fb; --table:#f1f5fb;
+    }
+    html[data-theme="ocean"]{
+      --bg:#051b22; --bg2:#063946; --card:rgba(255,255,255,.09); --card2:rgba(255,255,255,.13);
+      --text:#ecfeff; --muted:#b3d7df; --line:rgba(255,255,255,.17);
+      --accent:#22d3ee; --accent2:#14b8a6; --good:#4ade80; --warn:#fde047; --bad:#fb7185;
+      --shadow:0 20px 70px rgba(0,30,40,.40); --code:#062b35; --table:rgba(255,255,255,.07);
+    }
+    html[data-theme="violet"]{
+      --bg:#170926; --bg2:#2b1243; --card:rgba(255,255,255,.10); --card2:rgba(255,255,255,.14);
+      --text:#fbf5ff; --muted:#d8c6e8; --line:rgba(255,255,255,.18);
+      --accent:#f472b6; --accent2:#a78bfa; --good:#86efac; --warn:#facc15; --bad:#fb7185;
+      --shadow:0 20px 70px rgba(35,0,60,.45); --code:#241238; --table:rgba(255,255,255,.07);
+    }
+    html[data-theme="graphite"]{
+      --bg:#101114; --bg2:#1f2329; --card:rgba(255,255,255,.08); --card2:rgba(255,255,255,.12);
+      --text:#f7f7f8; --muted:#c5c8cf; --line:rgba(255,255,255,.16);
+      --accent:#eab308; --accent2:#38bdf8; --good:#22c55e; --warn:#f59e0b; --bad:#ef4444;
+      --shadow:0 20px 70px rgba(0,0,0,.35); --code:#171a20; --table:rgba(255,255,255,.06);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 12% 0%, color-mix(in srgb,var(--accent) 30%,transparent), transparent 32%),radial-gradient(circle at 88% 12%, color-mix(in srgb,var(--accent2) 32%,transparent), transparent 35%),linear-gradient(135deg,var(--bg),var(--bg2));color:var(--text);min-height:100vh;line-height:1.65}
+    a{color:inherit} button,input{font:inherit}
+    .app{max-width:1440px;margin:0 auto;padding:22px}
+    .hero{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:32px;padding:34px;background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.05));box-shadow:var(--shadow)}
+    .hero:before{content:"";position:absolute;inset:-2px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 42%,transparent),transparent);height:2px;animation:scan 5s linear infinite}@keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+    .badge{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);background:rgba(255,255,255,.08);border-radius:999px;padding:8px 13px;color:var(--muted);font-size:.92rem}.dot{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 22px var(--accent)}
+    h1{font-size:clamp(2rem,4.5vw,4.4rem);line-height:1.04;margin:18px 0 14px;letter-spacing:-.06em}.lead{max-width:900px;color:var(--muted);font-size:1.12rem;margin:0 0 22px}.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:stretch}.hero-card{border:1px solid var(--line);border-radius:var(--radius);padding:18px;background:rgba(0,0,0,.12)}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}.stat{border:1px solid var(--line);border-radius:18px;padding:14px;background:var(--card)}.stat strong{display:block;font-size:1.5rem;color:var(--accent)}.stat span{font-size:.88rem;color:var(--muted)}
+    .toolbar{position:sticky;top:0;z-index:30;margin:18px 0;border:1px solid var(--line);border-radius:24px;background:color-mix(in srgb,var(--bg2) 82%,transparent);backdrop-filter:blur(14px);padding:14px;display:grid;grid-template-columns:1.2fr auto auto;gap:12px;box-shadow:0 10px 40px rgba(0,0,0,.18)}
+    .search{width:100%;border:1px solid var(--line);border-radius:16px;padding:12px 14px;color:var(--text);background:var(--card);outline:none}.search:focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent)}
+    .btns,.themes{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);border-radius:15px;padding:11px 13px;color:var(--text);background:var(--card);cursor:pointer;transition:.2s}.btn:hover{transform:translateY(-1px);border-color:var(--accent)}.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:0}.theme-dot{width:40px;height:40px;border-radius:14px;border:1px solid var(--line);cursor:pointer;box-shadow:inset 0 0 0 2px rgba(255,255,255,.08)}.theme-dot.active{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);transform:translateY(-1px)}
+    .layout{display:grid;grid-template-columns:295px 1fr;gap:18px;align-items:start}.sidebar{position:sticky;top:94px;border:1px solid var(--line);border-radius:24px;background:var(--card);padding:16px;box-shadow:var(--shadow)}.side-title{font-weight:800;margin:0 0 10px}.nav{display:flex;flex-direction:column;gap:8px}.nav button{text-align:left;border:1px solid transparent;background:transparent;color:var(--muted);border-radius:14px;padding:10px;cursor:pointer}.nav button:hover,.nav button.active{background:var(--card2);color:var(--text);border-color:var(--line)}.progress-wrap{height:10px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden;margin:14px 0}.progress{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:.3s}
+    .content{display:flex;flex-direction:column;gap:16px}.question-card{border:1px solid var(--line);border-radius:28px;background:linear-gradient(135deg,var(--card),rgba(255,255,255,.04));box-shadow:var(--shadow);overflow:hidden}.q-head{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:20px;cursor:pointer}.q-kicker{color:var(--accent);font-weight:900;font-size:.88rem;text-transform:uppercase;letter-spacing:.09em}.q-title{font-size:1.35rem;line-height:1.25;margin:.2rem 0 0;letter-spacing:-.025em}.q-icon{min-width:42px;height:42px;border-radius:15px;border:1px solid var(--line);display:grid;place-items:center;background:var(--card2);color:var(--accent);font-size:1.4rem}.q-body{display:none;padding:0 20px 22px;border-top:1px solid var(--line)}.question-card.open .q-body{display:block;animation:fade .24s ease}.question-card.open .q-icon{transform:rotate(45deg)}@keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+    .note{border-left:4px solid var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);padding:14px 16px;border-radius:16px;margin:14px 0;color:var(--text)}.warn{border-left-color:var(--warn);background:color-mix(in srgb,var(--warn) 12%,transparent)}.good{border-left-color:var(--good);background:color-mix(in srgb,var(--good) 12%,transparent)}
+    code,.code{display:block;background:var(--code);border:1px solid var(--line);border-radius:16px;padding:12px 14px;color:var(--text);overflow:auto;white-space:pre-wrap;margin:12px 0;font-family:Consolas,Monaco,monospace;line-height:1.55} .inline{display:inline;background:var(--code);padding:2px 6px;border-radius:8px;border:1px solid var(--line);font-family:Consolas,monospace}
+    table{width:100%;border-collapse:collapse;margin:14px 0;border-radius:18px;overflow:hidden;border:1px solid var(--line)}th,td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}th{background:color-mix(in srgb,var(--accent) 18%,var(--table));text-align:left}td{background:var(--table)}tr:last-child td{border-bottom:0}
+    .formula{font-size:1.15rem;text-align:center;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 15%,transparent),color-mix(in srgb,var(--accent2) 13%,transparent));border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0;font-weight:800}.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.pill{border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:var(--card);color:var(--muted);font-size:.92rem}
+    .visual{height:270px;border:1px solid var(--line);border-radius:22px;background:radial-gradient(circle at center,rgba(255,255,255,.08),rgba(0,0,0,.10));overflow:hidden;position:relative}.visual canvas{width:100%;height:100%;display:block}.legend{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:.9rem;margin-top:10px}.leg{display:flex;gap:6px;align-items:center}.sw{width:12px;height:12px;border-radius:4px}.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}.mini{border:1px solid var(--line);border-radius:18px;padding:14px;background:var(--card)}.mini strong{color:var(--accent)}
+    .empty{display:none;text-align:center;border:1px dashed var(--line);border-radius:24px;padding:30px;color:var(--muted);background:var(--card)}.footer{margin:22px 0 6px;color:var(--muted);text-align:center;font-size:.92rem}
+    @media (max-width:980px){.hero-grid,.layout{grid-template-columns:1fr}.sidebar{position:relative;top:auto}.toolbar{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+    @media print{body{background:#fff;color:#000}.toolbar,.sidebar,.visual,.btns,.themes{display:none}.layout,.hero-grid{display:block}.question-card{break-inside:avoid;box-shadow:none}.q-body{display:block!important}.hero,.question-card{border:1px solid #ddd;background:#fff;color:#000}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <span class="badge"><span class="dot"></span> Guía interactiva · K-Means · Versión 2.0</span>
+          <h1>10 preguntas y respuestas desarrolladas sobre K-Means</h1>
+          <p class="lead">Material didáctico para estudiar clustering desde cero: concepto, aprendizaje no supervisado, elección de K, centroides, distancia euclídea, inercia, método del codo, silhouette score y limitaciones.</p>
+          <div class="stats">
+            <div class="stat"><strong>10</strong><span>preguntas guía</span></div>
+            <div class="stat"><strong>5</strong><span>temas visuales</span></div>
+            <div class="stat"><strong>1</strong><span>mini simulación</span></div>
+            <div class="stat"><strong>100%</strong><span>HTML autónomo</span></div>
+          </div>
+        </div>
+        <div class="hero-card">
+          <h2 style="margin:0 0 8px">Idea central</h2>
+          <p style="color:var(--muted);margin-top:0">K-Means agrupa observaciones sin etiquetas previas buscando clusters compactos alrededor de centroides. El resultado depende de la elección de K, la escala de las variables, la distancia utilizada y la forma real de los datos.</p>
+          <div class="visual"><canvas id="kCanvas" width="820" height="420" aria-label="Mini visualización de K-Means"></canvas></div>
+          <div class="legend"><span class="leg"><span class="sw" style="background:#36d4ff"></span>Cluster A</span><span class="leg"><span class="sw" style="background:#8b5cf6"></span>Cluster B</span><span class="leg"><span class="sw" style="background:#3ee88a"></span>Cluster C</span><span class="leg">★ centroide</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="toolbar" aria-label="Controles de la guía">
+      <input id="search" class="search" type="search" placeholder="Buscar: centroide, inercia, silhouette, distancia, limitaciones..." />
+      <div class="btns">
+        <button class="btn primary" id="openAll">Abrir todo</button>
+        <button class="btn" id="closeAll">Cerrar todo</button>
+        <button class="btn" id="studyMode">Modo estudio</button>
+      </div>
+      <div class="themes" aria-label="Temas visuales">
+        <button class="theme-dot active" data-theme="dark" title="Tema oscuro" style="background:linear-gradient(135deg,#08111f,#36d4ff)"></button>
+        <button class="theme-dot" data-theme="light" title="Tema claro" style="background:linear-gradient(135deg,#ffffff,#0077ff)"></button>
+        <button class="theme-dot" data-theme="ocean" title="Tema océano" style="background:linear-gradient(135deg,#051b22,#14b8a6)"></button>
+        <button class="theme-dot" data-theme="violet" title="Tema violeta" style="background:linear-gradient(135deg,#170926,#f472b6)"></button>
+        <button class="theme-dot" data-theme="graphite" title="Tema grafito" style="background:linear-gradient(135deg,#101114,#eab308)"></button>
+      </div>
+    </section>
+
+    <main class="layout">
+      <aside class="sidebar">
+        <p class="side-title">Recorrido sugerido</p>
+        <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+        <div class="nav" id="nav"></div>
+      </aside>
+      <section class="content" id="content">
+        <article class="question-card open" id="q1" data-keywords="k-means clustering agrupamiento grupos clusters centroide aprendizaje no supervisado segmentacion patrones">
+          <div class="q-head"><div><div class="q-kicker">Pregunta 1</div><h2 class="q-title">¿Qué es K-Means y para qué sirve?</h2></div><div class="q-icon">+</div></div>
+          <div class="q-body">
+            <p><strong>K-Means</strong> es un algoritmo de <strong>clustering</strong> o agrupamiento que se utiliza para dividir un conjunto de datos en <strong>K grupos</strong> o <strong>clusters</strong>, de manera que los datos dentro de un mismo grupo sean lo más parecidos posible entre sí.</p>
+            <p>Pertenece al <strong>aprendizaje no supervisado</strong>, porque no necesita una variable objetivo ni etiquetas previas. El algoritmo no recibe ejemplos del tipo “este cliente pertenece al grupo A” o “este libro pertenece al grupo B”; observa las características disponibles y trata de encontrar patrones de similitud.</p>
+            <div class="note"><strong>Idea clave:</strong> K-Means no predice una etiqueta conocida; descubre estructuras internas que después deben ser interpretadas por el analista.</div>
+            <p>La letra <strong>K</strong> representa la cantidad de grupos que queremos formar. Si usamos <span class="inline">K = 3</span>, el algoritmo intentará dividir los datos en tres grupos. La palabra <strong>Means</strong> significa “medias” o “promedios”, porque cada grupo se representa mediante un punto promedio llamado <strong>centroide</strong>.</p>
+            <p>Por ejemplo, con datos de clientes como edad, ingresos y gasto mensual, K-Means puede ayudar a encontrar perfiles de clientes: jóvenes con bajo gasto, clientes de alto ingreso y alto consumo, o clientes ocasionales. El algoritmo no conoce esos nombres; agrupa por cercanía matemática y luego el analista interpreta.</p>
+            <div class="pill-row"><span class="pill">Segmentación de clientes</span><span class="pill">Agrupamiento de documentos</span><span class="pill">Imágenes</span><span class="pill">Patrones de comportamiento</span><span class="pill">EDA</span></div>
+          </div>
+        </article>
+
+        <article class="question-card" id="q2" data-keywords="aprendizaje no supervisado etiquetas variable objetivo datos sin respuesta cliente edad ingreso gasto">
+          <div class="q-head"><div><div class="q-kicker">Pregunta 2</div><h2 class="q-title">¿Por qué K-Means es un algoritmo de aprendizaje no supervisado?</h2></div><div class="q-icon">+</div></div>
+          <div class="q-body">
+            <p>K-Means es de <strong>aprendizaje no supervisado</strong> porque trabaja con datos que no tienen una respuesta correcta previamente definida. No se le indica al modelo cuál es la categoría real de cada observación.</p>
+            <p>En aprendizaje supervisado, el modelo aprende a partir de ejemplos etiquetados. Por ejemplo, para predecir si un cliente comprará o no comprará, podemos tener una columna llamada “compró” con valores sí/no. En K-Means no existe esa columna objetivo.</p>
+            <table><thead><tr><th>Cliente</th><th>Edad</th><th>Ingreso</th><th>Gasto mensual</th></tr></thead><tbody><tr><td>A</td><td>22</td><td>300</td><td>50</td></tr><tr><td>B</td><td>24</td><td>320</td><td>55</td></tr><tr><td>C</td><td>55</td><td>1500</td><td>500</td></tr><tr><td>D</td><td>60</td><td>1600</td><td>530</td></tr></tbody></table>
+            <p>K-Means puede detectar que A y B se parecen entre sí, y que C y D forman otro grupo. Pero nadie le dijo previamente que existen esos grupos: el algoritmo los descubre usando distancia y proximidad.</p>
+            <div class="good"><strong>Conclusión:</strong> K-Means sirve para explorar datos, no para predecir una etiqueta conocida.</div>
+          </div>
+        </article>
+
+        <article class="question-card" id="q3" data-keywords="k cantidad clusters elegir metodo codo silhouette score libros paginas dificultad">
+          <div class="q-head"><div><div class="q-kicker">Pregunta 3</div><h2 class="q-title">¿Qué significa la K en K-Means?</h2></div><div class="q-icon">+</div></div>
+          <div class="q-body">
+            <p>La <strong>K</strong> representa la cantidad de clusters que el algoritmo debe formar. Es un valor que se define antes de ejecutar K-Means.</p>
+            <div class="code">K = 2  → el algoritmo buscará dos grupos.
+K = 4  → el algoritmo buscará cuatro grupos.</div>
+            <p>Esta decisión es importante porque K-Means no decide automáticamente cuántos grupos existen. El analista debe elegir K usando criterio, visualización, conocimiento del problema y métricas como el <strong>método del codo</strong> o el <strong>silhouette score</strong>.</p>
+            <table><thead><tr><th>K</th><th>Posible interpretación con libros</th></tr></thead><tbody><tr><td>K = 1</td><td>Todos los libros quedan juntos. No sirve para segmentar.</td></tr><tr><td>K = 2</td><td>Podría separar libros simples y libros complejos.</td></tr><tr><td>K = 3</td><td>Podría separar libros simples, intermedios y avanzados.</td></tr><tr><td>K = 8</td><td>Podría generar demasiados grupos difíciles de interpretar.</td></tr></tbody></table>
+            <div class="warn"><strong>Advertencia:</strong> un K demasiado bajo mezcla grupos diferentes; un K demasiado alto divide artificialmente grupos que deberían mantenerse unidos.</div>
+          </div>
+        </article>
+
+        <article class="question-card" id="q4" data-keywords="centroide promedio punto central cluster coordenadas media no necesariamente punto real dataset">
+          <div class="q-head"><div><div class="q-kicker">Pregunta 4</div><h2 class="q-title">¿Qué es un centroide en K-Means?</h2></div><div class="q-icon">+</div></div>
+          <div class="q-body">
+            <p>Un <strong>centroide</strong> es el punto central de un cluster. Representa el promedio de todos los puntos asignados a ese grupo.</p>
+            <p>En K-Means, cada cluster tiene un centroide. El algoritmo usa esos centroides para decidir a qué grupo pertenece cada punto: cada observación se asigna al centroide más cercano.</p>
+            <div class="formula">Centroide 1D: (2 + 4 + 6) / 3 = 4</div>
+            <table><thead><tr><th>Punto</th><th>x</th><th>y</th></tr></thead><tbody><tr><td>A</td><td>2</td><td>4</td></tr><tr><td>B</td><td>4</td><td>6</td></tr><tr><td>C</td><td>6</td><td>8</td></tr></tbody></table>
+            <div class="code">x = (2 + 4 + 6) / 3 = 4
+y = (4 + 6 + 8) / 3 = 6
+Centroide = (4, 6)</div>
+            <p>El centroide no necesariamente tiene que ser un punto real del dataset. Puede ser una posición promedio que no corresponde exactamente a ningún cliente, producto, libro o documento existente.</p>
+          </div>
+        </article>
+
+        <article class="question-card" id="q5" data-keywords="paso a paso algoritmo iterativo inicializar centroides asignar recalcular convergencia kmeans++">
+          <div class="q-head"><div><div class="q-kicker">Pregunta 5</div><h2 class="q-title">¿Cómo funciona paso a paso el algoritmo K-Means?</h2></div><div class="q-icon">+</div></div>
+          <div class="q-body">
+            <p>K-Means funciona mediante un proceso <strong>iterativo</strong>. Esto significa que repite varias veces una secuencia de pasos hasta que el resultado se estabiliza.</p>
+            <div class="mini-grid"><div class="mini"><strong>1.</strong><br>Elegir K</div><div class="mini"><strong>2.</strong><br>Inicializar centroides</div><div class="mini"><strong>3.</strong><br>Asignar puntos</div><div class="mini"><strong>4.</strong><br>Recalcular centroides</div><div class="mini"><strong>5.</strong><br>Repetir</div><div class="mini"><strong>6.</strong><br>Converger</div></div>
+            <div class="code">Asignar puntos → recalcular centroides → asignar puntos → recalcular centroides</div>
+            <p>Primero se elige la cantidad de clusters. Luego se colocan K centroides iniciales, de forma aleatoria o con métodos más inteligentes como <strong>K-Means++</strong>. Después, cada punto se asigna al centroide más cercano. Una vez asignados todos los puntos, cada centroide se recalcula como promedio de los puntos que quedaron dentro de su cluster.</p>
+            <div class="note"><strong>Convergencia:</strong> el proceso termina cuando los centroides dejan de moverse significativamente o cuando los puntos ya no cambian de grupo.</div>
+          </div>
+        </article>
+
+        <article class="question-card" id="q6" data-keywords="distancia euclidea formula linea recta coordenadas pitagoras centroides clusters esfericos dos lunas dbscan espectral">
+          <div class="q-head"><div><div class="q-kicker">Pregunta 6</div><h2 class="q-title">¿Qué es la distancia euclídea y por qué es importante en K-Means?</h2></div><div class="q-icon">+</div></div>
+          <div class="q-body">
+            <p>La <strong>distancia euclídea</strong> es la distancia en línea recta entre dos puntos. En K-Means es fundamental porque el algoritmo asigna cada punto al centroide más cercano.</p>
+            <div class="formula">d(A,B) = √[(x₂ − x₁)² + (y₂ − y₁)²]</div>
+            <div class="code">A = (1, 2)
+B = (4, 6)
+
+d(A,B) = √[(4 − 1)² + (6 − 2)²]
+d(A,B) = √[3² + 4²]
+d(A,B) = √25
+d(A,B) = 5</div>
+            <p>La distancia euclídea funciona bien cuando los clusters tienen forma aproximadamente circular o esférica. Sin embargo, puede tener problemas cuando los grupos tienen formas curvas, alargadas o no convexas.</p>
+            <div class="warn"><strong>Ejemplo de falla:</strong> en datasets con forma de “dos lunas”, K-Means puede fallar porque intenta formar regiones alrededor de centroides, mientras que la estructura real es curva. Allí suelen funcionar mejor DBSCAN o clustering espectral.</div>
+          </div>
+        </article>
+
+        <article class="question-card" id="q7" data-keywords="inercia compactos suma distancias cuadradas centroide minimizar elbow metodo codo">
+          <div class="q-head"><div><div class="q-kicker">Pregunta 7</div><h2 class="q-title">¿Qué es la inercia en K-Means?</h2></div><div class="q-icon">+</div></div>
+          <div class="q-body">
+            <p>La <strong>inercia</strong> mide qué tan compactos son los clusters. Técnicamente, es la suma de las distancias cuadradas entre cada punto y el centroide de su cluster.</p>
+            <div class="formula">Inercia = Σ ||xᵢ − μₖ||²</div>
+            <table><thead><tr><th>Símbolo</th><th>Significado</th></tr></thead><tbody><tr><td>xᵢ</td><td>Punto de datos.</td></tr><tr><td>μₖ</td><td>Centroide del cluster k.</td></tr><tr><td>||xᵢ − μₖ||²</td><td>Distancia cuadrada entre el punto y el centroide.</td></tr></tbody></table>
+            <p>Si los puntos están cerca de sus centroides, la inercia será baja. Si están lejos, será alta. K-Means intenta minimizar esta cantidad.</p>
+            <div class="warn"><strong>Importante:</strong> la inercia siempre baja cuando aumentamos K. Por eso no conviene elegir K mirando solo la menor inercia, porque el menor valor aparece cuando hay demasiados clusters.</div>
+          </div>
+        </article>
+
+        <article class="question-card" id="q8" data-keywords="metodo codo elegir k inercia curva aplanar mejora marginal elbow">
+          <div class="q-head"><div><div class="q-kicker">Pregunta 8</div><h2 class="q-title">¿Qué es el método del codo y cómo ayuda a elegir K?</h2></div><div class="q-icon">+</div></div>
+          <div class="q-body">
+            <p>El <strong>método del codo</strong> es una técnica utilizada para elegir un valor razonable de K en K-Means.</p>
+            <p>Consiste en ejecutar el algoritmo varias veces con diferentes valores de K y calcular la inercia para cada caso. Luego se grafica K en el eje horizontal y la inercia en el eje vertical.</p>
+            <table><thead><tr><th>K</th><th>Inercia</th><th>Lectura</th></tr></thead><tbody><tr><td>1</td><td>1000</td><td>Muy general.</td></tr><tr><td>2</td><td>600</td><td>Gran mejora.</td></tr><tr><td>3</td><td>320</td><td>Otra mejora importante.</td></tr><tr><td>4</td><td>280</td><td>Mejora menor.</td></tr><tr><td>5</td><td>250</td><td>Mejora marginal.</td></tr><tr><td>6</td><td>235</td><td>Curva más plana.</td></tr></tbody></table>
+            <div class="note"><strong>Lectura:</strong> antes del codo, agregar clusters mejora mucho el modelo; después del codo, agregar clusters mejora poco.</div>
+            <p>El método del codo no reemplaza el criterio del analista. Es una ayuda visual que conviene complementar con silhouette score, visualización de los datos y conocimiento del problema.</p>
+          </div>
+        </article>
+
+        <article class="question-card" id="q9" data-keywords="silhouette score interpretar ai bi formula cluster vecino compacto separado mal asignado">
+          <div class="q-head"><div><div class="q-kicker">Pregunta 9</div><h2 class="q-title">¿Qué es el silhouette score y cómo se interpreta?</h2></div><div class="q-icon">+</div></div>
+          <div class="q-body">
+            <p>El <strong>silhouette score</strong> es una métrica que evalúa la calidad de los clusters. A diferencia de la inercia, no solo mide cercanía al propio cluster, sino también separación respecto de otros clusters.</p>
+            <div class="formula">s(i) = [b(i) − a(i)] / max(a(i), b(i))</div>
+            <table><thead><tr><th>Elemento</th><th>Significado</th></tr></thead><tbody><tr><td>a(i)</td><td>Distancia promedio del punto i a los puntos de su mismo cluster.</td></tr><tr><td>b(i)</td><td>Distancia promedio del punto i al cluster vecino más cercano.</td></tr><tr><td>s(i)</td><td>Valor silhouette del punto i.</td></tr></tbody></table>
+            <table><thead><tr><th>Valor</th><th>Interpretación</th></tr></thead><tbody><tr><td>Cerca de 1</td><td>El punto está bien asignado.</td></tr><tr><td>Cerca de 0</td><td>El punto está en una zona ambigua entre clusters.</td></tr><tr><td>Cerca de -1</td><td>El punto probablemente está mal asignado.</td></tr></tbody></table>
+            <div class="code">a(i) = 2
+b(i) = 8
+
+s(i) = (8 − 2) / max(2, 8)
+s(i) = 6 / 8
+s(i) = 0.75</div>
+            <div class="good"><strong>Interpretación del ejemplo:</strong> 0.75 indica una buena asignación, porque el punto está mucho más cerca de su propio cluster que del cluster vecino.</div>
+          </div>
+        </article>
+
+        <article class="question-card" id="q10" data-keywords="limitaciones escala variables outliers optimo local kmeans++ categoricos formas curvas no convexas estandarizar normalizar">
+          <div class="q-head"><div><div class="q-kicker">Pregunta 10</div><h2 class="q-title">¿Cuáles son las principales limitaciones de K-Means?</h2></div><div class="q-icon">+</div></div>
+          <div class="q-body">
+            <p>K-Means es muy útil, pero debe usarse con cuidado. Sus principales limitaciones son:</p>
+            <div class="mini-grid"><div class="mini"><strong>K previo</strong><br>Hay que elegir la cantidad de clusters antes de ejecutar el algoritmo.</div><div class="mini"><strong>Escala</strong><br>Variables con números grandes pueden dominar la distancia.</div><div class="mini"><strong>Outliers</strong><br>Valores extremos pueden arrastrar los centroides.</div><div class="mini"><strong>Forma</strong><br>Funciona mejor con clusters circulares o esféricos.</div><div class="mini"><strong>Óptimo local</strong><br>Puede converger a una solución estable, pero no necesariamente global.</div><div class="mini"><strong>Datos categóricos</strong><br>No es ideal para variables categóricas puras.</div></div>
+            <p>Como usa distancias, una variable con valores grandes puede pesar mucho más que otra. Por ejemplo, si usamos edad e ingreso, el ingreso puede dominar simplemente porque sus valores numéricos son mayores. Por eso normalmente se recomienda <strong>estandarizar</strong> o <strong>normalizar</strong> los datos antes de aplicar K-Means.</p>
+            <div class="note"><strong>Buenas prácticas:</strong> revisar variables, escalar datos, analizar outliers, probar distintos K, usar varias inicializaciones o K-Means++, y evaluar con métricas más interpretación contextual.</div>
+          </div>
+        </article>
+        <div class="empty" id="empty">No se encontraron preguntas con ese término. Probá buscar “centroide”, “inercia”, “silhouette”, “distancia” o “limitaciones”.</div>
+      </section>
+    </main>
+    <div class="footer">Material elaborado para una clase introductoria de Ciencia de Datos · K-Means · HTML interactivo autónomo</div>
+  </div>
+
+  <script>
+    const cards = [...document.querySelectorAll('.question-card')];
+    const nav = document.getElementById('nav');
+    const progress = document.getElementById('progress');
+    const search = document.getElementById('search');
+    const empty = document.getElementById('empty');
+
+    function updateProgress(){
+      const visible = cards.filter(c => c.style.display !== 'none');
+      const open = visible.filter(c => c.classList.contains('open'));
+      const pct = visible.length ? Math.round((open.length / visible.length) * 100) : 0;
+      progress.style.width = pct + '%';
+    }
+
+    cards.forEach((card, idx)=>{
+      const title = card.querySelector('.q-title').textContent;
+      const btn = document.createElement('button');
+      btn.textContent = `${idx+1}. ${title.replace('¿','').replace('?','')}`;
+      btn.addEventListener('click',()=>{card.scrollIntoView({behavior:'smooth',block:'start'}); card.classList.add('open'); updateProgress(); setActiveNav(card.id);});
+      nav.appendChild(btn);
+      card.querySelector('.q-head').addEventListener('click',()=>{card.classList.toggle('open'); updateProgress(); setActiveNav(card.id);});
+    });
+
+    function setActiveNav(id){
+      [...nav.children].forEach((b,i)=>b.classList.toggle('active', cards[i].id===id));
+    }
+
+    document.getElementById('openAll').onclick = ()=>{cards.forEach(c=>{if(c.style.display !== 'none') c.classList.add('open')}); updateProgress();};
+    document.getElementById('closeAll').onclick = ()=>{cards.forEach(c=>c.classList.remove('open')); updateProgress();};
+    document.getElementById('studyMode').onclick = ()=>{cards.forEach((c,i)=>c.classList.toggle('open', i===0)); search.value=''; cards.forEach(c=>c.style.display=''); empty.style.display='none'; updateProgress(); window.scrollTo({top:0,behavior:'smooth'});};
+
+    search.addEventListener('input',()=>{
+      const q = search.value.trim().toLowerCase();
+      let count = 0;
+      cards.forEach(card=>{
+        const text = (card.textContent + ' ' + card.dataset.keywords).toLowerCase();
+        const match = !q || text.includes(q);
+        card.style.display = match ? '' : 'none';
+        if(match) count++;
+      });
+      empty.style.display = count ? 'none' : 'block';
+      updateProgress();
+    });
+
+    document.querySelectorAll('.theme-dot').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        document.documentElement.dataset.theme = btn.dataset.theme;
+        localStorage.setItem('kmeans-theme', btn.dataset.theme);
+        document.querySelectorAll('.theme-dot').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+    const savedTheme = localStorage.getItem('kmeans-theme');
+    if(savedTheme){
+      document.documentElement.dataset.theme = savedTheme;
+      document.querySelectorAll('.theme-dot').forEach(b=>b.classList.toggle('active', b.dataset.theme===savedTheme));
+    }
+
+    // Mini visualización autónoma de K-Means: puntos, centroides y líneas de asignación.
+    const canvas = document.getElementById('kCanvas');
+    const ctx = canvas.getContext('2d');
+    const clusters = [
+      {c:'#36d4ff', cx:210, cy:145, pts:[]},
+      {c:'#8b5cf6', cx:555, cy:130, pts:[]},
+      {c:'#3ee88a', cx:415, cy:305, pts:[]}
+    ];
+    let t = 0;
+    function seedPoints(){
+      clusters.forEach((cl,ci)=>{
+        cl.pts = [];
+        for(let i=0;i<22;i++){
+          const a = Math.random()*Math.PI*2;
+          const r = 22 + Math.random()*58;
+          cl.pts.push({x:cl.cx + Math.cos(a)*r, y:cl.cy + Math.sin(a)*r, ox:Math.random()*80, oy:Math.random()*80});
+        }
+      });
+    }
+    function draw(){
+      t += .015;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = 'rgba(255,255,255,.035)';
+      for(let x=40;x<canvas.width;x+=40){ctx.fillRect(x,0,1,canvas.height)}
+      for(let y=40;y<canvas.height;y+=40){ctx.fillRect(0,y,canvas.width,1)}
+      clusters.forEach(cl=>{
+        cl.pts.forEach(p=>{
+          const x = p.x + Math.sin(t+p.ox)*4;
+          const y = p.y + Math.cos(t+p.oy)*4;
+          ctx.strokeStyle = 'rgba(255,255,255,.12)'; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(cl.cx,cl.cy); ctx.stroke();
+          ctx.fillStyle = cl.c; ctx.globalAlpha=.9;
+          ctx.beginPath(); ctx.arc(x,y,5,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1;
+        });
+        ctx.fillStyle = cl.c; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+        ctx.beginPath();
+        for(let i=0;i<5;i++){
+          const ang = -Math.PI/2 + i*2*Math.PI/5;
+          const rad = i%2===0 ? 14 : 6;
+          const x = cl.cx + Math.cos(ang)*rad;
+          const y = cl.cy + Math.sin(ang)*rad;
+          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        }
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+      });
+      requestAnimationFrame(draw);
+    }
+    seedPoints(); draw(); updateProgress(); setActiveNav('q1');
+  </script>
+</body>
+</html>

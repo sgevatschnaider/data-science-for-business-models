@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>K-Means interactivo</title>
+
+  <style>
+    :root {
+      --bg: #eef3f8;
+      --panel: #ffffff;
+      --panel-2: #f7fafc;
+      --text: #172033;
+      --muted: #5d6b82;
+      --border: #d8e0ea;
+      --accent: #2563eb;
+      --accent-2: #06b6d4;
+      --danger: #ef4444;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+      --canvas-bg: #ffffff;
+      --grid: rgba(100, 116, 139, 0.14);
+    }
+
+    body.dark {
+      --bg: #07111f;
+      --panel: #0f1b2d;
+      --panel-2: #132238;
+      --text: #eef6ff;
+      --muted: #9fb1c9;
+      --border: #223555;
+      --accent: #38bdf8;
+      --accent-2: #a78bfa;
+      --danger: #fb7185;
+      --success: #4ade80;
+      --warning: #facc15;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+      --canvas-bg: #071827;
+      --grid: rgba(148, 163, 184, 0.15);
+    }
+
+    body.academic {
+      --bg: #e8eef2;
+      --panel: #ffffff;
+      --panel-2: #f3f6f7;
+      --text: #17252f;
+      --muted: #60717d;
+      --border: #ccd8df;
+      --accent: #006d77;
+      --accent-2: #0a9396;
+      --danger: #ae2012;
+      --success: #2a9d8f;
+      --warning: #ca6702;
+      --shadow: 0 18px 45px rgba(0, 64, 77, 0.13);
+      --canvas-bg: #fbfdfe;
+      --grid: rgba(0, 109, 119, 0.12);
+    }
+
+    body.neon {
+      --bg: #060018;
+      --panel: #12072b;
+      --panel-2: #1b0b3d;
+      --text: #fbf7ff;
+      --muted: #c4b5fd;
+      --border: #3b1b73;
+      --accent: #f0abfc;
+      --accent-2: #22d3ee;
+      --danger: #fb7185;
+      --success: #34d399;
+      --warning: #fde047;
+      --shadow: 0 18px 45px rgba(168, 85, 247, 0.25);
+      --canvas-bg: #0c0620;
+      --grid: rgba(236, 72, 153, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.16), transparent 32%),
+                  radial-gradient(circle at bottom right, rgba(6, 182, 212, 0.14), transparent 30%),
+                  var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 22px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .title-block {
+      max-width: 850px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 3vw, 3rem);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.55;
+    }
+
+    .badge {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-weight: 800;
+      box-shadow: var(--shadow);
+      white-space: nowrap;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(680px, 1fr) 400px;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .main-card,
+    .side-card,
+    .controls-card {
+      background: color-mix(in srgb, var(--panel) 94%, transparent);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .main-card {
+      overflow: hidden;
+    }
+
+    .canvas-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel-2);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 11px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 0.88rem;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.15);
+    }
+
+    .mini-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      height: 620px;
+      background: var(--canvas-bg);
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: crosshair;
+    }
+
+    .floating-help {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      max-width: 520px;
+      background: color-mix(in srgb, var(--panel) 88%, transparent);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 12px 14px;
+      backdrop-filter: blur(10px);
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .controls-card {
+      margin-top: 18px;
+      padding: 16px;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(120px, 1fr));
+      gap: 12px;
+      align-items: end;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    select,
+    input[type="range"] {
+      width: 100%;
+    }
+
+    select {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 13px;
+      padding: 11px 12px;
+      font-weight: 700;
+      outline: none;
+    }
+
+    button {
+      border: 0;
+      border-radius: 14px;
+      padding: 11px 13px;
+      font-weight: 900;
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease, opacity 0.15s ease;
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button.secondary {
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+
+    button.warning {
+      background: linear-gradient(135deg, var(--warning), #fb923c);
+    }
+
+    button.danger {
+      background: linear-gradient(135deg, var(--danger), #f97316);
+    }
+
+    button.success {
+      background: linear-gradient(135deg, var(--success), #22c55e);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .side-card {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 620px;
+    }
+
+    .section {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 15px;
+    }
+
+    .section h2,
+    .section h3 {
+      margin: 0 0 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .section h2 {
+      font-size: 1.15rem;
+    }
+
+    .section h3 {
+      font-size: 1rem;
+    }
+
+    .section p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.94rem;
+    }
+
+    .formula {
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 14px;
+      background: color-mix(in srgb, var(--accent) 10%, var(--panel));
+      border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.86rem;
+      line-height: 1.55;
+      overflow-x: auto;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .metric {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 5px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.15rem;
+      letter-spacing: -0.03em;
+    }
+
+    .calc-box {
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .calc-box strong {
+      color: var(--text);
+    }
+
+    .progress {
+      height: 10px;
+      border-radius: 999px;
+      background: var(--border);
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 0.25s ease;
+    }
+
+    .small-note {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    .kbd {
+      display: inline-block;
+      padding: 2px 7px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 8px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    @media (max-width: 1180px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .side-card {
+        min-height: unset;
+      }
+
+      .controls-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        padding: 12px;
+      }
+
+      .header {
+        flex-direction: column;
+      }
+
+      .canvas-wrap {
+        height: 520px;
+      }
+
+      .controls-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .floating-help {
+        position: static;
+        margin: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="title-block">
+        <h1>K-Means interactivo: centroides, asignación y convergencia</h1>
+        <p class="subtitle">
+          Una simulación para explicar el algoritmo desde la intuición geométrica:
+          los puntos se asignan al centroide más cercano, los centroides se recalculan
+          como promedios y el proceso se repite hasta estabilizarse.
+        </p>
+      </div>
+      <div class="badge">Aprendizaje no supervisado</div>
+    </header>
+
+    <section class="layout">
+      <div>
+        <div class="main-card">
+          <div class="canvas-toolbar">
+            <div class="status-pill">
+              <span class="dot"></span>
+              <span id="statusLabel">Datos sin etiquetas</span>
+            </div>
+            <div class="mini-legend" id="legend"></div>
+          </div>
+
+          <div class="canvas-wrap">
+            <canvas id="canvas"></canvas>
+
+            <div class="floating-help" id="floatingHelp">
+              Hacé clic en un punto para ver sus distancias a cada centroide.
+              Hacé clic en un centroide para ver cómo se calcula su nueva posición.
+            </div>
+          </div>
+        </div>
+
+        <div class="controls-card">
+          <div class="controls-grid">
+            <div class="field">
+              <label for="kSelect">Cantidad de clusters</label>
+              <select id="kSelect">
+                <option value="2">K = 2</option>
+                <option value="3" selected>K = 3</option>
+                <option value="4">K = 4</option>
+                <option value="5">K = 5</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="scenarioSelect">Escenario</label>
+              <select id="scenarioSelect">
+                <option value="separados" selected>Tres grupos separados</option>
+                <option value="cercanos">Grupos cercanos</option>
+                <option value="desbalanceados">Grupos desbalanceados</option>
+                <option value="outliers">Con outliers</option>
+                <option value="alargados">Clusters alargados</option>
+                <option value="aleatorio">Datos aleatorios</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="initSelect">Inicialización</label>
+              <select id="initSelect">
+                <option value="random" selected>Aleatoria</option>
+                <option value="plusplus">K-Means++ simple</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="modeSelect">Modo didáctico</label>
+              <select id="modeSelect">
+                <option value="basico">Básico</option>
+                <option value="intermedio" selected>Intermedio</option>
+                <option value="avanzado">Avanzado</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="speedRange">Velocidad</label>
+              <input id="speedRange" type="range" min="250" max="1800" step="50" value="850" />
+            </div>
+
+            <div class="field">
+              <label>Visual</label>
+              <button id="themeBtn" class="secondary">Cambiar tema</button>
+            </div>
+
+            <button id="dataBtn" class="secondary">Generar datos</button>
+            <button id="initBtn">Inicializar centroides</button>
+            <button id="stepBtn" class="warning">Paso siguiente</button>
+            <button id="runBtn" class="success">Ejecutar</button>
+            <button id="resetCentroidsBtn" class="secondary">Reiniciar centroides</button>
+            <button id="resetBtn" class="danger">Reiniciar todo</button>
+
+            <button id="linesBtn" class="secondary">Mostrar distancias</button>
+            <button id="calcBtn" class="secondary">Mostrar cálculo</button>
+          </div>
+
+          <div class="footer-note">
+            Sugerencia para clase: primero usá <span class="kbd">Paso siguiente</span>,
+            luego <span class="kbd">Ejecutar</span> para mostrar la convergencia completa.
+          </div>
+        </div>
+      </div>
+
+      <aside class="side-card">
+        <div class="section">
+          <h2 id="stepTitle">Inicio: datos sin etiquetas</h2>
+          <p id="stepExplanation">
+            Tenemos una nube de puntos sin clases conocidas. K-Means intentará formar grupos
+            usando únicamente distancias y promedios.
+          </p>
+          <div class="formula" id="formulaBox">
+            Idea central: elegir K → inicializar centroides → asignar puntos → recalcular centroides → repetir.
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Métricas del algoritmo</h3>
+          <div class="metrics">
+            <div class="metric">
+              <span>Iteración</span>
+              <strong id="iterationMetric">0</strong>
+            </div>
+            <div class="metric">
+              <span>K</span>
+              <strong id="kMetric">3</strong>
+            </div>
+            <div class="metric">
+              <span>Inercia</span>
+              <strong id="inertiaMetric">—</strong>
+            </div>
+            <div class="metric">
+              <span>Movimiento</span>
+              <strong id="movementMetric">—</strong>
+            </div>
+          </div>
+          <div class="progress">
+            <div class="bar" id="convergenceBar"></div>
+          </div>
+          <p class="small-note" id="convergenceText" style="margin-top: 10px;">
+            La convergencia aparece cuando los centroides casi no se mueven.
+          </p>
+        </div>
+
+        <div class="section">
+          <h3>Detalle interactivo</h3>
+          <div class="calc-box" id="detailBox">
+            Seleccioná un punto o un centroide en el gráfico para ver el cálculo.
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Lectura para el docente</h3>
+          <p id="teacherNote">
+            En esta etapa conviene insistir en que el algoritmo no “sabe” qué grupo es correcto:
+            solo busca una partición compacta alrededor de centros.
+          </p>
+        </div>
+      </aside>
+    </section>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const kSelect = document.getElementById("kSelect");
+    const scenarioSelect = document.getElementById("scenarioSelect");
+    const initSelect = document.getElementById("initSelect");
+    const modeSelect = document.getElementById("modeSelect");
+    const speedRange = document.getElementById("speedRange");
+
+    const dataBtn = document.getElementById("dataBtn");
+    const initBtn = document.getElementById("initBtn");
+    const stepBtn = document.getElementById("stepBtn");
+    const runBtn = document.getElementById("runBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const resetCentroidsBtn = document.getElementById("resetCentroidsBtn");
+    const linesBtn = document.getElementById("linesBtn");
+    const calcBtn = document.getElementById("calcBtn");
+    const themeBtn = document.getElementById("themeBtn");
+
+    const statusLabel = document.getElementById("statusLabel");
+    const stepTitle = document.getElementById("stepTitle");
+    const stepExplanation = document.getElementById("stepExplanation");
+    const formulaBox = document.getElementById("formulaBox");
+    const iterationMetric = document.getElementById("iterationMetric");
+    const kMetric = document.getElementById("kMetric");
+    const inertiaMetric = document.getElementById("inertiaMetric");
+    const movementMetric = document.getElementById("movementMetric");
+    const convergenceBar = document.getElementById("convergenceBar");
+    const convergenceText = document.getElementById("convergenceText");
+    const detailBox = document.getElementById("detailBox");
+    const teacherNote = document.getElementById("teacherNote");
+    const floatingHelp = document.getElementById("floatingHelp");
+    const legend = document.getElementById("legend");
+
+    const clusterColors = [
+      "#2563eb",
+      "#f97316",
+      "#16a34a",
+      "#9333ea",
+      "#e11d48"
+    ];
+
+    const themes = ["", "dark", "academic", "neon"];
+    let themeIndex = 0;
+
+    let points = [];
+    let centroids = [];
+    let previousCentroids = [];
+    let k = 3;
+    let iteration = 0;
+    let initialized = false;
+    let assigned = false;
+    let converged = false;
+    let running = false;
+    let showLines = false;
+    let showCalc = false;
+    let currentPhase = "inicio";
+    let lastMovement = null;
+    let lastInertia = null;
+    let selected = null;
+    let animationFrame = null;
+
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = Math.floor(rect.width * window.devicePixelRatio);
+      canvas.height = Math.floor(rect.height * window.devicePixelRatio);
+      ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
+      draw();
+    }
+
+    function getCanvasSize() {
+      const rect = canvas.getBoundingClientRect();
+      return { w: rect.width, h: rect.height };
+    }
+
+    function rand(min, max) {
+      return min + Math.random() * (max - min);
+    }
+
+    function gaussianRandom() {
+      let u = 0;
+      let v = 0;
+      while (u === 0) u = Math.random();
+      while (v === 0) v = Math.random();
+      return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function addBlob(cx, cy, n, sx, sy, angle = 0) {
+      const result = [];
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+
+      for (let i = 0; i < n; i++) {
+        const gx = gaussianRandom() * sx;
+        const gy = gaussianRandom() * sy;
+
+        const x = cx + gx * cos - gy * sin;
+        const y = cy + gx * sin + gy * cos;
+
+        result.push({
+          x: clamp(x, 0.06, 0.94),
+          y: clamp(y, 0.08, 0.92),
+          cluster: null,
+          trueGroup: null
+        });
+      }
+
+      return result;
+    }
+
+    function generateData() {
+      stopRunning();
+
+      const scenario = scenarioSelect.value;
+      points = [];
+
+      if (scenario === "separados") {
+        points.push(...addBlob(0.25, 0.28, 45, 0.055, 0.06));
+        points.push(...addBlob(0.72, 0.32, 45, 0.06, 0.055));
+        points.push(...addBlob(0.48, 0.72, 45, 0.06, 0.06));
+      }
+
+      if (scenario === "cercanos") {
+        points.push(...addBlob(0.38, 0.42, 50, 0.075, 0.075));
+        points.push(...addBlob(0.55, 0.47, 50, 0.075, 0.075));
+        points.push(...addBlob(0.48, 0.66, 45, 0.08, 0.08));
+      }
+
+      if (scenario === "desbalanceados") {
+        points.push(...addBlob(0.28, 0.32, 75, 0.065, 0.06));
+        points.push(...addBlob(0.72, 0.32, 30, 0.045, 0.045));
+        points.push(...addBlob(0.52, 0.72, 18, 0.04, 0.04));
+      }
+
+      if (scenario === "outliers") {
+        points.push(...addBlob(0.26, 0.34, 42, 0.055, 0.055));
+        points.push(...addBlob(0.70, 0.36, 42, 0.055, 0.055));
+        points.push(...addBlob(0.50, 0.72, 42, 0.055, 0.055));
+        for (let i = 0; i < 10; i++) {
+          points.push({
+            x: rand(0.07, 0.93),
+            y: rand(0.08, 0.92),
+            cluster: null,
+            outlier: true
+          });
+        }
+      }
+
+      if (scenario === "alargados") {
+        points.push(...addBlob(0.30, 0.35, 55, 0.12, 0.028, 0.75));
+        points.push(...addBlob(0.68, 0.42, 55, 0.12, 0.028, -0.6));
+        points.push(...addBlob(0.52, 0.70, 45, 0.11, 0.03, 0.15));
+      }
+
+      if (scenario === "aleatorio") {
+        for (let i = 0; i < 140; i++) {
+          points.push({
+            x: rand(0.08, 0.92),
+            y: rand(0.1, 0.9),
+            cluster: null
+          });
+        }
+      }
+
+      centroids = [];
+      previousCentroids = [];
+      iteration = 0;
+      initialized = false;
+      assigned = false;
+      converged = false;
+      currentPhase = "inicio";
+      lastMovement = null;
+      lastInertia = null;
+      selected = null;
+
+      updateText();
+      updateMetrics();
+      draw();
+    }
+
+    function initializeCentroids() {
+      stopRunning();
+
+      k = Number(kSelect.value);
+      centroids = [];
+      previousCentroids = [];
+      iteration = 0;
+      assigned = false;
+      converged = false;
+      lastMovement = null;
+      lastInertia = null;
+      selected = null;
+
+      points.forEach(p => p.cluster = null);
+
+      if (initSelect.value === "plusplus") {
+        initializePlusPlus();
+      } else {
+        initializeRandom();
+      }
+
+      initialized = true;
+      currentPhase = "inicializacion";
+      updateText();
+      updateMetrics();
+      draw();
+    }
+
+    function initializeRandom() {
+      for (let i = 0; i < k; i++) {
+        centroids.push({
+          x: rand(0.12, 0.88),
+          y: rand(0.14, 0.86),
+          id: i
+        });
+      }
+    }
+
+    function initializePlusPlus() {
+      const first = points[Math.floor(Math.random() * points.length)];
+      centroids.push({ x: first.x, y: first.y, id: 0 });
+
+      while (centroids.length < k) {
+        const distances = points.map(p => {
+          const minD = Math.min(...centroids.map(c => distanceSquared(p, c)));
+          return minD;
+        });
+
+        const total = distances.reduce((a, b) => a + b, 0);
+        let r = Math.random() * total;
+        let chosenIndex = 0;
+
+        for (let i = 0; i < distances.length; i++) {
+          r -= distances[i];
+          if (r <= 0) {
+            chosenIndex = i;
+            break;
+          }
+        }
+
+        const chosen = points[chosenIndex];
+        centroids.push({
+          x: chosen.x,
+          y: chosen.y,
+          id: centroids.length
+        });
+      }
+    }
+
+    function distanceSquared(a, b) {
+      const dx = a.x - b.x;
+      const dy = a.y - b.y;
+      return dx * dx + dy * dy;
+    }
+
+    function distance(a, b) {
+      return Math.sqrt(distanceSquared(a, b));
+    }
+
+    function assignPointsToCentroids() {
+      if (!initialized) {
+        initializeCentroids();
+      }
+
+      let changed = 0;
+
+      for (const p of points) {
+        let bestCluster = 0;
+        let bestDistance = Infinity;
+
+        for (let i = 0; i < centroids.length; i++) {
+          const d = distanceSquared(p, centroids[i]);
+          if (d < bestDistance) {
+            bestDistance = d;
+            bestCluster = i;
+          }
+        }
+
+        if (p.cluster !== bestCluster) changed++;
+        p.cluster = bestCluster;
+      }
+
+      assigned = true;
+      currentPhase = "asignacion";
+      lastInertia = calculateInertia();
+      selected = null;
+
+      updateText(changed);
+      updateMetrics();
+      draw();
+    }
+
+    function computeNewCentroids() {
+      const newCentroids = [];
+
+      for (let i = 0; i < k; i++) {
+        const clusterPoints = points.filter(p => p.cluster === i);
+
+        if (clusterPoints.length === 0) {
+          newCentroids.push({
+            x: rand(0.12, 0.88),
+            y: rand(0.14, 0.86),
+            id: i,
+            empty: true
+          });
+          continue;
+        }
+
+        const sumX = clusterPoints.reduce((sum, p) => sum + p.x, 0);
+        const sumY = clusterPoints.reduce((sum, p) => sum + p.y, 0);
+
+        newCentroids.push({
+          x: sumX / clusterPoints.length,
+          y: sumY / clusterPoints.length,
+          id: i,
+          count: clusterPoints.length,
+          sumX,
+          sumY
+        });
+      }
+
+      return newCentroids;
+    }
+
+    function updateCentroids() {
+      if (!assigned) {
+        assignPointsToCentroids();
+        return;
+      }
+
+      previousCentroids = centroids.map(c => ({ ...c }));
+      const newCentroids = computeNewCentroids();
+
+      let totalMovement = 0;
+      for (let i = 0; i < centroids.length; i++) {
+        totalMovement += distance(centroids[i], newCentroids[i]);
+      }
+
+      lastMovement = totalMovement;
+      iteration += 1;
+      currentPhase = "actualizacion";
+
+      animateCentroidMove(previousCentroids, newCentroids, () => {
+        centroids = newCentroids;
+        lastInertia = calculateInertia();
+
+        if (lastMovement < 0.004) {
+          converged = true;
+          currentPhase = "convergencia";
+          stopRunning();
+        }
+
+        selected = null;
+        updateText();
+        updateMetrics();
+        draw();
+      });
+    }
+
+    function animateCentroidMove(from, to, callback) {
+      cancelAnimationFrame(animationFrame);
+
+      const duration = Math.max(220, Math.min(900, Number(speedRange.value) * 0.55));
+      const start = performance.now();
+
+      function frame(now) {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+
+        centroids = from.map((c, i) => ({
+          ...c,
+          x: c.x + (to[i].x - c.x) * eased,
+          y: c.y + (to[i].y - c.y) * eased
+        }));
+
+        draw();
+
+        if (t < 1) {
+          animationFrame = requestAnimationFrame(frame);
+        } else {
+          callback();
+        }
+      }
+
+      animationFrame = requestAnimationFrame(frame);
+    }
+
+    function stepKMeans() {
+      if (converged) return;
+
+      if (!initialized) {
+        initializeCentroids();
+        return;
+      }
+
+      if (!assigned || currentPhase === "actualizacion" || currentPhase === "inicializacion") {
+        assignPointsToCentroids();
+      } else {
+        updateCentroids();
+      }
+    }
+
+    function runSimulation() {
+      if (running) {
+        stopRunning();
+        return;
+      }
+
+      running = true;
+      runBtn.textContent = "Pausar";
+      runBtn.classList.remove("success");
+      runBtn.classList.add("danger");
+
+      autoLoop();
+    }
+
+    function autoLoop() {
+      if (!running || converged) {
+        stopRunning();
+        return;
+      }
+
+      stepKMeans();
+
+      const delay = Number(speedRange.value);
+      setTimeout(() => {
+        if (running) autoLoop();
+      }, delay);
+    }
+
+    function stopRunning() {
+      running = false;
+      runBtn.textContent = "Ejecutar";
+      runBtn.classList.add("success");
+      runBtn.classList.remove("danger");
+    }
+
+    function calculateInertia() {
+      if (!initialized || !assigned) return null;
+
+      return points.reduce((sum, p) => {
+        if (p.cluster === null) return sum;
+        return sum + distanceSquared(p, centroids[p.cluster]);
+      }, 0);
+    }
+
+    function resetAll() {
+      stopRunning();
+      generateData();
+    }
+
+    function resetCentroidsOnly() {
+      initializeCentroids();
+    }
+
+    function toCanvasX(x) {
+      const { w } = getCanvasSize();
+      return x * w;
+    }
+
+    function toCanvasY(y) {
+      const { h } = getCanvasSize();
+      return y * h;
+    }
+
+    function fromCanvas(mx, my) {
+      const { w, h } = getCanvasSize();
+      return { x: mx / w, y: my / h };
+    }
+
+    function drawGrid(w, h) {
+      ctx.save();
+      ctx.strokeStyle = getCSS("--grid");
+      ctx.lineWidth = 1;
+
+      const step = 50;
+      for (let x = 0; x <= w; x += step) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+
+      for (let y = 0; y <= h; y += step) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    function draw() {
+      if (!ctx) return;
+
+      const { w, h } = getCanvasSize();
+      ctx.clearRect(0, 0, w, h);
+
+      ctx.fillStyle = getCSS("--canvas-bg");
+      ctx.fillRect(0, 0, w, h);
+
+      drawGrid(w, h);
+
+      const mode = modeSelect.value;
+
+      if ((showLines || mode === "avanzado") && assigned && initialized) {
+        drawAssignmentLines();
+      }
+
+      drawPoints();
+      drawCentroids();
+
+      if (showCalc && initialized && assigned) {
+        drawClusterMeans();
+      }
+
+      updateLegend();
+    }
+
+    function drawPoints() {
+      const mode = modeSelect.value;
+
+      for (const p of points) {
+        const x = toCanvasX(p.x);
+        const y = toCanvasY(p.y);
+
+        let color = "#94a3b8";
+        if (p.cluster !== null) {
+          color = clusterColors[p.cluster % clusterColors.length];
+        }
+
+        ctx.save();
+        ctx.globalAlpha = p.outlier ? 0.96 : 0.88;
+        ctx.beginPath();
+        ctx.arc(x, y, p.outlier ? 5.2 : 4.4, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+
+        if (p.outlier) {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = getCSS("--danger");
+          ctx.stroke();
+        } else if (mode !== "basico") {
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = "rgba(255,255,255,0.75)";
+          ctx.stroke();
+        }
+
+        ctx.restore();
+      }
+
+      if (selected && selected.type === "point") {
+        const p = points[selected.index];
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(toCanvasX(p.x), toCanvasY(p.y), 10, 0, Math.PI * 2);
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = getCSS("--warning");
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    function drawCentroids() {
+      for (let i = 0; i < centroids.length; i++) {
+        const c = centroids[i];
+        const x = toCanvasX(c.x);
+        const y = toCanvasY(c.y);
+        const color = clusterColors[i % clusterColors.length];
+
+        ctx.save();
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 16;
+
+        ctx.beginPath();
+        ctx.arc(x, y, 13, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+
+        ctx.shadowBlur = 0;
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "white";
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x - 8, y);
+        ctx.lineTo(x + 8, y);
+        ctx.moveTo(x, y - 8);
+        ctx.lineTo(x, y + 8);
+        ctx.strokeStyle = "rgba(255,255,255,0.95)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = getCSS("--text");
+        ctx.font = "800 13px Inter, Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        const labelY = y - 28;
+        ctx.fillStyle = getCSS("--panel");
+        roundRect(ctx, x - 18, labelY - 11, 36, 22, 10);
+        ctx.fill();
+
+        ctx.fillStyle = color;
+        ctx.fillText("C" + (i + 1), x, labelY);
+
+        ctx.restore();
+      }
+
+      if (selected && selected.type === "centroid") {
+        const c = centroids[selected.index];
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(toCanvasX(c.x), toCanvasY(c.y), 21, 0, Math.PI * 2);
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = getCSS("--warning");
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    function drawAssignmentLines() {
+      ctx.save();
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.34;
+
+      for (const p of points) {
+        if (p.cluster === null) continue;
+
+        const c = centroids[p.cluster];
+        ctx.beginPath();
+        ctx.moveTo(toCanvasX(p.x), toCanvasY(p.y));
+        ctx.lineTo(toCanvasX(c.x), toCanvasY(c.y));
+        ctx.strokeStyle = clusterColors[p.cluster % clusterColors.length];
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    function drawClusterMeans() {
+      const means = computeNewCentroids();
+
+      ctx.save();
+
+      for (let i = 0; i < means.length; i++) {
+        const m = means[i];
+        const x = toCanvasX(m.x);
+        const y = toCanvasY(m.y);
+
+        ctx.beginPath();
+        ctx.arc(x, y, 8, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.95)";
+        ctx.fill();
+
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = clusterColors[i % clusterColors.length];
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x - 12, y - 12);
+        ctx.lineTo(x + 12, y + 12);
+        ctx.moveTo(x + 12, y - 12);
+        ctx.lineTo(x - 12, y + 12);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    function roundRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    }
+
+    function updateText(changed = null) {
+      kMetric.textContent = String(k);
+
+      const mode = modeSelect.value;
+      floatingHelp.style.display = mode === "basico" ? "none" : "block";
+
+      if (currentPhase === "inicio") {
+        statusLabel.textContent = "Datos sin etiquetas";
+        stepTitle.textContent = "Inicio: datos sin etiquetas";
+        stepExplanation.textContent =
+          "La nube de puntos todavía no tiene colores ni grupos. El objetivo es descubrir una estructura posible sin usar etiquetas previas.";
+        formulaBox.textContent =
+          "Flujo: elegir K → inicializar centroides → asignar puntos → recalcular centroides → repetir.";
+        teacherNote.textContent =
+          "Antes de tocar el código, conviene que el alumno vea que los datos son solo puntos en un espacio de características.";
+      }
+
+      if (currentPhase === "inicializacion") {
+        statusLabel.textContent = "Centroides iniciales";
+        stepTitle.textContent = "Paso 1: inicialización de centroides";
+        stepExplanation.textContent =
+          "El algoritmo coloca K centroides iniciales. Estos centros todavía son provisorios y pueden empezar en lugares poco representativos.";
+        formulaBox.textContent =
+          "K = cantidad de clusters buscados. Cada centroide Cj es un punto inicial en el espacio.";
+        teacherNote.textContent =
+          "Mostrá que la inicialización importa: con los mismos datos, otros centroides iniciales pueden llevar a otra trayectoria.";
+      }
+
+      if (currentPhase === "asignacion") {
+        statusLabel.textContent = "Asignación por distancia";
+        stepTitle.textContent = "Paso 2: asignar cada punto al centroide más cercano";
+        stepExplanation.textContent =
+          "Cada punto calcula su distancia a todos los centroides y queda asignado al centroide más cercano. El color aparece como resultado de esta regla.";
+        formulaBox.textContent =
+          "Distancia euclídea: d(x, μ) = √[(x₁ − μ₁)² + (x₂ − μ₂)²]";
+        teacherNote.textContent =
+          changed !== null
+            ? "En este paso cambiaron " + changed + " asignaciones. Esto muestra que los clusters son una construcción dinámica."
+            : "Este es el momento ideal para activar las líneas de distancia y hacer clic en un punto.";
+      }
+
+      if (currentPhase === "actualizacion") {
+        statusLabel.textContent = "Recalculando centroides";
+        stepTitle.textContent = "Paso 3: mover centroides al promedio";
+        stepExplanation.textContent =
+          "Una vez asignados los puntos, cada centroide se recalcula como el promedio de las coordenadas de los puntos que quedaron en su cluster.";
+        formulaBox.textContent =
+          "Nuevo centroide: μj = (1 / nj) Σ xi , para todos los puntos xi asignados al cluster j.";
+        teacherNote.textContent =
+          "Acá conviene remarcar que el centroide no es elegido a mano: es el promedio geométrico del grupo.";
+      }
+
+      if (currentPhase === "convergencia") {
+        statusLabel.textContent = "Convergencia alcanzada";
+        stepTitle.textContent = "Resultado: los centroides se estabilizaron";
+        stepExplanation.textContent =
+          "El algoritmo se detuvo porque el movimiento total de los centroides fue muy pequeño. La partición final depende de K, de la inicialización, de la escala y de la geometría de los datos.";
+        formulaBox.textContent =
+          "Criterio de parada usado aquí: movimiento total de centroides < 0.004.";
+        teacherNote.textContent =
+          "Cierre didáctico: K-Means no demuestra que esos grupos sean verdaderos; propone una partición compacta según una métrica.";
+      }
+    }
+
+    function updateMetrics() {
+      iterationMetric.textContent = String(iteration);
+      kMetric.textContent = String(Number(kSelect.value));
+
+      if (lastInertia === null) {
+        inertiaMetric.textContent = "—";
+      } else {
+        inertiaMetric.textContent = lastInertia.toFixed(4);
+      }
+
+      if (lastMovement === null) {
+        movementMetric.textContent = "—";
+        convergenceBar.style.width = "0%";
+        convergenceText.textContent = "La convergencia aparece cuando los centroides casi no se mueven.";
+      } else {
+        movementMetric.textContent = lastMovement.toFixed(4);
+
+        const percent = clamp(100 - lastMovement * 1800, 0, 100);
+        convergenceBar.style.width = percent + "%";
+
+        if (converged) {
+          convergenceText.textContent = "Convergencia alcanzada: los centroides casi no cambian.";
+        } else {
+          convergenceText.textContent = "Todavía hay movimiento: el algoritmo puede seguir iterando.";
+        }
+      }
+    }
+
+    function updateLegend() {
+      legend.innerHTML = "";
+
+      if (!initialized) {
+        const item = document.createElement("span");
+        item.className = "legend-item";
+        item.innerHTML = `<span class="legend-color" style="background:#94a3b8"></span> Datos sin asignar`;
+        legend.appendChild(item);
+        return;
+      }
+
+      for (let i = 0; i < k; i++) {
+        const item = document.createElement("span");
+        item.className = "legend-item";
+        item.innerHTML = `<span class="legend-color" style="background:${clusterColors[i]}"></span> Cluster ${i + 1}`;
+        legend.appendChild(item);
+      }
+    }
+
+    function updateDetailBox() {
+      if (!selected) {
+        detailBox.innerHTML =
+          "Seleccioná un punto o un centroide en el gráfico para ver el cálculo.";
+        return;
+      }
+
+      if (selected.type === "point") {
+        const p = points[selected.index];
+
+        if (!initialized) {
+          detailBox.innerHTML =
+            "<strong>Punto seleccionado</strong><br>Inicializá los centroides para calcular distancias.";
+          return;
+        }
+
+        const rows = centroids.map((c, i) => {
+          const d = distance(p, c);
+          const active = p.cluster === i ? " ← más cercano" : "";
+          return `Distancia a C${i + 1}: <strong>${d.toFixed(4)}</strong>${active}`;
+        });
+
+        detailBox.innerHTML = `
+          <strong>Punto seleccionado P${selected.index + 1}</strong><br>
+          Coordenadas aproximadas: (${p.x.toFixed(3)}, ${p.y.toFixed(3)})<br><br>
+          ${rows.join("<br>")}
+          <br><br>
+          Asignación actual:
+          <strong>${p.cluster === null ? "sin asignar" : "Cluster " + (p.cluster + 1)}</strong>.
+        `;
+      }
+
+      if (selected.type === "centroid") {
+        const i = selected.index;
+        const c = centroids[i];
+        const clusterPoints = points.filter(p => p.cluster === i);
+
+        if (!assigned || clusterPoints.length === 0) {
+          detailBox.innerHTML = `
+            <strong>Centroide C${i + 1}</strong><br>
+            Coordenadas actuales: (${c.x.toFixed(3)}, ${c.y.toFixed(3)})<br><br>
+            Todavía no hay suficientes puntos asignados para mostrar el cálculo del promedio.
+          `;
+          return;
+        }
+
+        const sumX = clusterPoints.reduce((sum, p) => sum + p.x, 0);
+        const sumY = clusterPoints.reduce((sum, p) => sum + p.y, 0);
+        const meanX = sumX / clusterPoints.length;
+        const meanY = sumY / clusterPoints.length;
+
+        detailBox.innerHTML = `
+          <strong>Centroide C${i + 1}</strong><br>
+          Puntos asignados: <strong>${clusterPoints.length}</strong><br><br>
+          Promedio en X:<br>
+          (${sumX.toFixed(3)}) / ${clusterPoints.length} = <strong>${meanX.toFixed(3)}</strong><br><br>
+          Promedio en Y:<br>
+          (${sumY.toFixed(3)}) / ${clusterPoints.length} = <strong>${meanY.toFixed(3)}</strong><br><br>
+          Nuevo centroide esperado:<br>
+          <strong>C${i + 1} = (${meanX.toFixed(3)}, ${meanY.toFixed(3)})</strong>
+        `;
+      }
+    }
+
+    function getCSS(variable) {
+      return getComputedStyle(document.body).getPropertyValue(variable).trim();
+    }
+
+    function handleCanvasClick(event) {
+      const rect = canvas.getBoundingClientRect();
+      const mx = event.clientX - rect.left;
+      const my = event.clientY - rect.top;
+
+      let bestCentroid = null;
+      let bestCentroidDistance = Infinity;
+
+      for (let i = 0; i < centroids.length; i++) {
+        const c = centroids[i];
+        const dx = toCanvasX(c.x) - mx;
+        const dy = toCanvasY(c.y) - my;
+        const d = Math.sqrt(dx * dx + dy * dy);
+
+        if (d < bestCentroidDistance) {
+          bestCentroidDistance = d;
+          bestCentroid = i;
+        }
+      }
+
+      if (bestCentroid !== null && bestCentroidDistance < 22) {
+        selected = { type: "centroid", index: bestCentroid };
+        updateDetailBox();
+        draw();
+        return;
+      }
+
+      let bestPoint = null;
+      let bestPointDistance = Infinity;
+
+      for (let i = 0; i < points.length; i++) {
+        const p = points[i];
+        const dx = toCanvasX(p.x) - mx;
+        const dy = toCanvasY(p.y) - my;
+        const d = Math.sqrt(dx * dx + dy * dy);
+
+        if (d < bestPointDistance) {
+          bestPointDistance = d;
+          bestPoint = i;
+        }
+      }
+
+      if (bestPoint !== null && bestPointDistance < 14) {
+        selected = { type: "point", index: bestPoint };
+        updateDetailBox();
+        draw();
+      }
+    }
+
+    function changeTheme() {
+      themeIndex = (themeIndex + 1) % themes.length;
+      document.body.className = themes[themeIndex];
+      draw();
+    }
+
+    function refreshMode() {
+      updateText();
+      updateMetrics();
+      draw();
+    }
+
+    dataBtn.addEventListener("click", generateData);
+    initBtn.addEventListener("click", initializeCentroids);
+    stepBtn.addEventListener("click", stepKMeans);
+    runBtn.addEventListener("click", runSimulation);
+    resetBtn.addEventListener("click", resetAll);
+    resetCentroidsBtn.addEventListener("click", resetCentroidsOnly);
+    themeBtn.addEventListener("click", changeTheme);
+
+    linesBtn.addEventListener("click", () => {
+      showLines = !showLines;
+      linesBtn.textContent = showLines ? "Ocultar distancias" : "Mostrar distancias";
+      draw();
+    });
+
+    calcBtn.addEventListener("click", () => {
+      showCalc = !showCalc;
+      calcBtn.textContent = showCalc ? "Ocultar cálculo" : "Mostrar cálculo";
+      draw();
+    });
+
+    kSelect.addEventListener("change", () => {
+      k = Number(kSelect.value);
+      kMetric.textContent = String(k);
+      initializeCentroids();
+    });
+
+    scenarioSelect.addEventListener("change", generateData);
+    initSelect.addEventListener("change", initializeCentroids);
+    modeSelect.addEventListener("change", refreshMode);
+    canvas.addEventListener("click", handleCanvasClick);
+
+    window.addEventListener("resize", resizeCanvas);
+
+    generateData();
+    resizeCanvas();
+  </script>
+</body>
+</html>

@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glosario K-Means | Versión 2.0 corregida</title>
+<style>
+:root {
+  --bg:#07111f; --bg2:#10294a; --card:rgba(255,255,255,.085); --card2:rgba(255,255,255,.14);
+  --text:#eef7ff; --muted:#b7c8dc; --line:rgba(255,255,255,.18); --accent:#37d5ff; --accent2:#8b5cf6; --accent3:#22c55e; --danger:#fb7185; --shadow:0 24px 70px rgba(0,0,0,.32); --code:#06101d;
+}
+body.theme-light { --bg:#f5f8ff; --bg2:#e4edff; --card:rgba(255,255,255,.92); --card2:#ffffff; --text:#122033; --muted:#526176; --line:rgba(30,55,90,.16); --accent:#2563eb; --accent2:#7c3aed; --accent3:#059669; --danger:#e11d48; --shadow:0 18px 44px rgba(20,40,80,.13); --code:#eef4ff; }
+body.theme-uva { --bg:#19051f; --bg2:#3b1052; --card:rgba(255,255,255,.085); --card2:rgba(255,255,255,.145); --text:#fff5ff; --muted:#dfc5e8; --accent:#f472b6; --accent2:#a78bfa; --accent3:#38bdf8; --danger:#fb7185; --code:#120419; }
+body.theme-bosque { --bg:#031711; --bg2:#0b3a2b; --card:rgba(255,255,255,.078); --card2:rgba(255,255,255,.13); --text:#effff8; --muted:#bbd9cc; --accent:#34d399; --accent2:#22d3ee; --accent3:#facc15; --danger:#fb7185; --code:#03120d; }
+body.theme-grafito { --bg:#0b0d10; --bg2:#1d2630; --card:rgba(255,255,255,.078); --card2:rgba(255,255,255,.13); --text:#f6f7fb; --muted:#c4c8d0; --accent:#e5e7eb; --accent2:#60a5fa; --accent3:#fb923c; --danger:#f43f5e; --code:#070809; }
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 12% 0%, color-mix(in srgb,var(--accent2) 78%,transparent), transparent 32%),radial-gradient(circle at 88% 8%, color-mix(in srgb,var(--accent) 65%,transparent), transparent 28%),linear-gradient(135deg,var(--bg),var(--bg2));color:var(--text);min-height:100vh} 
+.container{max-width:1220px;margin:0 auto;padding:28px 18px 70px}
+.hero{border:1px solid var(--line);border-radius:34px;background:linear-gradient(135deg,var(--card2),rgba(255,255,255,.035));box-shadow:var(--shadow);padding:34px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:430px;height:430px;right:-160px;top:-170px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.23),transparent 64%)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;background:var(--card);padding:8px 12px;color:var(--muted);font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+h1{font-size:clamp(2.3rem,5vw,4.9rem);line-height:.95;letter-spacing:-.06em;margin:18px 0 14px;max-width:900px} .lead{font-size:clamp(1.04rem,2vw,1.32rem);line-height:1.65;color:var(--muted);max-width:860px;margin:0}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin-top:26px;position:relative;z-index:1} .panel{border:1px solid var(--line);background:var(--card);border-radius:24px;padding:18px;backdrop-filter:blur(12px)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px} .stat{border:1px solid var(--line);border-radius:18px;background:var(--card2);padding:16px} .stat b{display:block;font-size:2rem;color:var(--accent)} .stat span{color:var(--muted);font-size:.9rem}
+.formula{background:var(--code);border:1px solid var(--line);border-radius:18px;padding:15px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;overflow:auto;line-height:1.6}
+.toolbar{position:sticky;top:0;z-index:30;margin:18px 0;display:flex;align-items:center;flex-wrap:wrap;gap:10px;border:1px solid var(--line);border-radius:22px;background:color-mix(in srgb,var(--bg2) 78%,transparent);backdrop-filter:blur(16px);padding:12px;box-shadow:0 12px 34px rgba(0,0,0,.18)}
+.search{flex:1 1 250px;min-width:220px} input[type="search"]{width:100%;border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--text);padding:13px 16px;font-size:1rem;outline:none} input::placeholder{color:var(--muted)}
+.btn{border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--text);padding:12px 14px;cursor:pointer;font-weight:900;transition:.18s ease} .btn:hover{transform:translateY(-2px);background:var(--card2)} .btn.active{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:white} .btn.small{padding:10px 12px;font-size:.92rem}
+.theme-group{display:flex;gap:8px;align-items:center;flex-wrap:wrap} .theme-dot{width:38px;height:38px;border-radius:14px;border:2px solid var(--line);cursor:pointer;box-shadow:inset 0 0 0 2px rgba(255,255,255,.08)} .theme-dot.active{outline:3px solid var(--accent);outline-offset:2px} .oceano{background:linear-gradient(135deg,#07111f,#38d5ff,#8b5cf6)} .claro{background:linear-gradient(135deg,#f8fafc,#2563eb,#7c3aed)} .uva{background:linear-gradient(135deg,#18051f,#f472b6,#a78bfa)} .bosque{background:linear-gradient(135deg,#031711,#34d399,#22d3ee)} .grafito{background:linear-gradient(135deg,#0b0d10,#e5e7eb,#60a5fa)}
+.layout{display:grid;grid-template-columns:292px 1fr;gap:18px} aside{position:sticky;top:96px;align-self:start;max-height:calc(100vh - 120px);overflow:auto;border:1px solid var(--line);border-radius:24px;background:var(--card);padding:14px} aside h3{margin:8px 8px 12px} .toc{display:flex;flex-direction:column;gap:8px} .toc a{text-decoration:none;color:var(--muted);border:1px solid transparent;padding:10px 12px;border-radius:14px;font-weight:800;font-size:.92rem} .toc a:hover{color:var(--text);background:var(--card2);border-color:var(--line)}
+.cards{display:grid;gap:16px} .concept-card{border:1px solid var(--line);border-radius:24px;background:linear-gradient(135deg,var(--card2),var(--card));box-shadow:var(--shadow);overflow:hidden} .card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:20px 22px;border-bottom:1px solid var(--line)} .number{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));font-weight:1000;color:white;margin-bottom:10px} h2{margin:0;font-size:clamp(1.35rem,2vw,2rem);letter-spacing:-.03em} .pill{display:inline-flex;margin-top:9px;border-radius:999px;padding:6px 10px;font-size:.78rem;font-weight:1000;color:var(--bg);background:var(--accent)} .pill.proceso{background:var(--accent3)} .pill.evaluacion{background:var(--accent2);color:white}
+.card-body{padding:22px;line-height:1.72} .card-body p{margin:0 0 1rem} strong{color:var(--accent)} code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace} pre{background:var(--code);border:1px solid var(--line);border-radius:18px;padding:16px;overflow:auto;line-height:1.6} .table-wrap{overflow:auto;margin:16px 0;border-radius:18px;border:1px solid var(--line)} table{width:100%;border-collapse:collapse} th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left} th{background:var(--card2)} tr:last-child td{border-bottom:none} ul,ol{padding-left:1.4rem} li{margin:.4rem 0}
+.visual-section{display:grid;grid-template-columns:minmax(320px,.9fr) minmax(420px,1.1fr);gap:18px;margin:18px 0;align-items:stretch} .sim-controls,.sim-canvas-panel{display:flex;flex-direction:column} .sim-step-card{border:1px solid var(--line);background:var(--card2);border-radius:18px;padding:16px;margin-top:4px} .sim-step-card h3{margin:6px 0 8px;font-size:1.1rem} .sim-step-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:.82rem;font-weight:900} .sim-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;color:var(--muted);font-weight:700} .legend-dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;vertical-align:middle} .legend-dot.l1{background:var(--accent)} .legend-dot.l2{background:var(--accent2)} .legend-dot.l3{background:var(--accent3)} canvas{width:100%;height:340px;border:1px solid var(--line);background:rgba(255,255,255,.05);border-radius:24px;display:block} .canvas-note{margin:12px 4px 0;color:var(--muted);line-height:1.6} .callout{border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:18px;background:var(--card);padding:16px;color:var(--muted)}
+.practice{margin-top:18px;border:1px solid var(--line);border-radius:24px;background:var(--card);padding:18px} .options{display:grid;gap:10px;margin-top:12px} #feedback{margin-top:12px;min-height:52px;background:var(--code);border:1px solid var(--line);border-radius:16px;padding:14px;color:var(--muted)} .hidden{display:none!important} mark{background:color-mix(in srgb,var(--accent) 35%,transparent);color:var(--text);border-radius:6px;padding:0 3px} footer{text-align:center;color:var(--muted);margin-top:26px}
+@media(max-width:940px){.hero-grid,.layout,.visual-section{grid-template-columns:1fr} aside{position:relative;top:auto;max-height:none} .stats{grid-template-columns:1fr}}
+@media print{body{background:#fff;color:#000}.toolbar,aside,.practice,canvas{display:none!important}.layout,.hero-grid{display:block}.concept-card{break-inside:avoid;box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="container">
+<section class="hero">
+  <span class="eyebrow">Guía de estudio interactiva · Clustering</span>
+  <h1>Glosario esencial de K-Means</h1>
+  <p class="lead">Versión 2.0 corregida, visual y didáctica para estudiar los 15 conceptos centrales: cluster, K, centroide, distancia euclídea, asignación, iteración, convergencia, inercia, función objetivo, K-Means++, método del codo y silhouette score.</p>
+  <div class="hero-grid">
+    <div class="panel">
+      <div class="stats">
+        <div class="stat"><b>15</b><span>conceptos principales</span></div>
+        <div class="stat"><b>3</b><span>bloques de estudio</span></div>
+        <div class="stat"><b>5</b><span>temas visuales</span></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="formula">Idea central:<br><strong>asignar puntos → recalcular centroides → repetir hasta converger</strong><br><br>Objetivo: minimizar la distancia interna de cada cluster.</div>
+    </div>
+  </div>
+</section>
+
+<nav class="toolbar" aria-label="Herramientas del glosario">
+  <div class="search"><input id="search" type="search" placeholder="Buscar concepto: inercia, centroide, silhouette..." autocomplete="off"></div>
+  <button class="btn active" data-filter="all" type="button">Todo</button>
+  <button class="btn" data-filter="base" type="button">Base</button>
+  <button class="btn" data-filter="proceso" type="button">Proceso</button>
+  <button class="btn" data-filter="evaluacion" type="button">Evaluación</button>
+  <button class="btn" id="expandAll" type="button">Expandir</button>
+  <button class="btn" id="collapseAll" type="button">Contraer</button>
+  <div class="theme-group" aria-label="Cambiar tema visual">
+    <button class="theme-dot oceano" data-theme="" title="Océano" type="button"></button>
+    <button class="theme-dot claro" data-theme="theme-light" title="Claro" type="button"></button>
+    <button class="theme-dot uva" data-theme="theme-uva" title="Uva" type="button"></button>
+    <button class="theme-dot bosque" data-theme="theme-bosque" title="Bosque" type="button"></button>
+    <button class="theme-dot grafito" data-theme="theme-grafito" title="Grafito" type="button"></button>
+  </div>
+</nav>
+
+<div class="layout">
+  <aside><h3>Índice</h3><div class="toc" id="toc"><a href="#concepto-1" data-toc>1. K-Means</a>
+<a href="#concepto-2" data-toc>2. Cluster</a>
+<a href="#concepto-3" data-toc>3. K</a>
+<a href="#concepto-4" data-toc>4. Centroide</a>
+<a href="#concepto-5" data-toc>5. Distancia euclídea</a>
+<a href="#concepto-6" data-toc>6. Asignación de puntos</a>
+<a href="#concepto-7" data-toc>7. Recalcular centroides</a>
+<a href="#concepto-8" data-toc>8. Iteración</a>
+<a href="#concepto-9" data-toc>9. Convergencia</a>
+<a href="#concepto-10" data-toc>10. Inercia</a>
+<a href="#concepto-11" data-toc>11. Función objetivo</a>
+<a href="#concepto-12" data-toc>12. Inicialización</a>
+<a href="#concepto-13" data-toc>13. K-Means++</a>
+<a href="#concepto-14" data-toc>14. Método del codo</a>
+<a href="#concepto-15" data-toc>15. Silhouette Score</a></div></aside>
+  <main>
+    <section class="visual-section">
+      <div class="panel sim-controls">
+        <h2>Mini simulación conceptual</h2>
+        <p class="lead" style="font-size:1rem">Avanza paso a paso para ver cómo K-Means asigna puntos, mueve centroides y llega a una configuración más estable.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 18px">
+          <button class="btn" id="nextStep" type="button">Siguiente paso</button>
+          <button class="btn" id="restartSim" type="button">Reiniciar</button>
+        </div>
+        <div class="sim-step-card">
+          <div class="sim-step-badge" id="simBadge">Paso 1 de 4</div>
+          <h3 id="simTitle">Centroides iniciales</h3>
+          <p id="simDescription">Al comenzar, los centroides se ubican en posiciones iniciales. Todavía no se sabe qué puntos pertenecerán a cada grupo.</p>
+        </div>
+        <div class="sim-legend">
+          <div><span class="legend-dot l1"></span> Cluster 1</div>
+          <div><span class="legend-dot l2"></span> Cluster 2</div>
+          <div><span class="legend-dot l3"></span> Cluster 3</div>
+        </div>
+      </div>
+      <div class="panel sim-canvas-panel">
+        <h3 style="margin:0 0 12px">Visualización</h3>
+        <canvas id="kmeansCanvas" width="760" height="420" aria-label="Visualización conceptual de K-Means"></canvas>
+        <p class="canvas-note">Si avanzás paso a paso, vas a ver cómo los puntos se conectan al centroide más cercano y luego cómo esos centroides se mueven al promedio del grupo.</p>
+      </div>
+    </section>
+    <div id="resultCount" class="callout"></div>
+    <section class="cards" id="cards">
+<article class="concept-card" id="concepto-1" data-category="base" data-title="1. k-means" data-text="1. k-means   k-means  es un algoritmo de clustering, es decir, un método que busca agrupar datos según su similitud. pertenece al aprendizaje no supervisado porque no necesita etiquetas previas. el algoritmo no sabe de antemano qué grupo corresponde a cada dato; intenta descubrir patrones a partir de las características numéricas disponibles. 
+ la idea central es dividir un conjunto de datos en  k grupos , donde cada grupo se llama  cluster . la letra  k  representa la cantidad de grupos que queremos formar, y la palabra  means  hace referencia a las “medias” o “promedios”, porque cada cluster se representa mediante un punto promedio llamado  centroide . 
+ por ejemplo, si tenemos datos de clientes con variables como edad, ingreso y gasto mensual, k-means podría agruparlos en clientes jóvenes de bajo consumo, clientes de alto valor y clientes ocasionales. el algoritmo no conoce esos nombres; simplemente agrupa por cercanía matemática. luego el analista interpreta qué significa cada grupo. 
+ el funcionamiento básico es iterativo: primero se eligen centroides iniciales, luego cada dato se asigna al centroide más cercano, después se recalculan los centroides como promedio de los puntos asignados, y el proceso se repite hasta que los centroides dejan de cambiar significativamente. 
+ la idea fundamental de k-means es: 
+  formar grupos internamente compactos, donde cada punto esté cerca del centroide de su cluster.  
+ ">
+  <header class="card-header">
+    <div>
+      <span class="number">01</span>
+      <h2>1. K-Means</h2>
+      <span class="pill base">Base conceptual</span>
+    </div>
+    <button class="btn small toggle-card" type="button" aria-expanded="true">Contraer</button>
+  </header>
+  <div class="card-body"><p><strong>K-Means</strong> es un algoritmo de clustering, es decir, un método que busca agrupar datos según su similitud. Pertenece al aprendizaje no supervisado porque no necesita etiquetas previas. El algoritmo no sabe de antemano qué grupo corresponde a cada dato; intenta descubrir patrones a partir de las características numéricas disponibles.</p>
+<p>La idea central es dividir un conjunto de datos en <strong>K grupos</strong>, donde cada grupo se llama <strong>cluster</strong>. La letra <strong>K</strong> representa la cantidad de grupos que queremos formar, y la palabra <strong>Means</strong> hace referencia a las “medias” o “promedios”, porque cada cluster se representa mediante un punto promedio llamado <strong>centroide</strong>.</p>
+<p>Por ejemplo, si tenemos datos de clientes con variables como edad, ingreso y gasto mensual, K-Means podría agruparlos en clientes jóvenes de bajo consumo, clientes de alto valor y clientes ocasionales. El algoritmo no conoce esos nombres; simplemente agrupa por cercanía matemática. Luego el analista interpreta qué significa cada grupo.</p>
+<p>El funcionamiento básico es iterativo: primero se eligen centroides iniciales, luego cada dato se asigna al centroide más cercano, después se recalculan los centroides como promedio de los puntos asignados, y el proceso se repite hasta que los centroides dejan de cambiar significativamente.</p>
+<p>La idea fundamental de K-Means es:</p>
+<pre><code>Formar grupos internamente compactos, donde cada punto esté cerca del centroide de su cluster.</code></pre>
+<hr></div>
+</article>
+
+<article class="concept-card" id="concepto-2" data-category="base" data-title="2. cluster" data-text="2. cluster  un  cluster  es un grupo de observaciones que comparten características similares. en k-means, cada dato pertenece a un único cluster. 
+ por ejemplo, si analizamos libros usando cantidad de páginas y nivel de dificultad, k-means podría formar clusters como: 
+  
+   cluster  interpretación posible   
+ 
+  cluster 1  libros cortos y fáciles  
+  cluster 2  libros largos y difíciles  
+  cluster 3  libros de extensión media y dificultad intermedia  
+ 
+  
+ es importante entender que el cluster no viene dado por la realidad de manera explícita. el algoritmo no sabe que un grupo representa “libros difíciles” o “clientes premium”. lo único que hace es agrupar puntos cercanos en el espacio de variables. 
+ después, el analista debe mirar las características promedio de cada grupo y darles sentido. 
+ una característica importante de k-means es que realiza una  asignación dura . esto significa que cada punto pertenece solamente a un cluster. no hay pertenencia parcial. un cliente no pertenece 40% a un grupo y 60% a otro, sino que queda asignado completamente a un único grupo. 
+ ">
+  <header class="card-header">
+    <div>
+      <span class="number">02</span>
+      <h2>2. Cluster</h2>
+      <span class="pill base">Base conceptual</span>
+    </div>
+    <button class="btn small toggle-card" type="button" aria-expanded="true">Contraer</button>
+  </header>
+  <div class="card-body"><p>Un <strong>cluster</strong> es un grupo de observaciones que comparten características similares. En K-Means, cada dato pertenece a un único cluster.</p>
+<p>Por ejemplo, si analizamos libros usando cantidad de páginas y nivel de dificultad, K-Means podría formar clusters como:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Cluster</th><th>Interpretación posible</th></tr></thead>
+<tbody>
+<tr><td>Cluster 1</td><td>Libros cortos y fáciles</td></tr>
+<tr><td>Cluster 2</td><td>Libros largos y difíciles</td></tr>
+<tr><td>Cluster 3</td><td>Libros de extensión media y dificultad intermedia</td></tr>
+</tbody>
+</table></div>
+<p>Es importante entender que el cluster no viene dado por la realidad de manera explícita. El algoritmo no sabe que un grupo representa “libros difíciles” o “clientes premium”. Lo único que hace es agrupar puntos cercanos en el espacio de variables.</p>
+<p>Después, el analista debe mirar las características promedio de cada grupo y darles sentido.</p>
+<p>Una característica importante de K-Means es que realiza una <strong>asignación dura</strong>. Esto significa que cada punto pertenece solamente a un cluster. No hay pertenencia parcial. Un cliente no pertenece 40% a un grupo y 60% a otro, sino que queda asignado completamente a un único grupo.</p>
+<hr></div>
+</article>
+
+<article class="concept-card" id="concepto-3" data-category="base" data-title="3. k" data-text="3. k  la  k  representa la cantidad de clusters que queremos formar. es uno de los elementos más importantes del algoritmo, porque k-means no decide automáticamente cuántos grupos existen en los datos. el usuario debe indicarlo antes de ejecutar el modelo. 
+ si usamos: 
+  k = 2  
+ el algoritmo formará dos grupos. 
+ si usamos: 
+  k = 5  
+ el algoritmo formará cinco grupos. 
+ elegir mal k puede producir resultados poco útiles. si k es demasiado bajo, el algoritmo puede mezclar grupos que en realidad deberían estar separados. si k es demasiado alto, puede dividir artificialmente grupos que en realidad forman una misma estructura. 
+ ejemplo: 
+ supongamos que queremos segmentar clientes. 
+  
+   valor de k  posible resultado   
+ 
+  k = 1  todos los clientes quedan juntos; no hay segmentación útil.  
+  k = 2  puede separar clientes de bajo y alto consumo.  
+  k = 4  puede distinguir mejor perfiles intermedios.  
+  k = 10  puede generar grupos demasiado pequeños y difíciles de interpretar.  
+ 
+  
+ por eso, elegir k no es solo una decisión técnica, sino también analítica. debe combinar métricas, visualización y conocimiento del problema. 
+ ">
+  <header class="card-header">
+    <div>
+      <span class="number">03</span>
+      <h2>3. K</h2>
+      <span class="pill base">Base conceptual</span>
+    </div>
+    <button class="btn small toggle-card" type="button" aria-expanded="true">Contraer</button>
+  </header>
+  <div class="card-body"><p>La <strong>K</strong> representa la cantidad de clusters que queremos formar. Es uno de los elementos más importantes del algoritmo, porque K-Means no decide automáticamente cuántos grupos existen en los datos. El usuario debe indicarlo antes de ejecutar el modelo.</p>
+<p>Si usamos:</p>
+<pre><code>K = 2</code></pre>
+<p>el algoritmo formará dos grupos.</p>
+<p>Si usamos:</p>
+<pre><code>K = 5</code></pre>
+<p>el algoritmo formará cinco grupos.</p>
+<p>Elegir mal K puede producir resultados poco útiles. Si K es demasiado bajo, el algoritmo puede mezclar grupos que en realidad deberían estar separados. Si K es demasiado alto, puede dividir artificialmente grupos que en realidad forman una misma estructura.</p>
+<p>Ejemplo:</p>
+<p>Supongamos que queremos segmentar clientes.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Valor de K</th><th>Posible resultado</th></tr></thead>
+<tbody>
+<tr><td>K = 1</td><td>Todos los clientes quedan juntos; no hay segmentación útil.</td></tr>
+<tr><td>K = 2</td><td>Puede separar clientes de bajo y alto consumo.</td></tr>
+<tr><td>K = 4</td><td>Puede distinguir mejor perfiles intermedios.</td></tr>
+<tr><td>K = 10</td><td>Puede generar grupos demasiado pequeños y difíciles de interpretar.</td></tr>
+</tbody>
+</table></div>
+<p>Por eso, elegir K no es solo una decisión técnica, sino también analítica. Debe combinar métricas, visualización y conocimiento del problema.</p>
+<hr></div>
+</article>
+
+<article class="concept-card" id="concepto-4" data-category="base" data-title="4. centroide" data-text="4. centroide  el  centroide  es el centro de un cluster. es el punto que representa el promedio de todas las observaciones asignadas a ese grupo. 
+ en una dimensión, si un cluster contiene los valores: 
+  2, 4, 6  
+ el centroide es: 
+  (2 + 4 + 6) / 3 = 4  
+ en dos dimensiones, si tenemos estos puntos: 
+  
+   punto  x  y   
+ 
+  a  2  4  
+  b  4  6  
+  c  6  8  
+ 
+  
+ el centroide se calcula promediando cada coordenada: 
+  x centroide = (2 + 4 + 6) / 3 = 4
+y centroide = (4 + 6 + 8) / 3 = 6  
+ entonces el centroide es: 
+  (4, 6)  
+ el centroide puede no ser un punto real del dataset. es decir, puede no corresponder a ningún cliente, libro o producto existente. es una posición promedio que resume el cluster. 
+ k-means recibe su nombre justamente porque calcula  k medias , una para cada cluster. 
+ ">
+  <header class="card-header">
+    <div>
+      <span class="number">04</span>
+      <h2>4. Centroide</h2>
+      <span class="pill base">Base conceptual</span>
+    </div>
+    <button class="btn small toggle-card" type="button" aria-expanded="true">Contraer</button>
+  </header>
+  <div class="card-body"><p>El <strong>centroide</strong> es el centro de un cluster. Es el punto que representa el promedio de todas las observaciones asignadas a ese grupo.</p>
+<p>En una dimensión, si un cluster contiene los valores:</p>
+<pre><code>2, 4, 6</code></pre>
+<p>el centroide es:</p>
+<pre><code>(2 + 4 + 6) / 3 = 4</code></pre>
+<p>En dos dimensiones, si tenemos estos puntos:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Punto</th><th>x</th><th>y</th></tr></thead>
+<tbody>
+<tr><td>A</td><td>2</td><td>4</td></tr>
+<tr><td>B</td><td>4</td><td>6</td></tr>
+<tr><td>C</td><td>6</td><td>8</td></tr>
+</tbody>
+</table></div>
+<p>el centroide se calcula promediando cada coordenada:</p>
+<pre><code>x centroide = (2 + 4 + 6) / 3 = 4
+y centroide = (4 + 6 + 8) / 3 = 6</code></pre>
+<p>Entonces el centroide es:</p>
+<pre><code>(4, 6)</code></pre>
+<p>El centroide puede no ser un punto real del dataset. Es decir, puede no corresponder a ningún cliente, libro o producto existente. Es una posición promedio que resume el cluster.</p>
+<p>K-Means recibe su nombre justamente porque calcula <strong>K medias</strong>, una para cada cluster.</p>
+<hr></div>
+</article>
+
+<article class="concept-card" id="concepto-5" data-category="base" data-title="5. distancia euclídea" data-text="5. distancia euclídea  la  distancia euclídea  es la distancia en línea recta entre dos puntos. es la distancia geométrica más conocida y es la que usa k-means en su versión clásica. 
+ para dos puntos: 
+  a = (x1, y1)
+b = (x2, y2)  
+ la distancia euclídea se calcula como: 
+  d(a, b) = √[(x2 - x1)² + (y2 - y1)²]  
+ ejemplo: 
+  a = (1, 2)
+b = (4, 6)  
+ entonces: 
+  d(a, b) = √[(4 - 1)² + (6 - 2)²]
+d(a, b) = √[3² + 4²]
+d(a, b) = √[9 + 16]
+d(a, b) = √25
+d(a, b) = 5  
+ en k-means, cada punto se asigna al centroide más cercano según esta distancia. 
+ la distancia euclídea es muy útil cuando los clusters son aproximadamente circulares o esféricos. sin embargo, puede fallar cuando los datos tienen formas curvas, alargadas o no lineales, como el clásico ejemplo de las “dos lunas”. 
+ ">
+  <header class="card-header">
+    <div>
+      <span class="number">05</span>
+      <h2>5. Distancia euclídea</h2>
+      <span class="pill base">Base conceptual</span>
+    </div>
+    <button class="btn small toggle-card" type="button" aria-expanded="true">Contraer</button>
+  </header>
+  <div class="card-body"><p>La <strong>distancia euclídea</strong> es la distancia en línea recta entre dos puntos. Es la distancia geométrica más conocida y es la que usa K-Means en su versión clásica.</p>
+<p>Para dos puntos:</p>
+<pre><code>A = (x1, y1)
+B = (x2, y2)</code></pre>
+<p>la distancia euclídea se calcula como:</p>
+<pre><code>d(A, B) = √[(x2 - x1)² + (y2 - y1)²]</code></pre>
+<p>Ejemplo:</p>
+<pre><code>A = (1, 2)
+B = (4, 6)</code></pre>
+<p>Entonces:</p>
+<pre><code>d(A, B) = √[(4 - 1)² + (6 - 2)²]
+d(A, B) = √[3² + 4²]
+d(A, B) = √[9 + 16]
+d(A, B) = √25
+d(A, B) = 5</code></pre>
+<p>En K-Means, cada punto se asigna al centroide más cercano según esta distancia.</p>
+<p>La distancia euclídea es muy útil cuando los clusters son aproximadamente circulares o esféricos. Sin embargo, puede fallar cuando los datos tienen formas curvas, alargadas o no lineales, como el clásico ejemplo de las “dos lunas”.</p>
+<hr></div>
+</article>
+
+<article class="concept-card" id="concepto-6" data-category="proceso" data-title="6. asignación de puntos" data-text="6. asignación de puntos  la  asignación de puntos  es el paso en el que k-means decide a qué cluster pertenece cada observación. 
+ el procedimiento es simple: 
+  tomamos un punto.  calculamos su distancia a cada centroide.  lo asignamos al centroide más cercano.  
+ ejemplo: 
+  
+   punto  distancia al centroide 1  distancia al centroide 2  distancia al centroide 3  cluster asignado   
+ 
+  a  2.1  6.5  8.2  cluster 1  
+  b  7.4  1.3  5.9  cluster 2  
+  c  6.8  4.2  0.9  cluster 3  
+ 
+  
+ este paso se repite en cada iteración, porque los centroides van cambiando. cuando los centroides cambian, algunos puntos pueden pasar de un cluster a otro. 
+ este proceso muestra una idea clave: k-means no asigna puntos por nombre, categoría o interpretación humana, sino por cercanía geométrica. 
+ ">
+  <header class="card-header">
+    <div>
+      <span class="number">06</span>
+      <h2>6. Asignación de puntos</h2>
+      <span class="pill proceso">Proceso del algoritmo</span>
+    </div>
+    <button class="btn small toggle-card" type="button" aria-expanded="true">Contraer</button>
+  </header>
+  <div class="card-body"><p>La <strong>asignación de puntos</strong> es el paso en el que K-Means decide a qué cluster pertenece cada observación.</p>
+<p>El procedimiento es simple:</p>
+<ol><li>Tomamos un punto.</li><li>Calculamos su distancia a cada centroide.</li><li>Lo asignamos al centroide más cercano.</li></ol>
+<p>Ejemplo:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Punto</th><th>Distancia al centroide 1</th><th>Distancia al centroide 2</th><th>Distancia al centroide 3</th><th>Cluster asignado</th></tr></thead>
+<tbody>
+<tr><td>A</td><td>2.1</td><td>6.5</td><td>8.2</td><td>Cluster 1</td></tr>
+<tr><td>B</td><td>7.4</td><td>1.3</td><td>5.9</td><td>Cluster 2</td></tr>
+<tr><td>C</td><td>6.8</td><td>4.2</td><td>0.9</td><td>Cluster 3</td></tr>
+</tbody>
+</table></div>
+<p>Este paso se repite en cada iteración, porque los centroides van cambiando. Cuando los centroides cambian, algunos puntos pueden pasar de un cluster a otro.</p>
+<p>Este proceso muestra una idea clave: K-Means no asigna puntos por nombre, categoría o interpretación humana, sino por cercanía geométrica.</p>
+<hr></div>
+</article>
+
+<article class="concept-card" id="concepto-7" data-category="proceso" data-title="7. recalcular centroides" data-text="7. recalcular centroides  después de asignar los puntos a sus clusters, k-means recalcula la posición de cada centroide. 
+ el nuevo centroide se obtiene como el promedio de todos los puntos que quedaron dentro de ese cluster. 
+ ejemplo: 
+ supongamos que el cluster 1 tiene estos puntos: 
+  (2, 4), (4, 6), (6, 8)  
+ calculamos el nuevo centroide: 
+  x = (2 + 4 + 6) / 3 = 4
+y = (4 + 6 + 8) / 3 = 6  
+ nuevo centroide: 
+  (4, 6)  
+ este proceso es fundamental porque los centroides se van “acomodando” a la estructura de los datos. al principio pueden estar mal ubicados, pero con cada iteración se acercan al centro real de los grupos que se están formando. 
+ el algoritmo alterna entre dos acciones: 
+  asignar puntos → recalcular centroides → asignar puntos → recalcular centroides  
+ hasta que el sistema se estabiliza. 
+ ">
+  <header class="card-header">
+    <div>
+      <span class="number">07</span>
+      <h2>7. Recalcular centroides</h2>
+      <span class="pill proceso">Proceso del algoritmo</span>
+    </div>
+    <button class="btn small toggle-card" type="button" aria-expanded="true">Contraer</button>
+  </header>
+  <div class="card-body"><p>Después de asignar los puntos a sus clusters, K-Means recalcula la posición de cada centroide.</p>
+<p>El nuevo centroide se obtiene como el promedio de todos los puntos que quedaron dentro de ese cluster.</p>
+<p>Ejemplo:</p>
+<p>Supongamos que el Cluster 1 tiene estos puntos:</p>
+<pre><code>(2, 4), (4, 6), (6, 8)</code></pre>
+<p>Calculamos el nuevo centroide:</p>
+<pre><code>x = (2 + 4 + 6) / 3 = 4
+y = (4 + 6 + 8) / 3 = 6</code></pre>
+<p>Nuevo centroide:</p>
+<pre><code>(4, 6)</code></pre>
+<p>Este proceso es fundamental porque los centroides se van “acomodando” a la estructura de los datos. Al principio pueden estar mal ubicados, pero con cada iteración se acercan al centro real de los grupos que se están formando.</p>
+<p>El algoritmo alterna entre dos acciones:</p>
+<pre><code>Asignar puntos → recalcular centroides → asignar puntos → recalcular centroides</code></pre>
+<p>hasta que el sistema se estabiliza.</p>
+<hr></div>
+</article>
+
+<article class="concept-card" id="concepto-8" data-category="proceso" data-title="8. iteración" data-text="8. iteración  una  iteración  es una vuelta completa del algoritmo. en k-means, cada iteración incluye dos pasos: 
+  1. asignar cada punto al centroide más cercano.
+2. recalcular los centroides como promedio de los puntos asignados.  
+ el algoritmo repite estas iteraciones hasta llegar a una situación estable. 
+ ejemplo conceptual: 
+  iteración 1:
+los centroides iniciales están colocados al azar.
+
+iteración 2:
+los puntos se asignan y los centroides se mueven.
+
+iteración 3:
+algunos puntos cambian de cluster y los centroides vuelven a moverse.
+
+iteración 4:
+los cambios son cada vez menores.
+
+iteración 5:
+los centroides casi no se mueven y el algoritmo converge.  
+ la iteración es importante porque k-means no encuentra los clusters en un solo paso. los va construyendo progresivamente. 
+ ">
+  <header class="card-header">
+    <div>
+      <span class="number">08</span>
+      <h2>8. Iteración</h2>
+      <span class="pill proceso">Proceso del algoritmo</span>
+    </div>
+    <button class="btn small toggle-card" type="button" aria-expanded="true">Contraer</button>
+  </header>
+  <div class="card-body"><p>Una <strong>iteración</strong> es una vuelta completa del algoritmo. En K-Means, cada iteración incluye dos pasos:</p>
+<pre><code>1. Asignar cada punto al centroide más cercano.
+2. Recalcular los centroides como promedio de los puntos asignados.</code></pre>
+<p>El algoritmo repite estas iteraciones hasta llegar a una situación estable.</p>
+<p>Ejemplo conceptual:</p>
+<pre><code>Iteración 1:
+Los centroides iniciales están colocados al azar.
+
+Iteración 2:
+Los puntos se asignan y los centroides se mueven.
+
+Iteración 3:
+Algunos puntos cambian de cluster y los centroides vuelven a moverse.
+
+Iteración 4:
+Los cambios son cada vez menores.
+
+Iteración 5:
+Los centroides casi no se mueven y el algoritmo converge.</code></pre>
+<p>La iteración es importante porque K-Means no encuentra los clusters en un solo paso. Los va construyendo progresivamente.</p>
+<hr></div>
+</article>
+
+<article class="concept-card" id="concepto-9" data-category="proceso" data-title="9. convergencia" data-text="9. convergencia  la  convergencia  ocurre cuando el algoritmo llega a una solución estable. en k-means, esto puede suceder cuando los centroides dejan de moverse, cuando los puntos ya no cambian de cluster, o cuando la mejora de la función objetivo es muy pequeña. 
+ convergencia significa que el algoritmo ya no encuentra una mejora importante repitiendo el proceso. 
+ ejemplo: 
+  iteración 1: los centroides se mueven mucho.
+iteración 2: los centroides todavía cambian bastante.
+iteración 3: los centroides cambian poco.
+iteración 4: los centroides casi no cambian.
+iteración 5: el algoritmo se detiene.  
+ es importante aclarar que converger no significa necesariamente encontrar la mejor solución posible. k-means puede converger a un  óptimo local , es decir, una solución estable pero no necesariamente la mejor de todas. 
+ por eso muchas implementaciones ejecutan k-means varias veces con distintas inicializaciones y se quedan con la mejor solución encontrada. 
+ ">
+  <header class="card-header">
+    <div>
+      <span class="number">09</span>
+      <h2>9. Convergencia</h2>
+      <span class="pill proceso">Proceso del algoritmo</span>
+    </div>
+    <button class="btn small toggle-card" type="button" aria-expanded="true">Contraer</button>
+  </header>
+  <div class="card-body"><p>La <strong>convergencia</strong> ocurre cuando el algoritmo llega a una solución estable. En K-Means, esto puede suceder cuando los centroides dejan de moverse, cuando los puntos ya no cambian de cluster, o cuando la mejora de la función objetivo es muy pequeña.</p>
+<p>Convergencia significa que el algoritmo ya no encuentra una mejora importante repitiendo el proceso.</p>
+<p>Ejemplo:</p>
+<pre><code>Iteración 1: los centroides se mueven mucho.
+Iteración 2: los centroides todavía cambian bastante.
+Iteración 3: los centroides cambian poco.
+Iteración 4: los centroides casi no cambian.
+Iteración 5: el algoritmo se detiene.</code></pre>
+<p>Es importante aclarar que converger no significa necesariamente encontrar la mejor solución posible. K-Means puede converger a un <strong>óptimo local</strong>, es decir, una solución estable pero no necesariamente la mejor de todas.</p>
+<p>Por eso muchas implementaciones ejecutan K-Means varias veces con distintas inicializaciones y se quedan con la mejor solución encontrada.</p>
+<hr></div>
+</article>
+
+<article class="concept-card" id="concepto-10" data-category="evaluacion" data-title="10. inercia" data-text="10. inercia  la  inercia  es una métrica que mide qué tan compactos son los clusters. técnicamente, es la suma de las distancias cuadradas entre cada punto y el centroide de su cluster. 
+ la fórmula conceptual es: 
+  inercia = suma de las distancias cuadradas de cada punto a su centroide  
+ más formalmente: 
+  inercia = σ ||xi - μk||²  
+ donde: 
+  
+   símbolo  significado           
+ 
+  xi  punto de datos          
+  μk  centroide del cluster k          
+      xi - μk    ²  distancia cuadrada entre el punto y su centroide  
+ 
+  
+ una inercia baja indica que los puntos están cerca de sus centroides. por lo tanto, los clusters son compactos. 
+ una inercia alta indica que los puntos están lejos de sus centroides. por lo tanto, los clusters están dispersos. 
+ pero hay que tener cuidado: la inercia siempre baja cuando aumentamos k. si ponemos más clusters, cada centroide tendrá menos puntos que representar, por lo que las distancias internas tienden a disminuir. 
+ ejemplo: 
+  
+   k  inercia   
+ 
+  1  1000  
+  2  600  
+  3  320  
+  4  260  
+  5  230  
+ 
+  
+ aunque k = 5 tiene menor inercia que k = 3, eso no significa automáticamente que sea mejor. puede ser menos interpretable o estar dividiendo demasiado los datos. 
+ ">
+  <header class="card-header">
+    <div>
+      <span class="number">10</span>
+      <h2>10. Inercia</h2>
+      <span class="pill evaluacion">Evaluación y decisión</span>
+    </div>
+    <button class="btn small toggle-card" type="button" aria-expanded="true">Contraer</button>
+  </header>
+  <div class="card-body"><p>La <strong>inercia</strong> es una métrica que mide qué tan compactos son los clusters. Técnicamente, es la suma de las distancias cuadradas entre cada punto y el centroide de su cluster.</p>
+<p>La fórmula conceptual es:</p>
+<pre><code>Inercia = suma de las distancias cuadradas de cada punto a su centroide</code></pre>
+<p>Más formalmente:</p>
+<pre><code>Inercia = Σ ||xi - μk||²</code></pre>
+<p>Donde:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Símbolo</th><th>Significado</th><th></th><th></th><th></th><th></th></tr></thead>
+<tbody>
+<tr><td>xi</td><td>Punto de datos</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>μk</td><td>Centroide del cluster k</td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td>xi - μk</td><td></td><td>²</td><td>Distancia cuadrada entre el punto y su centroide</td></tr>
+</tbody>
+</table></div>
+<p>Una inercia baja indica que los puntos están cerca de sus centroides. Por lo tanto, los clusters son compactos.</p>
+<p>Una inercia alta indica que los puntos están lejos de sus centroides. Por lo tanto, los clusters están dispersos.</p>
+<p>Pero hay que tener cuidado: la inercia siempre baja cuando aumentamos K. Si ponemos más clusters, cada centroide tendrá menos puntos que representar, por lo que las distancias internas tienden a disminuir.</p>
+<p>Ejemplo:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>K</th><th>Inercia</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>1000</td></tr>
+<tr><td>2</td><td>600</td></tr>
+<tr><td>3</td><td>320</td></tr>
+<tr><td>4</td><td>260</td></tr>
+<tr><td>5</td><td>230</td></tr>
+</tbody>
+</table></div>
+<p>Aunque K = 5 tiene menor inercia que K = 3, eso no significa automáticamente que sea mejor. Puede ser menos interpretable o estar dividiendo demasiado los datos.</p>
+<hr></div>
+</article>
+
+<article class="concept-card" id="concepto-11" data-category="evaluacion" data-title="11. función objetivo" data-text="11. función objetivo  la  función objetivo  es lo que k-means intenta minimizar. en este caso, el algoritmo busca minimizar la suma de distancias cuadradas entre cada punto y el centroide de su cluster. 
+ la función objetivo es prácticamente la misma idea que la inercia: 
+  j = σ σ ||xi - μk||²  
+ esto significa que k-means busca que los puntos estén lo más cerca posible de sus centroides. 
+ la lógica del algoritmo puede resumirse así: 
+  encontrar k centroides que minimicen la distancia interna de los clusters.  
+ cuando el algoritmo asigna puntos, intenta reducir esa función. cuando recalcula centroides, también intenta reducirla. 
+ por eso k-means es un algoritmo de optimización: no solo agrupa, sino que intenta encontrar una configuración de clusters que minimice una cantidad matemática. 
+ ">
+  <header class="card-header">
+    <div>
+      <span class="number">11</span>
+      <h2>11. Función objetivo</h2>
+      <span class="pill evaluacion">Evaluación y decisión</span>
+    </div>
+    <button class="btn small toggle-card" type="button" aria-expanded="true">Contraer</button>
+  </header>
+  <div class="card-body"><p>La <strong>función objetivo</strong> es lo que K-Means intenta minimizar. En este caso, el algoritmo busca minimizar la suma de distancias cuadradas entre cada punto y el centroide de su cluster.</p>
+<p>La función objetivo es prácticamente la misma idea que la inercia:</p>
+<pre><code>J = Σ Σ ||xi - μk||²</code></pre>
+<p>Esto significa que K-Means busca que los puntos estén lo más cerca posible de sus centroides.</p>
+<p>La lógica del algoritmo puede resumirse así:</p>
+<pre><code>Encontrar K centroides que minimicen la distancia interna de los clusters.</code></pre>
+<p>Cuando el algoritmo asigna puntos, intenta reducir esa función. Cuando recalcula centroides, también intenta reducirla.</p>
+<p>Por eso K-Means es un algoritmo de optimización: no solo agrupa, sino que intenta encontrar una configuración de clusters que minimice una cantidad matemática.</p>
+<hr></div>
+</article>
+
+<article class="concept-card" id="concepto-12" data-category="evaluacion" data-title="12. inicialización" data-text="12. inicialización  la  inicialización  es el paso donde se eligen los centroides iniciales. 
+ este paso es muy importante porque k-means puede dar resultados diferentes según dónde empiecen los centroides. si los centroides iniciales están bien ubicados, el algoritmo puede llegar a una buena solución. si están mal ubicados, puede converger a una solución menos adecuada. 
+ ejemplo: 
+ si los datos tienen tres grupos naturales, pero los tres centroides iniciales caen cerca del mismo grupo, el algoritmo puede tardar más o encontrar una mala división. 
+ por eso existe una técnica llamada  k-means++ , que elige centroides iniciales de manera más inteligente, intentando que estén separados entre sí. 
+ también se suele ejecutar k-means varias veces con diferentes inicializaciones y quedarse con el resultado que tenga menor inercia. 
+ ">
+  <header class="card-header">
+    <div>
+      <span class="number">12</span>
+      <h2>12. Inicialización</h2>
+      <span class="pill evaluacion">Evaluación y decisión</span>
+    </div>
+    <button class="btn small toggle-card" type="button" aria-expanded="true">Contraer</button>
+  </header>
+  <div class="card-body"><p>La <strong>inicialización</strong> es el paso donde se eligen los centroides iniciales.</p>
+<p>Este paso es muy importante porque K-Means puede dar resultados diferentes según dónde empiecen los centroides. Si los centroides iniciales están bien ubicados, el algoritmo puede llegar a una buena solución. Si están mal ubicados, puede converger a una solución menos adecuada.</p>
+<p>Ejemplo:</p>
+<p>Si los datos tienen tres grupos naturales, pero los tres centroides iniciales caen cerca del mismo grupo, el algoritmo puede tardar más o encontrar una mala división.</p>
+<p>Por eso existe una técnica llamada <strong>K-Means++</strong>, que elige centroides iniciales de manera más inteligente, intentando que estén separados entre sí.</p>
+<p>También se suele ejecutar K-Means varias veces con diferentes inicializaciones y quedarse con el resultado que tenga menor inercia.</p>
+<hr></div>
+</article>
+
+<article class="concept-card" id="concepto-13" data-category="evaluacion" data-title="13. k-means++" data-text="13. k-means++   k-means++  es una mejora del algoritmo k-means relacionada con la elección de los centroides iniciales. 
+ en k-means tradicional, los centroides iniciales pueden elegirse al azar. el problema es que una mala elección inicial puede llevar a malos resultados. 
+ k-means++ intenta evitar este problema eligiendo centroides iniciales que estén suficientemente separados entre sí. la intuición es que, si queremos encontrar varios grupos, conviene empezar con centros ubicados en zonas diferentes del espacio de datos. 
+ ventajas de k-means++: 
+  
+   ventaja  explicación   
+ 
+  mejores puntos iniciales  los centroides comienzan mejor distribuidos.  
+  menor riesgo de mala solución  reduce la probabilidad de caer en un mal óptimo local.  
+  mayor estabilidad  las ejecuciones tienden a variar menos.  
+  mejor convergencia  el algoritmo suele necesitar menos ajustes posteriores.  
+ 
+  
+ en la práctica, k-means++ es muy usado y suele ser la opción por defecto en muchas bibliotecas de machine learning. 
+ ">
+  <header class="card-header">
+    <div>
+      <span class="number">13</span>
+      <h2>13. K-Means++</h2>
+      <span class="pill evaluacion">Evaluación y decisión</span>
+    </div>
+    <button class="btn small toggle-card" type="button" aria-expanded="true">Contraer</button>
+  </header>
+  <div class="card-body"><p><strong>K-Means++</strong> es una mejora del algoritmo K-Means relacionada con la elección de los centroides iniciales.</p>
+<p>En K-Means tradicional, los centroides iniciales pueden elegirse al azar. El problema es que una mala elección inicial puede llevar a malos resultados.</p>
+<p>K-Means++ intenta evitar este problema eligiendo centroides iniciales que estén suficientemente separados entre sí. La intuición es que, si queremos encontrar varios grupos, conviene empezar con centros ubicados en zonas diferentes del espacio de datos.</p>
+<p>Ventajas de K-Means++:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Ventaja</th><th>Explicación</th></tr></thead>
+<tbody>
+<tr><td>Mejores puntos iniciales</td><td>Los centroides comienzan mejor distribuidos.</td></tr>
+<tr><td>Menor riesgo de mala solución</td><td>Reduce la probabilidad de caer en un mal óptimo local.</td></tr>
+<tr><td>Mayor estabilidad</td><td>Las ejecuciones tienden a variar menos.</td></tr>
+<tr><td>Mejor convergencia</td><td>El algoritmo suele necesitar menos ajustes posteriores.</td></tr>
+</tbody>
+</table></div>
+<p>En la práctica, K-Means++ es muy usado y suele ser la opción por defecto en muchas bibliotecas de machine learning.</p>
+<hr></div>
+</article>
+
+<article class="concept-card" id="concepto-14" data-category="evaluacion" data-title="14. método del codo" data-text="14. método del codo  el  método del codo  es una técnica para elegir un valor razonable de k. 
+ consiste en ejecutar k-means con distintos valores de k y calcular la inercia para cada uno. luego se grafica k en el eje horizontal y la inercia en el eje vertical. 
+ ejemplo: 
+  
+   k  inercia   
+ 
+  1  1000  
+  2  600  
+  3  320  
+  4  280  
+  5  250  
+  6  235  
+ 
+  
+ la idea es buscar el punto donde la inercia deja de bajar de manera fuerte. ese punto se llama “codo” porque la curva suele doblarse allí. 
+ en el ejemplo, podría elegirse k = 3, porque hasta ahí la inercia baja mucho, pero después la mejora es menor. 
+ la interpretación es: 
+  antes del codo, agregar clusters mejora mucho el modelo.
+después del codo, agregar clusters mejora poco y puede complicar la interpretación.  
+ el método del codo es útil, pero no siempre da una respuesta clara. a veces la curva no tiene un codo evidente, y entonces conviene combinarlo con otras métricas, como silhouette score, y con criterio del problema. 
+ ">
+  <header class="card-header">
+    <div>
+      <span class="number">14</span>
+      <h2>14. Método del codo</h2>
+      <span class="pill evaluacion">Evaluación y decisión</span>
+    </div>
+    <button class="btn small toggle-card" type="button" aria-expanded="true">Contraer</button>
+  </header>
+  <div class="card-body"><p>El <strong>método del codo</strong> es una técnica para elegir un valor razonable de K.</p>
+<p>Consiste en ejecutar K-Means con distintos valores de K y calcular la inercia para cada uno. Luego se grafica K en el eje horizontal y la inercia en el eje vertical.</p>
+<p>Ejemplo:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>K</th><th>Inercia</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>1000</td></tr>
+<tr><td>2</td><td>600</td></tr>
+<tr><td>3</td><td>320</td></tr>
+<tr><td>4</td><td>280</td></tr>
+<tr><td>5</td><td>250</td></tr>
+<tr><td>6</td><td>235</td></tr>
+</tbody>
+</table></div>
+<p>La idea es buscar el punto donde la inercia deja de bajar de manera fuerte. Ese punto se llama “codo” porque la curva suele doblarse allí.</p>
+<p>En el ejemplo, podría elegirse K = 3, porque hasta ahí la inercia baja mucho, pero después la mejora es menor.</p>
+<p>La interpretación es:</p>
+<pre><code>Antes del codo, agregar clusters mejora mucho el modelo.
+Después del codo, agregar clusters mejora poco y puede complicar la interpretación.</code></pre>
+<p>El método del codo es útil, pero no siempre da una respuesta clara. A veces la curva no tiene un codo evidente, y entonces conviene combinarlo con otras métricas, como silhouette score, y con criterio del problema.</p>
+<hr></div>
+</article>
+
+<article class="concept-card" id="concepto-15" data-category="evaluacion" data-title="15. silhouette score" data-text="15. silhouette score  el  silhouette score  es una métrica que sirve para evaluar la calidad del clustering. a diferencia de la inercia, no solo mira si los puntos están cerca de su centroide, sino también si están bien separados de otros clusters. 
+ para cada punto se calcula: 
+  s(i) = [b(i) - a(i)] / max(a(i), b(i))  
+ donde: 
+  
+   elemento  significado   
+ 
+  a(i)  distancia promedio del punto i a los puntos de su mismo cluster  
+  b(i)  distancia promedio del punto i al cluster vecino más cercano  
+  s(i)  silhouette del punto i  
+ 
+  
+ la interpretación es: 
+  
+   valor  significado   
+ 
+  cerca de 1  el punto está bien asignado a su cluster.  
+  cerca de 0  el punto está en una zona ambigua entre clusters.  
+  cerca de -1  el punto probablemente está mal asignado.  
+ 
+  
+ ejemplo: 
+ si un punto tiene: 
+  a(i) = 2
+b(i) = 8  
+ entonces: 
+  s(i) = (8 - 2) / max(2, 8)
+s(i) = 6 / 8
+s(i) = 0.75  
+ ese valor indica una buena asignación, porque el punto está mucho más cerca de su propio cluster que del cluster vecino. 
+ un silhouette score alto indica que los clusters son compactos y están bien separados. un valor bajo indica que los clusters pueden estar mezclados o que k no es adecuado. 
+ ">
+  <header class="card-header">
+    <div>
+      <span class="number">15</span>
+      <h2>15. Silhouette Score</h2>
+      <span class="pill evaluacion">Evaluación y decisión</span>
+    </div>
+    <button class="btn small toggle-card" type="button" aria-expanded="true">Contraer</button>
+  </header>
+  <div class="card-body"><p>El <strong>silhouette score</strong> es una métrica que sirve para evaluar la calidad del clustering. A diferencia de la inercia, no solo mira si los puntos están cerca de su centroide, sino también si están bien separados de otros clusters.</p>
+<p>Para cada punto se calcula:</p>
+<pre><code>s(i) = [b(i) - a(i)] / max(a(i), b(i))</code></pre>
+<p>Donde:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Elemento</th><th>Significado</th></tr></thead>
+<tbody>
+<tr><td>a(i)</td><td>Distancia promedio del punto i a los puntos de su mismo cluster</td></tr>
+<tr><td>b(i)</td><td>Distancia promedio del punto i al cluster vecino más cercano</td></tr>
+<tr><td>s(i)</td><td>Silhouette del punto i</td></tr>
+</tbody>
+</table></div>
+<p>La interpretación es:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Valor</th><th>Significado</th></tr></thead>
+<tbody>
+<tr><td>Cerca de 1</td><td>El punto está bien asignado a su cluster.</td></tr>
+<tr><td>Cerca de 0</td><td>El punto está en una zona ambigua entre clusters.</td></tr>
+<tr><td>Cerca de -1</td><td>El punto probablemente está mal asignado.</td></tr>
+</tbody>
+</table></div>
+<p>Ejemplo:</p>
+<p>Si un punto tiene:</p>
+<pre><code>a(i) = 2
+b(i) = 8</code></pre>
+<p>entonces:</p>
+<pre><code>s(i) = (8 - 2) / max(2, 8)
+s(i) = 6 / 8
+s(i) = 0.75</code></pre>
+<p>Ese valor indica una buena asignación, porque el punto está mucho más cerca de su propio cluster que del cluster vecino.</p>
+<p>Un silhouette score alto indica que los clusters son compactos y están bien separados. Un valor bajo indica que los clusters pueden estar mezclados o que K no es adecuado.</p>
+<hr></div>
+</article></section>
+    <section class="practice">
+      <h2>Repaso rápido</h2>
+      <p>¿Por qué no alcanza con elegir siempre el K que genera la menor inercia?</p>
+      <div class="options">
+        <button class="btn option" data-ok="false" type="button">Porque la inercia no se puede calcular cuando K aumenta.</button>
+        <button class="btn option" data-ok="true" type="button">Porque la inercia baja al aumentar K, pero puede producir grupos artificiales y menos interpretables.</button>
+        <button class="btn option" data-ok="false" type="button">Porque K-Means no usa distancias internas.</button>
+      </div>
+      <div id="feedback">Elegí una respuesta para ver la explicación.</div>
+    </section>
+    <section class="practice">
+      <h2>Resumen final para estudiar</h2>
+      <p>K-Means es un algoritmo de clustering que busca dividir los datos en K grupos. Cada grupo está representado por un centroide, que es el promedio de los puntos asignados. El algoritmo repite dos pasos principales: asignar cada punto al centroide más cercano y recalcular los centroides. El objetivo es minimizar la inercia, es decir, lograr que los puntos estén lo más cerca posible del centroide de su cluster.</p>
+<p>Para usarlo correctamente, hay que elegir bien K, escalar las variables, revisar outliers, interpretar los clusters y evaluar la calidad del resultado con herramientas como el método del codo y el silhouette score.</p>
+    </section>
+  </main>
+</div>
+<footer>Material didáctico interactivo · Glosario K-Means · Versión 2.0 corregida</footer>
+</div>
+<script>
+(function() {
+  'use strict';
+  const body = document.body;
+  const cards = Array.from(document.querySelectorAll('.concept-card'));
+  const search = document.getElementById('search');
+  const resultCount = document.getElementById('resultCount');
+  let currentFilter = 'all';
+
+  function normalize(text) {
+    return (text || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  }
+
+  function updateResults() {
+    const q = normalize(search.value.trim());
+    let visible = 0;
+    cards.forEach(card => {
+      const okFilter = currentFilter === 'all' || card.dataset.category === currentFilter;
+      const okSearch = !q || normalize(card.dataset.text).includes(q);
+      const show = okFilter && okSearch;
+      card.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+    document.querySelectorAll('[data-toc]').forEach(link => {
+      const target = document.querySelector(link.getAttribute('href'));
+      link.classList.toggle('hidden', target && target.classList.contains('hidden'));
+    });
+    resultCount.innerHTML = '<strong>' + visible + '</strong> concepto' + (visible === 1 ? '' : 's') + ' visible' + (q ? ' para la búsqueda realizada.' : '.');
+  }
+
+  document.querySelectorAll('[data-filter]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      updateResults();
+    });
+  });
+
+  search.addEventListener('input', updateResults);
+
+  document.querySelectorAll('.toggle-card').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.concept-card');
+      const bodyEl = card.querySelector('.card-body');
+      const isHidden = bodyEl.classList.toggle('hidden');
+      btn.textContent = isHidden ? 'Expandir' : 'Contraer';
+      btn.setAttribute('aria-expanded', String(!isHidden));
+    });
+  });
+
+  document.getElementById('expandAll').addEventListener('click', () => {
+    document.querySelectorAll('.card-body').forEach(el => el.classList.remove('hidden'));
+    document.querySelectorAll('.toggle-card').forEach(btn => { btn.textContent = 'Contraer'; btn.setAttribute('aria-expanded', 'true'); });
+  });
+  document.getElementById('collapseAll').addEventListener('click', () => {
+    document.querySelectorAll('.card-body').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.toggle-card').forEach(btn => { btn.textContent = 'Expandir'; btn.setAttribute('aria-expanded', 'false'); });
+  });
+
+  function setTheme(theme) {
+    body.className = theme;
+    localStorage.setItem('kmeansGlossaryTheme', theme);
+    document.querySelectorAll('[data-theme]').forEach(dot => dot.classList.toggle('active', dot.dataset.theme === theme));
+    drawSim();
+  }
+  document.querySelectorAll('[data-theme]').forEach(dot => dot.addEventListener('click', () => setTheme(dot.dataset.theme)));
+  const savedTheme = localStorage.getItem('kmeansGlossaryTheme') || '';
+
+  const feedback = document.getElementById('feedback');
+  document.querySelectorAll('.option').forEach(btn => btn.addEventListener('click', () => {
+    const ok = btn.dataset.ok === 'true';
+    feedback.innerHTML = ok ? '<strong>Correcto.</strong> La inercia tiende a bajar cuando aumenta K, pero eso no significa que el modelo sea mejor desde el punto de vista analítico: puede sobredividir los datos y perder interpretación.' : '<strong>Revisar.</strong> La dificultad no es matemática: el problema es que un K demasiado alto puede crear grupos artificiales y poco útiles.';
+  }));
+
+  const canvas = document.getElementById('kmeansCanvas');
+  const ctx = canvas.getContext('2d');
+  let simStep = 0;
+  const points = [
+    [130,120,0],[170,150,0],[110,185,0],[190,108,0],[145,218,0],[245,160,0],
+    [520,130,1],[575,162,1],[500,212,1],[622,207,1],[545,248,1],[650,137,1],
+    [330,350,2],[390,386,2],[290,415,2],[430,452,2],[360,466,2],[472,358,2]
+  ];
+  const centersStart = [[245,276],[420,248],[570,326]];
+  const centersEnd = [[165,157],[568,183],[380,405]];
+  const stepMeta = [
+    {badge:'Paso 1 de 4', title:'Centroides iniciales', desc:'Al comenzar, los centroides se ubican en posiciones iniciales. Todavía no se sabe qué puntos pertenecerán a cada grupo.'},
+    {badge:'Paso 2 de 4', title:'Asignación por distancia', desc:'Cada punto se conecta con el centroide más cercano usando la distancia euclídea. Así quedan formados los grupos provisionales.'},
+    {badge:'Paso 3 de 4', title:'Recalcular centroides', desc:'Una vez asignados los puntos, cada centroide se mueve al promedio de las observaciones de su cluster.'},
+    {badge:'Paso 4 de 4', title:'Convergencia aproximada', desc:'Después de varias repeticiones, los centroides dejan de cambiar demasiado y la configuración se vuelve más estable.'}
+  ];
+
+  function updateSimText() {
+    const badge = document.getElementById('simBadge');
+    const title = document.getElementById('simTitle');
+    const desc = document.getElementById('simDescription');
+    if (badge) badge.textContent = stepMeta[simStep].badge;
+    if (title) title.textContent = stepMeta[simStep].title;
+    if (desc) desc.textContent = stepMeta[simStep].desc;
+  }
+
+  function cssVar(name) { return getComputedStyle(body).getPropertyValue(name).trim(); }
+  function drawSim() {
+    if (!ctx) return;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = 'rgba(255,255,255,.045)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle = cssVar('--line'); ctx.lineWidth = 2;
+    ctx.strokeRect(28,28,canvas.width-56,canvas.height-56);
+    const colors = [cssVar('--accent'), cssVar('--accent2'), cssVar('--accent3')];
+    const centers = simStep < 2 ? centersStart : centersEnd;
+    points.forEach(p => {
+      if (simStep >= 1) {
+        ctx.globalAlpha = .28; ctx.strokeStyle = colors[p[2]]; ctx.beginPath(); ctx.moveTo(p[0],p[1]); ctx.lineTo(centers[p[2]][0], centers[p[2]][1]); ctx.stroke(); ctx.globalAlpha = 1;
+      }
+      ctx.beginPath(); ctx.arc(p[0],p[1],9,0,Math.PI*2);
+      ctx.fillStyle = simStep === 0 ? 'rgba(255,255,255,.76)' : colors[p[2]];
+      ctx.fill();
+    });
+    centers.forEach((c,i) => {
+      ctx.beginPath(); ctx.arc(c[0],c[1],17,0,Math.PI*2); ctx.fillStyle = colors[i]; ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.stroke();
+      ctx.fillStyle = '#06101d'; ctx.font = 'bold 17px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('μ' + (i+1), c[0], c[1]);
+    });
+    const labels = ['1. Centroides iniciales', '2. Asignación por distancia', '3. Recalcular centroides', '4. Convergencia aproximada'];
+    ctx.fillStyle = cssVar('--text'); ctx.font = 'bold 24px Inter, sans-serif'; ctx.textAlign = 'left'; ctx.fillText(labels[simStep], 48, 58);
+    ctx.fillStyle = cssVar('--muted'); ctx.font = '17px Inter, sans-serif'; ctx.fillText('Los puntos se asignan al centroide más cercano y luego cada centroide se mueve al promedio del grupo.', 48, 90);
+    updateSimText();
+  }
+  document.getElementById('nextStep').addEventListener('click', () => { simStep = (simStep + 1) % 4; drawSim(); });
+  document.getElementById('restartSim').addEventListener('click', () => { simStep = 0; drawSim(); });
+  window.addEventListener('resize', drawSim);
+  setTheme(savedTheme);
+  updateResults();
+  updateSimText();
+  drawSim();
+})();
+</script>
+</body>
+</html>
