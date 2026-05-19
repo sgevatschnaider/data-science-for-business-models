@@ -183,7 +183,6 @@ Este bloque reúne los recursos interactivos sobre **Random Forest**, organizado
 
 # 🧩 Clustering, K-Means y Clustering Jerárquico · Recursos interactivos de estudio
 
-> **Versión 2.0 mejorada del bloque de recursos sobre clustering**  
 > Material organizado para estudiar **aprendizaje no supervisado**, **K-Means**, **clustering jerárquico**, **dendrogramas**, **distancias**, **escalado**, **métricas de evaluación** e **interpretación de clusters**.
 
 ---
