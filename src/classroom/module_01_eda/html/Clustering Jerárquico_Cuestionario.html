@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Preguntas y respuestas sobre Clustering Jerárquico</title>
+
+  <style>
+    :root{
+      --bg:#08111f;
+      --bg2:#0d1b2f;
+      --card:rgba(255,255,255,.08);
+      --card2:rgba(255,255,255,.12);
+      --text:#f4f7fb;
+      --muted:#b8c4d8;
+      --line:rgba(255,255,255,.16);
+      --accent:#36d4ff;
+      --accent2:#8b5cf6;
+      --good:#3ee88a;
+      --warn:#ffcf5a;
+      --bad:#ff6b8a;
+      --shadow:0 20px 70px rgba(0,0,0,.35);
+      --radius:24px;
+      --code:#101a2d;
+      --table:rgba(255,255,255,.06);
+    }
+
+    html[data-theme="light"]{
+      --bg:#f5f7fb;
+      --bg2:#ffffff;
+      --card:rgba(255,255,255,.84);
+      --card2:#ffffff;
+      --text:#162033;
+      --muted:#536079;
+      --line:rgba(22,32,51,.14);
+      --accent:#0077ff;
+      --accent2:#7c3aed;
+      --good:#0a9f58;
+      --warn:#b7791f;
+      --bad:#c53055;
+      --shadow:0 18px 60px rgba(30,50,90,.16);
+      --code:#eef3fb;
+      --table:#f1f5fb;
+    }
+
+    html[data-theme="ocean"]{
+      --bg:#051b22;
+      --bg2:#063946;
+      --card:rgba(255,255,255,.09);
+      --card2:rgba(255,255,255,.13);
+      --text:#ecfeff;
+      --muted:#b3d7df;
+      --line:rgba(255,255,255,.17);
+      --accent:#22d3ee;
+      --accent2:#14b8a6;
+      --good:#4ade80;
+      --warn:#fde047;
+      --bad:#fb7185;
+      --shadow:0 20px 70px rgba(0,30,40,.40);
+      --code:#062b35;
+      --table:rgba(255,255,255,.07);
+    }
+
+    html[data-theme="violet"]{
+      --bg:#170926;
+      --bg2:#2b1243;
+      --card:rgba(255,255,255,.10);
+      --card2:rgba(255,255,255,.14);
+      --text:#fbf5ff;
+      --muted:#d8c6e8;
+      --line:rgba(255,255,255,.18);
+      --accent:#f472b6;
+      --accent2:#a78bfa;
+      --good:#86efac;
+      --warn:#facc15;
+      --bad:#fb7185;
+      --shadow:0 20px 70px rgba(35,0,60,.45);
+      --code:#241238;
+      --table:rgba(255,255,255,.07);
+    }
+
+    html[data-theme="graphite"]{
+      --bg:#101114;
+      --bg2:#1f2329;
+      --card:rgba(255,255,255,.08);
+      --card2:rgba(255,255,255,.12);
+      --text:#f7f7f8;
+      --muted:#c5c8cf;
+      --line:rgba(255,255,255,.16);
+      --accent:#eab308;
+      --accent2:#38bdf8;
+      --good:#22c55e;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+      --shadow:0 20px 70px rgba(0,0,0,.35);
+      --code:#171a20;
+      --table:rgba(255,255,255,.06);
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(circle at 12% 0%, color-mix(in srgb,var(--accent) 30%,transparent), transparent 32%),
+        radial-gradient(circle at 88% 12%, color-mix(in srgb,var(--accent2) 32%,transparent), transparent 35%),
+        linear-gradient(135deg,var(--bg),var(--bg2));
+      color:var(--text);
+      min-height:100vh;
+      line-height:1.65;
+    }
+
+    a{
+      color:inherit;
+    }
+
+    button,
+    input{
+      font:inherit;
+    }
+
+    .app{
+      max-width:1440px;
+      margin:0 auto;
+      padding:22px;
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:32px;
+      padding:34px;
+      background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.05));
+      box-shadow:var(--shadow);
+    }
+
+    .hero:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 42%,transparent),transparent);
+      height:2px;
+      animation:scan 5s linear infinite;
+    }
+
+    @keyframes scan{
+      0%{transform:translateX(-100%)}
+      100%{transform:translateX(100%)}
+    }
+
+    .badge{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.08);
+      border-radius:999px;
+      padding:8px 13px;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .dot{
+      width:9px;
+      height:9px;
+      border-radius:50%;
+      background:var(--accent);
+      box-shadow:0 0 22px var(--accent);
+    }
+
+    h1{
+      font-size:clamp(2rem,4.5vw,4.4rem);
+      line-height:1.04;
+      margin:18px 0 14px;
+      letter-spacing:-.06em;
+    }
+
+    .lead{
+      max-width:930px;
+      color:var(--muted);
+      font-size:1.12rem;
+      margin:0 0 22px;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:22px;
+      align-items:stretch;
+    }
+
+    .hero-card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:18px;
+      background:rgba(0,0,0,.12);
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-top:20px;
+    }
+
+    .stat{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+      background:var(--card);
+    }
+
+    .stat strong{
+      display:block;
+      font-size:1.5rem;
+      color:var(--accent);
+    }
+
+    .stat span{
+      font-size:.88rem;
+      color:var(--muted);
+    }
+
+    .toolbar{
+      position:sticky;
+      top:0;
+      z-index:30;
+      margin:18px 0;
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:color-mix(in srgb,var(--bg2) 82%,transparent);
+      backdrop-filter:blur(14px);
+      padding:14px;
+      display:grid;
+      grid-template-columns:1.2fr auto auto;
+      gap:12px;
+      box-shadow:0 10px 40px rgba(0,0,0,.18);
+    }
+
+    .search{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px 14px;
+      color:var(--text);
+      background:var(--card);
+      outline:none;
+    }
+
+    .search:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent);
+    }
+
+    .btns,
+    .themes{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      border:1px solid var(--line);
+      border-radius:15px;
+      padding:11px 13px;
+      color:var(--text);
+      background:var(--card);
+      cursor:pointer;
+      transition:.2s;
+    }
+
+    .btn:hover{
+      transform:translateY(-1px);
+      border-color:var(--accent);
+    }
+
+    .btn.primary{
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:white;
+      border:0;
+    }
+
+    .theme-dot{
+      width:40px;
+      height:40px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      cursor:pointer;
+      box-shadow:inset 0 0 0 2px rgba(255,255,255,.08);
+    }
+
+    .theme-dot.active{
+      outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);
+      transform:translateY(-1px);
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:295px 1fr;
+      gap:18px;
+      align-items:start;
+    }
+
+    .sidebar{
+      position:sticky;
+      top:94px;
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:var(--card);
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+
+    .side-title{
+      font-weight:800;
+      margin:0 0 10px;
+    }
+
+    .nav{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .nav button{
+      text-align:left;
+      border:1px solid transparent;
+      background:transparent;
+      color:var(--muted);
+      border-radius:14px;
+      padding:10px;
+      cursor:pointer;
+    }
+
+    .nav button:hover,
+    .nav button.active{
+      background:var(--card2);
+      color:var(--text);
+      border-color:var(--line);
+    }
+
+    .progress-wrap{
+      height:10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.12);
+      overflow:hidden;
+      margin:14px 0;
+    }
+
+    .progress{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      transition:.3s;
+    }
+
+    .content{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .question-card{
+      border:1px solid var(--line);
+      border-radius:28px;
+      background:linear-gradient(135deg,var(--card),rgba(255,255,255,.04));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .q-head{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      align-items:center;
+      padding:20px;
+      cursor:pointer;
+    }
+
+    .q-kicker{
+      color:var(--accent);
+      font-weight:900;
+      font-size:.88rem;
+      text-transform:uppercase;
+      letter-spacing:.09em;
+    }
+
+    .q-title{
+      font-size:1.35rem;
+      line-height:1.25;
+      margin:.2rem 0 0;
+      letter-spacing:-.025em;
+    }
+
+    .q-icon{
+      min-width:42px;
+      height:42px;
+      border-radius:15px;
+      border:1px solid var(--line);
+      display:grid;
+      place-items:center;
+      background:var(--card2);
+      color:var(--accent);
+      font-size:1.4rem;
+      transition:.2s;
+    }
+
+    .q-body{
+      display:none;
+      padding:0 20px 22px;
+      border-top:1px solid var(--line);
+    }
+
+    .question-card.open .q-body{
+      display:block;
+      animation:fade .24s ease;
+    }
+
+    .question-card.open .q-icon{
+      transform:rotate(45deg);
+    }
+
+    @keyframes fade{
+      from{opacity:0;transform:translateY(-6px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    .note{
+      border-left:4px solid var(--accent);
+      background:color-mix(in srgb,var(--accent) 12%,transparent);
+      padding:14px 16px;
+      border-radius:16px;
+      margin:14px 0;
+      color:var(--text);
+    }
+
+    .warn{
+      border-left-color:var(--warn);
+      background:color-mix(in srgb,var(--warn) 12%,transparent);
+    }
+
+    .good{
+      border-left-color:var(--good);
+      background:color-mix(in srgb,var(--good) 12%,transparent);
+    }
+
+    code,
+    .code{
+      display:block;
+      background:var(--code);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px 14px;
+      color:var(--text);
+      overflow:auto;
+      white-space:pre-wrap;
+      margin:12px 0;
+      font-family:Consolas,Monaco,monospace;
+      line-height:1.55;
+    }
+
+    .inline{
+      display:inline;
+      background:var(--code);
+      padding:2px 6px;
+      border-radius:8px;
+      border:1px solid var(--line);
+      font-family:Consolas,monospace;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin:14px 0;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid var(--line);
+    }
+
+    th,
+    td{
+      padding:11px 12px;
+      border-bottom:1px solid var(--line);
+      vertical-align:top;
+    }
+
+    th{
+      background:color-mix(in srgb,var(--accent) 18%,var(--table));
+      text-align:left;
+    }
+
+    td{
+      background:var(--table);
+    }
+
+    tr:last-child td{
+      border-bottom:0;
+    }
+
+    .formula{
+      font-size:1.1rem;
+      text-align:center;
+      background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 15%,transparent),color-mix(in srgb,var(--accent2) 13%,transparent));
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      margin:14px 0;
+      font-weight:800;
+    }
+
+    .pill-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:12px 0;
+    }
+
+    .pill{
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:6px 10px;
+      background:var(--card);
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .visual{
+      height:285px;
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:radial-gradient(circle at center,rgba(255,255,255,.08),rgba(0,0,0,.10));
+      overflow:hidden;
+      position:relative;
+    }
+
+    .visual canvas{
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    .legend{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size:.9rem;
+      margin-top:10px;
+    }
+
+    .leg{
+      display:flex;
+      gap:6px;
+      align-items:center;
+    }
+
+    .sw{
+      width:12px;
+      height:12px;
+      border-radius:4px;
+    }
+
+    .mini-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin:14px 0;
+    }
+
+    .mini{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+      background:var(--card);
+    }
+
+    .mini strong{
+      color:var(--accent);
+    }
+
+    .empty{
+      display:none;
+      text-align:center;
+      border:1px dashed var(--line);
+      border-radius:24px;
+      padding:30px;
+      color:var(--muted);
+      background:var(--card);
+    }
+
+    .footer{
+      margin:22px 0 6px;
+      color:var(--muted);
+      text-align:center;
+      font-size:.92rem;
+      font-weight:800;
+    }
+
+    @media (max-width:980px){
+      .hero-grid,
+      .layout{
+        grid-template-columns:1fr;
+      }
+
+      .sidebar{
+        position:relative;
+        top:auto;
+      }
+
+      .toolbar{
+        grid-template-columns:1fr;
+      }
+
+      .stats{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .mini-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media print{
+      body{
+        background:#fff;
+        color:#000;
+      }
+
+      .toolbar,
+      .sidebar,
+      .visual,
+      .btns,
+      .themes{
+        display:none;
+      }
+
+      .layout,
+      .hero-grid{
+        display:block;
+      }
+
+      .question-card{
+        break-inside:avoid;
+        box-shadow:none;
+      }
+
+      .q-body{
+        display:block!important;
+      }
+
+      .hero,
+      .question-card{
+        border:1px solid #ddd;
+        background:#fff;
+        color:#000;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <span class="badge">
+            <span class="dot"></span>
+            Guía interactiva · Clustering Jerárquico
+          </span>
+
+          <h1>10 preguntas y respuestas desarrolladas sobre Clustering Jerárquico</h1>
+
+          <p class="lead">
+            Material didáctico para estudiar clustering jerárquico desde cero: aprendizaje no supervisado,
+            distancias, fusiones, matriz linkage, métodos de enlace, Ward, dendrograma, corte del árbol,
+            interpretación de clusters y diferencias con K-Means.
+          </p>
+
+          <div class="stats">
+            <div class="stat">
+              <strong>10</strong>
+              <span>preguntas guía</span>
+            </div>
+            <div class="stat">
+              <strong>4</strong>
+              <span>métodos linkage</span>
+            </div>
+            <div class="stat">
+              <strong>1</strong>
+              <span>dendrograma central</span>
+            </div>
+            <div class="stat">
+              <strong>n - 1</strong>
+              <span>fusiones</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <h2 style="margin-top:0;">Idea central</h2>
+          <p class="lead" style="font-size:1rem;">
+            El clustering jerárquico construye un árbol de semejanzas. Cada observación comienza como un cluster
+            individual y el algoritmo va fusionando los puntos o grupos más parecidos hasta formar una estructura completa.
+          </p>
+
+          <div class="formula">
+            puntos separados → fusiones → matriz linkage → dendrograma → corte del árbol
+          </div>
+
+          <div class="pill-row">
+            <span class="pill">Aprendizaje no supervisado</span>
+            <span class="pill">Fusiones</span>
+            <span class="pill">Dendrograma</span>
+            <span class="pill">Ward</span>
+            <span class="pill">Linkage</span>
+            <span class="pill">Corte</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="toolbar">
+      <input id="search" class="search" type="search" placeholder="Buscar: dendrograma, linkage, Ward, fusión, distancia..." />
+
+      <div class="btns">
+        <button class="btn primary" onclick="openAll()">Abrir todo</button>
+        <button class="btn" onclick="closeAll()">Cerrar todo</button>
+        <button class="btn" onclick="resetSearch()">Limpiar</button>
+      </div>
+
+      <div class="themes">
+        <button class="theme-dot active" style="background:linear-gradient(135deg,#08111f,#36d4ff,#8b5cf6)" onclick="setTheme('dark', this)" title="Oscuro"></button>
+        <button class="theme-dot" style="background:linear-gradient(135deg,#f5f7fb,#0077ff,#7c3aed)" onclick="setTheme('light', this)" title="Claro"></button>
+        <button class="theme-dot" style="background:linear-gradient(135deg,#051b22,#22d3ee,#14b8a6)" onclick="setTheme('ocean', this)" title="Océano"></button>
+        <button class="theme-dot" style="background:linear-gradient(135deg,#170926,#f472b6,#a78bfa)" onclick="setTheme('violet', this)" title="Violeta"></button>
+        <button class="theme-dot" style="background:linear-gradient(135deg,#101114,#eab308,#38bdf8)" onclick="setTheme('graphite', this)" title="Grafito"></button>
+      </div>
+    </nav>
+
+    <section class="layout">
+      <aside class="sidebar">
+        <p class="side-title">Progreso de lectura</p>
+        <div class="progress-wrap">
+          <div class="progress" id="progress"></div>
+        </div>
+
+        <p class="side-title">Navegación</p>
+        <div class="nav" id="nav">
+          <button onclick="goToQuestion(1)">1. Qué es</button>
+          <button onclick="goToQuestion(2)">2. No supervisado</button>
+          <button onclick="goToQuestion(3)">3. Fusiones</button>
+          <button onclick="goToQuestion(4)">4. Distancias</button>
+          <button onclick="goToQuestion(5)">5. Linkage</button>
+          <button onclick="goToQuestion(6)">6. Ward</button>
+          <button onclick="goToQuestion(7)">7. Matriz linkage</button>
+          <button onclick="goToQuestion(8)">8. Dendrograma</button>
+          <button onclick="goToQuestion(9)">9. Corte</button>
+          <button onclick="goToQuestion(10)">10. Limitaciones</button>
+        </div>
+      </aside>
+
+      <main class="content" id="content">
+
+        <article class="question-card open" id="q1" data-keywords="clustering jerárquico agrupamiento dendrograma árbol">
+          <div class="q-head" onclick="toggleCard(this)">
+            <div>
+              <div class="q-kicker">Pregunta 1</div>
+              <h2 class="q-title">¿Qué es el clustering jerárquico y para qué sirve?</h2>
+            </div>
+            <div class="q-icon">+</div>
+          </div>
+
+          <div class="q-body">
+            <p>
+              El <strong>clustering jerárquico</strong> es un método de aprendizaje no supervisado que agrupa observaciones
+              según su similitud, pero lo hace construyendo una estructura en forma de árbol. A diferencia de otros métodos,
+              no entrega solamente una partición final, sino que muestra cómo los grupos se van formando paso a paso.
+            </p>
+
+            <p>
+              Sirve para explorar datos cuando no conocemos previamente las categorías existentes. Por ejemplo, podemos usarlo
+              para agrupar clientes, libros, empresas, países, documentos, productos o estudiantes según sus características.
+              El algoritmo no conoce el significado real de esos grupos; simplemente mide similitudes y organiza los datos.
+            </p>
+
+            <div class="note">
+              <strong>Idea clave:</strong> el clustering jerárquico permite ver grupos y subgrupos, porque muestra distintos
+              niveles de agrupamiento.
+            </div>
+
+            <p>
+              Su resultado visual más importante es el <strong>dendrograma</strong>, que permite observar en qué orden se
+              fusionan las observaciones y a qué distancia ocurre cada unión.
+            </p>
+
+            <div class="visual">
+              <canvas id="canvas1"></canvas>
+            </div>
+
+            <div class="legend">
+              <div class="leg"><span class="sw" style="background:var(--accent)"></span> Puntos</div>
+              <div class="leg"><span class="sw" style="background:var(--accent2)"></span> Fusiones</div>
+              <div class="leg"><span class="sw" style="background:var(--good)"></span> Dendrograma</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="question-card" id="q2" data-keywords="aprendizaje no supervisado etiquetas variable objetivo">
+          <div class="q-head" onclick="toggleCard(this)">
+            <div>
+              <div class="q-kicker">Pregunta 2</div>
+              <h2 class="q-title">¿Por qué el clustering jerárquico es aprendizaje no supervisado?</h2>
+            </div>
+            <div class="q-icon">+</div>
+          </div>
+
+          <div class="q-body">
+            <p>
+              Es aprendizaje no supervisado porque trabaja con datos que no tienen una etiqueta previa o una respuesta correcta
+              definida. El algoritmo no recibe una columna que diga “este cliente pertenece al grupo A” o “este documento
+              pertenece al tema B”.
+            </p>
+
+            <p>
+              En lugar de aprender a predecir una categoría conocida, el método busca descubrir una estructura interna en los
+              datos. Esa estructura surge de las distancias entre observaciones y de las fusiones sucesivas.
+            </p>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Tipo de aprendizaje</th>
+                  <th>Qué recibe el algoritmo</th>
+                  <th>Objetivo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Supervisado</td>
+                  <td>Datos con etiqueta o variable objetivo</td>
+                  <td>Predecir una respuesta conocida</td>
+                </tr>
+                <tr>
+                  <td>No supervisado</td>
+                  <td>Datos sin etiquetas</td>
+                  <td>Descubrir patrones, grupos o estructuras</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="note good">
+              <strong>Ejemplo:</strong> si tenemos datos de libros, el algoritmo no sabe cuáles son introductorios,
+              intermedios o avanzados. Puede sugerir grupos según páginas, dificultad, vocabulario o nivel técnico.
+            </div>
+          </div>
+        </article>
+
+        <article class="question-card" id="q3" data-keywords="fusión fusiones unir grupos clusters algoritmo aglomerativo">
+          <div class="q-head" onclick="toggleCard(this)">
+            <div>
+              <div class="q-kicker">Pregunta 3</div>
+              <h2 class="q-title">¿Qué son las fusiones en clustering jerárquico?</h2>
+            </div>
+            <div class="q-icon">+</div>
+          </div>
+
+          <div class="q-body">
+            <p>
+              Una <strong>fusión</strong> es el momento en que el algoritmo une dos elementos para formar un nuevo cluster.
+              Esos elementos pueden ser dos puntos individuales, un punto y un cluster ya existente, o dos clusters previamente formados.
+            </p>
+
+            <div class="code">
+Inicio:
+A   B   C   D   E
+
+Primera fusión:
+(A,B)   C   D   E
+
+Segunda fusión:
+(A,B)   C   (D,E)
+
+Tercera fusión:
+(A,B,C)   (D,E)
+            </div>
+
+            <p>
+              En la versión aglomerativa del clustering jerárquico, el algoritmo empieza con todos los puntos separados y
+              va fusionando de a dos hasta que finalmente todos quedan dentro de un único árbol.
+            </p>
+
+            <div class="formula">
+              n observaciones → n clusters iniciales → n - 1 fusiones → 1 árbol final
+            </div>
+
+            <div class="note">
+              <strong>Importante:</strong> cada fusión queda registrada en la matriz linkage y luego aparece dibujada en el dendrograma.
+            </div>
+          </div>
+        </article>
+
+        <article class="question-card" id="q4" data-keywords="distancia euclídea manhattan coseno similitud disimilitud">
+          <div class="q-head" onclick="toggleCard(this)">
+            <div>
+              <div class="q-kicker">Pregunta 4</div>
+              <h2 class="q-title">¿Qué papel cumplen las distancias?</h2>
+            </div>
+            <div class="q-icon">+</div>
+          </div>
+
+          <div class="q-body">
+            <p>
+              Las distancias son la base del clustering jerárquico porque permiten medir qué tan parecidas o diferentes son
+              dos observaciones. Si la distancia es pequeña, los puntos son similares; si la distancia es grande, son diferentes.
+            </p>
+
+            <div class="formula">
+              Distancia euclídea: d(A,B) = √[(x₂ - x₁)² + (y₂ - y₁)²]
+            </div>
+
+            <p>
+              Por ejemplo, si dos clientes tienen edad, ingreso y gasto mensual parecidos, su distancia será baja.
+              Si esos valores son muy distintos, la distancia será alta.
+            </p>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Distancia</th>
+                  <th>Qué mide</th>
+                  <th>Uso típico</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Euclídea</td>
+                  <td>Distancia en línea recta</td>
+                  <td>Datos numéricos continuos</td>
+                </tr>
+                <tr>
+                  <td>Manhattan</td>
+                  <td>Suma de diferencias absolutas</td>
+                  <td>Datos donde importa el recorrido por variables</td>
+                </tr>
+                <tr>
+                  <td>Coseno</td>
+                  <td>Orientación entre vectores</td>
+                  <td>Textos, documentos o embeddings</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="note warn">
+              <strong>Atención:</strong> si las variables están en escalas muy diferentes, una variable puede dominar el cálculo de distancia.
+              Por eso suele ser necesario estandarizar.
+            </div>
+          </div>
+        </article>
+
+        <article class="question-card" id="q5" data-keywords="linkage single complete average enlace criterio distancia entre clusters">
+          <div class="q-head" onclick="toggleCard(this)">
+            <div>
+              <div class="q-kicker">Pregunta 5</div>
+              <h2 class="q-title">¿Qué es el linkage y por qué es importante?</h2>
+            </div>
+            <div class="q-icon">+</div>
+          </div>
+
+          <div class="q-body">
+            <p>
+              El <strong>linkage</strong>, o criterio de enlace, define cómo se calcula la distancia entre clusters cuando
+              cada cluster ya puede tener más de un punto. Es una decisión central porque puede cambiar la forma del dendrograma.
+            </p>
+
+            <p>
+              Comparar dos puntos es simple: medimos la distancia entre ellos. Pero comparar dos grupos es más complejo.
+              ¿Usamos la distancia entre los puntos más cercanos? ¿La distancia entre los puntos más lejanos? ¿El promedio?
+              Ahí aparece el linkage.
+            </p>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Método</th>
+                  <th>Cómo calcula distancia entre clusters</th>
+                  <th>Efecto habitual</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Single linkage</td>
+                  <td>Usa la menor distancia entre puntos de ambos grupos.</td>
+                  <td>Puede formar cadenas largas.</td>
+                </tr>
+                <tr>
+                  <td>Complete linkage</td>
+                  <td>Usa la mayor distancia entre puntos de ambos grupos.</td>
+                  <td>Tiende a formar grupos compactos.</td>
+                </tr>
+                <tr>
+                  <td>Average linkage</td>
+                  <td>Usa el promedio de todas las distancias entre puntos.</td>
+                  <td>Busca equilibrio entre single y complete.</td>
+                </tr>
+                <tr>
+                  <td>Ward</td>
+                  <td>Busca la fusión que menos aumenta la variabilidad interna.</td>
+                  <td>Suele generar clusters compactos y equilibrados.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="note">
+              <strong>Idea clave:</strong> el linkage define qué significa que dos clusters estén cerca.
+            </div>
+          </div>
+        </article>
+
+        <article class="question-card" id="q6" data-keywords="ward varianza interna dispersión compactos clusters sse">
+          <div class="q-head" onclick="toggleCard(this)">
+            <div>
+              <div class="q-kicker">Pregunta 6</div>
+              <h2 class="q-title">¿Qué hace el método Ward?</h2>
+            </div>
+            <div class="q-icon">+</div>
+          </div>
+
+          <div class="q-body">
+            <p>
+              El método <strong>Ward</strong> es un criterio de linkage que intenta formar grupos compactos. En cada paso,
+              elige la fusión que produce el menor aumento de la variabilidad interna del nuevo cluster.
+            </p>
+
+            <p>
+              Dicho de manera simple: Ward evita unir grupos que quedarían demasiado dispersos. Prefiere fusionar aquellos
+              que, al juntarse, mantienen una estructura interna relativamente compacta.
+            </p>
+
+            <div class="formula">
+              Ward: elegir la fusión que menos aumenta la dispersión interna
+            </div>
+
+            <div class="mini-grid">
+              <div class="mini">
+                <strong>Antes</strong>
+                <p>Dos grupos cercanos y compactos.</p>
+              </div>
+              <div class="mini">
+                <strong>Fusión</strong>
+                <p>Se evalúa cuánto aumenta la dispersión.</p>
+              </div>
+              <div class="mini">
+                <strong>Después</strong>
+                <p>Se elige la unión menos costosa.</p>
+              </div>
+            </div>
+
+            <div class="note good">
+              <strong>Uso frecuente:</strong> Ward suele ser una buena opción cuando las variables son numéricas,
+              están estandarizadas y se buscan clusters compactos.
+            </div>
+          </div>
+        </article>
+
+        <article class="question-card" id="q7" data-keywords="matriz linkage columnas fusión altura tamaño cluster">
+          <div class="q-head" onclick="toggleCard(this)">
+            <div>
+              <div class="q-kicker">Pregunta 7</div>
+              <h2 class="q-title">¿Qué es la matriz linkage?</h2>
+            </div>
+            <div class="q-icon">+</div>
+          </div>
+
+          <div class="q-body">
+            <p>
+              La <strong>matriz linkage</strong> es una tabla que registra todas las fusiones realizadas por el algoritmo.
+              Cada fila representa una fusión y tiene cuatro columnas principales.
+            </p>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Columna</th>
+                  <th>Significado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Columna 1</td>
+                  <td>Primer punto o cluster fusionado.</td>
+                </tr>
+                <tr>
+                  <td>Columna 2</td>
+                  <td>Segundo punto o cluster fusionado.</td>
+                </tr>
+                <tr>
+                  <td>Columna 3</td>
+                  <td>Distancia o altura a la que ocurre la fusión.</td>
+                </tr>
+                <tr>
+                  <td>Columna 4</td>
+                  <td>Cantidad de observaciones que contiene el nuevo cluster.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="code">
+Ejemplo:
+[107, 114, 0.00228, 2]
+
+Lectura:
+El punto 107 se fusionó con el punto 114,
+a una distancia de 0.00228,
+formando un cluster de 2 observaciones.
+            </div>
+
+            <p>
+              Si aparecen números mayores que la cantidad original de observaciones, esos números representan clusters creados
+              en fusiones anteriores.
+            </p>
+
+            <div class="note">
+              <strong>Frase clave:</strong> la matriz linkage es la historia numérica del dendrograma.
+            </div>
+          </div>
+        </article>
+
+        <article class="question-card" id="q8" data-keywords="dendrograma árbol altura fusión interpretación ramas colores">
+          <div class="q-head" onclick="toggleCard(this)">
+            <div>
+              <div class="q-kicker">Pregunta 8</div>
+              <h2 class="q-title">¿Qué es un dendrograma y cómo se interpreta?</h2>
+            </div>
+            <div class="q-icon">+</div>
+          </div>
+
+          <div class="q-body">
+            <p>
+              Un <strong>dendrograma</strong> es un gráfico con forma de árbol que representa visualmente las fusiones del
+              clustering jerárquico. En la parte inferior están las observaciones o clusters pequeños. A medida que subimos,
+              vemos cómo se van uniendo.
+            </p>
+
+            <p>
+              La altura de cada unión representa la distancia de fusión. Si dos ramas se unen abajo, significa que eran muy
+              parecidas. Si se unen arriba, significa que eran más diferentes.
+            </p>
+
+            <div class="formula">
+              Fusión baja → grupos parecidos<br>
+              Fusión alta → grupos diferentes
+            </div>
+
+            <p>
+              El dendrograma permite ver no solo cuántos clusters podrían existir, sino también qué subgrupos se forman dentro
+              de cada gran grupo.
+            </p>
+
+            <div class="note good">
+              <strong>Lectura práctica:</strong> buscar grandes saltos verticales ayuda a decidir una altura razonable de corte.
+            </div>
+          </div>
+        </article>
+
+        <article class="question-card" id="q9" data-keywords="cortar dendrograma altura corte clusters k cantidad de grupos">
+          <div class="q-head" onclick="toggleCard(this)">
+            <div>
+              <div class="q-kicker">Pregunta 9</div>
+              <h2 class="q-title">¿Cómo se elige dónde cortar el dendrograma?</h2>
+            </div>
+            <div class="q-icon">+</div>
+          </div>
+
+          <div class="q-body">
+            <p>
+              Cortar el dendrograma significa trazar una línea horizontal imaginaria a cierta altura. Cada rama separada por
+              debajo de esa línea se convierte en un cluster final.
+            </p>
+
+            <p>
+              Una regla visual habitual es cortar antes de las fusiones muy altas, porque esas fusiones suelen indicar que el
+              algoritmo está uniendo grupos bastante diferentes.
+            </p>
+
+            <div class="code">
+Corte bajo  → muchos clusters pequeños
+Corte medio → clusters principales
+Corte alto  → pocos clusters grandes
+            </div>
+
+            <p>
+              También se puede elegir el corte usando una cantidad deseada de clusters o evaluando métricas como el silhouette score.
+              Sin embargo, la decisión final siempre debe combinar visualización, métrica e interpretación del problema.
+            </p>
+
+            <div class="note">
+              <strong>Ejemplo:</strong> si el dendrograma muestra tres grandes ramas separadas antes de una fusión muy alta,
+              una solución con tres clusters puede ser razonable.
+            </div>
+          </div>
+        </article>
+
+        <article class="question-card" id="q10" data-keywords="limitaciones ventajas desventajas outliers escala costo computacional kmeans">
+          <div class="q-head" onclick="toggleCard(this)">
+            <div>
+              <div class="q-kicker">Pregunta 10</div>
+              <h2 class="q-title">¿Cuáles son sus ventajas, limitaciones y diferencias con K-Means?</h2>
+            </div>
+            <div class="q-icon">+</div>
+          </div>
+
+          <div class="q-body">
+            <p>
+              El clustering jerárquico tiene una gran ventaja interpretativa: permite ver la historia completa de las fusiones.
+              Esto lo vuelve especialmente útil para enseñanza, análisis exploratorio y problemas donde interesa observar
+              subgrupos.
+            </p>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Aspecto</th>
+                  <th>Clustering Jerárquico</th>
+                  <th>K-Means</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Idea central</td>
+                  <td>Construye un árbol de fusiones.</td>
+                  <td>Agrupa puntos alrededor de centroides.</td>
+                </tr>
+                <tr>
+                  <td>Cantidad de clusters</td>
+                  <td>Puede decidirse cortando el dendrograma.</td>
+                  <td>Debe fijarse K antes de ejecutar.</td>
+                </tr>
+                <tr>
+                  <td>Visualización principal</td>
+                  <td>Dendrograma.</td>
+                  <td>Clusters y centroides.</td>
+                </tr>
+                <tr>
+                  <td>Escalabilidad</td>
+                  <td>Puede ser costoso con muchos datos.</td>
+                  <td>Suele escalar mejor.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p>
+              Sus principales limitaciones son la sensibilidad a outliers, la importancia de escalar correctamente las variables,
+              la dependencia del método de linkage y el costo computacional cuando el dataset es grande.
+            </p>
+
+            <div class="note warn">
+              <strong>Conclusión:</strong> es muy útil para entender relaciones jerárquicas, pero debe aplicarse con cuidado.
+            </div>
+          </div>
+        </article>
+
+        <div class="empty" id="empty">
+          No se encontraron preguntas con ese criterio de búsqueda.
+        </div>
+
+      </main>
+    </section>
+
+    <div class="footer">
+      Material elaborado por el profesor Sergio Gevatschnaider
+    </div>
+  </div>
+
+  <script>
+    const cards = Array.from(document.querySelectorAll(".question-card"));
+    const search = document.getElementById("search");
+    const empty = document.getElementById("empty");
+    const progress = document.getElementById("progress");
+
+    function toggleCard(header){
+      const card = header.closest(".question-card");
+      card.classList.toggle("open");
+      updateProgress();
+    }
+
+    function openAll(){
+      cards.forEach(card => card.classList.add("open"));
+      updateProgress();
+    }
+
+    function closeAll(){
+      cards.forEach(card => card.classList.remove("open"));
+      updateProgress();
+    }
+
+    function resetSearch(){
+      search.value = "";
+      cards.forEach(card => card.style.display = "");
+      empty.style.display = "none";
+      updateProgress();
+    }
+
+    function normalizeText(text){
+      return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    search.addEventListener("input", () => {
+      const q = normalizeText(search.value.trim());
+      let visible = 0;
+
+      cards.forEach(card => {
+        const text = normalizeText(card.innerText + " " + card.dataset.keywords);
+        const show = text.includes(q);
+        card.style.display = show ? "" : "none";
+        if(show) visible++;
+        if(q.length > 1 && show){
+          card.classList.add("open");
+        }
+      });
+
+      empty.style.display = visible === 0 ? "block" : "none";
+      updateProgress();
+    });
+
+    function setTheme(theme, btn){
+      document.documentElement.setAttribute("data-theme", theme);
+      document.querySelectorAll(".theme-dot").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      drawMiniVisual();
+    }
+
+    function goToQuestion(n){
+      const el = document.getElementById("q" + n);
+      if(el){
+        el.classList.add("open");
+        el.scrollIntoView({behavior:"smooth", block:"start"});
+      }
+    }
+
+    function updateProgress(){
+      const visibleCards = cards.filter(card => card.style.display !== "none");
+      const openedCards = visibleCards.filter(card => card.classList.contains("open"));
+      const pct = visibleCards.length ? (openedCards.length / visibleCards.length) * 100 : 0;
+      progress.style.width = pct + "%";
+    }
+
+    function cssVar(name){
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    function drawMiniVisual(){
+      const canvas = document.getElementById("canvas1");
+      if(!canvas) return;
+
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * devicePixelRatio;
+      canvas.height = rect.height * devicePixelRatio;
+
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+
+      const w = rect.width;
+      const h = rect.height;
+
+      ctx.clearRect(0,0,w,h);
+
+      ctx.fillStyle = "rgba(255,255,255,.03)";
+      ctx.fillRect(0,0,w,h);
+
+      const points = [
+        {x:60,y:70,l:"A"},
+        {x:95,y:95,l:"B"},
+        {x:130,y:125,l:"C"},
+        {x:250,y:70,l:"D"},
+        {x:290,y:105,l:"E"},
+        {x:360,y:200,l:"F"},
+        {x:405,y:225,l:"G"},
+        {x:445,y:190,l:"H"}
+      ];
+
+      const accent = cssVar("--accent");
+      const accent2 = cssVar("--accent2");
+      const good = cssVar("--good");
+      const muted = cssVar("--muted");
+      const text = cssVar("--text");
+
+      ctx.strokeStyle = "rgba(255,255,255,.10)";
+      ctx.lineWidth = 1;
+
+      for(let x=0;x<w;x+=35){
+        ctx.beginPath();
+        ctx.moveTo(x,0);
+        ctx.lineTo(x,h);
+        ctx.stroke();
+      }
+
+      for(let y=0;y<h;y+=35){
+        ctx.beginPath();
+        ctx.moveTo(0,y);
+        ctx.lineTo(w,y);
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = accent2;
+      ctx.lineWidth = 3;
+
+      const merges = [
+        [0,1],
+        [3,4],
+        [5,6],
+        [6,7],
+        [1,2]
+      ];
+
+      merges.forEach(([a,b],i) => {
+        ctx.globalAlpha = .25 + i * .1;
+        ctx.beginPath();
+        ctx.moveTo(points[a].x, points[a].y);
+        ctx.lineTo(points[b].x, points[b].y);
+        ctx.stroke();
+      });
+
+      ctx.globalAlpha = 1;
+
+      points.forEach((p,i) => {
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,13,0,Math.PI*2);
+        ctx.fillStyle = i < 3 ? accent : i < 5 ? good : accent2;
+        ctx.fill();
+
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 11px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(p.l,p.x,p.y);
+      });
+
+      const dx = w * .58;
+      const baseY = h - 45;
+      const leafSpacing = 28;
+
+      ctx.strokeStyle = muted;
+      ctx.lineWidth = 1.5;
+      ctx.fillStyle = muted;
+      ctx.font = "10px Arial";
+
+      for(let i=0;i<8;i++){
+        const x = dx + i * leafSpacing;
+        ctx.beginPath();
+        ctx.moveTo(x,baseY);
+        ctx.lineTo(x,baseY-10);
+        ctx.stroke();
+        ctx.fillText(String.fromCharCode(65+i),x,baseY+14);
+      }
+
+      function dendro(a,b,height,color){
+        const xa = dx + a * leafSpacing;
+        const xb = dx + b * leafSpacing;
+        const y = baseY - height;
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(xa,baseY-10);
+        ctx.lineTo(xa,y);
+        ctx.lineTo(xb,y);
+        ctx.lineTo(xb,baseY-10);
+        ctx.stroke();
+      }
+
+      dendro(0,1,45,accent);
+      dendro(3,4,55,good);
+      dendro(5,6,50,accent2);
+      dendro(6,7,85,accent2);
+      dendro(.5,2,95,accent);
+
+      ctx.fillStyle = text;
+      ctx.font = "bold 13px Arial";
+      ctx.textAlign = "left";
+      ctx.fillText("Fusiones + dendrograma", dx - 10, 30);
+    }
+
+    window.addEventListener("resize", drawMiniVisual);
+    window.addEventListener("load", () => {
+      drawMiniVisual();
+      updateProgress();
+    });
+  </script>
+</body>
+</html>

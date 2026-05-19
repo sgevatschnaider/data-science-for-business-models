@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Glosario de Clustering Jerárquico</title>
+
+<style>
+:root {
+  --bg:#07111f;
+  --bg2:#10294a;
+  --card:rgba(255,255,255,.085);
+  --card2:rgba(255,255,255,.14);
+  --text:#eef7ff;
+  --muted:#b7c8dc;
+  --line:rgba(255,255,255,.18);
+  --accent:#37d5ff;
+  --accent2:#8b5cf6;
+  --accent3:#22c55e;
+  --danger:#fb7185;
+  --warning:#facc15;
+  --shadow:0 24px 70px rgba(0,0,0,.32);
+  --code:#06101d;
+}
+
+body.theme-light {
+  --bg:#f5f8ff;
+  --bg2:#e4edff;
+  --card:rgba(255,255,255,.92);
+  --card2:#ffffff;
+  --text:#122033;
+  --muted:#526176;
+  --line:rgba(30,55,90,.16);
+  --accent:#2563eb;
+  --accent2:#7c3aed;
+  --accent3:#059669;
+  --danger:#e11d48;
+  --warning:#b7791f;
+  --shadow:0 18px 44px rgba(20,40,80,.13);
+  --code:#eef4ff;
+}
+
+body.theme-uva {
+  --bg:#19051f;
+  --bg2:#3b1052;
+  --card:rgba(255,255,255,.085);
+  --card2:rgba(255,255,255,.145);
+  --text:#fff5ff;
+  --muted:#dfc5e8;
+  --accent:#f472b6;
+  --accent2:#a78bfa;
+  --accent3:#38bdf8;
+  --danger:#fb7185;
+  --warning:#facc15;
+  --code:#120419;
+}
+
+body.theme-bosque {
+  --bg:#031711;
+  --bg2:#0b3a2b;
+  --card:rgba(255,255,255,.078);
+  --card2:rgba(255,255,255,.13);
+  --text:#effff8;
+  --muted:#bbd9cc;
+  --accent:#34d399;
+  --accent2:#22d3ee;
+  --accent3:#facc15;
+  --danger:#fb7185;
+  --warning:#f59e0b;
+  --code:#03120d;
+}
+
+body.theme-grafito {
+  --bg:#0b0d10;
+  --bg2:#1d2630;
+  --card:rgba(255,255,255,.078);
+  --card2:rgba(255,255,255,.13);
+  --text:#f6f7fb;
+  --muted:#c4c8d0;
+  --accent:#e5e7eb;
+  --accent2:#60a5fa;
+  --accent3:#fb923c;
+  --danger:#f43f5e;
+  --warning:#facc15;
+  --code:#070809;
+}
+
+* {
+  box-sizing:border-box;
+}
+
+html {
+  scroll-behavior:smooth;
+}
+
+body {
+  margin:0;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%, color-mix(in srgb,var(--accent2) 78%,transparent), transparent 32%),
+    radial-gradient(circle at 88% 8%, color-mix(in srgb,var(--accent) 65%,transparent), transparent 28%),
+    linear-gradient(135deg,var(--bg),var(--bg2));
+  color:var(--text);
+  min-height:100vh;
+}
+
+.container {
+  max-width:1220px;
+  margin:0 auto;
+  padding:28px 18px 70px;
+}
+
+.hero {
+  border:1px solid var(--line);
+  border-radius:34px;
+  background:linear-gradient(135deg,var(--card2),rgba(255,255,255,.035));
+  box-shadow:var(--shadow);
+  padding:34px;
+  position:relative;
+  overflow:hidden;
+}
+
+.hero:after {
+  content:"";
+  position:absolute;
+  width:430px;
+  height:430px;
+  right:-160px;
+  top:-170px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.23),transparent 64%);
+}
+
+.eyebrow {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:var(--card);
+  padding:8px 12px;
+  color:var(--muted);
+  font-size:.78rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+
+h1 {
+  font-size:clamp(2.3rem,5vw,4.9rem);
+  line-height:.95;
+  letter-spacing:-.06em;
+  margin:18px 0 14px;
+  max-width:900px;
+}
+
+.lead {
+  font-size:clamp(1.04rem,2vw,1.32rem);
+  line-height:1.65;
+  color:var(--muted);
+  max-width:900px;
+  margin:0;
+}
+
+.hero-grid {
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:18px;
+  margin-top:26px;
+  position:relative;
+  z-index:1;
+}
+
+.panel {
+  border:1px solid var(--line);
+  background:var(--card);
+  border-radius:24px;
+  padding:18px;
+  backdrop-filter:blur(12px);
+}
+
+.stats {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+.stat {
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:var(--card2);
+  padding:16px;
+}
+
+.stat b {
+  display:block;
+  font-size:2rem;
+  color:var(--accent);
+}
+
+.stat span {
+  color:var(--muted);
+  font-size:.9rem;
+}
+
+.formula {
+  background:var(--code);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:15px;
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+  overflow:auto;
+  line-height:1.6;
+}
+
+.toolbar {
+  position:sticky;
+  top:0;
+  z-index:30;
+  margin:18px 0;
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:color-mix(in srgb,var(--bg2) 78%,transparent);
+  backdrop-filter:blur(16px);
+  padding:12px;
+  box-shadow:0 12px 34px rgba(0,0,0,.18);
+}
+
+.search {
+  flex:1 1 250px;
+  min-width:220px;
+}
+
+input[type="search"] {
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--card);
+  color:var(--text);
+  padding:13px 16px;
+  font-size:1rem;
+  outline:none;
+}
+
+input::placeholder {
+  color:var(--muted);
+}
+
+.btn {
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--card);
+  color:var(--text);
+  padding:12px 14px;
+  cursor:pointer;
+  font-weight:900;
+  transition:.18s ease;
+}
+
+.btn:hover {
+  transform:translateY(-2px);
+  background:var(--card2);
+}
+
+.btn.active {
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-color:transparent;
+  color:white;
+}
+
+.btn.small {
+  padding:10px 12px;
+  font-size:.92rem;
+}
+
+.theme-group {
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.theme-dot {
+  width:38px;
+  height:38px;
+  border-radius:14px;
+  border:2px solid var(--line);
+  cursor:pointer;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.08);
+}
+
+.theme-dot.active {
+  outline:3px solid var(--accent);
+  outline-offset:2px;
+}
+
+.oceano {
+  background:linear-gradient(135deg,#07111f,#38d5ff,#8b5cf6);
+}
+
+.claro {
+  background:linear-gradient(135deg,#f8fafc,#2563eb,#7c3aed);
+}
+
+.uva {
+  background:linear-gradient(135deg,#18051f,#f472b6,#a78bfa);
+}
+
+.bosque {
+  background:linear-gradient(135deg,#031711,#34d399,#22d3ee);
+}
+
+.grafito {
+  background:linear-gradient(135deg,#0b0d10,#e5e7eb,#60a5fa);
+}
+
+.layout {
+  display:grid;
+  grid-template-columns:292px 1fr;
+  gap:18px;
+}
+
+aside {
+  position:sticky;
+  top:96px;
+  align-self:start;
+  max-height:calc(100vh - 120px);
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:var(--card);
+  padding:14px;
+}
+
+aside h3 {
+  margin:8px 8px 12px;
+}
+
+.toc {
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.toc a {
+  text-decoration:none;
+  color:var(--muted);
+  border:1px solid transparent;
+  padding:10px 12px;
+  border-radius:14px;
+  font-weight:800;
+  font-size:.92rem;
+}
+
+.toc a:hover {
+  color:var(--text);
+  background:var(--card2);
+  border-color:var(--line);
+}
+
+.cards {
+  display:grid;
+  gap:16px;
+}
+
+.concept-card {
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:linear-gradient(135deg,var(--card2),var(--card));
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.card-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:16px;
+  padding:20px 22px;
+  border-bottom:1px solid var(--line);
+  cursor:pointer;
+}
+
+.number {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  font-weight:1000;
+  color:white;
+  margin-bottom:10px;
+}
+
+h2 {
+  margin:0;
+  font-size:clamp(1.35rem,2vw,2rem);
+  letter-spacing:-.03em;
+}
+
+.pill {
+  display:inline-flex;
+  margin-top:9px;
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:.78rem;
+  font-weight:1000;
+  color:var(--bg);
+  background:var(--accent);
+}
+
+.pill.proceso {
+  background:var(--accent3);
+}
+
+.pill.evaluacion {
+  background:var(--accent2);
+  color:white;
+}
+
+.pill.riesgo {
+  background:var(--warning);
+  color:#111827;
+}
+
+.card-body {
+  padding:22px;
+  line-height:1.72;
+  display:block;
+}
+
+.concept-card.collapsed .card-body {
+  display:none;
+}
+
+.card-body p {
+  margin:0 0 1rem;
+}
+
+strong {
+  color:var(--accent);
+}
+
+code {
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+}
+
+pre {
+  background:var(--code);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  overflow:auto;
+  line-height:1.6;
+}
+
+.table-wrap {
+  overflow:auto;
+  margin:16px 0;
+  border-radius:18px;
+  border:1px solid var(--line);
+}
+
+table {
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td {
+  padding:12px;
+  border-bottom:1px solid var(--line);
+  text-align:left;
+  vertical-align:top;
+}
+
+th {
+  background:var(--card2);
+}
+
+tr:last-child td {
+  border-bottom:none;
+}
+
+ul,ol {
+  padding-left:1.4rem;
+}
+
+li {
+  margin:.4rem 0;
+}
+
+.visual-section {
+  display:grid;
+  grid-template-columns:minmax(320px,.9fr) minmax(420px,1.1fr);
+  gap:18px;
+  margin:18px 0;
+  align-items:stretch;
+}
+
+.sim-controls,
+.sim-canvas-panel {
+  display:flex;
+  flex-direction:column;
+}
+
+.sim-step-card {
+  border:1px solid var(--line);
+  background:var(--card2);
+  border-radius:18px;
+  padding:16px;
+  margin-top:4px;
+}
+
+.sim-step-card h3 {
+  margin:6px 0 8px;
+  font-size:1.1rem;
+}
+
+.sim-step-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;
+  font-size:.82rem;
+  font-weight:900;
+}
+
+.sim-legend {
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-top:14px;
+  color:var(--muted);
+  font-weight:700;
+}
+
+.legend-dot {
+  display:inline-block;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  margin-right:8px;
+  vertical-align:middle;
+}
+
+.legend-dot.l1 {
+  background:var(--accent);
+}
+
+.legend-dot.l2 {
+  background:var(--accent2);
+}
+
+.legend-dot.l3 {
+  background:var(--accent3);
+}
+
+canvas {
+  width:100%;
+  height:340px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.05);
+  border-radius:24px;
+  display:block;
+}
+
+.canvas-note {
+  margin:12px 4px 0;
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.callout {
+  border:1px solid var(--line);
+  border-left:5px solid var(--accent);
+  border-radius:18px;
+  background:var(--card);
+  padding:16px;
+  color:var(--muted);
+}
+
+.practice {
+  margin-top:18px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:var(--card);
+  padding:18px;
+}
+
+.options {
+  display:grid;
+  gap:10px;
+  margin-top:12px;
+}
+
+#feedback {
+  margin-top:12px;
+  min-height:52px;
+  background:var(--code);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+  color:var(--muted);
+}
+
+.hidden {
+  display:none!important;
+}
+
+mark {
+  background:color-mix(in srgb,var(--accent) 35%,transparent);
+  color:var(--text);
+  border-radius:6px;
+  padding:0 3px;
+}
+
+footer {
+  text-align:center;
+  color:var(--muted);
+  margin-top:26px;
+  font-weight:800;
+}
+
+@media(max-width:940px) {
+  .hero-grid,
+  .layout,
+  .visual-section {
+    grid-template-columns:1fr;
+  }
+
+  aside {
+    position:relative;
+    top:auto;
+    max-height:none;
+  }
+
+  .stats {
+    grid-template-columns:1fr;
+  }
+}
+
+@media print {
+  body {
+    background:#fff;
+    color:#000;
+  }
+
+  .toolbar,
+  aside,
+  .practice,
+  canvas {
+    display:none!important;
+  }
+
+  .layout,
+  .hero-grid {
+    display:block;
+  }
+
+  .concept-card {
+    break-inside:avoid;
+    box-shadow:none;
+  }
+
+  .concept-card.collapsed .card-body {
+    display:block;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<section class="hero">
+  <span class="eyebrow">Guía de estudio interactiva · Clustering</span>
+
+  <h1>Glosario esencial de Clustering Jerárquico</h1>
+
+  <p class="lead">
+    Guía visual y didáctica para estudiar los conceptos centrales del clustering jerárquico:
+    aprendizaje no supervisado, observaciones, distancia, fusión, matriz linkage, dendrograma,
+    métodos de enlace, Ward, corte del árbol, escalado, outliers y evaluación de clusters.
+  </p>
+
+  <div class="hero-grid">
+    <div class="panel">
+      <div class="stats">
+        <div class="stat">
+          <b>18</b>
+          <span>conceptos principales</span>
+        </div>
+        <div class="stat">
+          <b>4</b>
+          <span>métodos de linkage</span>
+        </div>
+        <div class="stat">
+          <b>1</b>
+          <span>dendrograma central</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="formula">
+Idea central:<br>
+<strong>puntos separados → distancias → fusiones → matriz linkage → dendrograma → corte del árbol</strong><br><br>
+Objetivo: descubrir estructuras jerárquicas dentro de datos sin etiquetas.
+      </div>
+    </div>
+  </div>
+</section>
+
+<nav class="toolbar" aria-label="Herramientas del glosario">
+  <div class="search">
+    <input id="search" type="search" placeholder="Buscar concepto: dendrograma, linkage, Ward, fusión..." autocomplete="off">
+  </div>
+
+  <button class="btn active" data-filter="all" type="button">Todo</button>
+  <button class="btn" data-filter="base" type="button">Base</button>
+  <button class="btn" data-filter="proceso" type="button">Proceso</button>
+  <button class="btn" data-filter="evaluacion" type="button">Evaluación</button>
+  <button class="btn" data-filter="riesgo" type="button">Cuidados</button>
+  <button class="btn" id="expandAll" type="button">Expandir</button>
+  <button class="btn" id="collapseAll" type="button">Contraer</button>
+
+  <div class="theme-group" aria-label="Cambiar tema visual">
+    <button class="theme-dot oceano active" data-theme="" title="Océano" type="button"></button>
+    <button class="theme-dot claro" data-theme="theme-light" title="Claro" type="button"></button>
+    <button class="theme-dot uva" data-theme="theme-uva" title="Uva" type="button"></button>
+    <button class="theme-dot bosque" data-theme="theme-bosque" title="Bosque" type="button"></button>
+    <button class="theme-dot grafito" data-theme="theme-grafito" title="Grafito" type="button"></button>
+  </div>
+</nav>
+
+<div class="layout">
+  <aside>
+    <h3>Índice</h3>
+    <div class="toc" id="toc">
+      <a href="#concepto-1" data-toc>1. Clustering jerárquico</a>
+      <a href="#concepto-2" data-toc>2. Aprendizaje no supervisado</a>
+      <a href="#concepto-3" data-toc>3. Observación</a>
+      <a href="#concepto-4" data-toc>4. Cluster</a>
+      <a href="#concepto-5" data-toc>5. Distancia</a>
+      <a href="#concepto-6" data-toc>6. Matriz de distancias</a>
+      <a href="#concepto-7" data-toc>7. Fusión</a>
+      <a href="#concepto-8" data-toc>8. Linkage</a>
+      <a href="#concepto-9" data-toc>9. Single linkage</a>
+      <a href="#concepto-10" data-toc>10. Complete linkage</a>
+      <a href="#concepto-11" data-toc>11. Average linkage</a>
+      <a href="#concepto-12" data-toc>12. Método Ward</a>
+      <a href="#concepto-13" data-toc>13. Matriz linkage</a>
+      <a href="#concepto-14" data-toc>14. Dendrograma</a>
+      <a href="#concepto-15" data-toc>15. Altura de fusión</a>
+      <a href="#concepto-16" data-toc>16. Corte del árbol</a>
+      <a href="#concepto-17" data-toc>17. Estandarización</a>
+      <a href="#concepto-18" data-toc>18. Limitaciones</a>
+    </div>
+  </aside>
+
+  <main>
+    <section class="visual-section">
+      <div class="panel sim-controls">
+        <h2>Mini simulación conceptual</h2>
+        <p class="lead" style="font-size:1rem">
+          Avanzá paso a paso para ver cómo el clustering jerárquico empieza con puntos separados,
+          realiza fusiones progresivas y construye un dendrograma.
+        </p>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 18px">
+          <button class="btn" id="nextStep" type="button">Siguiente paso</button>
+          <button class="btn" id="restartSim" type="button">Reiniciar</button>
+        </div>
+
+        <div class="sim-step-card">
+          <div class="sim-step-badge" id="simBadge">Paso 1 de 5</div>
+          <h3 id="simTitle">Puntos separados</h3>
+          <p id="simDescription">
+            Al comenzar, cada observación es su propio cluster. Todavía no se realizaron fusiones.
+          </p>
+        </div>
+
+        <div class="sim-legend">
+          <div><span class="legend-dot l1"></span> Puntos</div>
+          <div><span class="legend-dot l2"></span> Fusiones</div>
+          <div><span class="legend-dot l3"></span> Dendrograma</div>
+        </div>
+      </div>
+
+      <div class="panel sim-canvas-panel">
+        <h3 style="margin:0 0 12px">Visualización</h3>
+        <canvas id="hierCanvas" width="760" height="420" aria-label="Visualización conceptual de Clustering Jerárquico"></canvas>
+        <p class="canvas-note">
+          La simulación no usa centroides. Muestra fusiones sucesivas entre puntos o grupos y una representación conceptual del dendrograma.
+        </p>
+      </div>
+    </section>
+
+    <div id="resultCount" class="callout"></div>
+
+    <section class="cards" id="cards">
+
+      <article class="concept-card" id="concepto-1" data-category="base" data-title="clustering jerárquico" data-text="clustering jerarquico agrupamiento arbol dendrograma grupos">
+        <header class="card-header">
+          <div>
+            <span class="number">1</span>
+            <h2>Clustering jerárquico</h2>
+            <span class="pill">Base</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            El <strong>clustering jerárquico</strong> es un método de aprendizaje no supervisado que agrupa observaciones
+            según su similitud y construye una estructura en forma de árbol. A diferencia de K-Means, no parte de una
+            cantidad fija de clusters, sino que permite observar cómo los datos se van agrupando progresivamente.
+          </p>
+          <p>
+            En la versión más usada, llamada <strong>aglomerativa</strong>, cada observación comienza como un cluster individual.
+            Luego, el algoritmo va fusionando los puntos o grupos más parecidos hasta que todos quedan integrados en una
+            única estructura jerárquica.
+          </p>
+          <pre>Inicio: cada punto es un cluster
+Proceso: fusionar grupos parecidos
+Resultado: dendrograma o árbol jerárquico</pre>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-2" data-category="base" data-title="aprendizaje no supervisado" data-text="aprendizaje no supervisado etiquetas variable objetivo">
+        <header class="card-header">
+          <div>
+            <span class="number">2</span>
+            <h2>Aprendizaje no supervisado</h2>
+            <span class="pill">Base</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            El <strong>aprendizaje no supervisado</strong> trabaja con datos que no tienen etiquetas previas. No existe una
+            variable objetivo que indique cuál es la respuesta correcta. El algoritmo debe encontrar patrones, asociaciones
+            o estructuras ocultas a partir de las variables disponibles.
+          </p>
+          <p>
+            En clustering jerárquico, esto significa que el algoritmo no sabe previamente qué observaciones pertenecen a cada
+            grupo. Solamente mide similitudes o distancias y construye una organización progresiva.
+          </p>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-3" data-category="base" data-title="observación punto dato fila" data-text="observacion dato punto fila dataset">
+        <header class="card-header">
+          <div>
+            <span class="number">3</span>
+            <h2>Observación, punto o dato</h2>
+            <span class="pill">Base</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            Una <strong>observación</strong> es cada unidad del dataset. Puede representar un cliente, un libro, una empresa,
+            un país, una película, una transacción o un documento. Matemáticamente, cada observación se representa como un punto
+            en un espacio de variables.
+          </p>
+          <p>
+            Si usamos dos variables, el punto puede visualizarse en un plano. Si usamos muchas variables, el punto vive en un
+            espacio de mayor dimensión, aunque ya no sea fácil de dibujar.
+          </p>
+          <pre>Cliente A = (edad, ingreso, gasto mensual)
+Libro B = (páginas, dificultad, vocabulario técnico)</pre>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-4" data-category="base" data-title="cluster grupo agrupamiento" data-text="cluster grupo observaciones similares">
+        <header class="card-header">
+          <div>
+            <span class="number">4</span>
+            <h2>Cluster</h2>
+            <span class="pill">Base</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            Un <strong>cluster</strong> es un grupo de observaciones que se consideran parecidas entre sí según las variables
+            utilizadas y la medida de distancia elegida. En clustering jerárquico, los clusters se forman mediante fusiones.
+          </p>
+          <p>
+            Al inicio, cada observación es un cluster de tamaño uno. Luego se forman clusters de dos puntos, después de tres
+            o más, hasta llegar a clusters más grandes.
+          </p>
+          <pre>Inicio:
+A | B | C | D
+
+Después:
+(A,B) | C | D
+
+Más adelante:
+(A,B,C) | D</pre>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-5" data-category="base" data-title="distancia similitud disimilitud euclidea" data-text="distancia euclidea manhattan coseno similitud disimilitud">
+        <header class="card-header">
+          <div>
+            <span class="number">5</span>
+            <h2>Distancia</h2>
+            <span class="pill">Base</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            La <strong>distancia</strong> mide qué tan diferentes son dos observaciones. Una distancia baja indica que dos
+            puntos son parecidos; una distancia alta indica que son diferentes. El clustering jerárquico depende directamente
+            de estas distancias.
+          </p>
+          <div class="formula">
+            Distancia baja → mayor similitud<br>
+            Distancia alta → mayor diferencia
+          </div>
+          <p>
+            La distancia más frecuente para datos numéricos es la distancia euclídea, aunque también pueden usarse otras,
+            como Manhattan o coseno, dependiendo del problema.
+          </p>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-6" data-category="proceso" data-title="matriz de distancias" data-text="matriz distancias pares n n-1 pdist">
+        <header class="card-header">
+          <div>
+            <span class="number">6</span>
+            <h2>Matriz o vector de distancias</h2>
+            <span class="pill proceso">Proceso</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            Antes de realizar fusiones, el algoritmo necesita calcular las distancias entre pares de observaciones. Si hay
+            <strong>n</strong> observaciones, la cantidad de distancias distintas entre pares es:
+          </p>
+          <div class="formula">n × (n - 1) / 2</div>
+          <p>
+            Por ejemplo, si hay 120 observaciones:
+          </p>
+          <pre>120 × 119 / 2 = 7140 distancias</pre>
+          <p>
+            Estas distancias permiten saber qué puntos o grupos son candidatos naturales a fusionarse primero.
+          </p>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-7" data-category="proceso" data-title="fusión fusiones" data-text="fusion fusiones unir cluster punto">
+        <header class="card-header">
+          <div>
+            <span class="number">7</span>
+            <h2>Fusión</h2>
+            <span class="pill proceso">Proceso</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            Una <strong>fusión</strong> es el momento en que el algoritmo une dos elementos para formar un nuevo cluster.
+            Esos elementos pueden ser dos puntos individuales, un punto y un cluster, o dos clusters ya formados.
+          </p>
+          <pre>Punto + punto → cluster nuevo
+Punto + cluster → cluster más grande
+Cluster + cluster → cluster superior</pre>
+          <p>
+            Cada fusión reduce en uno la cantidad total de clusters. Por eso, si empezamos con n observaciones, se necesitan
+            n - 1 fusiones para terminar con un único árbol.
+          </p>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-8" data-category="proceso" data-title="linkage criterio enlace" data-text="linkage criterio enlace distancia entre clusters single complete average ward">
+        <header class="card-header">
+          <div>
+            <span class="number">8</span>
+            <h2>Linkage o criterio de enlace</h2>
+            <span class="pill proceso">Proceso</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            El <strong>linkage</strong> define cómo se mide la distancia entre clusters cuando los grupos ya contienen más
+            de una observación. Esta elección es fundamental porque puede cambiar el dendrograma y la interpretación final.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Método</th>
+                  <th>Pregunta que responde</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Single</td>
+                  <td>¿Cuál es la menor distancia entre puntos de ambos clusters?</td>
+                </tr>
+                <tr>
+                  <td>Complete</td>
+                  <td>¿Cuál es la mayor distancia entre puntos de ambos clusters?</td>
+                </tr>
+                <tr>
+                  <td>Average</td>
+                  <td>¿Cuál es la distancia promedio entre los puntos de ambos clusters?</td>
+                </tr>
+                <tr>
+                  <td>Ward</td>
+                  <td>¿Qué fusión aumenta menos la dispersión interna?</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-9" data-category="proceso" data-title="single linkage" data-text="single linkage distancia minima cadena">
+        <header class="card-header">
+          <div>
+            <span class="number">9</span>
+            <h2>Single linkage</h2>
+            <span class="pill proceso">Proceso</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            <strong>Single linkage</strong> mide la distancia entre dos clusters usando la menor distancia entre cualquier
+            par de puntos, uno de cada cluster. Es decir, si dos grupos tienen aunque sea dos puntos muy cercanos, pueden
+            fusionarse.
+          </p>
+          <p>
+            Su ventaja es que puede detectar estructuras alargadas o conectadas. Su desventaja es que puede producir el
+            efecto cadena, donde puntos o grupos se van uniendo por conexiones locales aunque el grupo total quede poco compacto.
+          </p>
+          <pre>Distancia single(A,B) = mínima distancia entre puntos de A y puntos de B</pre>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-10" data-category="proceso" data-title="complete linkage" data-text="complete linkage distancia maxima compacto">
+        <header class="card-header">
+          <div>
+            <span class="number">10</span>
+            <h2>Complete linkage</h2>
+            <span class="pill proceso">Proceso</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            <strong>Complete linkage</strong> mide la distancia entre dos clusters usando la mayor distancia entre puntos
+            de ambos grupos. Es un criterio más exigente porque solo fusiona grupos si incluso sus puntos más alejados no
+            están demasiado separados.
+          </p>
+          <p>
+            Tiende a producir clusters más compactos que single linkage, aunque puede ser sensible a puntos extremos.
+          </p>
+          <pre>Distancia complete(A,B) = máxima distancia entre puntos de A y puntos de B</pre>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-11" data-category="proceso" data-title="average linkage" data-text="average linkage promedio distancia clusters">
+        <header class="card-header">
+          <div>
+            <span class="number">11</span>
+            <h2>Average linkage</h2>
+            <span class="pill proceso">Proceso</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            <strong>Average linkage</strong> calcula la distancia entre dos clusters como el promedio de todas las distancias
+            entre puntos de un grupo y puntos del otro. Es una alternativa intermedia entre single y complete linkage.
+          </p>
+          <p>
+            Suele producir soluciones más equilibradas, porque no se basa solamente en el par más cercano ni en el par más lejano.
+          </p>
+          <pre>Distancia average(A,B) = promedio de todas las distancias entre A y B</pre>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-12" data-category="proceso" data-title="ward método varianza dispersión" data-text="ward varianza interna dispersion sse cluster compacto">
+        <header class="card-header">
+          <div>
+            <span class="number">12</span>
+            <h2>Método Ward</h2>
+            <span class="pill proceso">Proceso</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            El <strong>método Ward</strong> elige en cada paso la fusión que produce el menor aumento de la dispersión interna
+            del nuevo cluster. Su objetivo es formar grupos compactos y relativamente equilibrados.
+          </p>
+          <p>
+            Ward suele funcionar muy bien cuando las variables son numéricas, están estandarizadas y se usa distancia euclídea.
+            Es uno de los métodos más utilizados para obtener dendrogramas interpretables.
+          </p>
+          <div class="formula">
+            Ward → fusionar los grupos que menos aumentan la variabilidad interna
+          </div>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-13" data-category="proceso" data-title="matriz linkage" data-text="matriz linkage columnas fusion altura tamaño cluster">
+        <header class="card-header">
+          <div>
+            <span class="number">13</span>
+            <h2>Matriz linkage</h2>
+            <span class="pill proceso">Proceso</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            La <strong>matriz linkage</strong> es la tabla que registra todas las fusiones realizadas por el algoritmo.
+            Cada fila representa una fusión y contiene cuatro datos principales: los dos elementos fusionados, la distancia
+            de fusión y el tamaño del nuevo cluster.
+          </p>
+          <pre>[cluster_1, cluster_2, distancia_de_fusión, cantidad_de_observaciones]</pre>
+          <p>
+            Ejemplo:
+          </p>
+          <pre>[107, 114, 0.00228, 2]</pre>
+          <p>
+            Esto significa que la observación 107 se fusionó con la observación 114 a una distancia de 0.00228 y formaron
+            un cluster con 2 observaciones.
+          </p>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-14" data-category="evaluacion" data-title="dendrograma árbol jerárquico" data-text="dendrograma arbol jerarquico fusion altura ramas">
+        <header class="card-header">
+          <div>
+            <span class="number">14</span>
+            <h2>Dendrograma</h2>
+            <span class="pill evaluacion">Evaluación</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            El <strong>dendrograma</strong> es el gráfico en forma de árbol que representa visualmente las fusiones del
+            clustering jerárquico. Abajo aparecen las observaciones o clusters pequeños; hacia arriba se ven las fusiones
+            entre grupos cada vez más grandes.
+          </p>
+          <p>
+            La altura de cada unión indica la distancia o disimilitud entre los grupos fusionados. Por eso, una unión baja
+            representa elementos muy parecidos y una unión alta representa grupos más diferentes.
+          </p>
+          <div class="formula">
+            Dendrograma = representación visual de la matriz linkage
+          </div>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-15" data-category="evaluacion" data-title="altura de fusión" data-text="altura fusion distancia dendrograma">
+        <header class="card-header">
+          <div>
+            <span class="number">15</span>
+            <h2>Altura de fusión</h2>
+            <span class="pill evaluacion">Evaluación</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            La <strong>altura de fusión</strong> es el valor vertical del dendrograma donde dos puntos o grupos se unen.
+            Representa la distancia o disimilitud entre los elementos fusionados.
+          </p>
+          <pre>Fusión baja → grupos muy parecidos
+Fusión alta → grupos más diferentes</pre>
+          <p>
+            Las alturas grandes son especialmente importantes porque suelen indicar que el algoritmo está empezando a unir
+            grupos que antes estaban bastante separados.
+          </p>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-16" data-category="evaluacion" data-title="corte árbol dendrograma clusters" data-text="corte arbol dendrograma altura clusters numero grupos">
+        <header class="card-header">
+          <div>
+            <span class="number">16</span>
+            <h2>Corte del árbol</h2>
+            <span class="pill evaluacion">Evaluación</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            El <strong>corte del árbol</strong> es la decisión de trazar una línea horizontal sobre el dendrograma para obtener
+            una cantidad concreta de clusters. Cada rama que queda separada por debajo de esa línea representa un cluster final.
+          </p>
+          <pre>Corte bajo  → muchos clusters pequeños
+Corte medio → clusters principales
+Corte alto  → pocos clusters grandes</pre>
+          <p>
+            Una estrategia habitual es cortar antes de las fusiones muy altas, porque esas fusiones suelen indicar la unión
+            de grupos bastante diferentes.
+          </p>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-17" data-category="riesgo" data-title="estandarización escalado variables" data-text="estandarizacion escalado normalizacion variables distancia">
+        <header class="card-header">
+          <div>
+            <span class="number">17</span>
+            <h2>Estandarización</h2>
+            <span class="pill riesgo">Cuidados</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            La <strong>estandarización</strong> consiste en transformar las variables para que sean comparables. Es muy importante
+            porque el clustering jerárquico depende de distancias. Si una variable tiene valores mucho más grandes que otra,
+            puede dominar el cálculo de distancia.
+          </p>
+          <div class="formula">z = (x - media) / desviación estándar</div>
+          <p>
+            Por ejemplo, si usamos edad e ingreso, el ingreso puede dominar el análisis porque sus valores numéricos son
+            mucho mayores. Estandarizar ayuda a evitar esa distorsión.
+          </p>
+        </div>
+      </article>
+
+      <article class="concept-card" id="concepto-18" data-category="riesgo" data-title="limitaciones outliers escala costo computacional" data-text="limitaciones outliers escala linkage computacional">
+        <header class="card-header">
+          <div>
+            <span class="number">18</span>
+            <h2>Limitaciones del clustering jerárquico</h2>
+            <span class="pill riesgo">Cuidados</span>
+          </div>
+        </header>
+        <div class="card-body">
+          <p>
+            El clustering jerárquico es muy útil para explorar datos e interpretar estructuras, pero tiene limitaciones.
+            Puede ser costoso con datasets grandes, sensible a outliers y dependiente de la escala de las variables.
+          </p>
+          <ul>
+            <li>Puede ser lento cuando hay muchas observaciones.</li>
+            <li>Los outliers pueden generar ramas aisladas o distorsionar el dendrograma.</li>
+            <li>El resultado cambia según la distancia y el método de linkage elegidos.</li>
+            <li>Si las variables no están escaladas, una variable puede dominar el análisis.</li>
+          </ul>
+          <p>
+            Por eso conviene revisar los datos, escalar variables, analizar outliers y comparar distintos métodos de linkage.
+          </p>
+        </div>
+      </article>
+
+    </section>
+
+    <section class="practice">
+      <h2>Práctica rápida</h2>
+      <p>
+        Pregunta: si en un dendrograma dos grandes grupos se unen a una altura muy alta, ¿qué significa?
+      </p>
+      <div class="options">
+        <button class="btn small" onclick="checkAnswer(false)">Que los grupos son idénticos.</button>
+        <button class="btn small" onclick="checkAnswer(true)">Que los grupos eran bastante diferentes antes de unirse.</button>
+        <button class="btn small" onclick="checkAnswer(false)">Que el algoritmo no calculó distancias.</button>
+      </div>
+      <div id="feedback">Seleccioná una opción para ver la explicación.</div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  Material elaborado por el profesor Sergio Gevatschnaider
+</footer>
+
+</div>
+
+<script>
+const cards = Array.from(document.querySelectorAll(".concept-card"));
+const search = document.getElementById("search");
+const resultCount = document.getElementById("resultCount");
+const filterButtons = Array.from(document.querySelectorAll("[data-filter]"));
+const themeButtons = Array.from(document.querySelectorAll(".theme-dot"));
+const expandAll = document.getElementById("expandAll");
+const collapseAll = document.getElementById("collapseAll");
+
+let activeFilter = "all";
+
+function normalize(text) {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\\u0300-\\u036f]/g, "");
+}
+
+function updateCards() {
+  const q = normalize(search.value.trim());
+  let visible = 0;
+
+  cards.forEach(card => {
+    const category = card.dataset.category;
+    const text = normalize(
+      card.dataset.title + " " +
+      card.dataset.text + " " +
+      card.innerText
+    );
+
+    const matchesFilter = activeFilter === "all" || category === activeFilter;
+    const matchesSearch = q === "" || text.includes(q);
+
+    if (matchesFilter && matchesSearch) {
+      card.classList.remove("hidden");
+      visible++;
+    } else {
+      card.classList.add("hidden");
+    }
+  });
+
+  resultCount.innerHTML = `<strong>${visible}</strong> concepto(s) visible(s). Usá el buscador, los filtros o el índice para estudiar por partes.`;
+}
+
+filterButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    filterButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    activeFilter = btn.dataset.filter;
+    updateCards();
+  });
+});
+
+search.addEventListener("input", updateCards);
+
+themeButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    themeButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    document.body.className = "";
+    if (btn.dataset.theme) {
+      document.body.classList.add(btn.dataset.theme);
+    }
+
+    drawSimulation();
+  });
+});
+
+expandAll.addEventListener("click", () => {
+  cards.forEach(card => card.classList.remove("collapsed"));
+});
+
+collapseAll.addEventListener("click", () => {
+  cards.forEach(card => card.classList.add("collapsed"));
+});
+
+cards.forEach(card => {
+  const header = card.querySelector(".card-header");
+  header.addEventListener("click", () => {
+    card.classList.toggle("collapsed");
+  });
+});
+
+function checkAnswer(ok) {
+  const feedback = document.getElementById("feedback");
+  if (ok) {
+    feedback.innerHTML = "<strong>Correcto.</strong> Una fusión alta indica que los grupos estaban bastante separados o eran más diferentes. Por eso, muchas veces conviene cortar el dendrograma antes de esas fusiones altas.";
+  } else {
+    feedback.innerHTML = "<strong>Revisá la idea.</strong> En un dendrograma, una altura alta indica mayor distancia o disimilitud entre los grupos fusionados.";
+  }
+}
+
+const canvas = document.getElementById("hierCanvas");
+const ctx = canvas.getContext("2d");
+
+const simSteps = [
+  {
+    badge:"Paso 1 de 5",
+    title:"Puntos separados",
+    description:"Cada observación empieza como un cluster individual. Todavía no hay grupos grandes.",
+    groups:[[0],[1],[2],[3],[4],[5],[6],[7]]
+  },
+  {
+    badge:"Paso 2 de 5",
+    title:"Primera fusión",
+    description:"El algoritmo une los dos puntos más parecidos. Esa unión queda registrada como primera fila de la matriz linkage.",
+    groups:[[0,1],[2],[3],[4],[5],[6],[7]]
+  },
+  {
+    badge:"Paso 3 de 5",
+    title:"Subgrupos iniciales",
+    description:"Aparecen pequeños clusters. El número total de clusters disminuye con cada fusión.",
+    groups:[[0,1,2],[3,4],[5],[6],[7]]
+  },
+  {
+    badge:"Paso 4 de 5",
+    title:"Fusiones entre clusters",
+    description:"Ahora pueden fusionarse grupos completos. Las fusiones más altas indican grupos más diferentes.",
+    groups:[[0,1,2],[3,4],[5,6,7]]
+  },
+  {
+    badge:"Paso 5 de 5",
+    title:"Dendrograma y corte",
+    description:"El árbol permite decidir una altura de corte para obtener los clusters finales.",
+    groups:[[0,1,2],[3,4,5,6,7]]
+  }
+];
+
+const simPoints = [
+  {x:100,y:100,l:"A"},
+  {x:140,y:125,l:"B"},
+  {x:180,y:170,l:"C"},
+  {x:350,y:105,l:"D"},
+  {x:395,y:140,l:"E"},
+  {x:330,y:270,l:"F"},
+  {x:380,y:300,l:"G"},
+  {x:430,y:260,l:"H"}
+];
+
+let currentStep = 0;
+
+function css(name) {
+  return getComputedStyle(document.body).getPropertyValue(name).trim();
+}
+
+function drawSimulation() {
+  if (!canvas) return;
+
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * devicePixelRatio;
+  canvas.height = rect.height * devicePixelRatio;
+  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+
+  const w = rect.width;
+  const h = rect.height;
+
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = "rgba(255,255,255,.03)";
+  ctx.fillRect(0,0,w,h);
+
+  ctx.strokeStyle = "rgba(255,255,255,.10)";
+  ctx.lineWidth = 1;
+
+  for (let x=0; x<w; x+=40) {
+    ctx.beginPath();
+    ctx.moveTo(x,0);
+    ctx.lineTo(x,h);
+    ctx.stroke();
+  }
+
+  for (let y=0; y<h; y+=40) {
+    ctx.beginPath();
+    ctx.moveTo(0,y);
+    ctx.lineTo(w,y);
+    ctx.stroke();
+  }
+
+  const split = w * .60;
+
+  ctx.strokeStyle = css("--line");
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(split,20);
+  ctx.lineTo(split,h-20);
+  ctx.stroke();
+
+  ctx.fillStyle = css("--text");
+  ctx.font = "bold 14px Inter, Arial";
+  ctx.textAlign = "left";
+  ctx.fillText("Espacio de datos", 24, 30);
+  ctx.fillText("Dendrograma conceptual", split + 24, 30);
+
+  drawDataSpace(split);
+  drawDendrogram(split,w,h);
+
+  const step = simSteps[currentStep];
+  document.getElementById("simBadge").textContent = step.badge;
+  document.getElementById("simTitle").textContent = step.title;
+  document.getElementById("simDescription").textContent = step.description;
+}
+
+function groupCenter(group) {
+  let sx = 0;
+  let sy = 0;
+
+  group.forEach(i => {
+    sx += simPoints[i].x;
+    sy += simPoints[i].y;
+  });
+
+  return {x:sx/group.length, y:sy/group.length};
+}
+
+function drawDataSpace(split) {
+  const colors = [css("--accent"), css("--accent2"), css("--accent3"), css("--warning"), css("--danger")];
+  const groups = simSteps[currentStep].groups;
+
+  groups.forEach((group,gi) => {
+    const c = groupCenter(group);
+    const color = colors[gi % colors.length];
+
+    if (group.length > 1) {
+      ctx.globalAlpha = .15;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.ellipse(c.x,c.y,45 + group.length*8,34 + group.length*5,0,0,Math.PI*2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+
+      group.forEach(i => {
+        ctx.beginPath();
+        ctx.moveTo(c.x,c.y);
+        ctx.lineTo(simPoints[i].x,simPoints[i].y);
+        ctx.stroke();
+      });
+    }
+  });
+
+  simPoints.forEach((p,i) => {
+    const groupIndex = groups.findIndex(g => g.includes(i));
+    const color = colors[groupIndex % colors.length];
+
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,13,0,Math.PI*2);
+    ctx.fillStyle = color;
+    ctx.fill();
+
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 11px Inter, Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(p.l,p.x,p.y);
+  });
+}
+
+function drawDendrogram(split,w,h) {
+  const x0 = split + 45;
+  const yBase = h - 55;
+  const width = w - split - 90;
+  const spacing = width / 7;
+
+  ctx.strokeStyle = css("--muted");
+  ctx.lineWidth = 1.3;
+  ctx.fillStyle = css("--muted");
+  ctx.font = "11px Inter, Arial";
+  ctx.textAlign = "center";
+
+  for (let i=0; i<8; i++) {
+    const x = x0 + i * spacing;
+    ctx.beginPath();
+    ctx.moveTo(x,yBase);
+    ctx.lineTo(x,yBase-10);
+    ctx.stroke();
+    ctx.fillText(simPoints[i].l,x,yBase+17);
+  }
+
+  const merges = [
+    [0,1,45],
+    [.5,2,90],
+    [3,4,60],
+    [5,6,65],
+    [5.5,7,110],
+    [3.5,6.2,170],
+    [1.2,5.2,235]
+  ];
+
+  for (let i=0; i<Math.min(currentStep + 1, merges.length); i++) {
+    const [a,b,height] = merges[i];
+    const xa = x0 + a * spacing;
+    const xb = x0 + b * spacing;
+    const y = yBase - height;
+
+    ctx.strokeStyle = i === currentStep ? css("--accent") : css("--accent2");
+    ctx.lineWidth = i === currentStep ? 4 : 2.5;
+
+    ctx.beginPath();
+    ctx.moveTo(xa,yBase-10);
+    ctx.lineTo(xa,y);
+    ctx.lineTo(xb,y);
+    ctx.lineTo(xb,yBase-10);
+    ctx.stroke();
+
+    ctx.fillStyle = css("--accent");
+    ctx.beginPath();
+    ctx.arc((xa+xb)/2,y,4,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  ctx.strokeStyle = css("--danger");
+  ctx.setLineDash([8,6]);
+  ctx.lineWidth = 2;
+  const cutY = yBase - 150;
+  ctx.beginPath();
+  ctx.moveTo(x0-15,cutY);
+  ctx.lineTo(x0+width+15,cutY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = css("--danger");
+  ctx.font = "bold 11px Inter, Arial";
+  ctx.textAlign = "left";
+  ctx.fillText("corte posible", x0-10, cutY-8);
+}
+
+document.getElementById("nextStep").addEventListener("click", () => {
+  currentStep = (currentStep + 1) % simSteps.length;
+  drawSimulation();
+});
+
+document.getElementById("restartSim").addEventListener("click", () => {
+  currentStep = 0;
+  drawSimulation();
+});
+
+window.addEventListener("resize", drawSimulation);
+window.addEventListener("load", () => {
+  updateCards();
+  drawSimulation();
+});
+</script>
+
+</body>
+</html>

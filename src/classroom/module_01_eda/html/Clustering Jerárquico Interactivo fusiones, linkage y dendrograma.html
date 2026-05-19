@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Clustering Jerárquico Interactivo | Fusiones, Linkage y Dendrograma</title>
+
+  <style>
+    :root {
+      --bg: #eef3f8;
+      --panel: #ffffff;
+      --panel-2: #f7fafc;
+      --text: #172033;
+      --muted: #5d6b82;
+      --border: #d8e0ea;
+      --accent: #2563eb;
+      --accent-2: #06b6d4;
+      --danger: #ef4444;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+      --canvas-bg: #ffffff;
+      --grid: rgba(100, 116, 139, 0.14);
+    }
+
+    body.dark {
+      --bg: #07111f;
+      --panel: #0f1b2d;
+      --panel-2: #132238;
+      --text: #eef6ff;
+      --muted: #9fb1c9;
+      --border: #223555;
+      --accent: #38bdf8;
+      --accent-2: #a78bfa;
+      --danger: #fb7185;
+      --success: #4ade80;
+      --warning: #facc15;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+      --canvas-bg: #071827;
+      --grid: rgba(148, 163, 184, 0.15);
+    }
+
+    body.academic {
+      --bg: #e8eef2;
+      --panel: #ffffff;
+      --panel-2: #f3f6f7;
+      --text: #17252f;
+      --muted: #60717d;
+      --border: #ccd8df;
+      --accent: #006d77;
+      --accent-2: #0a9396;
+      --danger: #ae2012;
+      --success: #2a9d8f;
+      --warning: #ca6702;
+      --shadow: 0 18px 45px rgba(0, 64, 77, 0.13);
+      --canvas-bg: #fbfdfe;
+      --grid: rgba(0, 109, 119, 0.12);
+    }
+
+    body.neon {
+      --bg: #060018;
+      --panel: #12072b;
+      --panel-2: #1b0b3d;
+      --text: #fbf7ff;
+      --muted: #c4b5fd;
+      --border: #3b1b73;
+      --accent: #f0abfc;
+      --accent-2: #22d3ee;
+      --danger: #fb7185;
+      --success: #34d399;
+      --warning: #fde047;
+      --shadow: 0 18px 45px rgba(168, 85, 247, 0.25);
+      --canvas-bg: #0c0620;
+      --grid: rgba(236, 72, 153, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.16), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(6, 182, 212, 0.14), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 22px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .title-block {
+      max-width: 950px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 3vw, 3.2rem);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.58;
+    }
+
+    .badge {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+      white-space: nowrap;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(700px, 1fr) 420px;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .main-card,
+    .side-card,
+    .controls-card,
+    .explain-card {
+      background: color-mix(in srgb, var(--panel) 94%, transparent);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .main-card {
+      overflow: hidden;
+    }
+
+    .canvas-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel-2);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 11px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--accent);
+      font-weight: 900;
+      font-size: 0.88rem;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.15);
+    }
+
+    .mini-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      height: 620px;
+      background: var(--canvas-bg);
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .floating-help {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      max-width: 580px;
+      background: color-mix(in srgb, var(--panel) 88%, transparent);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 12px 14px;
+      backdrop-filter: blur(10px);
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .controls-card {
+      margin-top: 18px;
+      padding: 16px;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(125px, 1fr));
+      gap: 12px;
+      align-items: end;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    label {
+      font-size: 0.76rem;
+      color: var(--muted);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    select,
+    input[type="range"] {
+      width: 100%;
+    }
+
+    select {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 13px;
+      padding: 11px 12px;
+      font-weight: 800;
+      outline: none;
+    }
+
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .range-value {
+      min-width: 42px;
+      font-weight: 900;
+      color: var(--accent);
+    }
+
+    button {
+      border: 0;
+      border-radius: 14px;
+      padding: 11px 13px;
+      font-weight: 950;
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease, opacity 0.15s ease;
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+    }
+
+    button.secondary {
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+
+    button.warning {
+      background: linear-gradient(135deg, var(--warning), #fb923c);
+    }
+
+    button.danger {
+      background: linear-gradient(135deg, var(--danger), #f97316);
+    }
+
+    button.success {
+      background: linear-gradient(135deg, var(--success), #22c55e);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .side-card {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 620px;
+    }
+
+    .section {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 15px;
+    }
+
+    .section h2,
+    .section h3 {
+      margin: 0 0 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .section h2 {
+      font-size: 1.15rem;
+    }
+
+    .section h3 {
+      font-size: 1rem;
+    }
+
+    .section p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.94rem;
+    }
+
+    .formula {
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 14px;
+      background: color-mix(in srgb, var(--accent) 10%, var(--panel));
+      border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.86rem;
+      line-height: 1.55;
+      overflow-x: auto;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .metric {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 5px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.15rem;
+      letter-spacing: -0.03em;
+    }
+
+    .calc-box {
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: var(--muted);
+      max-height: 180px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .calc-box strong {
+      color: var(--text);
+    }
+
+    .progress {
+      height: 10px;
+      border-radius: 999px;
+      background: var(--border);
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 0.25s ease;
+    }
+
+    .small-note {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+      overflow: hidden;
+      border-radius: 14px;
+    }
+
+    .matrix-table th,
+    .matrix-table td {
+      border-bottom: 1px solid var(--border);
+      padding: 7px 6px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .matrix-table th {
+      color: var(--muted);
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+    }
+
+    .matrix-table td:first-child,
+    .matrix-table th:first-child {
+      text-align: left;
+    }
+
+    .explain-card {
+      margin-top: 18px;
+      padding: 18px;
+    }
+
+    .explain-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .explain-box {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 15px;
+    }
+
+    .explain-box h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .explain-box p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 1200px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .side-card {
+        min-height: unset;
+      }
+
+      .controls-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .explain-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        padding: 12px;
+      }
+
+      .header {
+        flex-direction: column;
+      }
+
+      .canvas-wrap {
+        height: 540px;
+      }
+
+      .controls-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .floating-help {
+        position: static;
+        margin: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body class="dark">
+  <div class="app">
+    <header class="header">
+      <div class="title-block">
+        <h1>Clustering Jerárquico Interactivo: fusiones, linkage y dendrograma</h1>
+        <p class="subtitle">
+          Simulación visual para comprender cómo funciona el clustering jerárquico aglomerativo:
+          cada punto comienza como un cluster individual, el algoritmo fusiona los grupos más compatibles,
+          registra cada unión en la matriz de linkage y construye un dendrograma que permite decidir dónde cortar.
+        </p>
+      </div>
+      <div class="badge">Versión 2.0 · Jerárquico</div>
+    </header>
+
+    <section class="layout">
+      <div>
+        <div class="main-card">
+          <div class="canvas-toolbar">
+            <div class="status-pill">
+              <span class="dot"></span>
+              <span id="statusLabel">Estado inicial: cada punto es un cluster</span>
+            </div>
+            <div class="mini-legend" id="legend"></div>
+          </div>
+
+          <div class="canvas-wrap">
+            <canvas id="canvas"></canvas>
+
+            <div class="floating-help" id="floatingHelp">
+              Esta simulación reemplaza la lógica de K-Means por clustering jerárquico: no hay centroides.
+              En cada paso se fusionan dos clusters y esa fusión aparece también en el dendrograma.
+            </div>
+          </div>
+        </div>
+
+        <div class="controls-card">
+          <div class="controls-grid">
+            <div class="field">
+              <label for="scenarioSelect">Escenario</label>
+              <select id="scenarioSelect">
+                <option value="separados" selected>Tres grupos separados</option>
+                <option value="cercanos">Grupos cercanos</option>
+                <option value="desbalanceados">Grupos desbalanceados</option>
+                <option value="outliers">Con outliers</option>
+                <option value="alargados">Clusters alargados</option>
+                <option value="aleatorio">Datos aleatorios</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="linkageSelect">Método linkage</label>
+              <select id="linkageSelect">
+                <option value="single">Single linkage</option>
+                <option value="complete">Complete linkage</option>
+                <option value="average">Average linkage</option>
+                <option value="ward" selected>Ward</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="cutSlider">Altura de corte</label>
+              <div class="range-row">
+                <input id="cutSlider" type="range" min="20" max="340" value="185" />
+                <span class="range-value" id="cutValue">185</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="themeSelect">Tema visual</label>
+              <select id="themeSelect">
+                <option value="dark" selected>Oscuro</option>
+                <option value="light">Claro</option>
+                <option value="academic">Académico</option>
+                <option value="neon">Neón</option>
+              </select>
+            </div>
+
+            <button id="stepBtn">Siguiente fusión</button>
+            <button id="autoBtn" class="success">Auto</button>
+            <button id="resetBtn" class="secondary">Reiniciar</button>
+            <button id="finishBtn" class="warning">Completar árbol</button>
+            <button id="explainBtn" class="secondary">Explicar paso</button>
+            <button id="shuffleBtn" class="danger">Nuevo dataset</button>
+          </div>
+        </div>
+
+        <div class="explain-card">
+          <h2 style="margin-top:0;">Qué está mostrando esta simulación</h2>
+          <div class="explain-grid">
+            <div class="explain-box">
+              <h3>1. Puntos como clusters</h3>
+              <p>
+                Al inicio, cada observación es su propio cluster. Si hay 24 puntos, el algoritmo empieza con 24 clusters.
+              </p>
+            </div>
+
+            <div class="explain-box">
+              <h3>2. Fusiones sucesivas</h3>
+              <p>
+                En cada paso se unen dos clusters. La decisión depende del método de linkage elegido: single, complete, average o Ward.
+              </p>
+            </div>
+
+            <div class="explain-box">
+              <h3>3. Dendrograma</h3>
+              <p>
+                Cada fusión se dibuja en el dendrograma. Las fusiones bajas indican grupos muy parecidos; las fusiones altas indican grupos más diferentes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="side-card">
+        <div class="section">
+          <h2>Lectura del algoritmo</h2>
+          <p id="explanationText">
+            El algoritmo todavía no realizó fusiones. Cada punto comienza como un cluster individual.
+          </p>
+          <div class="formula" id="formulaBox">
+            Inicio: n puntos → n clusters individuales
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Métricas de la simulación</h3>
+          <div class="metrics">
+            <div class="metric">
+              <span>Fusiones realizadas</span>
+              <strong id="mergeCount">0</strong>
+            </div>
+            <div class="metric">
+              <span>Clusters actuales</span>
+              <strong id="clusterCount">0</strong>
+            </div>
+            <div class="metric">
+              <span>Próxima distancia</span>
+              <strong id="nextDistance">-</strong>
+            </div>
+            <div class="metric">
+              <span>Clusters por corte</span>
+              <strong id="cutClusters">-</strong>
+            </div>
+          </div>
+
+          <div class="progress">
+            <div class="bar" id="progressBar"></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Próxima fusión</h3>
+          <p class="calc-box" id="nextMergeBox">
+            Todavía no se calculó la primera fusión.
+          </p>
+        </div>
+
+        <div class="section">
+          <h3>Matriz de linkage</h3>
+          <p class="small-note">
+            Cada fila registra: cluster A, cluster B, altura de fusión y tamaño del nuevo cluster.
+          </p>
+          <div style="max-height:230px; overflow:auto; margin-top:10px;">
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>A</th>
+                  <th>B</th>
+                  <th>altura</th>
+                  <th>n</th>
+                </tr>
+              </thead>
+              <tbody id="linkageBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Idea clave</h3>
+          <p>
+            En K-Means el centro del análisis son los centroides. En clustering jerárquico, el centro del análisis son las fusiones y el dendrograma.
+          </p>
+        </div>
+
+        <div class="footer-note">
+          Material didáctico · Clustering Jerárquico Aglomerativo · HTML + JavaScript puro
+        </div>
+      </aside>
+    </section>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const scenarioSelect = document.getElementById("scenarioSelect");
+    const linkageSelect = document.getElementById("linkageSelect");
+    const themeSelect = document.getElementById("themeSelect");
+    const cutSlider = document.getElementById("cutSlider");
+    const cutValue = document.getElementById("cutValue");
+
+    const stepBtn = document.getElementById("stepBtn");
+    const autoBtn = document.getElementById("autoBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const finishBtn = document.getElementById("finishBtn");
+    const explainBtn = document.getElementById("explainBtn");
+    const shuffleBtn = document.getElementById("shuffleBtn");
+
+    const statusLabel = document.getElementById("statusLabel");
+    const legend = document.getElementById("legend");
+    const explanationText = document.getElementById("explanationText");
+    const formulaBox = document.getElementById("formulaBox");
+    const mergeCount = document.getElementById("mergeCount");
+    const clusterCount = document.getElementById("clusterCount");
+    const nextDistance = document.getElementById("nextDistance");
+    const cutClusters = document.getElementById("cutClusters");
+    const nextMergeBox = document.getElementById("nextMergeBox");
+    const linkageBody = document.getElementById("linkageBody");
+    const progressBar = document.getElementById("progressBar");
+
+    const colors = [
+      "#2563eb", "#dc2626", "#16a34a", "#f59e0b", "#7c3aed",
+      "#06b6d4", "#ec4899", "#84cc16", "#f97316", "#14b8a6",
+      "#8b5cf6", "#22c55e", "#eab308", "#ef4444", "#38bdf8"
+    ];
+
+    let points = [];
+    let clusters = [];
+    let allMerges = [];
+    let performedMerges = [];
+    let dendroNodes = {};
+    let nextClusterId = 0;
+    let autoTimer = null;
+    let seed = 1;
+
+    function random() {
+      const x = Math.sin(seed++) * 10000;
+      return x - Math.floor(x);
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.floor(rect.width * window.devicePixelRatio);
+      canvas.height = Math.floor(rect.height * window.devicePixelRatio);
+      ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
+      draw();
+    }
+
+    function getThemeVar(name) {
+      return getComputedStyle(document.body).getPropertyValue(name).trim();
+    }
+
+    function generatePoints() {
+      const scenario = scenarioSelect.value;
+      points = [];
+      seed += 13;
+
+      function addCluster(cx, cy, n, spreadX, spreadY, label) {
+        for (let i = 0; i < n; i++) {
+          points.push({
+            id: points.length,
+            x: cx + (random() - 0.5) * spreadX,
+            y: cy + (random() - 0.5) * spreadY,
+            originalLabel: label
+          });
+        }
+      }
+
+      if (scenario === "separados") {
+        addCluster(170, 190, 8, 115, 100, "A");
+        addCluster(460, 160, 8, 115, 100, "B");
+        addCluster(335, 420, 8, 120, 100, "C");
+      }
+
+      if (scenario === "cercanos") {
+        addCluster(240, 220, 8, 150, 125, "A");
+        addCluster(390, 230, 8, 150, 125, "B");
+        addCluster(320, 370, 8, 150, 125, "C");
+      }
+
+      if (scenario === "desbalanceados") {
+        addCluster(180, 170, 5, 90, 80, "A");
+        addCluster(480, 190, 13, 150, 110, "B");
+        addCluster(310, 420, 6, 110, 90, "C");
+      }
+
+      if (scenario === "outliers") {
+        addCluster(180, 190, 7, 100, 90, "A");
+        addCluster(470, 170, 7, 105, 90, "B");
+        addCluster(335, 420, 7, 110, 90, "C");
+        points.push({ id: points.length, x: 90, y: 500, originalLabel: "O" });
+        points.push({ id: points.length, x: 570, y: 500, originalLabel: "O" });
+        points.push({ id: points.length, x: 610, y: 95, originalLabel: "O" });
+      }
+
+      if (scenario === "alargados") {
+        for (let i = 0; i < 8; i++) {
+          points.push({ id: points.length, x: 120 + i * 38 + (random()-0.5)*25, y: 150 + i * 18 + (random()-0.5)*40, originalLabel: "A" });
+        }
+        for (let i = 0; i < 8; i++) {
+          points.push({ id: points.length, x: 520 - i * 35 + (random()-0.5)*25, y: 130 + i * 30 + (random()-0.5)*40, originalLabel: "B" });
+        }
+        for (let i = 0; i < 8; i++) {
+          points.push({ id: points.length, x: 190 + i * 45 + (random()-0.5)*28, y: 450 - i * 8 + (random()-0.5)*40, originalLabel: "C" });
+        }
+      }
+
+      if (scenario === "aleatorio") {
+        for (let i = 0; i < 24; i++) {
+          points.push({
+            id: i,
+            x: 90 + random() * 540,
+            y: 95 + random() * 400,
+            originalLabel: "R"
+          });
+        }
+      }
+
+      nextClusterId = points.length;
+      clusters = points.map(p => ({
+        id: p.id,
+        members: [p.id],
+        x: p.x,
+        y: p.y,
+        height: 0,
+        left: null,
+        right: null
+      }));
+
+      dendroNodes = {};
+      clusters.forEach(c => {
+        dendroNodes[c.id] = {
+          id: c.id,
+          x: 0,
+          y: 0,
+          height: 0,
+          members: c.members.slice(),
+          left: null,
+          right: null
+        };
+      });
+
+      performedMerges = [];
+      computeAllMerges();
+      updateUI();
+      draw();
+    }
+
+    function euclidean(a, b) {
+      const dx = a.x - b.x;
+      const dy = a.y - b.y;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    function centroid(cluster) {
+      let sx = 0;
+      let sy = 0;
+      cluster.members.forEach(id => {
+        sx += points[id].x;
+        sy += points[id].y;
+      });
+      return {
+        x: sx / cluster.members.length,
+        y: sy / cluster.members.length
+      };
+    }
+
+    function sse(cluster) {
+      const c = centroid(cluster);
+      let total = 0;
+      cluster.members.forEach(id => {
+        const dx = points[id].x - c.x;
+        const dy = points[id].y - c.y;
+        total += dx * dx + dy * dy;
+      });
+      return total;
+    }
+
+    function clusterDistance(a, b) {
+      const method = linkageSelect.value;
+
+      if (method === "single") {
+        let minD = Infinity;
+        a.members.forEach(i => {
+          b.members.forEach(j => {
+            minD = Math.min(minD, euclidean(points[i], points[j]));
+          });
+        });
+        return minD;
+      }
+
+      if (method === "complete") {
+        let maxD = -Infinity;
+        a.members.forEach(i => {
+          b.members.forEach(j => {
+            maxD = Math.max(maxD, euclidean(points[i], points[j]));
+          });
+        });
+        return maxD;
+      }
+
+      if (method === "average") {
+        let total = 0;
+        let count = 0;
+        a.members.forEach(i => {
+          b.members.forEach(j => {
+            total += euclidean(points[i], points[j]);
+            count++;
+          });
+        });
+        return total / count;
+      }
+
+      if (method === "ward") {
+        const combined = {
+          members: a.members.concat(b.members)
+        };
+        const increase = sse(combined) - sse(a) - sse(b);
+        return Math.sqrt(Math.max(increase, 0));
+      }
+
+      return 0;
+    }
+
+    function findBestMerge(currentClusters) {
+      let best = null;
+
+      for (let i = 0; i < currentClusters.length; i++) {
+        for (let j = i + 1; j < currentClusters.length; j++) {
+          const d = clusterDistance(currentClusters[i], currentClusters[j]);
+
+          if (!best || d < best.distance) {
+            best = {
+              a: currentClusters[i],
+              b: currentClusters[j],
+              distance: d
+            };
+          }
+        }
+      }
+
+      return best;
+    }
+
+    function computeAllMerges() {
+      let tempClusters = points.map(p => ({
+        id: p.id,
+        members: [p.id],
+        x: p.x,
+        y: p.y,
+        height: 0,
+        left: null,
+        right: null
+      }));
+
+      let tempNextId = points.length;
+      allMerges = [];
+
+      while (tempClusters.length > 1) {
+        const best = findBestMerge(tempClusters);
+        const newMembers = best.a.members.concat(best.b.members);
+        const c = centroid({ members: newMembers });
+
+        const newCluster = {
+          id: tempNextId++,
+          members: newMembers,
+          x: c.x,
+          y: c.y,
+          height: best.distance,
+          left: best.a,
+          right: best.b
+        };
+
+        allMerges.push({
+          newId: newCluster.id,
+          aId: best.a.id,
+          bId: best.b.id,
+          aMembers: best.a.members.slice(),
+          bMembers: best.b.members.slice(),
+          members: newMembers.slice(),
+          distance: best.distance,
+          size: newMembers.length
+        });
+
+        tempClusters = tempClusters.filter(c => c.id !== best.a.id && c.id !== best.b.id);
+        tempClusters.push(newCluster);
+      }
+    }
+
+    function applyNextMerge() {
+      if (clusters.length <= 1) return;
+
+      const best = findBestMerge(clusters);
+      const newMembers = best.a.members.concat(best.b.members);
+      const c = centroid({ members: newMembers });
+
+      const newCluster = {
+        id: nextClusterId++,
+        members: newMembers,
+        x: c.x,
+        y: c.y,
+        height: best.distance,
+        left: best.a,
+        right: best.b
+      };
+
+      performedMerges.push({
+        newId: newCluster.id,
+        aId: best.a.id,
+        bId: best.b.id,
+        aMembers: best.a.members.slice(),
+        bMembers: best.b.members.slice(),
+        members: newMembers.slice(),
+        distance: best.distance,
+        size: newMembers.length
+      });
+
+      dendroNodes[newCluster.id] = {
+        id: newCluster.id,
+        members: newMembers.slice(),
+        height: best.distance,
+        left: dendroNodes[best.a.id],
+        right: dendroNodes[best.b.id]
+      };
+
+      clusters = clusters.filter(c => c.id !== best.a.id && c.id !== best.b.id);
+      clusters.push(newCluster);
+
+      updateUI();
+      draw();
+    }
+
+    function completeTree() {
+      while (clusters.length > 1) {
+        applyNextMerge();
+      }
+    }
+
+    function resetSimulation() {
+      if (autoTimer) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+        autoBtn.textContent = "Auto";
+      }
+
+      nextClusterId = points.length;
+      clusters = points.map(p => ({
+        id: p.id,
+        members: [p.id],
+        x: p.x,
+        y: p.y,
+        height: 0,
+        left: null,
+        right: null
+      }));
+
+      dendroNodes = {};
+      clusters.forEach(c => {
+        dendroNodes[c.id] = {
+          id: c.id,
+          x: 0,
+          y: 0,
+          height: 0,
+          members: c.members.slice(),
+          left: null,
+          right: null
+        };
+      });
+
+      performedMerges = [];
+      computeAllMerges();
+      updateUI();
+      draw();
+    }
+
+    function toggleAuto() {
+      if (autoTimer) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+        autoBtn.textContent = "Auto";
+        return;
+      }
+
+      autoBtn.textContent = "Pausar";
+
+      autoTimer = setInterval(() => {
+        if (clusters.length <= 1) {
+          clearInterval(autoTimer);
+          autoTimer = null;
+          autoBtn.textContent = "Auto";
+        } else {
+          applyNextMerge();
+        }
+      }, 900);
+    }
+
+    function getCurrentBestDescription() {
+      if (clusters.length <= 1) {
+        return "El árbol jerárquico ya está completo. Todas las observaciones quedaron integradas en un único cluster.";
+      }
+
+      const best = findBestMerge(clusters);
+      const method = linkageSelect.value;
+
+      let methodText = "";
+
+      if (method === "single") {
+        methodText = "Single linkage usa la menor distancia entre puntos de ambos clusters.";
+      } else if (method === "complete") {
+        methodText = "Complete linkage usa la mayor distancia entre puntos de ambos clusters.";
+      } else if (method === "average") {
+        methodText = "Average linkage usa el promedio de todas las distancias entre ambos clusters.";
+      } else {
+        methodText = "Ward elige la fusión que menos aumenta la dispersión interna del nuevo cluster.";
+      }
+
+      return `
+        <strong>Próxima fusión sugerida:</strong><br>
+        Cluster ${best.a.id} {${best.a.members.join(", ")}}<br>
+        Cluster ${best.b.id} {${best.b.members.join(", ")}}<br>
+        <strong>Altura:</strong> ${best.distance.toFixed(2)}<br><br>
+        ${methodText}
+      `;
+    }
+
+    function explainCurrentStep() {
+      if (performedMerges.length === 0) {
+        explanationText.textContent =
+          "Todavía no se realizó ninguna fusión. El algoritmo comienza considerando que cada punto es un cluster independiente.";
+        formulaBox.textContent = "Inicio: n puntos → n clusters individuales";
+        return;
+      }
+
+      const last = performedMerges[performedMerges.length - 1];
+
+      explanationText.textContent =
+        `En la última fusión, el algoritmo unió el cluster ${last.aId} con el cluster ${last.bId}. ` +
+        `La unión ocurrió a una altura de ${last.distance.toFixed(2)} y el nuevo cluster contiene ${last.size} observaciones. ` +
+        `Esta información queda registrada como una fila de la matriz de linkage.`;
+
+      formulaBox.textContent =
+        `[${last.aId}, ${last.bId}, ${last.distance.toFixed(2)}, ${last.size}]`;
+    }
+
+    function updateUI() {
+      mergeCount.textContent = performedMerges.length;
+      clusterCount.textContent = clusters.length;
+
+      const totalMerges = points.length - 1;
+      const pct = totalMerges > 0 ? (performedMerges.length / totalMerges) * 100 : 0;
+      progressBar.style.width = pct + "%";
+
+      statusLabel.textContent =
+        clusters.length === points.length
+          ? "Estado inicial: cada punto es un cluster"
+          : clusters.length === 1
+            ? "Árbol completo: todos los puntos unidos"
+            : `Proceso activo: quedan ${clusters.length} clusters`;
+
+      if (clusters.length > 1) {
+        const best = findBestMerge(clusters);
+        nextDistance.textContent = best.distance.toFixed(2);
+      } else {
+        nextDistance.textContent = "-";
+      }
+
+      nextMergeBox.innerHTML = getCurrentBestDescription();
+
+      linkageBody.innerHTML = performedMerges.map((m, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${m.aId}</td>
+          <td>${m.bId}</td>
+          <td>${m.distance.toFixed(2)}</td>
+          <td>${m.size}</td>
+        </tr>
+      `).join("");
+
+      updateCutClusters();
+
+      legend.innerHTML = `
+        <span class="legend-item"><span class="legend-color" style="background:${colors[0]}"></span> cluster / subárbol</span>
+        <span class="legend-item"><span class="legend-color" style="background:${getThemeVar("--accent")}"></span> fusión activa</span>
+        <span class="legend-item"><span class="legend-color" style="background:${getThemeVar("--danger")}"></span> línea de corte</span>
+      `;
+
+      explainCurrentStep();
+    }
+
+    function updateCutClusters() {
+      const cutHeight = Number(cutSlider.value);
+      cutValue.textContent = cutHeight;
+
+      if (performedMerges.length === 0) {
+        cutClusters.textContent = points.length;
+        return;
+      }
+
+      let count = points.length;
+      performedMerges.forEach(m => {
+        const scaled = scaleDistanceToDendro(m.distance);
+        if (scaled <= cutHeight) {
+          count--;
+        }
+      });
+
+      cutClusters.textContent = Math.max(count, 1);
+    }
+
+    function scaleDistanceToDendro(distance) {
+      const maxD = Math.max(...allMerges.map(m => m.distance), 1);
+      return 20 + (distance / maxD) * 320;
+    }
+
+    function drawGrid(width, height) {
+      const grid = getThemeVar("--grid");
+      ctx.strokeStyle = grid;
+      ctx.lineWidth = 1;
+
+      for (let x = 0; x < width; x += 50) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+
+      for (let y = 0; y < height; y += 50) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+    }
+
+    function draw() {
+      const rect = canvas.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+
+      ctx.clearRect(0, 0, width, height);
+
+      const bg = getThemeVar("--canvas-bg");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, width, height);
+      drawGrid(width, height);
+
+      const scatterWidth = width * 0.58;
+      const dendroX = scatterWidth + 20;
+      const dendroWidth = width - dendroX - 25;
+
+      drawScatter(0, 0, scatterWidth, height);
+      drawDendrogram(dendroX, 25, dendroWidth, height - 55);
+
+      ctx.strokeStyle = getThemeVar("--border");
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(scatterWidth + 5, 20);
+      ctx.lineTo(scatterWidth + 5, height - 20);
+      ctx.stroke();
+
+      ctx.fillStyle = getThemeVar("--muted");
+      ctx.font = "bold 13px Inter, Arial";
+      ctx.fillText("Espacio de datos", 22, 28);
+      ctx.fillText("Dendrograma", dendroX, 28);
+    }
+
+    function clusterColor(clusterId, index) {
+      return colors[index % colors.length];
+    }
+
+    function drawScatter(x0, y0, w, h) {
+      const currentClusters = clusters.slice().sort((a, b) => a.id - b.id);
+
+      currentClusters.forEach((cluster, idx) => {
+        if (cluster.members.length > 1) {
+          const c = centroid(cluster);
+          const color = clusterColor(cluster.id, idx);
+
+          ctx.globalAlpha = 0.12;
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.ellipse(c.x, c.y, 45 + cluster.members.length * 5, 35 + cluster.members.length * 4, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2;
+
+          cluster.members.forEach(id => {
+            const p = points[id];
+            ctx.beginPath();
+            ctx.moveTo(c.x, c.y);
+            ctx.lineTo(p.x, p.y);
+            ctx.stroke();
+          });
+
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.arc(c.x, c.y, 7, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+
+      points.forEach(p => {
+        const clusterIndex = currentClusters.findIndex(c => c.members.includes(p.id));
+        const color = clusterColor(currentClusters[clusterIndex]?.id || p.id, clusterIndex);
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = getThemeVar("--text");
+        ctx.font = "bold 10px Inter, Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(p.id, p.x, p.y - 12);
+      });
+
+      if (performedMerges.length > 0) {
+        const last = performedMerges[performedMerges.length - 1];
+        const aCenter = centroid({ members: last.aMembers });
+        const bCenter = centroid({ members: last.bMembers });
+
+        ctx.strokeStyle = getThemeVar("--accent");
+        ctx.lineWidth = 4;
+        ctx.setLineDash([8, 6]);
+        ctx.beginPath();
+        ctx.moveTo(aCenter.x, aCenter.y);
+        ctx.lineTo(bCenter.x, bCenter.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = getThemeVar("--accent");
+        ctx.font = "bold 13px Inter, Arial";
+        ctx.textAlign = "left";
+        ctx.fillText("Última fusión", Math.min(aCenter.x, bCenter.x) + 8, Math.min(aCenter.y, bCenter.y) - 8);
+      }
+    }
+
+    function assignLeafPositions(x, w) {
+      const spacing = w / Math.max(points.length - 1, 1);
+      const leafMap = {};
+
+      points.forEach((p, i) => {
+        leafMap[p.id] = x + i * spacing;
+      });
+
+      return leafMap;
+    }
+
+    function drawDendrogram(x, y, w, h) {
+      const leafY = y + h - 25;
+      const topY = y + 30;
+      const leafMap = assignLeafPositions(x + 18, w - 36);
+
+      const cutHeight = Number(cutSlider.value);
+      const cutY = leafY - cutHeight;
+
+      ctx.strokeStyle = getThemeVar("--danger");
+      ctx.lineWidth = 2;
+      ctx.setLineDash([7, 7]);
+      ctx.beginPath();
+      ctx.moveTo(x + 8, cutY);
+      ctx.lineTo(x + w - 8, cutY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = getThemeVar("--danger");
+      ctx.font = "bold 12px Inter, Arial";
+      ctx.textAlign = "left";
+      ctx.fillText("corte", x + 12, cutY - 6);
+
+      points.forEach(p => {
+        const lx = leafMap[p.id];
+
+        ctx.strokeStyle = getThemeVar("--muted");
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(lx, leafY);
+        ctx.lineTo(lx, leafY - 8);
+        ctx.stroke();
+
+        ctx.fillStyle = getThemeVar("--muted");
+        ctx.font = "10px Inter, Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(p.id, lx, leafY + 14);
+      });
+
+      const nodePositions = {};
+      points.forEach(p => {
+        nodePositions[p.id] = {
+          x: leafMap[p.id],
+          y: leafY,
+          height: 0
+        };
+      });
+
+      performedMerges.forEach((m, index) => {
+        const a = nodePositions[m.aId];
+        const b = nodePositions[m.bId];
+
+        if (!a || !b) return;
+
+        const scaledH = scaleDistanceToDendro(m.distance);
+        const mergeY = leafY - scaledH;
+        const mergeX = (a.x + b.x) / 2;
+
+        const color = index === performedMerges.length - 1 ? getThemeVar("--accent") : colors[index % colors.length];
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = index === performedMerges.length - 1 ? 4 : 2.3;
+
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(a.x, mergeY);
+        ctx.lineTo(b.x, mergeY);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(mergeX, mergeY, index === performedMerges.length - 1 ? 5 : 3.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        nodePositions[m.newId] = {
+          x: mergeX,
+          y: mergeY,
+          height: scaledH
+        };
+      });
+
+      ctx.fillStyle = getThemeVar("--muted");
+      ctx.font = "12px Inter, Arial";
+      ctx.textAlign = "left";
+      ctx.fillText("Altura de fusión", x + 8, topY - 4);
+
+      ctx.strokeStyle = getThemeVar("--border");
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x + 8, leafY);
+      ctx.lineTo(x + w - 8, leafY);
+      ctx.stroke();
+    }
+
+    stepBtn.addEventListener("click", applyNextMerge);
+    autoBtn.addEventListener("click", toggleAuto);
+    resetBtn.addEventListener("click", resetSimulation);
+    finishBtn.addEventListener("click", completeTree);
+    explainBtn.addEventListener("click", explainCurrentStep);
+
+    shuffleBtn.addEventListener("click", () => {
+      generatePoints();
+    });
+
+    scenarioSelect.addEventListener("change", generatePoints);
+
+    linkageSelect.addEventListener("change", () => {
+      resetSimulation();
+    });
+
+    themeSelect.addEventListener("change", () => {
+      document.body.className = "";
+      if (themeSelect.value !== "light") {
+        document.body.classList.add(themeSelect.value);
+      }
+      draw();
+    });
+
+    cutSlider.addEventListener("input", () => {
+      updateCutClusters();
+      draw();
+    });
+
+    window.addEventListener("resize", resizeCanvas);
+
+    resizeCanvas();
+    generatePoints();
+  </script>
+</body>
+</html>
