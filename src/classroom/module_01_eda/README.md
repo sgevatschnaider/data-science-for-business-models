@@ -231,6 +231,628 @@ El bloque permite estudiar:
         ↓
 8. Glosario interactivo
 ```
+Sí, tenés razón: para GitHub conviene que cada archivo tenga **dos accesos**:
+
+1. **Abrir HTML directamente**, usando `htmlpreview.github.io`, para que el estudiante vea el recurso funcionando.
+2. **Ver código en GitHub**, para acceder al archivo fuente.
+
+Tomé la idea del ejemplo que pasaste, donde los recursos tienen botones separados para **Abrir HTML** y **Ver código**, pero lo adapté solo a los archivos de **K-Means** y a los links que veníamos trabajando. 
+
+Copiá y pegá esto completo en GitHub:
+
+````markdown
+# K-Means · Recursos Interactivos para Clase
+
+> **Versión 2.0 del bloque de recursos de K-Means**  
+> Material organizado para estudiar, exponer y practicar el algoritmo **K-Means** mediante teoría visual, simulación interactiva, glosario, preguntas desarrolladas y práctica en Google Colab.
+
+---
+
+## Objetivo del bloque
+
+Este bloque reúne recursos interactivos para comprender **K-Means** como algoritmo de **aprendizaje no supervisado**, mostrando cómo se forman clusters a partir de la distancia entre puntos y centroides.
+
+La finalidad es que el estudiante pueda:
+
+- comprender qué es clustering;
+- diferenciar aprendizaje supervisado y no supervisado;
+- interpretar el rol del número de clusters `K`;
+- entender qué es un centroide;
+- observar cómo se asignan puntos al centroide más cercano;
+- visualizar cómo los centroides se recalculan;
+- comprender la idea de convergencia;
+- interpretar métricas como inercia y silhouette score;
+- reconocer limitaciones del algoritmo;
+- conectar la explicación visual con la implementación en Python.
+
+---
+
+## Secuencia didáctica sugerida
+
+```text
+1. Antes de la simulación
+        ↓
+2. Simulación interactiva
+        ↓
+3. Glosario de K-Means
+        ↓
+4. Preguntas y respuestas
+        ↓
+5. Práctica en Google Colab
+````
+
+---
+
+## Recursos interactivos
+
+| Orden | Recurso                                                        | Propósito didáctico                                                                                                                                                                                                       |                                                                                                                                                                                                                                                                                                                                     Acceso                                                                                                                                                                                                                                                                                                                                    |
+| :---: | :------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| **1** | **K-Means antes de la simulación**                             | Presentar la intuición inicial del algoritmo, explicar qué se debe observar antes de ejecutar una simulación y preparar al estudiante para interpretar centroides, distancias, asignaciones y convergencia.               |                                [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-1f4e79?style=for-the-badge\&logo=html5\&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K-Means%20antes%20de%20la%20simulaci%C3%B3n.html)<br>[![Ver código](https://img.shields.io/badge/Ver%20c%C3%B3digo-0f766e?style=for-the-badge\&logo=github\&logoColor=white)](https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K-Means%20antes%20de%20la%20simulaci%C3%B3n.html)                                |
+| **2** | **K-Means interactivo: centroides, asignación y convergencia** | Simulación principal para observar cómo los puntos se asignan al centroide más cercano, cómo los centroides se recalculan como promedios y cómo el algoritmo avanza hacia una solución estable.                           | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-7c3aed?style=for-the-badge\&logo=html5\&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K-Means%20interactivo%20centroides%2C%20asignaci%C3%B3n%20y%20convergencia.html)<br>[![Ver código](https://img.shields.io/badge/Ver%20c%C3%B3digo-0f766e?style=for-the-badge\&logo=github\&logoColor=white)](https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K-Means%20interactivo%20centroides%2C%20asignaci%C3%B3n%20y%20convergencia.html) |
+| **3** | **K-Means Glosario**                                           | Material de consulta para consolidar los conceptos principales: cluster, K, centroide, distancia euclídea, asignación, iteración, convergencia, inercia, función objetivo, K-Means++, método del codo y silhouette score. |                                                         [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-15803d?style=for-the-badge\&logo=html5\&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K-Means%20Glosario.html)<br>[![Ver código](https://img.shields.io/badge/Ver%20c%C3%B3digo-0f766e?style=for-the-badge\&logo=github\&logoColor=white)](https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K-Means%20Glosario.html)                                                         |
+| **4** | **K-Means preguntas y respuestas**                             | Guía de estudio con preguntas desarrolladas para repasar el algoritmo, verificar comprensión conceptual y preparar una explicación escrita u oral del tema.                                                               |                                               [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-f59e0b?style=for-the-badge\&logo=html5\&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K_means_preguntas_respuestas.html)<br>[![Ver código](https://img.shields.io/badge/Ver%20c%C3%B3digo-0f766e?style=for-the-badge\&logo=github\&logoColor=white)](https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K_means_preguntas_respuestas.html)                                               |
+| **5** | **Notebook en Google Colab**                                   | Práctica complementaria para conectar la explicación conceptual y visual con código Python, experimentación y análisis de resultados.                                                                                     |                                                                                                                                                                                                                               [![Abrir Colab](https://img.shields.io/badge/Abrir%20Colab-f9ab00?style=for-the-badge\&logo=googlecolab\&logoColor=white)](https://colab.research.google.com/drive/10vG3vgMzM1C13ume1b7auFPwQRMh5uZW?usp=sharing)                                                                                                                                                                                                                               |
+
+---
+
+## Botones de acceso directo
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K-Means%20antes%20de%20la%20simulaci%C3%B3n.html">
+    <img src="https://img.shields.io/badge/1.%20Abrir%20HTML-Antes%20de%20la%20simulaci%C3%B3n-1f4e79?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir HTML Antes de la simulación">
+  </a>
+  <a href="https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K-Means%20antes%20de%20la%20simulaci%C3%B3n.html">
+    <img src="https://img.shields.io/badge/Ver%20c%C3%B3digo-GitHub-0f766e?style=for-the-badge&logo=github&logoColor=white" alt="Ver código en GitHub">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K-Means%20interactivo%20centroides%2C%20asignaci%C3%B3n%20y%20convergencia.html">
+    <img src="https://img.shields.io/badge/2.%20Abrir%20HTML-Simulaci%C3%B3n%20interactiva-7c3aed?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir HTML Simulación interactiva">
+  </a>
+  <a href="https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K-Means%20interactivo%20centroides%2C%20asignaci%C3%B3n%20y%20convergencia.html">
+    <img src="https://img.shields.io/badge/Ver%20c%C3%B3digo-GitHub-0f766e?style=for-the-badge&logo=github&logoColor=white" alt="Ver código en GitHub">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K-Means%20Glosario.html">
+    <img src="https://img.shields.io/badge/3.%20Abrir%20HTML-Glosario%20K--Means-15803d?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir HTML Glosario">
+  </a>
+  <a href="https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K-Means%20Glosario.html">
+    <img src="https://img.shields.io/badge/Ver%20c%C3%B3digo-GitHub-0f766e?style=for-the-badge&logo=github&logoColor=white" alt="Ver código en GitHub">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K_means_preguntas_respuestas.html">
+    <img src="https://img.shields.io/badge/4.%20Abrir%20HTML-Preguntas%20y%20respuestas-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir HTML Preguntas y respuestas">
+  </a>
+  <a href="https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K_means_preguntas_respuestas.html">
+    <img src="https://img.shields.io/badge/Ver%20c%C3%B3digo-GitHub-0f766e?style=for-the-badge&logo=github&logoColor=white" alt="Ver código en GitHub">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://colab.research.google.com/drive/10vG3vgMzM1C13ume1b7auFPwQRMh5uZW?usp=sharing">
+    <img src="https://img.shields.io/badge/5.%20Abrir-Google%20Colab-f9ab00?style=for-the-badge&logo=googlecolab&logoColor=white" alt="Abrir Google Colab">
+  </a>
+</p>
+
+---
+
+## Resumen didáctico de cada recurso
+
+### 1. K-Means antes de la simulación
+
+Este recurso funciona como la **entrada conceptual al tema**. Su objetivo es preparar al estudiante para entender qué está viendo antes de ejecutar una simulación interactiva.
+
+Permite trabajar:
+
+* qué es clustering;
+* qué significa agrupar datos sin etiquetas;
+* qué representa el valor de `K`;
+* qué es un centroide;
+* qué significa distancia entre puntos;
+* por qué los puntos se asignan al centroide más cercano;
+* qué quiere decir recalcular centroides;
+* qué significa que el algoritmo converge.
+
+**Idea clave:**
+Antes de mirar el algoritmo en movimiento, el estudiante necesita comprender que K-Means alterna dos operaciones principales: asignar puntos y recalcular centroides.
+
+---
+
+### 2. K-Means interactivo: centroides, asignación y convergencia
+
+Este recurso funciona como el **laboratorio visual principal del módulo**. Permite observar el algoritmo funcionando paso a paso.
+
+Permite trabajar:
+
+* inicialización de centroides;
+* asignación de puntos por cercanía;
+* cambio de color de los puntos según el cluster;
+* actualización de centroides;
+* movimiento de los centroides;
+* convergencia;
+* escenarios con grupos separados;
+* escenarios con grupos cercanos;
+* datos desbalanceados;
+* outliers;
+* clusters alargados;
+* datos aleatorios.
+
+**Idea clave:**
+K-Means no conoce etiquetas verdaderas. Construye grupos a partir de la cercanía geométrica entre puntos y centroides.
+
+---
+
+### 3. K-Means Glosario
+
+Este recurso funciona como **material permanente de consulta**. El glosario permite ordenar el vocabulario técnico después de haber visto la explicación conceptual y la simulación.
+
+Permite trabajar conceptos como:
+
+* K-Means;
+* cluster;
+* número de clusters `K`;
+* centroide;
+* distancia euclídea;
+* asignación de puntos;
+* recalcular centroides;
+* iteración;
+* convergencia;
+* inercia;
+* función objetivo;
+* inicialización;
+* K-Means++;
+* método del codo;
+* silhouette score.
+
+**Idea clave:**
+El glosario ayuda a transformar la intuición visual en lenguaje técnico preciso.
+
+---
+
+### 4. K-Means preguntas y respuestas
+
+Este recurso funciona como **guía de repaso y autoevaluación**. Está pensado para que el estudiante no solo vea la simulación, sino que pueda explicar el tema con claridad.
+
+Permite trabajar:
+
+* preguntas conceptuales;
+* respuestas desarrolladas;
+* relación entre centroides, distancias y clusters;
+* diferencia entre inercia y silhouette score;
+* elección de `K`;
+* limitaciones del algoritmo;
+* interpretación de resultados;
+* preparación para exámenes o exposiciones.
+
+**Idea clave:**
+Si el estudiante puede responder estas preguntas con sus propias palabras, entonces comprendió la lógica del algoritmo y no solo memorizó sus pasos.
+
+---
+
+### 5. Notebook en Google Colab
+
+El notebook permite llevar el tema a la práctica con Python.
+
+Puede utilizarse para:
+
+* cargar datos;
+* ejecutar K-Means;
+* visualizar clusters;
+* calcular inercia;
+* comparar distintos valores de `K`;
+* analizar silhouette score;
+* experimentar con escalado de variables;
+* conectar teoría, simulación y código.
+
+**Idea clave:**
+Colab permite pasar de la intuición visual a la implementación práctica.
+
+---
+
+## Mapa conceptual del módulo
+
+```text
+K-Means
+│
+├── 1. Aprendizaje no supervisado
+│   ├── Datos sin etiquetas
+│   ├── Búsqueda de patrones
+│   └── Descubrimiento de estructura
+│
+├── 2. Clustering
+│   ├── Agrupar observaciones similares
+│   ├── Medir distancia
+│   ├── Comparar similitud
+│   └── Interpretar grupos
+│
+├── 3. Componentes principales
+│   ├── K
+│   ├── Cluster
+│   ├── Centroide
+│   ├── Punto de datos
+│   └── Distancia euclídea
+│
+├── 4. Proceso iterativo
+│   ├── Inicializar centroides
+│   ├── Asignar puntos al centroide más cercano
+│   ├── Recalcular centroides
+│   ├── Repetir
+│   └── Converger
+│
+├── 5. Evaluación
+│   ├── Inercia
+│   ├── WCSS
+│   ├── Método del codo
+│   ├── Silhouette score
+│   ├── Compactación
+│   └── Separación
+│
+├── 6. Problemas frecuentes
+│   ├── Mala elección de K
+│   ├── Mala inicialización
+│   ├── Variables sin escalar
+│   ├── Outliers
+│   ├── Clusters alargados
+│   └── Clusters no esféricos
+│
+└── 7. Interpretación
+    ├── Perfil de cada cluster
+    ├── Segmentación
+    ├── Comparación entre grupos
+    ├── Decisión práctica
+    └── Comunicación de resultados
+```
+
+---
+
+## Guía rápida de lectura
+
+### Para comenzar desde cero
+
+Usar primero:
+
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Antes%20de%20la%20simulaci%C3%B3n-1f4e79?style=for-the-badge\&logo=html5\&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K-Means%20antes%20de%20la%20simulaci%C3%B3n.html)
+
+Este recurso permite presentar la intuición general del algoritmo y preparar la lectura de la simulación.
+
+---
+
+### Para explicar el algoritmo paso a paso
+
+Usar después:
+
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Simulaci%C3%B3n%20interactiva-7c3aed?style=for-the-badge\&logo=html5\&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K-Means%20interactivo%20centroides%2C%20asignaci%C3%B3n%20y%20convergencia.html)
+
+La explicación puede seguir este flujo:
+
+```text
+Elegir K
+        ↓
+Inicializar centroides
+        ↓
+Asignar cada punto al centroide más cercano
+        ↓
+Recalcular centroides
+        ↓
+Repetir
+        ↓
+Obtener clusters finales
+```
+
+---
+
+### Para consolidar vocabulario
+
+Usar luego:
+
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Glosario%20K--Means-15803d?style=for-the-badge\&logo=html5\&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K-Means%20Glosario.html)
+
+El glosario debe utilizarse después de la simulación, porque en ese momento los conceptos ya tienen una imagen mental asociada.
+
+---
+
+### Para repasar y evaluar
+
+Usar al final:
+
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Preguntas%20y%20respuestas-f59e0b?style=for-the-badge\&logo=html5\&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/K_means_preguntas_respuestas.html)
+
+Este recurso permite comprobar si el estudiante puede explicar el tema con claridad.
+
+---
+
+### Para practicar con Python
+
+Usar como cierre práctico:
+
+[![Abrir Colab](https://img.shields.io/badge/Abrir-Google%20Colab-f9ab00?style=for-the-badge\&logo=googlecolab\&logoColor=white)](https://colab.research.google.com/drive/10vG3vgMzM1C13ume1b7auFPwQRMh5uZW?usp=sharing)
+
+---
+
+## Desarrollo conceptual del tema
+
+### Qué es K-Means
+
+K-Means es un algoritmo de **aprendizaje no supervisado** que busca dividir un conjunto de datos en `K` grupos o clusters.
+
+Cada cluster está representado por un **centroide**, que funciona como el punto promedio del grupo. El algoritmo intenta que los puntos de cada cluster estén lo más cerca posible de su centroide.
+
+---
+
+### Por qué se llama K-Means
+
+El nombre tiene dos partes:
+
+| Parte   | Significado                                       |
+| :------ | :------------------------------------------------ |
+| `K`     | Cantidad de clusters que se quieren formar        |
+| `Means` | Medias o promedios que representan los centroides |
+
+Por eso, K-Means puede entenderse como un algoritmo que busca formar `K` grupos alrededor de `K` promedios.
+
+---
+
+### Cómo funciona el algoritmo
+
+El algoritmo sigue una lógica iterativa:
+
+```text
+1. Elegir la cantidad de clusters K.
+2. Ubicar centroides iniciales.
+3. Asignar cada punto al centroide más cercano.
+4. Recalcular cada centroide como promedio de los puntos asignados.
+5. Repetir los pasos 3 y 4 hasta que los centroides dejen de cambiar de manera significativa.
+```
+
+---
+
+### Fórmula de asignación
+
+Cada punto se asigna al cluster cuyo centroide esté más cerca.
+
+```text
+Asignar xᵢ al cluster Cⱼ si:
+
+d(xᵢ, μⱼ) ≤ d(xᵢ, μₖ) para todo k
+```
+
+Donde:
+
+* `xᵢ` es un punto del conjunto de datos.
+* `μⱼ` es el centroide del cluster `j`.
+* `d(xᵢ, μⱼ)` es la distancia entre el punto y el centroide.
+* `k` recorre todos los centroides disponibles.
+
+---
+
+### Fórmula de actualización del centroide
+
+Después de asignar los puntos, cada centroide se recalcula como el promedio de los puntos de su cluster.
+
+```text
+μⱼ = (1 / |Cⱼ|) Σ xᵢ
+```
+
+Donde:
+
+* `μⱼ` es el nuevo centroide del cluster `j`.
+* `Cⱼ` es el conjunto de puntos asignados al cluster.
+* `|Cⱼ|` es la cantidad de puntos dentro del cluster.
+* `Σ xᵢ` representa la suma de los puntos asignados.
+
+---
+
+### Función objetivo e inercia
+
+K-Means busca minimizar la suma de las distancias cuadradas entre cada punto y el centroide de su cluster.
+
+```text
+Inercia = Σ Σ ||xᵢ - μⱼ||²
+```
+
+La inercia mide la compactación interna de los clusters.
+
+| Valor de inercia | Interpretación                                                   |
+| :--------------- | :--------------------------------------------------------------- |
+| Baja             | Los puntos están cerca de sus centroides                         |
+| Alta             | Los puntos están dispersos dentro de los clusters                |
+| Cero             | Solo posible si cada punto coincide exactamente con su centroide |
+
+---
+
+### Método del codo
+
+El método del codo ayuda a elegir un valor razonable de `K`.
+
+La idea consiste en probar varios valores de `K` y observar cómo disminuye la inercia. Al aumentar `K`, la inercia siempre tiende a bajar, pero llega un punto donde agregar más clusters mejora poco.
+
+Ese punto se conoce como **codo**.
+
+```text
+K aumenta
+        ↓
+La inercia baja
+        ↓
+La mejora empieza a ser menor
+        ↓
+Aparece el codo
+        ↓
+Se elige un K razonable
+```
+
+---
+
+### Silhouette score
+
+El silhouette score mide qué tan bien ubicado está un punto dentro de su cluster en comparación con los clusters vecinos.
+
+```text
+s(i) = (b(i) - a(i)) / max(a(i), b(i))
+```
+
+Donde:
+
+* `a(i)` es la distancia promedio del punto `i` a los puntos de su propio cluster.
+* `b(i)` es la menor distancia promedio del punto `i` a otro cluster cercano.
+* `s(i)` es el silhouette score del punto.
+
+Interpretación:
+
+| Valor       | Interpretación                               |
+| :---------- | :------------------------------------------- |
+| Cercano a 1 | El punto está bien asignado                  |
+| Cercano a 0 | El punto está en una frontera entre clusters |
+| Negativo    | El punto podría estar mal asignado           |
+
+---
+
+## Comparación entre métricas
+
+| Métrica            | Qué mide                                  | Cómo se interpreta                                |
+| :----------------- | :---------------------------------------- | :------------------------------------------------ |
+| Inercia            | Compactación interna                      | Cuanto menor, más compactos son los clusters      |
+| Método del codo    | Cambio de la inercia al aumentar `K`      | Busca el punto donde agregar clusters mejora poco |
+| Silhouette score   | Compactación interna y separación externa | Cuanto más cercano a 1, mejor es la estructura    |
+| Distancia euclídea | Cercanía entre puntos                     | Define la asignación al centroide más cercano     |
+
+---
+
+## Limitaciones de K-Means
+
+K-Means es muy útil, pero tiene limitaciones importantes.
+
+Puede fallar o dar resultados poco interpretables cuando:
+
+* los clusters tienen formas no circulares;
+* los clusters son alargados;
+* hay outliers;
+* las variables no están escaladas;
+* los grupos tienen tamaños muy desbalanceados;
+* se elige mal el valor de `K`;
+* la inicialización de centroides es mala;
+* la distancia euclídea no representa bien la similitud real del problema.
+
+---
+
+## Uso sugerido para una clase
+
+| Momento de la clase      | Recurso sugerido               | Actividad                                       |
+| :----------------------- | :----------------------------- | :---------------------------------------------- |
+| Inicio                   | K-Means antes de la simulación | Presentar la intuición general del algoritmo    |
+| Desarrollo visual        | Simulación interactiva         | Mostrar centroides, asignaciones y convergencia |
+| Consolidación conceptual | Glosario                       | Repasar términos técnicos                       |
+| Repaso final             | Preguntas y respuestas         | Trabajar preguntas desarrolladas                |
+| Práctica                 | Google Colab                   | Ejecutar K-Means en Python                      |
+
+---
+
+## Preguntas guía para trabajar en clase
+
+1. ¿Qué significa que K-Means sea un algoritmo de aprendizaje no supervisado?
+2. ¿Qué diferencia hay entre clustering y clasificación?
+3. ¿Qué representa el valor `K`?
+4. ¿Qué es un centroide?
+5. ¿Por qué K-Means usa distancias?
+6. ¿Cómo se asignan los puntos a los clusters?
+7. ¿Cómo se recalcula un centroide?
+8. ¿Qué significa que el algoritmo converge?
+9. ¿Qué mide la inercia?
+10. ¿Por qué la inercia disminuye cuando aumenta `K`?
+11. ¿Qué problema intenta resolver el método del codo?
+12. ¿Qué mide el silhouette score?
+13. ¿Por qué es importante escalar las variables?
+14. ¿Qué efecto pueden tener los outliers?
+15. ¿Qué limitaciones tiene K-Means?
+
+---
+
+## Relación entre los recursos
+
+| Concepto                   | Recurso principal      | Recurso complementario |
+| :------------------------- | :--------------------- | :--------------------- |
+| Aprendizaje no supervisado | Antes de la simulación | Glosario               |
+| Clustering                 | Antes de la simulación | Preguntas y respuestas |
+| K-Means                    | Simulación interactiva | Glosario               |
+| Centroide                  | Simulación interactiva | Glosario               |
+| Asignación de puntos       | Simulación interactiva | Preguntas y respuestas |
+| Recalcular centroides      | Simulación interactiva | Glosario               |
+| Convergencia               | Simulación interactiva | Preguntas y respuestas |
+| Inercia                    | Glosario               | Colab                  |
+| Método del codo            | Glosario               | Colab                  |
+| Silhouette score           | Glosario               | Preguntas y respuestas |
+| Limitaciones               | Preguntas y respuestas | Antes de la simulación |
+| Implementación en Python   | Colab                  | Simulación interactiva |
+
+---
+
+## Guion breve para presentar el bloque
+
+### Inicio
+
+En este módulo vamos a estudiar **K-Means**, un algoritmo fundamental de aprendizaje no supervisado que permite descubrir grupos dentro de los datos sin partir de etiquetas previas.
+
+La idea no es solamente memorizar los pasos del algoritmo, sino comprender su lógica geométrica: cómo se ubican los centroides, cómo los puntos se asignan por cercanía, cómo los centroides se recalculan y cómo el sistema converge hacia una partición estable.
+
+---
+
+### Paso 1 · Antes de la simulación
+
+Primero vamos a revisar el recurso **K-Means antes de la simulación**, porque antes de mirar el algoritmo en movimiento necesitamos comprender qué representa cada elemento: los puntos, los centroides, la distancia, la cantidad de clusters y la convergencia.
+
+---
+
+### Paso 2 · Simulación interactiva
+
+Luego vamos a trabajar con la **simulación interactiva de K-Means**, donde podremos observar el proceso paso a paso.
+
+La simulación permite ver cómo los puntos se asignan al centroide más cercano, cómo los centroides se desplazan hacia el promedio de los puntos asignados y cómo, después de varias iteraciones, el algoritmo alcanza una configuración más estable.
+
+---
+
+### Paso 3 · Glosario
+
+Después de la simulación vamos a utilizar el **glosario** para ordenar los conceptos centrales.
+
+El objetivo del glosario es que cada estudiante pueda asociar lo que vio en la simulación con los términos técnicos del tema.
+
+---
+
+### Paso 4 · Preguntas y respuestas
+
+Finalmente, vamos a cerrar con el recurso de **preguntas y respuestas**, que funciona como una guía de estudio.
+
+Este recurso permite repasar los conceptos principales y verificar si realmente se comprendió la lógica del algoritmo, sus pasos, sus métricas y sus limitaciones.
+
+---
+
+### Paso 5 · Google Colab
+
+Como cierre práctico, se puede abrir el notebook de **Google Colab** para conectar la explicación visual con código Python.
+
+---
+
+## Síntesis final
+
+K-Means es una herramienta fundamental para introducir el aprendizaje no supervisado porque permite ver de manera clara cómo un algoritmo puede encontrar estructura en los datos sin necesidad de etiquetas previas.
+
+Su valor pedagógico está en que combina:
+
+* intuición geométrica;
+* cálculo de distancias;
+* actualización iterativa;
+* evaluación mediante métricas;
+* análisis crítico de limitaciones;
+* implementación práctica en Python.
+
+El recorrido recomendado para este módulo es comenzar con la explicación conceptual, continuar con la simulación interactiva, consolidar el vocabulario mediante el glosario, cerrar con preguntas desarrolladas y finalmente practicar en Colab.
+
+---
+
 
 ## 📚 Recursos interactivos
 
