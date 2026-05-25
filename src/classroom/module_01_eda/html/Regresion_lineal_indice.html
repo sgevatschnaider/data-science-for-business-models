@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Índice general | Regresión lineal y neurona artificial</title>
+<style>
+:root{
+  --bg:#f4f7fb;--panel:#ffffff;--panel2:#eef5ff;--text:#142033;--muted:#64748b;--line:#d7e0ef;
+  --brand:#2563eb;--brand2:#0f766e;--accent:#7c3aed;--warn:#f59e0b;--ok:#16a34a;
+  --shadow:0 18px 48px rgba(15,23,42,.10);--radius:24px;--code:#0f172a;--codeText:#e5edff;
+}
+[data-theme="dark"]{
+  --bg:#090e1d;--panel:#121a2e;--panel2:#18233b;--text:#eef4ff;--muted:#a8b6cf;--line:#2a3958;
+  --brand:#60a5fa;--brand2:#5eead4;--accent:#c084fc;--warn:#fbbf24;--ok:#86efac;
+  --shadow:0 20px 54px rgba(0,0,0,.38);--code:#020617;--codeText:#f8fafc;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  background:radial-gradient(circle at 8% 0%,rgba(37,99,235,.16),transparent 32rem),radial-gradient(circle at 92% 14%,rgba(15,118,110,.13),transparent 30rem),var(--bg);
+  color:var(--text);line-height:1.62;
+}
+a{color:inherit}
+.topbar{
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(16px);
+  background:color-mix(in srgb,var(--bg) 84%,transparent);
+  border-bottom:1px solid var(--line);
+}
+.wrap{width:min(1280px,calc(100% - 32px));margin:auto;padding:20px 0}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;font-weight:950;letter-spacing:-.02em}
+.logo{width:46px;height:46px;border-radius:17px;display:grid;place-items:center;color:#fff;font-weight:950;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:var(--shadow)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn,.chip{
+  border:1px solid var(--line);background:var(--panel);color:var(--text);padding:10px 14px;border-radius:999px;font-weight:850;cursor:pointer;text-decoration:none;transition:.18s;display:inline-flex;align-items:center;gap:8px;
+}
+.btn:hover,.chip:hover{transform:translateY(-1px);border-color:var(--brand);box-shadow:0 10px 25px rgba(15,23,42,.08)}
+.btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand2));border:0;color:white}
+.hero{padding:48px 0 24px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--brand);font-size:.82rem;font-weight:950;text-transform:uppercase;letter-spacing:.13em;margin-bottom:14px}
+h1{font-size:clamp(2.15rem,5vw,4.9rem);line-height:1.01;margin:0 0 16px;letter-spacing:-.06em;max-width:1050px}
+.lead{font-size:clamp(1.03rem,1.6vw,1.24rem);color:var(--muted);max-width:980px;margin:0 0 20px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:22px 0}
+.stat{border:1px solid var(--line);background:linear-gradient(180deg,color-mix(in srgb,var(--panel),var(--brand) 5%),var(--panel));border-radius:22px;padding:18px;box-shadow:0 8px 26px rgba(15,23,42,.05)}
+.stat strong{display:block;font-size:1.75rem;line-height:1;color:var(--brand);letter-spacing:-.04em}.stat span{display:block;color:var(--muted);font-weight:750;font-size:.88rem;margin-top:7px}
+.layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:22px;padding-bottom:44px}
+aside{position:sticky;top:88px;align-self:start;max-height:calc(100vh - 110px);overflow:auto;border:1px solid var(--line);background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(12px);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.search{width:100%;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:var(--panel);color:var(--text);outline:none;font-size:.95rem;margin:10px 0 14px}.search:focus{border-color:var(--brand);box-shadow:0 0 0 4px color-mix(in srgb,var(--brand) 18%,transparent)}
+.toc{display:grid;gap:7px}.toc a{text-decoration:none;padding:9px 10px;border-radius:13px;border:1px solid transparent;color:var(--text);font-size:.9rem;font-weight:760}.toc a:hover,.toc a.active{background:var(--panel2);border-color:var(--line)}.toc span{color:var(--brand);font-weight:950;margin-right:6px}
+.panel{border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:18px;scroll-margin-top:94px}.panel h2{font-size:clamp(1.5rem,3vw,2.3rem);line-height:1.12;margin:0 0 12px;letter-spacing:-.04em}.panel h3{font-size:1.16rem;margin:22px 0 8px;letter-spacing:-.02em}.panel p{margin:0 0 12px;color:var(--muted)}
+.section-head{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start}.tag{font-size:.78rem;font-weight:950;color:var(--brand);background:color-mix(in srgb,var(--brand) 10%,var(--panel));border:1px solid var(--line);padding:6px 10px;border-radius:999px;white-space:nowrap}.file{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--code);color:var(--codeText);border-radius:16px;padding:12px 14px;overflow:auto;margin:12px 0;border:1px solid rgba(255,255,255,.08)}
+.details{display:grid;gap:10px;margin-top:14px}details{border:1px solid var(--line);background:linear-gradient(180deg,color-mix(in srgb,var(--panel),var(--brand) 3%),var(--panel));border-radius:18px;overflow:hidden}summary{cursor:pointer;padding:14px 16px;font-weight:950;list-style:none;display:flex;justify-content:space-between;gap:12px}summary::-webkit-details-marker{display:none}summary::after{content:"＋";color:var(--brand);font-weight:950}details[open] summary::after{content:"−"}.detail-body{padding:0 18px 16px;color:var(--text)}
+ul,ol{margin:8px 0 12px;padding-left:1.25rem}li{margin:5px 0}.subgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}.mini{border:1px solid var(--line);background:var(--panel2);border-radius:18px;padding:15px}.mini strong{display:block;color:var(--brand);margin-bottom:6px}.mini p{margin:0;color:var(--text)}
+table{width:100%;border-collapse:collapse;margin:12px 0;border-radius:18px;overflow:hidden;border:1px solid var(--line)}th,td{padding:12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}th{background:var(--panel2);color:var(--muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.08em}tr:last-child td{border-bottom:0}.objective{border-left:5px solid var(--brand);background:color-mix(in srgb,var(--brand) 8%,var(--panel));padding:16px 18px;border-radius:16px;margin:14px 0}.hidden{display:none!important}.nores{display:none;border:1px dashed var(--line);background:var(--panel);padding:22px;text-align:center;color:var(--muted);border-radius:var(--radius);font-weight:850}
+footer{color:var(--muted);text-align:center;border-top:1px solid var(--line);padding:24px 0;margin-top:20px}
+@media(max-width:980px){.layout{grid-template-columns:1fr}aside{position:relative;top:auto;max-height:none}.stats{grid-template-columns:repeat(2,1fr)}.subgrid{grid-template-columns:1fr}}
+@media(max-width:560px){.stats{grid-template-columns:1fr}.section-head{grid-template-columns:1fr}.wrap{width:min(100% - 22px,1280px)}}
+@media print{.topbar,aside,.hero-actions,.controls{display:none!important}body{background:#fff}.layout{display:block}.panel{box-shadow:none;break-inside:avoid}.stats{grid-template-columns:repeat(4,1fr)}details{break-inside:avoid}details:not([open]) .detail-body{display:block!important}summary::after{content:""}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap nav">
+    <div class="brand"><div class="logo">Í</div><div>Índice · Regresión lineal y neurona artificial</div></div>
+    <div class="controls">
+      <button class="btn" id="themeBtn" type="button">🌙 Cambiar tema</button>
+      <button class="btn" id="expandBtn" type="button">➕ Expandir</button>
+      <button class="btn" id="collapseBtn" type="button">➖ Contraer</button>
+      <button class="btn primary" onclick="window.print()" type="button">🖨️ Imprimir / PDF</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+<section class="hero" id="inicio">
+  <div class="eyebrow">Guía de navegación del paquete</div>
+  <h1>Índice general del paquete de regresión lineal como base para comprender la neurona artificial</h1>
+  <p class="lead">Esta página funciona como portada, mapa de estudio y guía de navegación para los cuatro materiales HTML: teoría y simulación, transición hacia neurona artificial, glosario completo y cuestionario interactivo.</p>
+  <div class="hero-actions">
+    <a class="chip" href="#orden">Orden sugerido de estudio</a>
+    <a class="chip" href="#archivos">Índice de archivos</a>
+    <a class="chip" href="#objetivo">Objetivo general</a>
+    <a class="chip" href="#resultados">Resultados esperados</a>
+  </div>
+</section>
+
+<section class="stats" aria-label="Resumen">
+  <div class="stat"><strong>4</strong><span>HTML principales</span></div>
+  <div class="stat"><strong>60</strong><span>conceptos de glosario</span></div>
+  <div class="stat"><strong>10</strong><span>preguntas desarrolladas</span></div>
+  <div class="stat"><strong>5</strong><span>clases sugeridas</span></div>
+</section>
+
+<div class="layout">
+  <aside>
+    <strong>Buscar en el índice</strong>
+    <input id="search" class="search" type="search" placeholder="Buscar: gradiente, glosario, neurona..." autocomplete="off">
+    <nav class="toc" id="toc">
+      <a href="#teoria"><span>01</span> Teoría y simulación</a>
+      <a href="#neurona"><span>02</span> Neurona artificial</a>
+      <a href="#glosario"><span>03</span> Glosario completo</a>
+      <a href="#cuestionario"><span>04</span> Cuestionario</a>
+      <a href="#orden"><span>05</span> Orden de estudio</a>
+      <a href="#archivos"><span>06</span> Archivos</a>
+      <a href="#objetivo"><span>07</span> Objetivo general</a>
+      <a href="#resultados"><span>08</span> Resultados esperados</a>
+    </nav>
+  </aside>
+
+  <section>
+    <div class="nores" id="nores">No se encontraron secciones con ese término.</div>
+
+    <article class="panel searchable" id="teoria" data-terms="regresion lineal teoria simulacion entrenamiento validacion mse gradiente epoch learning rate pendiente sesgo bias">
+      <div class="section-head">
+        <div>
+          <span class="tag">Módulo 1</span>
+          <h2>Regresión lineal: teoría, entrenamiento y simulación</h2>
+        </div>
+      </div>
+      <div class="file">Regresion_lineal_teoria_simulacion.html</div>
+      <p>Este módulo introduce la regresión lineal como modelo supervisado, muestra cómo se ajusta una recta y permite experimentar con entrenamiento, validación, ruido, tasa de aprendizaje y descenso por gradiente.</p>
+      <div class="details">
+        <details open><summary>1.1. Presentación general</summary><div class="detail-body"><ul><li>Regresión lineal como modelo supervisado.</li><li>Objetivo del modelo lineal.</li><li>Relación entre datos, recta ajustada y predicción.</li><li>Fórmula general: <strong>ŷ = mX + b</strong>.</li></ul></div></details>
+        <details><summary>1.2. Panel de entrenamiento</summary><div class="detail-body"><ul><li>Entrenar un epoch.</li><li>Simulación dinámica.</li><li>Paso docente.</li><li>Reinicio del modelo.</li><li>Control del learning rate.</li><li>Control de pendiente inicial.</li><li>Control de bias inicial.</li><li>Control del ruido.</li><li>Porcentaje de validación.</li></ul></div></details>
+        <details><summary>1.3. Cálculo actual</summary><div class="detail-body"><ul><li>Visualización de parámetros aprendidos.</li><li>Interpretación de la pendiente.</li><li>Interpretación del intercepto.</li><li>Cálculo de la predicción.</li><li>Cálculo del error.</li></ul></div></details>
+        <details><summary>1.4. Historial de entrenamiento</summary><div class="detail-body"><ul><li>Evolución de los epochs.</li><li>Evolución del MSE de entrenamiento.</li><li>Evolución del MSE de validación.</li><li>Comparación entre ajuste y generalización.</li></ul></div></details>
+        <details><summary>1.5. Qué problema resuelve la regresión lineal</summary><div class="detail-body"><ul><li>La idea de aproximar una tendencia.</li><li>Datos observados y modelo matemático.</li><li>Relación entre variable independiente y variable dependiente.</li></ul></div></details>
+        <details><summary>1.6. Qué son m y b</summary><div class="detail-body"><ul><li><strong>m</strong> como pendiente o peso.</li><li><strong>b</strong> como sesgo o intercepto.</li><li>Interpretación geométrica.</li><li>Interpretación predictiva.</li></ul></div></details>
+        <details><summary>1.7. Función de pérdida</summary><div class="detail-body"><ul><li>Error individual.</li><li>Error cuadrático.</li><li>Error cuadrático medio.</li><li>MSE como criterio de ajuste.</li><li>Penalización de errores grandes.</li></ul></div></details>
+        <details><summary>1.8. Descenso por gradiente</summary><div class="detail-body"><ul><li>Idea general de optimización.</li><li>Dirección del error.</li><li>Gradiente como señal de ajuste.</li><li>Learning rate.</li><li>Actualización progresiva de parámetros.</li></ul></div></details>
+        <details><summary>1.9. Actualización de m y b</summary><div class="detail-body"><ul><li>Fórmula de actualización de la pendiente.</li><li>Fórmula de actualización del intercepto.</li><li>Relación entre derivadas, error y aprendizaje.</li></ul></div></details>
+        <details><summary>1.10. Gradientes de la regresión lineal</summary><div class="detail-body"><ul><li>Derivada parcial respecto de <strong>m</strong>.</li><li>Derivada parcial respecto de <strong>b</strong>.</li><li>Interpretación del gradiente.</li><li>Convergencia del modelo.</li></ul></div></details>
+        <details><summary>1.11. Entrenamiento y validación</summary><div class="detail-body"><ul><li>Datos de entrenamiento.</li><li>Datos de validación.</li><li>Por qué no alcanza con medir el error en entrenamiento.</li><li>Evaluación de generalización.</li><li>Riesgo de sobreajuste y subajuste.</li></ul></div></details>
+        <details><summary>1.12. Actividad guiada</summary><div class="detail-body"><ul><li>Modificar parámetros.</li><li>Observar la recta.</li><li>Comparar pérdida de entrenamiento y validación.</li><li>Interpretar el efecto del ruido.</li><li>Explicar cuándo el modelo mejora y cuándo empeora.</li></ul></div></details>
+      </div>
+    </article>
+
+    <article class="panel searchable" id="neurona" data-terms="neurona artificial regresion multiple producto punto activacion perceptron logistica sigmoide red neuronal">
+      <span class="tag">Módulo 2</span>
+      <h2>Regresión lineal como puerta de entrada a la neurona artificial</h2>
+      <div class="file">Regresion_lineal_neurona_artificial_interactiva(1).html</div>
+      <p>Este módulo muestra la transición conceptual desde una regresión lineal simple hacia una neurona artificial, incorporando forma vectorial, producto punto, función de activación y redes neuronales.</p>
+      <div class="details">
+        <details open><summary>2.1. Idea central</summary><div class="detail-body"><ul><li>Regresión lineal como estructura matemática básica.</li><li>Entrada, peso, sesgo y salida.</li><li>Relación entre modelo lineal y neurona artificial.</li></ul></div></details>
+        <details><summary>2.2. Componentes básicos</summary><div class="detail-body"><ul><li>Entrada.</li><li>Peso.</li><li>Sesgo.</li><li>Suma ponderada.</li><li>Predicción.</li></ul></div></details>
+        <details><summary>2.3. Simulador de regresión lineal</summary><div class="detail-body"><ul><li>Modificación de la pendiente.</li><li>Modificación del intercepto.</li><li>Control del ruido.</li><li>Generación de nuevos datos.</li><li>Ajuste de la recta óptima.</li><li>Calculadora de predicción.</li></ul></div></details>
+        <details><summary>2.4. Regresión lineal múltiple</summary><div class="detail-body"><ul><li>Paso de una entrada a muchas entradas.</li><li>Variables independientes múltiples.</li><li>Combinación lineal.</li><li>Predicción con varias características.</li></ul></div></details>
+        <details><summary>2.5. Forma vectorial</summary><div class="detail-body"><ul><li>Vector de entradas.</li><li>Vector de pesos.</li><li>Producto punto.</li><li>Fórmula compacta: <strong>ŷ = w · x + b</strong>.</li></ul></div></details>
+        <details><summary>2.6. Entrenamiento y función de pérdida</summary><div class="detail-body"><ul><li>Predicción del modelo.</li><li>Error entre valor real y valor predicho.</li><li>Función de pérdida.</li><li>MSE.</li><li>Minimización del error.</li></ul></div></details>
+        <details><summary>2.7. Descenso por gradiente</summary><div class="detail-body"><ul><li>Optimización de pesos.</li><li>Optimización del sesgo.</li><li>Tasa de aprendizaje.</li><li>Movimiento en dirección opuesta al gradiente.</li></ul></div></details>
+        <details><summary>2.8. Entrenamiento interactivo por gradiente</summary><div class="detail-body"><ul><li>Ajuste progresivo de parámetros.</li><li>Observación de la pérdida.</li><li>Comparación entre estado inicial y estado entrenado.</li><li>Interpretación visual del aprendizaje.</li></ul></div></details>
+        <details><summary>2.9. De regresión lineal a neurona artificial</summary><div class="detail-body"><ul><li>Suma ponderada.</li><li>Bias.</li><li>Salida lineal.</li><li>Incorporación de función de activación.</li><li>Fórmula: <strong>a = f(z)</strong>.</li></ul></div></details>
+        <details><summary>2.10. Calculadora de neurona artificial</summary><div class="detail-body"><ul><li>Entradas múltiples.</li><li>Pesos múltiples.</li><li>Bias.</li><li>Cálculo de <strong>z</strong>.</li><li>Aplicación de una activación.</li><li>Interpretación de la salida.</li></ul></div></details>
+        <details><summary>2.11. Comparación directa</summary><div class="detail-body"><ul><li>Regresión lineal.</li><li>Neurona artificial.</li><li>Similitudes matemáticas.</li><li>Diferencia por función de activación.</li><li>Capacidad expresiva.</li></ul></div></details>
+        <details><summary>2.12. Por qué la regresión lineal no alcanza para todo</summary><div class="detail-body"><ul><li>Limitaciones de las relaciones lineales.</li><li>Datos con forma curva.</li><li>Datos con patrones oscilantes.</li><li>Necesidad de no linealidad.</li><li>Rol de las funciones de activación.</li></ul></div></details>
+        <details><summary>2.13. Tipos de relaciones</summary><div class="detail-body"><ul><li>Relación lineal.</li><li>Relación cuadrática.</li><li>Relación oscilante.</li><li>Comparación visual entre patrones.</li></ul></div></details>
+        <details><summary>2.14. Perceptrón y regresión logística</summary><div class="detail-body"><ul><li>Regresión logística como transición conceptual.</li><li>Función sigmoide.</li><li>Salida como probabilidad.</li><li>Clasificación binaria.</li><li>Relación con neuronas artificiales.</li></ul></div></details>
+        <details><summary>2.15. De una neurona a una red</summary><div class="detail-body"><ul><li>Una neurona individual.</li><li>Capa de neuronas.</li><li>Red neuronal.</li><li>Profundidad.</li><li>Representaciones progresivamente complejas.</li></ul></div></details>
+        <details><summary>2.16. Actividad para clase</summary><div class="detail-body"><ul><li>Preguntas conceptuales.</li><li>Ejercicio numérico.</li><li>Interpretación de entradas, pesos y sesgo.</li><li>Explicación de la función de activación.</li></ul></div></details>
+        <details><summary>2.17. Síntesis final</summary><div class="detail-body"><ul><li>La regresión lineal como base.</li><li>La neurona artificial como extensión.</li><li>La red neuronal como composición de muchas neuronas.</li></ul></div></details>
+      </div>
+    </article>
+
+    <article class="panel searchable" id="glosario" data-terms="glosario regresion lineal conceptos fundamentos variable dependiente independiente mse rmse mae r2 minimos cuadrados">
+      <span class="tag">Módulo 3</span>
+      <h2>Glosario completo de regresión lineal</h2>
+      <div class="file">Regresion_lineal_glosario.html</div>
+      <p>Este módulo funciona como guía de consulta conceptual. Incluye 60 términos desarrollados, laboratorio visual, buscador, filtros, cambio de tema y definiciones desplegables.</p>
+      <div class="details">
+        <details open><summary>3.1. Presentación del glosario</summary><div class="detail-body"><ul><li>Guía de estudio.</li><li>Buscador de conceptos.</li><li>Índice navegable.</li><li>Filtros por bloques.</li><li>Cambio de tema.</li><li>Expansión y contracción de definiciones.</li><li>Laboratorio visual.</li></ul></div></details>
+        <details><summary>3.2. Laboratorio interactivo</summary><div class="detail-body"><ul><li>Predicción lineal simple.</li><li>Fórmula: <strong>ŷ = w · x + b</strong>.</li><li>Entrada <strong>x</strong>.</li><li>Peso <strong>w</strong>.</li><li>Sesgo <strong>b</strong>.</li><li>Visualización de la recta.</li><li>Resultado de la predicción.</li></ul></div></details>
+        <details><summary>3.3. Conceptos fundamentales</summary><div class="detail-body"><ol><li>Regresión lineal.</li><li>Variable dependiente.</li><li>Variable independiente.</li><li>Entrada.</li><li>Salida.</li><li>Predicción.</li><li>Valor real.</li><li>Regresión lineal simple.</li><li>Recta de regresión.</li><li>Peso.</li><li>Coeficiente.</li><li>Pendiente.</li><li>Sesgo.</li><li>Intercepto.</li><li>Relación lineal.</li></ol></div></details>
+        <details><summary>3.4. Regresión múltiple y forma vectorial</summary><div class="detail-body"><ol start="16"><li>Regresión lineal múltiple.</li><li>Variable explicativa.</li><li>Término independiente.</li><li>Combinación lineal.</li><li>Contribución de una variable.</li><li>Forma vectorial.</li><li>Vector de entradas.</li><li>Vector de pesos.</li><li>Producto punto.</li></ol></div></details>
+        <details><summary>3.5. Datos y entrenamiento</summary><div class="detail-body"><ol start="25"><li>Observación.</li><li>Conjunto de datos.</li><li>Entrenamiento.</li><li>Parámetro.</li><li>Error.</li><li>Residuo.</li><li>Error cuadrático.</li><li>Función de pérdida.</li><li>Error cuadrático medio.</li><li>Minimización.</li><li>Optimización.</li></ol></div></details>
+        <details><summary>3.6. Gradiente y aprendizaje</summary><div class="detail-body"><ol start="36"><li>Descenso por gradiente.</li><li>Gradiente.</li><li>Derivada parcial.</li><li>Tasa de aprendizaje.</li><li>Convergencia.</li><li>Iteración.</li><li>Época.</li></ol></div></details>
+        <details><summary>3.7. Ajuste, generalización y supuestos</summary><div class="detail-body"><ol start="43"><li>Ajuste del modelo.</li><li>Subajuste.</li><li>Sobreajuste.</li><li>Generalización.</li><li>Interpretabilidad.</li><li>Supuesto de linealidad.</li><li>Ruido.</li><li>Outlier.</li><li>Escala de las variables.</li><li>Normalización.</li><li>Estandarización.</li></ol></div></details>
+        <details><summary>3.8. Modelo entrenado y evaluación</summary><div class="detail-body"><ol start="54"><li>Modelo entrenado.</li><li>Evaluación del modelo.</li><li>MAE.</li><li>RMSE.</li><li>R².</li><li>Recta óptima.</li><li>Mínimos cuadrados.</li></ol></div></details>
+        <details><summary>3.9. Síntesis final del glosario</summary><div class="detail-body"><ul><li>Regresión lineal como modelo fundamental.</li><li>Relación entre entradas, pesos, sesgo y predicción.</li><li>Importancia de error, pérdida y optimización.</li><li>Base conceptual para modelos más complejos.</li></ul></div></details>
+      </div>
+    </article>
+
+    <article class="panel searchable" id="cuestionario" data-terms="cuestionario preguntas respuestas neurona artificial pesos sesgo perdida gradiente regresion logistica red neuronal">
+      <span class="tag">Módulo 4</span>
+      <h2>Cuestionario interactivo</h2>
+      <div class="file">Regresion_lineal_Cuestionario_regresion_neurona_interactivo.html</div>
+      <p>Este módulo permite repasar mediante práctica activa. Incluye diez preguntas con respuestas desarrolladas, buscador, progreso de estudio, marcado de preguntas estudiadas y opciones de impresión.</p>
+      <div class="details">
+        <details open><summary>4.1. Presentación</summary><div class="detail-body"><ul><li>Cuestionario interactivo.</li><li>Diez preguntas con respuestas desarrolladas.</li><li>Búsqueda por concepto.</li><li>Expansión y contracción de respuestas.</li><li>Marcado de preguntas estudiadas.</li><li>Progreso de estudio.</li><li>Impresión o guardado en PDF.</li></ul></div></details>
+        <details><summary>4.2. Cómo usar el cuestionario</summary><div class="detail-body"><ul><li>Leer la pregunta.</li><li>Intentar responder antes de expandir.</li><li>Comparar con la respuesta desarrollada.</li><li>Revisar fórmulas.</li><li>Marcar como estudiada.</li><li>Repetir conceptos débiles.</li></ul></div></details>
+        <details><summary>4.3. Preguntas del cuestionario</summary><div class="detail-body"><ol><li>¿Por qué la regresión lineal puede considerarse una base conceptual para entender una neurona artificial?</li><li>¿Qué representan los pesos en una regresión lineal y en una neurona artificial?</li><li>¿Qué función cumple el sesgo o bias en estos modelos?</li><li>¿Qué significa que una regresión lineal aprende durante el entrenamiento?</li><li>¿Qué es una función de pérdida y por qué es importante?</li><li>¿Qué es el descenso por gradiente y cómo se relaciona con el aprendizaje?</li><li>¿Cuál es la diferencia principal entre una regresión lineal y una neurona artificial?</li><li>¿Por qué una sola neurona artificial puede ser limitada?</li><li>¿Qué relación existe entre regresión logística y neuronas artificiales?</li><li>¿Cómo se pasa de una regresión lineal a una red neuronal completa?</li></ol></div></details>
+      </div>
+    </article>
+
+    <article class="panel searchable" id="orden" data-terms="orden sugerido estudio clase comprender modelo entrenamiento validacion repaso evaluacion">
+      <span class="tag">Secuencia didáctica</span>
+      <h2>Orden sugerido de estudio</h2>
+      <div class="details">
+        <details open><summary>Clase 1: Comprender el modelo lineal</summary><div class="detail-body"><ol><li>Regresión lineal: teoría, entrenamiento y simulación.</li><li>Fórmula <strong>ŷ = mX + b</strong>.</li><li>Interpretación de pendiente y sesgo.</li><li>Error y función de pérdida.</li><li>Simulación de ajuste de recta.</li></ol></div></details>
+        <details><summary>Clase 2: Entender el entrenamiento</summary><div class="detail-body"><ol><li>MSE.</li><li>Gradiente.</li><li>Learning rate.</li><li>Epochs.</li><li>Entrenamiento y validación.</li><li>Comparación entre error de entrenamiento y error de validación.</li></ol></div></details>
+        <details><summary>Clase 3: Pasar de regresión lineal a neurona artificial</summary><div class="detail-body"><ol><li>Regresión lineal múltiple.</li><li>Producto punto.</li><li>Suma ponderada.</li><li>Bias.</li><li>Función de activación.</li><li>Neurona artificial.</li></ol></div></details>
+        <details><summary>Clase 4: Comprender la limitación lineal</summary><div class="detail-body"><ol><li>Relaciones lineales.</li><li>Relaciones cuadráticas.</li><li>Relaciones no lineales.</li><li>Necesidad de funciones de activación.</li><li>Regresión logística como puente conceptual.</li><li>De una neurona a una red.</li></ol></div></details>
+        <details><summary>Clase 5: Repaso y evaluación</summary><div class="detail-body"><ol><li>Lectura del glosario.</li><li>Resolución del cuestionario.</li><li>Revisión de fórmulas.</li><li>Discusión conceptual.</li><li>Actividad numérica.</li><li>Síntesis final.</li></ol></div></details>
+      </div>
+    </article>
+
+    <article class="panel searchable" id="archivos" data-terms="indice archivos paquete html repositorio portada readme">
+      <span class="tag">Archivos</span>
+      <h2>Índice de archivos del paquete</h2>
+      <table>
+        <thead><tr><th>Orden</th><th>Archivo</th><th>Uso recomendado</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>Regresion_lineal_teoria_simulacion.html</code></td><td>Introducción teórica y simulación de entrenamiento.</td></tr>
+          <tr><td>2</td><td><code>Regresion_lineal_neurona_artificial_interactiva(1).html</code></td><td>Transición desde regresión lineal hacia neurona artificial.</td></tr>
+          <tr><td>3</td><td><code>Regresion_lineal_glosario.html</code></td><td>Consulta conceptual y repaso sistemático.</td></tr>
+          <tr><td>4</td><td><code>Regresion_lineal_Cuestionario_regresion_neurona_interactivo.html</code></td><td>Evaluación, práctica activa y autoestudio.</td></tr>
+        </tbody>
+      </table>
+    </article>
+
+    <article class="panel searchable" id="objetivo" data-terms="objetivo general paquete aprendizaje automatico regresion lineal estadistica neurona artificial">
+      <span class="tag">Objetivo</span>
+      <h2>Objetivo general del paquete</h2>
+      <div class="objective">Este conjunto de materiales permite estudiar la regresión lineal no solo como una técnica estadística, sino como una puerta de entrada conceptual al aprendizaje automático moderno. A través de teoría, simulación, glosario y cuestionario, el estudiante puede comprender cómo un modelo aprende pesos y sesgos, cómo minimiza el error, por qué necesita evaluar su capacidad de generalización y cómo esa misma lógica se transforma luego en la estructura básica de una neurona artificial.</div>
+    </article>
+
+    <article class="panel searchable" id="resultados" data-terms="resultado aprendizaje esperado explicar interpretar diferenciar comprender relacionar activacion red neuronal">
+      <span class="tag">Resultados de aprendizaje</span>
+      <h2>Resultado de aprendizaje esperado</h2>
+      <p>Al finalizar el recorrido, el estudiante debería poder:</p>
+      <div class="subgrid">
+        <div class="mini"><strong>Modelo lineal</strong><p>Explicar qué es una regresión lineal e interpretar la fórmula <strong>ŷ = wx + b</strong>.</p></div>
+        <div class="mini"><strong>Componentes</strong><p>Diferenciar entrada, salida, peso, sesgo y predicción.</p></div>
+        <div class="mini"><strong>Entrenamiento</strong><p>Comprender el error, la función de pérdida y el descenso por gradiente.</p></div>
+        <div class="mini"><strong>Evaluación</strong><p>Diferenciar entrenamiento y validación, y comprender la generalización.</p></div>
+        <div class="mini"><strong>Forma vectorial</strong><p>Comprender <strong>ŷ = w · x + b</strong> y relacionarla con una neurona artificial.</p></div>
+        <div class="mini"><strong>Red neuronal</strong><p>Explicar el rol de la función de activación y cómo muchas neuronas forman una red.</p></div>
+      </div>
+    </article>
+  </section>
+</div>
+</main>
+
+<footer>Índice general del paquete · Regresión lineal y neurona artificial</footer>
+
+<script>
+const root=document.documentElement;
+const themeBtn=document.getElementById('themeBtn');
+const stored=localStorage.getItem('indice-theme');
+if(stored){root.setAttribute('data-theme',stored);themeBtn.textContent=stored==='dark'?'☀️ Cambiar tema':'🌙 Cambiar tema';}
+themeBtn.addEventListener('click',()=>{const next=root.getAttribute('data-theme')==='dark'?'light':'dark';root.setAttribute('data-theme',next);localStorage.setItem('indice-theme',next);themeBtn.textContent=next==='dark'?'☀️ Cambiar tema':'🌙 Cambiar tema';});
+
+document.getElementById('expandBtn').addEventListener('click',()=>document.querySelectorAll('details').forEach(d=>d.open=true));
+document.getElementById('collapseBtn').addEventListener('click',()=>document.querySelectorAll('details').forEach(d=>d.open=false));
+
+const search=document.getElementById('search');
+const panels=[...document.querySelectorAll('.searchable')];
+const nores=document.getElementById('nores');
+search.addEventListener('input',()=>{
+  const q=search.value.trim().toLowerCase();let visible=0;
+  panels.forEach(p=>{
+    const hay=(p.innerText+' '+(p.dataset.terms||'')).toLowerCase();
+    const show=!q||hay.includes(q);
+    p.classList.toggle('hidden',!show);
+    if(show) visible++;
+  });
+  nores.style.display=visible?'none':'block';
+});
+
+const links=[...document.querySelectorAll('.toc a')];
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));
+    }
+  });
+},{rootMargin:'-35% 0px -58% 0px',threshold:0});
+document.querySelectorAll('.panel[id]').forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

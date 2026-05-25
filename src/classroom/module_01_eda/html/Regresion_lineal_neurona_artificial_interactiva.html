@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regresión lineal y neurona artificial · Teoría y simulación interactiva</title>
+<style>
+:root{
+  --bg:#f4f7fb;--panel:#ffffff;--text:#142033;--muted:#667085;--line:#d0d7e2;
+  --brand:#2563eb;--brand2:#06b6d4;--accent:#f59e0b;--ok:#10b981;--danger:#ef4444;--violet:#7c3aed;
+  --soft:#eef5ff;--shadow:0 18px 45px rgba(15,23,42,.12);--radius:24px;
+}
+[data-theme="dark"]{
+  --bg:#090e1d;--panel:#121a2e;--text:#edf3ff;--muted:#a9b4c7;--line:#2b3856;
+  --brand:#60a5fa;--brand2:#22d3ee;--accent:#fbbf24;--ok:#34d399;--danger:#fb7185;--violet:#a78bfa;
+  --soft:#101a31;--shadow:0 22px 55px rgba(0,0,0,.38);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 8% 0%,rgba(37,99,235,.16),transparent 32%),
+    radial-gradient(circle at 92% 12%,rgba(6,182,212,.13),transparent 30%),
+    var(--bg);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  line-height:1.58;
+}
+header{
+  position:sticky;top:0;z-index:40;
+  background:color-mix(in srgb,var(--bg) 84%,transparent);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.wrap{max-width:1260px;margin:0 auto;padding:22px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;font-weight:950;letter-spacing:-.025em}
+.logo{
+  width:46px;height:46px;border-radius:17px;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));
+  display:grid;place-items:center;color:#fff;box-shadow:var(--shadow);font-weight:950;
+}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{
+  border:1px solid var(--line);background:var(--panel);color:var(--text);
+  padding:10px 14px;border-radius:14px;font-weight:850;cursor:pointer;
+  transition:.18s;box-shadow:0 3px 14px rgba(15,23,42,.06);text-decoration:none;
+}
+.btn:hover{transform:translateY(-1px);border-color:var(--brand)}
+.btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border:0}
+.btn.warn{background:linear-gradient(135deg,var(--accent),#f97316);color:#fff;border:0}
+.btn.ok{background:linear-gradient(135deg,var(--ok),#14b8a6);color:#fff;border:0}
+.btn.danger{background:linear-gradient(135deg,var(--danger),#f97316);color:#fff;border:0}
+.hero{padding:46px 0 22px}
+.kicker{color:var(--brand);font-weight:950;text-transform:uppercase;letter-spacing:.14em;font-size:.78rem}
+h1{font-size:clamp(2.15rem,5vw,4.8rem);line-height:1.01;margin:12px 0 16px;letter-spacing:-.062em}
+h2{font-size:clamp(1.45rem,3vw,2.45rem);line-height:1.1;margin:36px 0 14px;letter-spacing:-.038em}
+h3{font-size:1.2rem;margin:18px 0 10px}
+p{margin:0 0 14px}.lead{font-size:1.18rem;color:var(--muted);max-width:960px}
+.small{font-size:.92rem;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;border:1px solid var(--line);background:color-mix(in srgb,var(--panel),var(--brand) 6%);color:var(--brand);font-size:.8rem;font-weight:900;margin:4px 6px 4px 0}
+.grid{display:grid;gap:18px}.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.split{display:grid;grid-template-columns:430px 1fr;gap:18px;align-items:start}
+.card{
+  background:color-mix(in srgb,var(--panel) 96%,var(--brand) 4%);
+  border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)
+}
+.mini{padding:16px;border-radius:20px;background:color-mix(in srgb,var(--panel),var(--brand) 5%);border:1px solid var(--line)}
+.metric{padding:16px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,color-mix(in srgb,var(--panel),var(--brand) 7%),var(--panel))}
+.metric strong{display:block;font-size:1.62rem;letter-spacing:-.04em}
+.eq{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  background:color-mix(in srgb,var(--panel),var(--brand) 8%);
+  border:1px solid color-mix(in srgb,var(--brand),var(--line) 70%);
+  padding:13px 14px;border-radius:16px;overflow:auto;white-space:pre-wrap;margin:12px 0;
+}
+.canvasBox{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--brand) 9%,transparent),color-mix(in srgb,var(--brand2) 6%,transparent));
+  border:1px solid var(--line);border-radius:24px;padding:14px;
+}
+canvas{width:100%;height:auto;display:block;border-radius:18px;background:var(--panel);border:1px solid var(--line)}
+label{font-weight:850}
+.rangeRow{display:grid;grid-template-columns:165px 1fr 80px;gap:10px;align-items:center;margin:11px 0}
+input[type=range], input[type=number], select{width:100%}
+input[type=number], select{
+  background:var(--panel);color:var(--text);border:1px solid var(--line);
+  border-radius:12px;padding:9px 10px;font-weight:800;
+}
+.note{border-left:5px solid var(--brand);padding:14px 16px;background:color-mix(in srgb,var(--brand) 9%,var(--panel));border-radius:14px;margin:16px 0}
+.warnbox{border-left:5px solid var(--accent);padding:14px 16px;background:color-mix(in srgb,var(--accent) 13%,var(--panel));border-radius:14px;margin:16px 0}
+.okbox{border-left:5px solid var(--ok);padding:14px 16px;background:color-mix(in srgb,var(--ok) 10%,var(--panel));border-radius:14px;margin:16px 0}
+.dangerbox{border-left:5px solid var(--danger);padding:14px 16px;background:color-mix(in srgb,var(--danger) 10%,var(--panel));border-radius:14px;margin:16px 0}
+.table{width:100%;border-collapse:collapse;margin:14px 0;border-radius:16px;overflow:hidden}
+.table th,.table td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}
+.table th{color:var(--muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.08em;background:color-mix(in srgb,var(--panel),var(--brand) 7%)}
+.step{display:flex;gap:14px;align-items:flex-start;margin:12px 0}.num{flex:0 0 34px;width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;color:#fff;font-weight:950}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.tabs .btn.active{outline:3px solid color-mix(in srgb,var(--brand) 25%,transparent)}
+.hidden{display:none!important}
+.kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:2px 6px}
+footer{border-top:1px solid var(--line);margin-top:42px;color:var(--muted)}
+@media(max-width:1000px){.grid2,.grid3,.grid4,.split{grid-template-columns:1fr}.rangeRow{grid-template-columns:1fr}.hero{padding-top:30px}}
+@media print{header,.controls,.btn,.tabs{display:none!important}body{background:#fff}.card{box-shadow:none;break-inside:avoid}canvas{max-width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap topbar">
+    <div class="brand"><div class="logo">LR</div><div>Regresión lineal y neurona artificial</div></div>
+    <div class="controls">
+      <button class="btn" onclick="toggleTheme()">Cambiar tema</button>
+      <button class="btn" onclick="window.print()">Imprimir / PDF</button>
+      <a class="btn" href="#simulador">Ir al simulador</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+<section class="hero">
+  <div class="kicker">Machine Learning · Base conceptual</div>
+  <h1>Regresión lineal como puerta de entrada a la neurona artificial</h1>
+  <p class="lead">Esta guía interactiva muestra cómo la regresión lineal permite comprender la estructura matemática de una neurona artificial: entradas, pesos, sesgo, combinación lineal, predicción, error, pérdida, optimización y función de activación.</p>
+  <div>
+    <span class="pill">y = wx + b</span>
+    <span class="pill">producto punto</span>
+    <span class="pill">MSE</span>
+    <span class="pill">gradiente</span>
+    <span class="pill">activación</span>
+    <span class="pill">neurona artificial</span>
+  </div>
+</section>
+
+<section class="grid grid4">
+  <div class="metric"><strong>1</strong><span>recta que predice</span></div>
+  <div class="metric"><strong>w</strong><span>peso o pendiente</span></div>
+  <div class="metric"><strong>b</strong><span>sesgo o intercepto</span></div>
+  <div class="metric"><strong>f(z)</strong><span>activación neuronal</span></div>
+</section>
+
+<section class="card">
+  <h2>1. Idea central</h2>
+  <p>La regresión lineal intenta explicar o predecir una variable dependiente a partir de una o varias variables independientes. En su forma más simple, aprende una recta que relaciona una entrada con una salida.</p>
+  <div class="eq">Precio = valor base + precio por metro cuadrado × superficie
+
+y = wx + b</div>
+  <div class="grid grid3">
+    <div class="mini"><h3>Entrada</h3><p><strong>x</strong> representa la información que recibe el modelo. Por ejemplo, la superficie de una vivienda.</p></div>
+    <div class="mini"><h3>Peso</h3><p><strong>w</strong> indica cuánto cambia la salida cuando cambia la entrada. Es la importancia de esa variable.</p></div>
+    <div class="mini"><h3>Sesgo</h3><p><strong>b</strong> desplaza la recta hacia arriba o hacia abajo. Permite ajustar la predicción base.</p></div>
+  </div>
+  <div class="note">La misma estructura aparece en una neurona artificial: entradas, pesos, suma ponderada, sesgo y salida.</div>
+</section>
+
+<section id="simulador" class="split">
+  <div class="card">
+    <h2>2. Simulador de regresión lineal</h2>
+    <p>Modificá la pendiente y el intercepto para observar cómo cambia la recta. La nube de puntos representa datos observados; la línea representa la predicción del modelo.</p>
+    <div class="rangeRow"><label for="wSlider">Peso / pendiente w</label><input id="wSlider" type="range" min="-5" max="8" step="0.1" value="2"><output id="wOut">2.0</output></div>
+    <div class="rangeRow"><label for="bSlider">Sesgo / intercepto b</label><input id="bSlider" type="range" min="-20" max="40" step="1" value="8"><output id="bOut">8</output></div>
+    <div class="rangeRow"><label for="noiseSlider">Ruido de datos</label><input id="noiseSlider" type="range" min="0" max="20" step="1" value="7"><output id="noiseOut">7</output></div>
+    <div class="controls">
+      <button class="btn primary" onclick="newData()">Generar nuevos datos</button>
+      <button class="btn ok" onclick="fitClosedForm()">Ajustar recta óptima</button>
+    </div>
+    <div class="note" id="regNote">Modelo actual: ŷ = 2.0x + 8. Error medio cuadrático aproximado: --</div>
+    <h3>Calculadora de predicción</h3>
+    <div class="rangeRow"><label for="xPred">Entrada x</label><input id="xPred" type="range" min="0" max="20" step="0.1" value="10"><output id="xPredOut">10.0</output></div>
+    <div class="eq" id="predBox">ŷ = w x + b</div>
+  </div>
+  <div class="card">
+    <div class="canvasBox"><canvas id="regCanvas" width="760" height="520"></canvas></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>3. Regresión lineal múltiple y forma vectorial</h2>
+  <p>En la realidad, los modelos suelen usar varias variables. Para predecir el precio de una vivienda podríamos usar superficie, cantidad de habitaciones, antigüedad y ubicación. La forma general es:</p>
+  <div class="eq">ŷ = w₁x₁ + w₂x₂ + ... + wₙxₙ + b
+
+ŷ = w · x + b</div>
+  <p>El producto punto <span class="kbd">w · x</span> significa multiplicar cada entrada por su peso y sumar todos esos productos.</p>
+  <div class="grid grid2">
+    <div class="mini"><h3>Vector de entradas</h3><div class="eq">x = (x₁, x₂, ..., xₙ)</div><p>Cada componente representa una variable observada.</p></div>
+    <div class="mini"><h3>Vector de pesos</h3><div class="eq">w = (w₁, w₂, ..., wₙ)</div><p>Cada peso representa la influencia de una entrada en la predicción.</p></div>
+  </div>
+</section>
+
+<section class="split">
+  <div class="card">
+    <h2>4. Entrenamiento y función de pérdida</h2>
+    <p>El modelo no conoce inicialmente los pesos correctos. Entrenar significa encontrar los valores de <strong>w</strong> y <strong>b</strong> que hacen que las predicciones sean lo más cercanas posible a los valores reales.</p>
+    <div class="eq">Error: e = y - ŷ
+
+MSE = (1/n) Σ(yᵢ - ŷᵢ)²</div>
+    <p>El error cuadrático medio evita que errores positivos y negativos se cancelen y penaliza más los errores grandes.</p>
+    <div class="warnbox">La función de pérdida no solo mide qué tan mal predice el modelo. También define qué significa “aprender mejor”.</div>
+  </div>
+  <div class="card">
+    <h2>5. Descenso por gradiente</h2>
+    <p>Una forma de ajustar los parámetros es moverlos en la dirección opuesta al gradiente de la pérdida.</p>
+    <div class="eq">w := w - α ∂L/∂w
+
+b := b - α ∂L/∂b</div>
+    <p>La tasa de aprendizaje <strong>α</strong> controla el tamaño de los pasos. Si es muy baja, el aprendizaje es lento. Si es muy alta, puede oscilar o divergir.</p>
+  </div>
+</section>
+
+<section class="split">
+  <div class="card">
+    <h2>6. Entrenamiento interactivo por gradiente</h2>
+    <p>Este módulo entrena una recta desde valores iniciales. Observá cómo se reduce la pérdida y cómo la línea se acerca a los datos.</p>
+    <div class="rangeRow"><label for="lrSlider">Learning rate α</label><input id="lrSlider" type="range" min="0.001" max="0.08" step="0.001" value="0.015"><output id="lrOut">0.015</output></div>
+    <div class="rangeRow"><label for="epochsSlider">Pasos por click</label><input id="epochsSlider" type="range" min="1" max="100" step="1" value="20"><output id="epochsOut">20</output></div>
+    <div class="controls">
+      <button class="btn primary" onclick="trainSteps()">Entrenar pasos</button>
+      <button class="btn ok" onclick="toggleAutoTrain()" id="autoTrainBtn">Entrenar automático</button>
+      <button class="btn danger" onclick="resetTrain()">Reiniciar entrenamiento</button>
+    </div>
+    <div class="grid grid3">
+      <div class="metric"><strong id="epochMetric">0</strong><span>pasos</span></div>
+      <div class="metric"><strong id="trainWMetric">-1.00</strong><span>w entrenado</span></div>
+      <div class="metric"><strong id="trainMSEMetric">--</strong><span>MSE</span></div>
+    </div>
+    <div class="note" id="trainNote">El entrenamiento todavía no comenzó.</div>
+  </div>
+  <div class="card">
+    <div class="canvasBox"><canvas id="trainCanvas" width="760" height="520"></canvas></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>7. De regresión lineal a neurona artificial</h2>
+  <p>La conexión central es directa. Una neurona artificial recibe entradas, multiplica cada entrada por un peso, suma los productos y agrega un sesgo.</p>
+  <div class="eq">z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b
+
+z = w · x + b</div>
+  <p>Hasta este punto, una neurona artificial se comporta como una regresión lineal. La diferencia aparece cuando aplicamos una función de activación:</p>
+  <div class="eq">a = f(z)
+
+a = f(w · x + b)</div>
+  <div class="okbox">Una regresión lineal puede verse como una neurona con activación identidad. Una neurona moderna agrega una función de activación que puede introducir no linealidad.</div>
+</section>
+
+<section class="split">
+  <div class="card">
+    <h2>8. Calculadora de neurona artificial</h2>
+    <p>Modificá entradas, pesos, sesgo y activación para ver cómo una neurona transforma la información.</p>
+    <div class="grid grid3">
+      <div class="mini"><label>x₁</label><input id="x1" type="number" step="0.1" value="2"><label>w₁</label><input id="nw1" type="number" step="0.1" value="0.5"></div>
+      <div class="mini"><label>x₂</label><input id="x2" type="number" step="0.1" value="4"><label>w₂</label><input id="nw2" type="number" step="0.1" value="1.2"></div>
+      <div class="mini"><label>x₃</label><input id="x3" type="number" step="0.1" value="1"><label>w₃</label><input id="nw3" type="number" step="0.1" value="-0.7"></div>
+    </div>
+    <div class="rangeRow"><label for="nbias">Sesgo b</label><input id="nbias" type="range" min="-5" max="5" step="0.1" value="0.3"><output id="nbiasOut">0.3</output></div>
+    <label for="activation">Función de activación</label>
+    <select id="activation">
+      <option value="identity">Identidad: f(z)=z</option>
+      <option value="relu">ReLU: max(0,z)</option>
+      <option value="sigmoid">Sigmoide: 1/(1+e^-z)</option>
+      <option value="tanh">Tanh</option>
+      <option value="step">Escalón</option>
+    </select>
+    <div class="eq" id="neuronCalc">z = ...</div>
+  </div>
+  <div class="card">
+    <div class="canvasBox"><canvas id="neuronCanvas" width="760" height="520"></canvas></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>9. Comparación directa</h2>
+  <table class="table">
+    <thead><tr><th>Concepto</th><th>Regresión lineal</th><th>Neurona artificial</th></tr></thead>
+    <tbody>
+      <tr><td>Entradas</td><td>Variables explicativas.</td><td>Señales de entrada.</td></tr>
+      <tr><td>Pesos</td><td>Coeficientes interpretables.</td><td>Pesos sinápticos aprendidos.</td></tr>
+      <tr><td>Sesgo</td><td>Intercepto.</td><td>Bias.</td></tr>
+      <tr><td>Operación principal</td><td>Combinación lineal.</td><td>Combinación lineal.</td></tr>
+      <tr><td>Salida</td><td>Valor continuo.</td><td>Valor activado.</td></tr>
+      <tr><td>Función adicional</td><td>Normalmente identidad.</td><td>Función de activación.</td></tr>
+      <tr><td>Capacidad</td><td>Relaciones lineales.</td><td>Relaciones no lineales al combinar activaciones y capas.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="card">
+  <h2>10. Por qué la regresión lineal no alcanza para todo</h2>
+  <p>La regresión lineal es poderosa, clara e interpretable, pero intenta ajustar una recta, un plano o un hiperplano. Puede fallar si la relación entre variables es curva, oscilante o depende de interacciones complejas.</p>
+  <div class="grid grid3">
+    <div class="mini"><h3>Relación lineal</h3><div class="eq">y = 3x + 2</div><p>Una recta puede aproximarla bien.</p></div>
+    <div class="mini"><h3>Relación cuadrática</h3><div class="eq">y = x²</div><p>Una recta suele ser insuficiente.</p></div>
+    <div class="mini"><h3>Relación oscilante</h3><div class="eq">y = sin(x)</div><p>Requiere mayor flexibilidad.</p></div>
+  </div>
+  <div class="note">Las funciones de activación permiten introducir no linealidad. Sin ellas, muchas capas lineales seguidas seguirían siendo equivalentes a una sola transformación lineal.</div>
+</section>
+
+<section class="grid grid2">
+  <div class="card">
+    <h2>11. Perceptrón y regresión logística</h2>
+    <p>El perceptrón calcula una combinación lineal y luego aplica una función escalón para decidir una clase.</p>
+    <div class="eq">z = w · x + b
+
+ŷ = 1 si z ≥ 0
+ŷ = 0 si z &lt; 0</div>
+    <p>La regresión logística también calcula una combinación lineal, pero aplica una sigmoide. Por eso puede verse como una neurona simple para clasificación binaria.</p>
+    <div class="eq">σ(z) = 1 / (1 + e⁻ᶻ)</div>
+  </div>
+  <div class="card">
+    <h2>12. De una neurona a una red</h2>
+    <p>Una sola neurona puede verse como una regresión lineal transformada por una función de activación. Una red neuronal combina muchas neuronas en capas.</p>
+    <div class="eq">a₁ = f(w₁₁x₁ + w₁₂x₂ + ... + b₁)
+a₂ = f(w₂₁x₁ + w₂₂x₂ + ... + b₂)
+a₃ = f(w₃₁x₁ + w₃₂x₂ + ... + b₃)</div>
+    <p>Las salidas de una capa se convierten en entradas de la siguiente. Así se construyen representaciones internas cada vez más elaboradas.</p>
+  </div>
+</section>
+
+<section class="card">
+  <h2>13. Actividad para clase</h2>
+  <div class="grid grid2">
+    <div class="mini">
+      <h3>Preguntas conceptuales</h3>
+      <ol>
+        <li>¿Por qué la fórmula y = wx + b ya contiene la lógica de una neurona?</li>
+        <li>¿Qué representa el peso en una regresión lineal?</li>
+        <li>¿Qué cambia cuando agregamos una función de activación?</li>
+        <li>¿Por qué muchas capas lineales sin activación siguen siendo lineales?</li>
+        <li>¿Qué relación hay entre regresión logística y neurona sigmoide?</li>
+      </ol>
+    </div>
+    <div class="mini">
+      <h3>Ejercicio numérico</h3>
+      <p>Para la neurona con entradas x₁=2, x₂=4, x₃=1, pesos w₁=0.5, w₂=1.2, w₃=-0.7 y sesgo b=0.3:</p>
+      <div class="eq">z = (0.5)(2) + (1.2)(4) + (-0.7)(1) + 0.3 = 5.4</div>
+      <p>Luego comparar la salida usando identidad, ReLU, sigmoide y tanh.</p>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>14. Síntesis final</h2>
+  <p>La regresión lineal y la neurona artificial comparten la misma estructura matemática inicial. Ambas toman entradas, las multiplican por pesos, suman los resultados y agregan un sesgo.</p>
+  <p>La diferencia principal es que la neurona artificial suele aplicar una función de activación. Esa función permite introducir no linealidad y superar el mundo estrictamente lineal.</p>
+  <div class="eq">Regresión lineal simple:
+y = wx + b
+
+Regresión lineal múltiple:
+y = w₁x₁ + w₂x₂ + ... + wₙxₙ + b
+
+Neurona artificial:
+a = f(w₁x₁ + w₂x₂ + ... + wₙxₙ + b)</div>
+  <div class="okbox"><strong>Frase clave para clase:</strong> una neurona artificial no aparece de la nada: nace de la misma lógica de la regresión lineal, pero incorpora una función de activación que le permite superar el mundo estrictamente lineal y empezar a aprender relaciones más complejas.</div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">Material elaborado por el profesor Sergio Gevatschnaider · Regresión lineal, neurona artificial y fundamentos de redes neuronales</div>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+function cssVar(name){return getComputedStyle(document.documentElement).getPropertyValue(name).trim();}
+function clamp(x,a,b){return Math.max(a,Math.min(b,x));}
+function toggleTheme(){
+  const r=document.documentElement;
+  const next=r.getAttribute('data-theme')==='dark'?'light':'dark';
+  r.setAttribute('data-theme',next);
+  localStorage.setItem('lr_theme',next);
+  drawAll();
+}
+(function(){document.documentElement.setAttribute('data-theme',localStorage.getItem('lr_theme')||'light');})();
+
+let data=[];
+let trueW=2.6,trueB=7;
+function randn(){
+  let u=0,v=0; while(u===0)u=Math.random(); while(v===0)v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+function newData(){
+  const noise=+$('noiseSlider').value;
+  data=[];
+  for(let i=0;i<34;i++){
+    const x=Math.random()*20;
+    const y=trueW*x+trueB+randn()*noise;
+    data.push({x,y});
+  }
+  resetTrain(false);
+  updateRegression();
+}
+function mse(w,b){
+  if(!data.length)return 0;
+  return data.reduce((s,p)=>s+(p.y-(w*p.x+b))**2,0)/data.length;
+}
+function fitClosedForm(){
+  const n=data.length;
+  const mx=data.reduce((s,p)=>s+p.x,0)/n;
+  const my=data.reduce((s,p)=>s+p.y,0)/n;
+  let num=0,den=0;
+  data.forEach(p=>{num+=(p.x-mx)*(p.y-my);den+=(p.x-mx)**2;});
+  const w=num/(den||1), b=my-w*mx;
+  $('wSlider').value=w.toFixed(2);
+  $('bSlider').value=b.toFixed(0);
+  updateRegression();
+}
+function mapX(x,W){return 55 + (x/20)*(W-95);}
+function mapY(y,H){const ymin=-20,ymax=80;return H-45 - ((y-ymin)/(ymax-ymin))*(H-90);}
+function drawAxes(ctx,W,H){
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle=cssVar('--panel');ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle=cssVar('--line');ctx.lineWidth=1;
+  for(let i=0;i<=10;i++){
+    const x=55+i*(W-95)/10;
+    ctx.beginPath();ctx.moveTo(x,25);ctx.lineTo(x,H-45);ctx.stroke();
+  }
+  for(let i=0;i<=10;i++){
+    const y=25+i*(H-70)/10;
+    ctx.beginPath();ctx.moveTo(55,y);ctx.lineTo(W-40,y);ctx.stroke();
+  }
+  ctx.strokeStyle=cssVar('--muted');ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(55,25);ctx.lineTo(55,H-45);ctx.lineTo(W-40,H-45);ctx.stroke();
+  ctx.fillStyle=cssVar('--muted');ctx.font='13px system-ui';
+  ctx.fillText('x',W-35,H-48);ctx.fillText('y',42,22);
+}
+function drawRegression(){
+  const c=$('regCanvas'),ctx=c.getContext('2d'),W=c.width,H=c.height;
+  drawAxes(ctx,W,H);
+  const w=+$('wSlider').value,b=+$('bSlider').value;
+  data.forEach(p=>{
+    ctx.fillStyle=cssVar('--brand');
+    ctx.beginPath();ctx.arc(mapX(p.x,W),mapY(p.y,H),5,0,Math.PI*2);ctx.fill();
+  });
+  const y0=w*0+b, y1=w*20+b;
+  ctx.strokeStyle=cssVar('--danger');ctx.lineWidth=4;
+  ctx.beginPath();ctx.moveTo(mapX(0,W),mapY(y0,H));ctx.lineTo(mapX(20,W),mapY(y1,H));ctx.stroke();
+  const xp=+$('xPred').value, yp=w*xp+b;
+  ctx.setLineDash([7,6]);ctx.strokeStyle=cssVar('--accent');ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(mapX(xp,W),mapY(-20,H));ctx.lineTo(mapX(xp,W),mapY(yp,H));ctx.lineTo(mapX(0,W),mapY(yp,H));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=cssVar('--accent');ctx.beginPath();ctx.arc(mapX(xp,W),mapY(yp,H),7,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=cssVar('--text');ctx.font='bold 16px system-ui';ctx.fillText('Modelo: ŷ = '+w.toFixed(2)+'x + '+b.toFixed(1),70,42);
+  ctx.font='13px system-ui';ctx.fillText('Punto de predicción',mapX(xp,W)+10,mapY(yp,H)-10);
+}
+function updateRegression(){
+  const w=+$('wSlider').value,b=+$('bSlider').value,noise=+$('noiseSlider').value,xp=+$('xPred').value;
+  $('wOut').textContent=w.toFixed(1);$('bOut').textContent=b.toFixed(0);$('noiseOut').textContent=noise.toFixed(0);$('xPredOut').textContent=xp.toFixed(1);
+  const yp=w*xp+b;
+  $('predBox').textContent=`ŷ = w x + b = (${w.toFixed(2)})(${xp.toFixed(1)}) + (${b.toFixed(1)}) = ${yp.toFixed(2)}`;
+  $('regNote').textContent=`Modelo actual: ŷ = ${w.toFixed(2)}x + ${b.toFixed(1)}. Error medio cuadrático aproximado: ${mse(w,b).toFixed(2)}.`;
+  drawRegression();
+}
+
+let tw=-1,tb=30,epoch=0,lossHistory=[],autoTimer=null;
+function resetTrain(redraw=true){
+  tw=-1;tb=30;epoch=0;lossHistory=[];
+  updateTrainMetrics();
+  if(redraw) drawTrain();
+}
+function trainSteps(){
+  const steps=+$('epochsSlider').value;
+  const lr=+$('lrSlider').value;
+  for(let s=0;s<steps;s++){
+    let dw=0,db=0,n=data.length;
+    data.forEach(p=>{
+      const pred=tw*p.x+tb;
+      const err=pred-p.y;
+      dw += (2/n)*err*p.x;
+      db += (2/n)*err;
+    });
+    tw -= lr*dw;
+    tb -= lr*db;
+    epoch++;
+    lossHistory.push(mse(tw,tb));
+    if(lossHistory.length>120) lossHistory.shift();
+    if(!Number.isFinite(tw)||!Number.isFinite(tb)){tw=0;tb=0;break;}
+  }
+  updateTrainMetrics();drawTrain();
+}
+function toggleAutoTrain(){
+  if(autoTimer){
+    clearInterval(autoTimer);autoTimer=null;$('autoTrainBtn').textContent='Entrenar automático';return;
+  }
+  $('autoTrainBtn').textContent='Pausar automático';
+  autoTimer=setInterval(trainSteps,220);
+}
+function updateTrainMetrics(){
+  $('lrOut').textContent=(+$('lrSlider').value).toFixed(3);
+  $('epochsOut').textContent=$('epochsSlider').value;
+  $('epochMetric').textContent=epoch;
+  $('trainWMetric').textContent=tw.toFixed(2);
+  const current=mse(tw,tb);
+  $('trainMSEMetric').textContent=current.toFixed(2);
+  $('trainNote').textContent=`Recta entrenada: ŷ = ${tw.toFixed(3)}x + ${tb.toFixed(3)}. Pérdida actual: ${current.toFixed(2)}.`;
+}
+function drawTrain(){
+  const c=$('trainCanvas'),ctx=c.getContext('2d'),W=c.width,H=c.height;
+  drawAxes(ctx,W,H);
+  data.forEach(p=>{ctx.fillStyle=cssVar('--brand');ctx.beginPath();ctx.arc(mapX(p.x,W),mapY(p.y,H),5,0,Math.PI*2);ctx.fill();});
+  ctx.strokeStyle=cssVar('--ok');ctx.lineWidth=4;
+  ctx.beginPath();ctx.moveTo(mapX(0,W),mapY(tb,H));ctx.lineTo(mapX(20,W),mapY(tw*20+tb,H));ctx.stroke();
+  ctx.fillStyle=cssVar('--text');ctx.font='bold 16px system-ui';ctx.fillText(`Entrenamiento: ŷ = ${tw.toFixed(2)}x + ${tb.toFixed(2)}`,70,42);
+  if(lossHistory.length>1){
+    const lx=80,ly=H-150,lw=W-150,lh=90;
+    ctx.fillStyle='rgba(0,0,0,.04)';ctx.fillRect(lx,ly,lw,lh);
+    ctx.strokeStyle=cssVar('--line');ctx.strokeRect(lx,ly,lw,lh);
+    const maxL=Math.max(...lossHistory),minL=Math.min(...lossHistory);
+    ctx.strokeStyle=cssVar('--accent');ctx.lineWidth=3;ctx.beginPath();
+    lossHistory.forEach((v,i)=>{
+      const x=lx+(i/(lossHistory.length-1))*lw;
+      const y=ly+lh-((v-minL)/((maxL-minL)||1))*lh;
+      if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    ctx.fillStyle=cssVar('--muted');ctx.font='12px system-ui';ctx.fillText('Curva de pérdida',lx,ly-8);
+  }
+}
+function activation(z,type){
+  if(type==='relu')return Math.max(0,z);
+  if(type==='sigmoid')return 1/(1+Math.exp(-z));
+  if(type==='tanh')return Math.tanh(z);
+  if(type==='step')return z>=0?1:0;
+  return z;
+}
+function updateNeuron(){
+  const x1=+$('x1').value,x2=+$('x2').value,x3=+$('x3').value;
+  const w1=+$('nw1').value,w2=+$('nw2').value,w3=+$('nw3').value,b=+$('nbias').value;
+  const type=$('activation').value;
+  $('nbiasOut').textContent=b.toFixed(1);
+  const z=w1*x1+w2*x2+w3*x3+b, a=activation(z,type);
+  $('neuronCalc').textContent=`z = (${w1})(${x1}) + (${w2})(${x2}) + (${w3})(${x3}) + (${b.toFixed(1)}) = ${z.toFixed(4)}
+
+Activación: ${type}
+a = f(z) = ${a.toFixed(4)}`;
+  drawNeuron(z,a,type);
+}
+function drawArrow(ctx,x1,y1,x2,y2,color,width=2){
+  ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=width;
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+  const ang=Math.atan2(y2-y1,x2-x1),s=10;
+  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-s*Math.cos(ang-.45),y2-s*Math.sin(ang-.45));ctx.lineTo(x2-s*Math.cos(ang+.45),y2-s*Math.sin(ang+.45));ctx.closePath();ctx.fill();
+}
+function drawNeuron(z,a,type){
+  const c=$('neuronCanvas'),ctx=c.getContext('2d'),W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle=cssVar('--panel');ctx.fillRect(0,0,W,H);
+  const text=cssVar('--text'),muted=cssVar('--muted'),brand=cssVar('--brand'),accent=cssVar('--accent'),ok=cssVar('--ok');
+  const inputs=[['x₁',$('x1').value,$('nw1').value],['x₂',$('x2').value,$('nw2').value],['x₃',$('x3').value,$('nw3').value]];
+  ctx.font='bold 16px system-ui';ctx.fillStyle=text;ctx.fillText('Entradas × pesos',55,45);
+  inputs.forEach((r,i)=>{
+    const y=115+i*95;
+    ctx.fillStyle=brand;ctx.beginPath();ctx.arc(105,y,32,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='white';ctx.textAlign='center';ctx.fillText(r[0],105,y+5);ctx.textAlign='left';
+    ctx.fillStyle=text;ctx.fillText(`${r[1]} × ${r[2]}`,155,y+5);
+    drawArrow(ctx,245,y,330,H/2,muted,2);
+  });
+  ctx.fillStyle=accent;ctx.beginPath();ctx.arc(410,H/2,58,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='white';ctx.textAlign='center';ctx.font='bold 17px system-ui';ctx.fillText('Σ + b',410,H/2-5);ctx.font='13px system-ui';ctx.fillText(`z=${z.toFixed(2)}`,410,H/2+20);
+  drawArrow(ctx,470,H/2,555,H/2,muted,3);
+  ctx.fillStyle=cssVar('--violet');ctx.beginPath();ctx.roundRect(555,H/2-42,112,84,22);ctx.fill();
+  ctx.fillStyle='white';ctx.font='bold 15px system-ui';ctx.fillText(type,611,H/2-4);ctx.font='13px system-ui';ctx.fillText('f(z)',611,H/2+20);
+  drawArrow(ctx,668,H/2,720,H/2,muted,3);
+  ctx.fillStyle=ok;ctx.beginPath();ctx.arc(720,H/2,38,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='white';ctx.font='bold 15px system-ui';ctx.fillText('a',720,H/2-4);ctx.font='12px system-ui';ctx.fillText(a.toFixed(2),720,H/2+18);
+  ctx.textAlign='left';ctx.fillStyle=text;ctx.font='bold 16px system-ui';ctx.fillText('Neurona artificial: a = f(w · x + b)',55,H-50);
+}
+function drawAll(){updateRegression();drawTrain();updateNeuron();}
+['wSlider','bSlider','noiseSlider','xPred'].forEach(id=>$(id).addEventListener('input',updateRegression));
+['lrSlider','epochsSlider'].forEach(id=>$(id).addEventListener('input',updateTrainMetrics));
+['x1','x2','x3','nw1','nw2','nw3','nbias','activation'].forEach(id=>$(id).addEventListener('input',updateNeuron));
+if(!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){this.beginPath();this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);this.closePath();return this;}
+}
+newData();drawAll();
+</script>
+</body>
+</html>

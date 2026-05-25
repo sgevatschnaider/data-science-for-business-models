@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regresión Lineal Interactiva</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .control-group label {
+            color: white;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-group input, .control-group button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .control-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .control-group button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .control-group button:hover {
+            background: linear-gradient(45deg, #ee5a52, #ff6b6b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 600px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .stat-value {
+            color: #4ecdc4;
+            font-size: 1.8em;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .equation {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 20px;
+        }
+
+        .equation h3 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .equation-text {
+            color: #4ecdc4;
+            font-size: 1.5em;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        .animation-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .animation-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .gradient-text {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <button class="animation-toggle" onclick="toggleAnimation()">🎨 Modo Animación</button>
+    
+    <div class="container">
+        <h1 class="gradient-text">Regresión Lineal Interactiva</h1>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label>Número de Puntos</label>
+                <input type="number" id="numPoints" value="50" min="10" max="200">
+            </div>
+            <div class="control-group">
+                <label>Ruido</label>
+                <input type="range" id="noiseLevel" min="0" max="50" value="20">
+            </div>
+            <div class="control-group">
+                <label>Pendiente</label>
+                <input type="range" id="slope" min="-5" max="5" step="0.1" value="2">
+            </div>
+            <div class="control-group">
+                <label>Intercepto</label>
+                <input type="range" id="intercept" min="-50" max="50" value="10">
+            </div>
+            <div class="control-group">
+                <button onclick="generateNewData()">Generar Nuevos Datos</button>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="regressionChart"></canvas>
+        </div>
+
+        <div class="equation">
+            <h3>Ecuación de la Línea de Regresión</h3>
+            <div class="equation-text" id="equationText">y = 2.00x + 10.00</div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Coeficiente de Correlación (R)</h3>
+                <div class="stat-value" id="correlation">0.85</div>
+            </div>
+            <div class="stat-card">
+                <h3>R² (Coeficiente de Determinación)</h3>
+                <div class="stat-value" id="r2">0.72</div>
+            </div>
+            <div class="stat-card">
+                <h3>Error Cuadrático Medio</h3>
+                <div class="stat-value" id="mse">125.4</div>
+            </div>
+            <div class="stat-card">
+                <h3>Número de Puntos</h3>
+                <div class="stat-value" id="pointCount">50</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let chart;
+        let animationMode = false;
+        let animationFrame;
+
+        // Configuración inicial
+        const config = {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Datos Originales',
+                    data: [],
+                    backgroundColor: 'rgba(255, 107, 107, 0.8)',
+                    borderColor: 'rgba(255, 107, 107, 1)',
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    showLine: false
+                }, {
+                    label: 'Línea de Regresión',
+                    data: [],
+                    backgroundColor: 'rgba(78, 205, 196, 0.2)',
+                    borderColor: 'rgba(78, 205, 196, 1)',
+                    borderWidth: 3,
+                    pointRadius: 0,
+                    showLine: true,
+                    fill: false,
+                    tension: 0
+                }, {
+                    label: 'Residuos',
+                    data: [],
+                    backgroundColor: 'rgba(255, 206, 84, 0.3)',
+                    borderColor: 'rgba(255, 206, 84, 0.8)',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    showLine: true,
+                    fill: false,
+                    borderDash: [5, 5]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'point'
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Visualización Geométrica de Regresión Lineal',
+                        font: {
+                            size: 18,
+                            weight: 'bold'
+                        },
+                        color: '#2c3e50'
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: 'white',
+                        bodyColor: 'white',
+                        borderColor: 'rgba(78, 205, 196, 1)',
+                        borderWidth: 1,
+                        cornerRadius: 10,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                const dataset = context.dataset.label;
+                                const x = context.parsed.x.toFixed(2);
+                                const y = context.parsed.y.toFixed(2);
+                                return `${dataset}: (${x}, ${y})`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Variable Independiente (X)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Variable Dependiente (Y)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'easeInOutQuart'
+                }
+            }
+        };
+
+        // Inicializar el gráfico
+        function initChart() {
+            const ctx = document.getElementById('regressionChart').getContext('2d');
+            chart = new Chart(ctx, config);
+        }
+
+        // Generar datos sintéticos
+        function generateData() {
+            const numPoints = parseInt(document.getElementById('numPoints').value);
+            const noiseLevel = parseInt(document.getElementById('noiseLevel').value);
+            const slope = parseFloat(document.getElementById('slope').value);
+            const intercept = parseFloat(document.getElementById('intercept').value);
+
+            const data = [];
+            const xMin = 0;
+            const xMax = 100;
+
+            for (let i = 0; i < numPoints; i++) {
+                const x = xMin + (xMax - xMin) * Math.random();
+                const noise = (Math.random() - 0.5) * noiseLevel;
+                const y = slope * x + intercept + noise;
+                data.push({x: x, y: y});
+            }
+
+            return data.sort((a, b) => a.x - b.x);
+        }
+
+        // Calcular regresión lineal
+        function calculateLinearRegression(data) {
+            const n = data.length;
+            const sumX = data.reduce((sum, point) => sum + point.x, 0);
+            const sumY = data.reduce((sum, point) => sum + point.y, 0);
+            const sumXY = data.reduce((sum, point) => sum + point.x * point.y, 0);
+            const sumX2 = data.reduce((sum, point) => sum + point.x * point.x, 0);
+            const sumY2 = data.reduce((sum, point) => sum + point.y * point.y, 0);
+
+            const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+            const intercept = (sumY - slope * sumX) / n;
+
+            // Coeficiente de correlación
+            const r = (n * sumXY - sumX * sumY) / 
+                      Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
+
+            return { slope, intercept, r };
+        }
+
+        // Calcular estadísticas
+        function calculateStatistics(data, slope, intercept) {
+            const n = data.length;
+            const predictions = data.map(point => slope * point.x + intercept);
+            const residuals = data.map((point, i) => point.y - predictions[i]);
+            const mse = residuals.reduce((sum, residual) => sum + residual * residual, 0) / n;
+            
+            return { mse, residuals, predictions };
+        }
+
+        // Actualizar visualización
+        function updateVisualization() {
+            const data = generateData();
+            const regression = calculateLinearRegression(data);
+            const stats = calculateStatistics(data, regression.slope, regression.intercept);
+
+            // Actualizar datos del gráfico
+            chart.data.datasets[0].data = data;
+
+            // Línea de regresión
+            const xMin = Math.min(...data.map(p => p.x));
+            const xMax = Math.max(...data.map(p => p.x));
+            chart.data.datasets[1].data = [
+                {x: xMin, y: regression.slope * xMin + regression.intercept},
+                {x: xMax, y: regression.slope * xMax + regression.intercept}
+            ];
+
+            // Líneas de residuos
+            const residualLines = [];
+            data.forEach((point, i) => {
+                const predicted = regression.slope * point.x + regression.intercept;
+                residualLines.push({x: point.x, y: point.y});
+                residualLines.push({x: point.x, y: predicted});
+                residualLines.push({x: null, y: null}); // Separador
+            });
+            chart.data.datasets[2].data = residualLines;
+
+            chart.update(animationMode ? 'active' : 'none');
+
+            // Actualizar estadísticas
+            document.getElementById('correlation').textContent = regression.r.toFixed(3);
+            document.getElementById('r2').textContent = (regression.r * regression.r).toFixed(3);
+            document.getElementById('mse').textContent = stats.mse.toFixed(1);
+            document.getElementById('pointCount').textContent = data.length;
+            document.getElementById('equationText').textContent = 
+                `y = ${regression.slope.toFixed(2)}x + ${regression.intercept.toFixed(2)}`;
+        }
+
+        // Generar nuevos datos
+        function generateNewData() {
+            if (animationMode) {
+                // Crear efecto de animación suave
+                const container = document.querySelector('.container');
+                container.classList.add('pulse');
+                setTimeout(() => {
+                    container.classList.remove('pulse');
+                }, 1000);
+            }
+            updateVisualization();
+        }
+
+        // Toggle modo animación
+        function toggleAnimation() {
+            animationMode = !animationMode;
+            const button = document.querySelector('.animation-toggle');
+            button.textContent = animationMode ? '🎯 Modo Estático' : '🎨 Modo Animación';
+            
+            if (animationMode) {
+                startContinuousAnimation();
+            } else {
+                stopContinuousAnimation();
+            }
+        }
+
+        // Animación continua
+        function startContinuousAnimation() {
+            function animate() {
+                if (animationMode) {
+                    // Variar ligeramente los parámetros
+                    const noiseSlider = document.getElementById('noiseLevel');
+                    const currentNoise = parseInt(noiseSlider.value);
+                    noiseSlider.value = Math.max(0, Math.min(50, currentNoise + (Math.random() - 0.5) * 10));
+                    
+                    updateVisualization();
+                    animationFrame = setTimeout(animate, 2000);
+                }
+            }
+            animate();
+        }
+
+        function stopContinuousAnimation() {
+            if (animationFrame) {
+                clearTimeout(animationFrame);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('numPoints').addEventListener('input', updateVisualization);
+        document.getElementById('noiseLevel').addEventListener('input', updateVisualization);
+        document.getElementById('slope').addEventListener('input', updateVisualization);
+        document.getElementById('intercept').addEventListener('input', updateVisualization);
+
+        // Inicializar
+        window.onload = function() {
+            initChart();
+            updateVisualization();
+        };
+    </script>
+</body>
+</html>

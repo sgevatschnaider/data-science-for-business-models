@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cuestionario interactivo | Regresión lineal como base de la neurona artificial</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --panel-2: #eef4ff;
+      --text: #142033;
+      --muted: #60708a;
+      --accent: #2563eb;
+      --accent-2: #0f766e;
+      --border: #d9e2f2;
+      --shadow: 0 16px 40px rgba(20, 32, 51, .10);
+      --formula-bg: #0f172a;
+      --formula-text: #e5edff;
+      --success: #16a34a;
+      --warning: #f59e0b;
+    }
+
+    body.dark {
+      --bg: #0b1020;
+      --panel: #121a2d;
+      --panel-2: #18233b;
+      --text: #eef4ff;
+      --muted: #a8b6cf;
+      --accent: #60a5fa;
+      --accent-2: #5eead4;
+      --border: #2a3958;
+      --shadow: 0 18px 45px rgba(0,0,0,.35);
+      --formula-bg: #020617;
+      --formula-text: #f8fafc;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,.18), transparent 32rem),
+        radial-gradient(circle at bottom right, rgba(15,118,110,.15), transparent 30rem),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(240px, 310px) minmax(0, 1fr);
+      gap: 24px;
+      width: min(1320px, calc(100% - 32px));
+      margin: 24px auto 56px;
+    }
+
+    header.hero {
+      width: min(1320px, calc(100% - 32px));
+      margin: 24px auto 0;
+      padding: 34px;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, var(--panel), var(--panel-2));
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -90px;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(37,99,235,.22), rgba(94,234,212,.18));
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(37,99,235,.10);
+      color: var(--accent);
+      font-weight: 800;
+      font-size: .82rem;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 4rem);
+      line-height: 1.05;
+      margin: 0 0 14px;
+      max-width: 980px;
+      letter-spacing: -0.045em;
+    }
+
+    .subtitle {
+      max-width: 920px;
+      font-size: clamp(1.03rem, 1.7vw, 1.25rem);
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .top-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    button, .pill {
+      border: 0;
+      font: inherit;
+    }
+
+    .primary-btn, .secondary-btn {
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 11px 16px;
+      font-weight: 800;
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+
+    .primary-btn {
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 10px 25px rgba(37, 99, 235, .20);
+    }
+
+    .secondary-btn {
+      color: var(--text);
+      background: var(--panel);
+      border: 1px solid var(--border);
+    }
+
+    .primary-btn:hover, .secondary-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(20, 32, 51, .12);
+    }
+
+    aside {
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      max-height: calc(100vh - 32px);
+      overflow: auto;
+      padding: 18px;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+    }
+
+    body.dark aside {
+      background: rgba(18,26,45,.78);
+    }
+
+    .search-box {
+      display: flex;
+      gap: 8px;
+      margin: 10px 0 16px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 13px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      outline: none;
+      font-size: .95rem;
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .stat {
+      padding: 12px;
+      border-radius: 18px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.35rem;
+      line-height: 1;
+      color: var(--accent);
+    }
+
+    .stat span {
+      display: block;
+      font-size: .78rem;
+      color: var(--muted);
+      margin-top: 5px;
+      font-weight: 700;
+    }
+
+    .toc {
+      display: grid;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .toc a {
+      display: block;
+      text-decoration: none;
+      color: var(--text);
+      padding: 9px 10px;
+      border-radius: 14px;
+      font-size: .88rem;
+      border: 1px solid transparent;
+    }
+
+    .toc a:hover {
+      background: var(--panel-2);
+      border-color: var(--border);
+    }
+
+    .toc span {
+      color: var(--accent);
+      font-weight: 900;
+      margin-right: 7px;
+    }
+
+    main {
+      display: grid;
+      gap: 16px;
+    }
+
+    .guide {
+      padding: 22px;
+      border-radius: 24px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .guide h2 {
+      margin: 0 0 8px;
+      font-size: 1.25rem;
+    }
+
+    .guide p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .qa-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      scroll-margin-top: 22px;
+    }
+
+    .qa-card.studied {
+      border-color: rgba(22, 163, 74, .55);
+    }
+
+    .qa-head {
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      color: var(--text);
+      background: transparent;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .num {
+      width: 44px;
+      height: 44px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 15px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      font-weight: 900;
+      letter-spacing: -.03em;
+      flex: none;
+    }
+
+    .q-title {
+      font-weight: 900;
+      font-size: clamp(1.02rem, 2vw, 1.25rem);
+      line-height: 1.25;
+    }
+
+    .chev {
+      font-size: 1.5rem;
+      color: var(--accent);
+      transition: transform .18s ease;
+    }
+
+    .qa-head[aria-expanded="true"] .chev {
+      transform: rotate(180deg);
+    }
+
+    .qa-body {
+      border-top: 1px solid var(--border);
+      padding: 0 22px 22px;
+      animation: open .18s ease both;
+    }
+
+    @keyframes open {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .answer {
+      padding-top: 18px;
+    }
+
+    .answer p {
+      margin: 0 0 1rem;
+      font-size: 1rem;
+    }
+
+    .formula {
+      margin: 16px 0 20px;
+      padding: 18px;
+      border-radius: 18px;
+      overflow-x: auto;
+      background: var(--formula-bg);
+      color: var(--formula-text);
+      border: 1px solid rgba(255,255,255,.08);
+      font-size: 1.05rem;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .mini-btn {
+      cursor: pointer;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      font-weight: 800;
+      font-size: .9rem;
+    }
+
+    .mini-btn:hover {
+      border-color: var(--accent);
+    }
+
+    .no-results {
+      display: none;
+      padding: 22px;
+      border-radius: 24px;
+      background: var(--panel);
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width .2s ease;
+    }
+
+    footer {
+      width: min(1320px, calc(100% - 32px));
+      margin: 0 auto 30px;
+      color: var(--muted);
+      text-align: center;
+      font-size: .92rem;
+    }
+
+    @media (max-width: 940px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: static;
+        max-height: none;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+        color: #111827;
+      }
+
+      header.hero, aside, .top-actions, .card-actions, footer {
+        box-shadow: none;
+      }
+
+      .layout {
+        display: block;
+        width: 100%;
+      }
+
+      aside, .top-actions {
+        display: none;
+      }
+
+      .qa-card {
+        break-inside: avoid;
+        box-shadow: none;
+        margin-bottom: 14px;
+      }
+
+      .qa-body {
+        display: block !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="eyebrow">Cuestionario interactivo</div>
+    <h1>Regresión lineal como base de la neurona artificial</h1>
+    <p class="subtitle">Diez preguntas con respuestas desarrolladas para estudiar la transición conceptual desde regresión lineal, pesos, sesgo y pérdida hacia neuronas artificiales, funciones de activación y redes neuronales.</p>
+    <div class="top-actions">
+      <button class="primary-btn" id="expandAll" type="button">Expandir todas</button>
+      <button class="secondary-btn" id="collapseAll" type="button">Contraer todas</button>
+      <button class="secondary-btn" id="themeToggle" type="button">Cambiar tema</button>
+      <button class="secondary-btn" onclick="window.print()" type="button">Imprimir / guardar PDF</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <strong>Panel de estudio</strong>
+      <div class="search-box">
+        <input id="search" type="search" placeholder="Buscar pregunta o concepto..." autocomplete="off" />
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <strong id="visibleCount">10</strong>
+          <span>visibles</span>
+        </div>
+        <div class="stat">
+          <strong id="studiedCount">0</strong>
+          <span>estudiadas</span>
+        </div>
+      </div>
+
+      <div class="progress-bar" aria-label="Progreso de estudio">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <nav class="toc" aria-label="Índice de preguntas">
+        <a href="#p1" data-target="1"><span>01</span> ¿Por qué la regresión lineal puede considerarse una base conceptual para entender una neurona artificial?</a>
+<a href="#p2" data-target="2"><span>02</span> ¿Qué representan los pesos en una regresión lineal y en una neurona artificial?</a>
+<a href="#p3" data-target="3"><span>03</span> ¿Qué función cumple el sesgo o bias en estos modelos?</a>
+<a href="#p4" data-target="4"><span>04</span> ¿Qué significa que una regresión lineal aprende durante el entrenamiento?</a>
+<a href="#p5" data-target="5"><span>05</span> ¿Qué es una función de pérdida y por qué es importante?</a>
+<a href="#p6" data-target="6"><span>06</span> ¿Qué es el descenso por gradiente y cómo se relaciona con el aprendizaje?</a>
+<a href="#p7" data-target="7"><span>07</span> ¿Cuál es la diferencia principal entre una regresión lineal y una neurona artificial?</a>
+<a href="#p8" data-target="8"><span>08</span> ¿Por qué una sola neurona artificial puede ser limitada?</a>
+<a href="#p9" data-target="9"><span>09</span> ¿Qué relación existe entre regresión logística y neuronas artificiales?</a>
+<a href="#p10" data-target="10"><span>10</span> ¿Cómo se pasa de una regresión lineal a una red neuronal completa?</a>
+      </nav>
+    </aside>
+
+    <main>
+      <section class="guide">
+        <h2>Cómo usar este cuestionario</h2>
+        <p>Podés leerlo como guía completa o usarlo como práctica activa: primero intentá responder cada pregunta, luego expandí la definición, revisá las fórmulas y marcá como estudiadas las respuestas que ya domines.</p>
+      </section>
+
+      <div class="no-results" id="noResults">No se encontraron preguntas con ese término.</div>
+
+      <section id="questions">
+        
+    <article class="qa-card" data-question="¿por qué la regresión lineal puede considerarse una base conceptual para entender una neurona artificial?" data-plain="la regresión lineal puede considerarse una base conceptual para entender una neurona artificial porque ambas comparten una estructura matemática fundamental: reciben datos de entrada, multiplican cada entrada por un peso, suman esos resultados y agregan un término independiente o sesgo. en una regresión lineal simple, el modelo se expresa como: [ y = wx + b ] allí, (x) representa la entrada, (w) representa el peso o coeficiente, (b) representa el sesgo o intercepto, y (y) representa la salida estimada. en una neurona artificial, la idea es muy parecida. la neurona recibe una o varias entradas, por ejemplo: [ x_1, x_2, x_3, ..., x_n ] cada una de esas entradas se multiplica por un peso: [ w_1, w_2, w_3, ..., w_n ] luego, la neurona calcula una suma ponderada: [ z = w_1x_1 + w_2x_2 + \cdots + w_nx_n + b ] hasta este punto, la neurona artificial se comporta de manera equivalente a una regresión lineal múltiple. la diferencia central aparece cuando la neurona aplica una función de activación sobre esa suma ponderada: [ a = f(z) ] por eso, puede decirse que una neurona artificial parte de la lógica de la regresión lineal, pero la amplía mediante una función de activación que permite modelar relaciones más complejas y no necesariamente lineales.">
+      <button class="qa-head" type="button" aria-expanded="false">
+        <span class="num">01</span>
+        <span class="q-title">¿Por qué la regresión lineal puede considerarse una base conceptual para entender una neurona artificial?</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="qa-body" hidden>
+        <div class="answer">
+          <p>La regresión lineal puede considerarse una base conceptual para entender una neurona artificial porque ambas comparten una estructura matemática fundamental: reciben datos de entrada, multiplican cada entrada por un peso, suman esos resultados y agregan un término independiente o sesgo.</p>
+<p>En una regresión lineal simple, el modelo se expresa como:</p>
+<div class="formula" role="img" aria-label="y = wx + b">\[y = wx + b\]</div>
+<p>Allí, (x) representa la entrada, (w) representa el peso o coeficiente, (b) representa el sesgo o intercepto, y (y) representa la salida estimada.</p>
+<p>En una neurona artificial, la idea es muy parecida. La neurona recibe una o varias entradas, por ejemplo:</p>
+<div class="formula" role="img" aria-label="x_1, x_2, x_3, ..., x_n">\[x_1, x_2, x_3, ..., x_n\]</div>
+<p>Cada una de esas entradas se multiplica por un peso:</p>
+<div class="formula" role="img" aria-label="w_1, w_2, w_3, ..., w_n">\[w_1, w_2, w_3, ..., w_n\]</div>
+<p>Luego, la neurona calcula una suma ponderada:</p>
+<div class="formula" role="img" aria-label="z = w_1x_1 + w_2x_2 + \cdots + w_nx_n + b">\[z = w_1x_1 + w_2x_2 + \cdots + w_nx_n + b\]</div>
+<p>Hasta este punto, la neurona artificial se comporta de manera equivalente a una regresión lineal múltiple. La diferencia central aparece cuando la neurona aplica una función de activación sobre esa suma ponderada:</p>
+<div class="formula" role="img" aria-label="a = f(z)">\[a = f(z)\]</div>
+<p>Por eso, puede decirse que una neurona artificial parte de la lógica de la regresión lineal, pero la amplía mediante una función de activación que permite modelar relaciones más complejas y no necesariamente lineales.</p>
+        </div>
+        <div class="card-actions">
+          <button class="mini-btn copy-btn" type="button">Copiar respuesta</button>
+          <button class="mini-btn mark-btn" type="button">Marcar como estudiada</button>
+        </div>
+      </div>
+    </article>
+    
+    <article class="qa-card" data-question="¿qué representan los pesos en una regresión lineal y en una neurona artificial?" data-plain="los pesos representan la importancia o influencia que tiene cada variable de entrada sobre la salida del modelo. en una regresión lineal, los pesos se denominan habitualmente coeficientes. por ejemplo, si queremos predecir el precio de una vivienda usando su superficie, la cantidad de habitaciones y la antigüedad, podríamos tener una fórmula como esta: [ \hat{y} = w_1x_1 + w_2x_2 + w_3x_3 + b ] donde (x_1) puede representar la superficie, (x_2) la cantidad de habitaciones y (x_3) la antigüedad. si el peso asociado a la superficie es alto, significa que esa variable tiene una influencia importante en la predicción del precio. en una neurona artificial ocurre algo similar. cada peso indica cuánto debe influir una entrada determinada en la activación de la neurona. si un peso es positivo, esa entrada tiende a aumentar la salida de la neurona. si un peso es negativo, esa entrada tiende a reducirla. si el peso está cerca de cero, la entrada tiene poca influencia. la diferencia está en que, en una regresión lineal, los pesos suelen ser más interpretables. en cambio, en una red neuronal profunda, los pesos individuales pueden perder interpretación directa porque forman parte de una estructura más compleja, con muchas neuronas y muchas capas. sin embargo, en ambos casos los pesos son los parámetros centrales que el modelo ajusta durante el entrenamiento.">
+      <button class="qa-head" type="button" aria-expanded="false">
+        <span class="num">02</span>
+        <span class="q-title">¿Qué representan los pesos en una regresión lineal y en una neurona artificial?</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="qa-body" hidden>
+        <div class="answer">
+          <p>Los pesos representan la importancia o influencia que tiene cada variable de entrada sobre la salida del modelo.</p>
+<p>En una regresión lineal, los pesos se denominan habitualmente coeficientes. Por ejemplo, si queremos predecir el precio de una vivienda usando su superficie, la cantidad de habitaciones y la antigüedad, podríamos tener una fórmula como esta:</p>
+<div class="formula" role="img" aria-label="\hat{y} = w_1x_1 + w_2x_2 + w_3x_3 + b">\[\hat{y} = w_1x_1 + w_2x_2 + w_3x_3 + b\]</div>
+<p>Donde (x_1) puede representar la superficie, (x_2) la cantidad de habitaciones y (x_3) la antigüedad. Si el peso asociado a la superficie es alto, significa que esa variable tiene una influencia importante en la predicción del precio.</p>
+<p>En una neurona artificial ocurre algo similar. Cada peso indica cuánto debe influir una entrada determinada en la activación de la neurona. Si un peso es positivo, esa entrada tiende a aumentar la salida de la neurona. Si un peso es negativo, esa entrada tiende a reducirla. Si el peso está cerca de cero, la entrada tiene poca influencia.</p>
+<p>La diferencia está en que, en una regresión lineal, los pesos suelen ser más interpretables. En cambio, en una red neuronal profunda, los pesos individuales pueden perder interpretación directa porque forman parte de una estructura más compleja, con muchas neuronas y muchas capas. Sin embargo, en ambos casos los pesos son los parámetros centrales que el modelo ajusta durante el entrenamiento.</p>
+        </div>
+        <div class="card-actions">
+          <button class="mini-btn copy-btn" type="button">Copiar respuesta</button>
+          <button class="mini-btn mark-btn" type="button">Marcar como estudiada</button>
+        </div>
+      </div>
+    </article>
+    
+    <article class="qa-card" data-question="¿qué función cumple el sesgo o bias en estos modelos?" data-plain="el sesgo, también llamado bias o intercepto, permite ajustar la salida del modelo independientemente del valor de las entradas. en una regresión lineal simple: [ \hat{y} = wx + b ] el término (b) indica el valor estimado de (y) cuando (x = 0). por ejemplo, si el modelo es: [ \hat{y} = 2000x + 50000 ] el valor (50000) es el intercepto. eso significa que, matemáticamente, cuando (x = 0), el modelo predice (50000). aunque en algunos casos ese valor no tenga una interpretación realista, el sesgo es muy importante porque permite desplazar la recta hacia arriba o hacia abajo. sin el sesgo, la recta estaría obligada a pasar por el origen, lo cual limitaría mucho la capacidad del modelo. en una neurona artificial, el sesgo cumple una función similar. permite que la neurona se active incluso cuando las entradas son pequeñas o nulas. también permite ajustar el umbral de activación. por ejemplo, una neurona puede necesitar cierto valor mínimo antes de producir una salida significativa. el bias ayuda a controlar ese punto de activación. por eso, el sesgo no es un detalle secundario. es un parámetro esencial que le da flexibilidad al modelo.">
+      <button class="qa-head" type="button" aria-expanded="false">
+        <span class="num">03</span>
+        <span class="q-title">¿Qué función cumple el sesgo o bias en estos modelos?</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="qa-body" hidden>
+        <div class="answer">
+          <p>El sesgo, también llamado bias o intercepto, permite ajustar la salida del modelo independientemente del valor de las entradas.</p>
+<p>En una regresión lineal simple:</p>
+<div class="formula" role="img" aria-label="\hat{y} = wx + b">\[\hat{y} = wx + b\]</div>
+<p>el término (b) indica el valor estimado de (y) cuando (x = 0). Por ejemplo, si el modelo es:</p>
+<div class="formula" role="img" aria-label="\hat{y} = 2000x + 50000">\[\hat{y} = 2000x + 50000\]</div>
+<p>el valor (50000) es el intercepto. Eso significa que, matemáticamente, cuando (x = 0), el modelo predice (50000).</p>
+<p>Aunque en algunos casos ese valor no tenga una interpretación realista, el sesgo es muy importante porque permite desplazar la recta hacia arriba o hacia abajo. Sin el sesgo, la recta estaría obligada a pasar por el origen, lo cual limitaría mucho la capacidad del modelo.</p>
+<p>En una neurona artificial, el sesgo cumple una función similar. Permite que la neurona se active incluso cuando las entradas son pequeñas o nulas. También permite ajustar el umbral de activación. Por ejemplo, una neurona puede necesitar cierto valor mínimo antes de producir una salida significativa. El bias ayuda a controlar ese punto de activación.</p>
+<p>Por eso, el sesgo no es un detalle secundario. Es un parámetro esencial que le da flexibilidad al modelo.</p>
+        </div>
+        <div class="card-actions">
+          <button class="mini-btn copy-btn" type="button">Copiar respuesta</button>
+          <button class="mini-btn mark-btn" type="button">Marcar como estudiada</button>
+        </div>
+      </div>
+    </article>
+    
+    <article class="qa-card" data-question="¿qué significa que una regresión lineal aprende durante el entrenamiento?" data-plain="decir que una regresión lineal aprende significa que ajusta sus pesos y su sesgo para reducir la diferencia entre las predicciones del modelo y los valores reales observados. al inicio, el modelo puede no saber cuáles son los mejores valores para sus parámetros. supongamos que queremos predecir una variable (y) a partir de una entrada (x). el modelo tiene esta forma: [ \hat{y} = wx + b ] el objetivo del entrenamiento es encontrar los valores adecuados de (w) y (b) para que (\hat{y}) sea lo más parecido posible a (y). para lograrlo, el modelo calcula sus predicciones y luego mide el error. una forma común de medir ese error es mediante el error cuadrático medio: [ mse = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2 ] esta función indica qué tan lejos están las predicciones de los valores reales. si el error es alto, el modelo debe modificar sus parámetros. si el error disminuye, significa que el modelo está aprendiendo una mejor relación entre las entradas y la salida. este mismo principio se aplica en redes neuronales. la red calcula una predicción, mide el error y ajusta sus pesos para mejorar. por eso, entender el entrenamiento de una regresión lineal ayuda mucho a comprender el aprendizaje en redes neuronales.">
+      <button class="qa-head" type="button" aria-expanded="false">
+        <span class="num">04</span>
+        <span class="q-title">¿Qué significa que una regresión lineal aprende durante el entrenamiento?</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="qa-body" hidden>
+        <div class="answer">
+          <p>Decir que una regresión lineal aprende significa que ajusta sus pesos y su sesgo para reducir la diferencia entre las predicciones del modelo y los valores reales observados.</p>
+<p>Al inicio, el modelo puede no saber cuáles son los mejores valores para sus parámetros. Supongamos que queremos predecir una variable (y) a partir de una entrada (x). El modelo tiene esta forma:</p>
+<div class="formula" role="img" aria-label="\hat{y} = wx + b">\[\hat{y} = wx + b\]</div>
+<p>El objetivo del entrenamiento es encontrar los valores adecuados de (w) y (b) para que (\hat{y}) sea lo más parecido posible a (y).</p>
+<p>Para lograrlo, el modelo calcula sus predicciones y luego mide el error. Una forma común de medir ese error es mediante el error cuadrático medio:</p>
+<div class="formula" role="img" aria-label="MSE = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2">\[MSE = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2\]</div>
+<p>Esta función indica qué tan lejos están las predicciones de los valores reales. Si el error es alto, el modelo debe modificar sus parámetros. Si el error disminuye, significa que el modelo está aprendiendo una mejor relación entre las entradas y la salida.</p>
+<p>Este mismo principio se aplica en redes neuronales. La red calcula una predicción, mide el error y ajusta sus pesos para mejorar. Por eso, entender el entrenamiento de una regresión lineal ayuda mucho a comprender el aprendizaje en redes neuronales.</p>
+        </div>
+        <div class="card-actions">
+          <button class="mini-btn copy-btn" type="button">Copiar respuesta</button>
+          <button class="mini-btn mark-btn" type="button">Marcar como estudiada</button>
+        </div>
+      </div>
+    </article>
+    
+    <article class="qa-card" data-question="¿qué es una función de pérdida y por qué es importante?" data-plain="una función de pérdida es una medida matemática que indica qué tan mal está funcionando un modelo. cuando un modelo realiza una predicción, esa predicción puede estar cerca o lejos del valor real. la función de pérdida convierte esa diferencia en un número. cuanto mayor es ese número, peor está funcionando el modelo. cuanto menor es, mejor es la predicción. en regresión lineal, una de las funciones de pérdida más usadas es el error cuadrático medio: [ mse = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2 ] esta función toma la diferencia entre el valor real y el valor predicho, la eleva al cuadrado y luego promedia todos los errores. elevar al cuadrado tiene dos efectos importantes. primero, evita que los errores positivos y negativos se cancelen. segundo, penaliza más fuertemente los errores grandes. la función de pérdida es importante porque le da al modelo un objetivo claro: reducir ese valor. el entrenamiento consiste precisamente en modificar los pesos y el sesgo para minimizar la pérdida. en una red neuronal, la lógica es la misma. la red aprende porque intenta reducir una función de pérdida. en problemas de regresión, puede usarse mse. en problemas de clasificación, pueden usarse otras funciones, como entropía cruzada. pero en todos los casos, la función de pérdida actúa como una guía para el aprendizaje.">
+      <button class="qa-head" type="button" aria-expanded="false">
+        <span class="num">05</span>
+        <span class="q-title">¿Qué es una función de pérdida y por qué es importante?</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="qa-body" hidden>
+        <div class="answer">
+          <p>Una función de pérdida es una medida matemática que indica qué tan mal está funcionando un modelo.</p>
+<p>Cuando un modelo realiza una predicción, esa predicción puede estar cerca o lejos del valor real. La función de pérdida convierte esa diferencia en un número. Cuanto mayor es ese número, peor está funcionando el modelo. Cuanto menor es, mejor es la predicción.</p>
+<p>En regresión lineal, una de las funciones de pérdida más usadas es el error cuadrático medio:</p>
+<div class="formula" role="img" aria-label="MSE = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2">\[MSE = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2\]</div>
+<p>Esta función toma la diferencia entre el valor real y el valor predicho, la eleva al cuadrado y luego promedia todos los errores.</p>
+<p>Elevar al cuadrado tiene dos efectos importantes. Primero, evita que los errores positivos y negativos se cancelen. Segundo, penaliza más fuertemente los errores grandes.</p>
+<p>La función de pérdida es importante porque le da al modelo un objetivo claro: reducir ese valor. El entrenamiento consiste precisamente en modificar los pesos y el sesgo para minimizar la pérdida.</p>
+<p>En una red neuronal, la lógica es la misma. La red aprende porque intenta reducir una función de pérdida. En problemas de regresión, puede usarse MSE. En problemas de clasificación, pueden usarse otras funciones, como entropía cruzada. Pero en todos los casos, la función de pérdida actúa como una guía para el aprendizaje.</p>
+        </div>
+        <div class="card-actions">
+          <button class="mini-btn copy-btn" type="button">Copiar respuesta</button>
+          <button class="mini-btn mark-btn" type="button">Marcar como estudiada</button>
+        </div>
+      </div>
+    </article>
+    
+    <article class="qa-card" data-question="¿qué es el descenso por gradiente y cómo se relaciona con el aprendizaje?" data-plain="el descenso por gradiente es un método de optimización que permite ajustar los parámetros de un modelo para reducir la función de pérdida. la idea central es simple: si sabemos en qué dirección aumenta el error, podemos movernos en la dirección opuesta para reducirlo. el gradiente indica precisamente cómo cambia la pérdida cuando modificamos los pesos o el sesgo. la actualización de un peso puede expresarse así: [ w := w - \alpha \frac{\partial l}{\partial w} ] y la actualización del sesgo: [ b := b - \alpha \frac{\partial l}{\partial b} ] donde (l) es la función de pérdida y (\alpha) es la tasa de aprendizaje. la tasa de aprendizaje controla el tamaño del paso que da el modelo en cada actualización. si la tasa es demasiado pequeña, el aprendizaje será lento. si es demasiado grande, el modelo puede no converger correctamente y saltar de un lado a otro sin encontrar una buena solución. en regresión lineal, el descenso por gradiente permite encontrar los coeficientes que minimizan el error. en redes neuronales, el mismo principio se aplica a una escala mayor. en lugar de ajustar solo uno o pocos pesos, la red puede ajustar miles, millones o incluso miles de millones de parámetros. por eso, el descenso por gradiente es una de las ideas más importantes del aprendizaje automático moderno.">
+      <button class="qa-head" type="button" aria-expanded="false">
+        <span class="num">06</span>
+        <span class="q-title">¿Qué es el descenso por gradiente y cómo se relaciona con el aprendizaje?</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="qa-body" hidden>
+        <div class="answer">
+          <p>El descenso por gradiente es un método de optimización que permite ajustar los parámetros de un modelo para reducir la función de pérdida.</p>
+<p>La idea central es simple: si sabemos en qué dirección aumenta el error, podemos movernos en la dirección opuesta para reducirlo. El gradiente indica precisamente cómo cambia la pérdida cuando modificamos los pesos o el sesgo.</p>
+<p>La actualización de un peso puede expresarse así:</p>
+<div class="formula" role="img" aria-label="w := w - \alpha \frac{\partial L}{\partial w}">\[w := w - \alpha \frac{\partial L}{\partial w}\]</div>
+<p>Y la actualización del sesgo:</p>
+<div class="formula" role="img" aria-label="b := b - \alpha \frac{\partial L}{\partial b}">\[b := b - \alpha \frac{\partial L}{\partial b}\]</div>
+<p>Donde (L) es la función de pérdida y (\alpha) es la tasa de aprendizaje.</p>
+<p>La tasa de aprendizaje controla el tamaño del paso que da el modelo en cada actualización. Si la tasa es demasiado pequeña, el aprendizaje será lento. Si es demasiado grande, el modelo puede no converger correctamente y saltar de un lado a otro sin encontrar una buena solución.</p>
+<p>En regresión lineal, el descenso por gradiente permite encontrar los coeficientes que minimizan el error. En redes neuronales, el mismo principio se aplica a una escala mayor. En lugar de ajustar solo uno o pocos pesos, la red puede ajustar miles, millones o incluso miles de millones de parámetros.</p>
+<p>Por eso, el descenso por gradiente es una de las ideas más importantes del aprendizaje automático moderno.</p>
+        </div>
+        <div class="card-actions">
+          <button class="mini-btn copy-btn" type="button">Copiar respuesta</button>
+          <button class="mini-btn mark-btn" type="button">Marcar como estudiada</button>
+        </div>
+      </div>
+    </article>
+    
+    <article class="qa-card" data-question="¿cuál es la diferencia principal entre una regresión lineal y una neurona artificial?" data-plain="la diferencia principal entre una regresión lineal y una neurona artificial está en el uso de una función de activación. una regresión lineal calcula directamente una salida a partir de una combinación lineal de las entradas: [ \hat{y} = w_1x_1 + w_2x_2 + \cdots + w_nx_n + b ] una neurona artificial también calcula primero una combinación lineal: [ z = w_1x_1 + w_2x_2 + \cdots + w_nx_n + b ] pero luego aplica una función de activación: [ a = f(z) ] la función de activación transforma la salida lineal en otra salida que puede introducir no linealidad. esto es fundamental porque muchos problemas reales no pueden representarse adecuadamente mediante una simple línea, plano o hiperplano. las relaciones entre variables pueden ser curvas, tener umbrales, interacciones complejas o comportamientos no lineales. si una red neuronal tuviera muchas capas pero no usara funciones de activación no lineales, toda la red podría reducirse matemáticamente a una sola transformación lineal. es decir, no ganaría verdadera capacidad expresiva. por eso, las funciones de activación son esenciales para que las redes neuronales puedan aprender patrones complejos.">
+      <button class="qa-head" type="button" aria-expanded="false">
+        <span class="num">07</span>
+        <span class="q-title">¿Cuál es la diferencia principal entre una regresión lineal y una neurona artificial?</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="qa-body" hidden>
+        <div class="answer">
+          <p>La diferencia principal entre una regresión lineal y una neurona artificial está en el uso de una función de activación.</p>
+<p>Una regresión lineal calcula directamente una salida a partir de una combinación lineal de las entradas:</p>
+<div class="formula" role="img" aria-label="\hat{y} = w_1x_1 + w_2x_2 + \cdots + w_nx_n + b">\[\hat{y} = w_1x_1 + w_2x_2 + \cdots + w_nx_n + b\]</div>
+<p>Una neurona artificial también calcula primero una combinación lineal:</p>
+<div class="formula" role="img" aria-label="z = w_1x_1 + w_2x_2 + \cdots + w_nx_n + b">\[z = w_1x_1 + w_2x_2 + \cdots + w_nx_n + b\]</div>
+<p>Pero luego aplica una función de activación:</p>
+<div class="formula" role="img" aria-label="a = f(z)">\[a = f(z)\]</div>
+<p>La función de activación transforma la salida lineal en otra salida que puede introducir no linealidad.</p>
+<p>Esto es fundamental porque muchos problemas reales no pueden representarse adecuadamente mediante una simple línea, plano o hiperplano. Las relaciones entre variables pueden ser curvas, tener umbrales, interacciones complejas o comportamientos no lineales.</p>
+<p>Si una red neuronal tuviera muchas capas pero no usara funciones de activación no lineales, toda la red podría reducirse matemáticamente a una sola transformación lineal. Es decir, no ganaría verdadera capacidad expresiva. Por eso, las funciones de activación son esenciales para que las redes neuronales puedan aprender patrones complejos.</p>
+        </div>
+        <div class="card-actions">
+          <button class="mini-btn copy-btn" type="button">Copiar respuesta</button>
+          <button class="mini-btn mark-btn" type="button">Marcar como estudiada</button>
+        </div>
+      </div>
+    </article>
+    
+    <article class="qa-card" data-question="¿por qué una sola neurona artificial puede ser limitada?" data-plain="una sola neurona artificial puede ser limitada porque, aunque tenga una función de activación, sigue teniendo una capacidad reducida para representar relaciones complejas. una neurona calcula una suma ponderada de las entradas y luego aplica una función de activación: [ a = f(\mathbf{w} \cdot \mathbf{x} + b) ] esto puede ser útil para ciertos problemas simples. por ejemplo, puede servir para separar datos que son linealmente separables o para realizar una transformación básica de las entradas. sin embargo, muchos problemas reales requieren representar patrones más complejos. por ejemplo, en visión por computadora, una imagen contiene bordes, texturas, formas, objetos y relaciones espaciales. una sola neurona no puede capturar toda esa estructura. la potencia de las redes neuronales surge cuando muchas neuronas se organizan en capas. cada neurona puede aprender una característica parcial de los datos. luego, las capas posteriores combinan esas características para construir representaciones más abstractas. por ejemplo, en una red para reconocimiento de imágenes, las primeras capas pueden detectar bordes, las capas intermedias pueden detectar formas y las capas profundas pueden detectar objetos completos. por eso, una sola neurona es importante como unidad básica, pero la verdadera capacidad del modelo aparece cuando muchas neuronas trabajan juntas dentro de una arquitectura de red.">
+      <button class="qa-head" type="button" aria-expanded="false">
+        <span class="num">08</span>
+        <span class="q-title">¿Por qué una sola neurona artificial puede ser limitada?</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="qa-body" hidden>
+        <div class="answer">
+          <p>Una sola neurona artificial puede ser limitada porque, aunque tenga una función de activación, sigue teniendo una capacidad reducida para representar relaciones complejas.</p>
+<p>Una neurona calcula una suma ponderada de las entradas y luego aplica una función de activación:</p>
+<div class="formula" role="img" aria-label="a = f(\mathbf{w} \cdot \mathbf{x} + b)">\[a = f(\mathbf{w} \cdot \mathbf{x} + b)\]</div>
+<p>Esto puede ser útil para ciertos problemas simples. Por ejemplo, puede servir para separar datos que son linealmente separables o para realizar una transformación básica de las entradas.</p>
+<p>Sin embargo, muchos problemas reales requieren representar patrones más complejos. Por ejemplo, en visión por computadora, una imagen contiene bordes, texturas, formas, objetos y relaciones espaciales. Una sola neurona no puede capturar toda esa estructura.</p>
+<p>La potencia de las redes neuronales surge cuando muchas neuronas se organizan en capas. Cada neurona puede aprender una característica parcial de los datos. Luego, las capas posteriores combinan esas características para construir representaciones más abstractas.</p>
+<p>Por ejemplo, en una red para reconocimiento de imágenes, las primeras capas pueden detectar bordes, las capas intermedias pueden detectar formas y las capas profundas pueden detectar objetos completos.</p>
+<p>Por eso, una sola neurona es importante como unidad básica, pero la verdadera capacidad del modelo aparece cuando muchas neuronas trabajan juntas dentro de una arquitectura de red.</p>
+        </div>
+        <div class="card-actions">
+          <button class="mini-btn copy-btn" type="button">Copiar respuesta</button>
+          <button class="mini-btn mark-btn" type="button">Marcar como estudiada</button>
+        </div>
+      </div>
+    </article>
+    
+    <article class="qa-card" data-question="¿qué relación existe entre regresión logística y neuronas artificiales?" data-plain="la regresión logística está muy relacionada con las neuronas artificiales porque puede interpretarse como una neurona con función de activación sigmoide. en regresión logística, primero se calcula una combinación lineal de las entradas: [ z = \mathbf{w} \cdot \mathbf{x} + b ] luego, ese valor se transforma mediante la función sigmoide: [ \sigma(z) = \frac{1}{1 + e^{-z}} ] la función sigmoide convierte cualquier número real en un valor entre 0 y 1. por eso, la salida puede interpretarse como una probabilidad. por ejemplo, si la salida es: [ 0.85 ] podemos interpretarla como una probabilidad del 85% de pertenecer a una determinada clase. esto es muy similar al funcionamiento de una neurona artificial. la neurona calcula una suma ponderada y luego aplica una función de activación. en este caso, la activación es la sigmoide. la diferencia es que la regresión logística suele usarse como un modelo individual para clasificación binaria, mientras que una red neuronal puede contener muchas neuronas con diferentes funciones de activación y varias capas de procesamiento. por eso, la regresión logística es una excelente transición conceptual entre la regresión lineal y las redes neuronales.">
+      <button class="qa-head" type="button" aria-expanded="false">
+        <span class="num">09</span>
+        <span class="q-title">¿Qué relación existe entre regresión logística y neuronas artificiales?</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="qa-body" hidden>
+        <div class="answer">
+          <p>La regresión logística está muy relacionada con las neuronas artificiales porque puede interpretarse como una neurona con función de activación sigmoide.</p>
+<p>En regresión logística, primero se calcula una combinación lineal de las entradas:</p>
+<div class="formula" role="img" aria-label="z = \mathbf{w} \cdot \mathbf{x} + b">\[z = \mathbf{w} \cdot \mathbf{x} + b\]</div>
+<p>Luego, ese valor se transforma mediante la función sigmoide:</p>
+<div class="formula" role="img" aria-label="\sigma(z) = \frac{1}{1 + e^{-z}}">\[\sigma(z) = \frac{1}{1 + e^{-z}}\]</div>
+<p>La función sigmoide convierte cualquier número real en un valor entre 0 y 1. Por eso, la salida puede interpretarse como una probabilidad.</p>
+<p>Por ejemplo, si la salida es:</p>
+<div class="formula" role="img" aria-label="0.85">\[0.85\]</div>
+<p>podemos interpretarla como una probabilidad del 85% de pertenecer a una determinada clase.</p>
+<p>Esto es muy similar al funcionamiento de una neurona artificial. La neurona calcula una suma ponderada y luego aplica una función de activación. En este caso, la activación es la sigmoide.</p>
+<p>La diferencia es que la regresión logística suele usarse como un modelo individual para clasificación binaria, mientras que una red neuronal puede contener muchas neuronas con diferentes funciones de activación y varias capas de procesamiento.</p>
+<p>Por eso, la regresión logística es una excelente transición conceptual entre la regresión lineal y las redes neuronales.</p>
+        </div>
+        <div class="card-actions">
+          <button class="mini-btn copy-btn" type="button">Copiar respuesta</button>
+          <button class="mini-btn mark-btn" type="button">Marcar como estudiada</button>
+        </div>
+      </div>
+    </article>
+    
+    <article class="qa-card" data-question="¿cómo se pasa de una regresión lineal a una red neuronal completa?" data-plain="el paso de una regresión lineal a una red neuronal completa puede entenderse como una secuencia de ampliaciones conceptuales. primero tenemos la regresión lineal simple: [ \hat{y} = wx + b ] luego pasamos a la regresión lineal múltiple: [ \hat{y} = w_1x_1 + w_2x_2 + \cdots + w_nx_n + b ] después incorporamos una función de activación y obtenemos una neurona artificial: [ a = f(w_1x_1 + w_2x_2 + \cdots + w_nx_n + b) ] finalmente, conectamos muchas neuronas entre sí y formamos una red neuronal. en una red neuronal, las salidas de una capa se convierten en las entradas de la siguiente. esto permite construir representaciones progresivamente más complejas de los datos. la primera capa puede aprender patrones simples. las capas intermedias pueden combinar esos patrones. las capas finales pueden producir una predicción o clasificación. la transición puede resumirse así: [ \text{regresión lineal} \rightarrow \text{neurona artificial} \rightarrow \text{capa de neuronas} \rightarrow \text{red neuronal} ] la regresión lineal aporta la idea de pesos, sesgo, predicción y error. la neurona artificial agrega la función de activación. la red neuronal agrega profundidad, múltiples neuronas y capacidad para aprender relaciones no lineales complejas. por eso, enseñar redes neuronales a partir de la regresión lineal es didácticamente muy potente: permite que los estudiantes entiendan que una red neuronal no es magia, sino una construcción progresiva basada en operaciones matemáticas conocidas.">
+      <button class="qa-head" type="button" aria-expanded="false">
+        <span class="num">10</span>
+        <span class="q-title">¿Cómo se pasa de una regresión lineal a una red neuronal completa?</span>
+        <span class="chev">⌄</span>
+      </button>
+      <div class="qa-body" hidden>
+        <div class="answer">
+          <p>El paso de una regresión lineal a una red neuronal completa puede entenderse como una secuencia de ampliaciones conceptuales.</p>
+<p>Primero tenemos la regresión lineal simple:</p>
+<div class="formula" role="img" aria-label="\hat{y} = wx + b">\[\hat{y} = wx + b\]</div>
+<p>Luego pasamos a la regresión lineal múltiple:</p>
+<div class="formula" role="img" aria-label="\hat{y} = w_1x_1 + w_2x_2 + \cdots + w_nx_n + b">\[\hat{y} = w_1x_1 + w_2x_2 + \cdots + w_nx_n + b\]</div>
+<p>Después incorporamos una función de activación y obtenemos una neurona artificial:</p>
+<div class="formula" role="img" aria-label="a = f(w_1x_1 + w_2x_2 + \cdots + w_nx_n + b)">\[a = f(w_1x_1 + w_2x_2 + \cdots + w_nx_n + b)\]</div>
+<p>Finalmente, conectamos muchas neuronas entre sí y formamos una red neuronal.</p>
+<p>En una red neuronal, las salidas de una capa se convierten en las entradas de la siguiente. Esto permite construir representaciones progresivamente más complejas de los datos.</p>
+<p>La primera capa puede aprender patrones simples. Las capas intermedias pueden combinar esos patrones. Las capas finales pueden producir una predicción o clasificación.</p>
+<p>La transición puede resumirse así:</p>
+<div class="formula" role="img" aria-label="\text{regresión lineal} \rightarrow \text{neurona artificial} \rightarrow \text{capa de neuronas} \rightarrow \text{red neuronal}">\[\text{regresión lineal} \rightarrow \text{neurona artificial} \rightarrow \text{capa de neuronas} \rightarrow \text{red neuronal}\]</div>
+<p>La regresión lineal aporta la idea de pesos, sesgo, predicción y error. La neurona artificial agrega la función de activación. La red neuronal agrega profundidad, múltiples neuronas y capacidad para aprender relaciones no lineales complejas.</p>
+<p>Por eso, enseñar redes neuronales a partir de la regresión lineal es didácticamente muy potente: permite que los estudiantes entiendan que una red neuronal no es magia, sino una construcción progresiva basada en operaciones matemáticas conocidas.</p>
+        </div>
+        <div class="card-actions">
+          <button class="mini-btn copy-btn" type="button">Copiar respuesta</button>
+          <button class="mini-btn mark-btn" type="button">Marcar como estudiada</button>
+        </div>
+      </div>
+    </article>
+    
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    Material de estudio interactivo sobre regresión lineal, neuronas artificiales y fundamentos del aprendizaje supervisado.
+  </footer>
+
+  <script>
+    const cards = Array.from(document.querySelectorAll('.qa-card'));
+    const heads = Array.from(document.querySelectorAll('.qa-head'));
+    const search = document.getElementById('search');
+    const visibleCount = document.getElementById('visibleCount');
+    const studiedCount = document.getElementById('studiedCount');
+    const progressFill = document.getElementById('progressFill');
+    const noResults = document.getElementById('noResults');
+
+    function setCardOpen(card, open) {
+      const head = card.querySelector('.qa-head');
+      const body = card.querySelector('.qa-body');
+      head.setAttribute('aria-expanded', String(open));
+      body.hidden = !open;
+    }
+
+    heads.forEach((head, index) => {
+      const card = cards[index];
+      card.id = 'p' + String(index + 1);
+      head.addEventListener('click', () => {
+        const isOpen = head.getAttribute('aria-expanded') === 'true';
+        setCardOpen(card, !isOpen);
+      });
+    });
+
+    document.getElementById('expandAll').addEventListener('click', () => {
+      cards.filter(card => card.style.display !== 'none').forEach(card => setCardOpen(card, true));
+    });
+
+    document.getElementById('collapseAll').addEventListener('click', () => {
+      cards.forEach(card => setCardOpen(card, false));
+    });
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('qa-theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    if (localStorage.getItem('qa-theme') === 'dark') {
+      document.body.classList.add('dark');
+    }
+
+    function updateStats() {
+      const visible = cards.filter(card => card.style.display !== 'none').length;
+      const studied = cards.filter(card => card.classList.contains('studied')).length;
+      visibleCount.textContent = visible;
+      studiedCount.textContent = studied;
+      progressFill.style.width = Math.round((studied / cards.length) * 100) + '%';
+      noResults.style.display = visible === 0 ? 'block' : 'none';
+    }
+
+    search.addEventListener('input', () => {
+      const term = search.value.trim().toLowerCase();
+      cards.forEach(card => {
+        const haystack = (card.dataset.question + ' ' + card.dataset.plain).toLowerCase();
+        const match = haystack.includes(term);
+        card.style.display = match ? '' : 'none';
+      });
+      updateStats();
+    });
+
+    document.querySelectorAll('.mark-btn').forEach(btn => {
+      btn.addEventListener('click', (event) => {
+        const card = event.target.closest('.qa-card');
+        card.classList.toggle('studied');
+        btn.textContent = card.classList.contains('studied') ? 'Quitar marca' : 'Marcar como estudiada';
+        updateStats();
+      });
+    });
+
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', async (event) => {
+        const card = event.target.closest('.qa-card');
+        const title = card.querySelector('.q-title').innerText;
+        const answer = card.querySelector('.answer').innerText;
+        try {
+          await navigator.clipboard.writeText(title + '\n\n' + answer);
+          btn.textContent = 'Copiado';
+          setTimeout(() => btn.textContent = 'Copiar respuesta', 1200);
+        } catch (e) {
+          btn.textContent = 'No se pudo copiar';
+          setTimeout(() => btn.textContent = 'Copiar respuesta', 1200);
+        }
+      });
+    });
+
+    document.querySelectorAll('.toc a').forEach(link => {
+      link.addEventListener('click', event => {
+        event.preventDefault();
+        const target = document.getElementById('p' + link.dataset.target);
+        if (target) {
+          setCardOpen(target, true);
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    updateStats();
+  </script>
+</body>
+</html>

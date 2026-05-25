@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regresión Lineal · Teoría y Simulación</title>
+<style>
+:root{
+  --bg:#f4f7fb;--panel:#ffffff;--ink:#152033;--muted:#667085;--line:#d0d7e2;
+  --blue:#2563eb;--cyan:#06b6d4;--orange:#f59e0b;--red:#ef4444;--green:#10b981;--violet:#7c3aed;
+  --soft:#eef5ff;--shadow:0 22px 55px rgba(15,23,42,.12);--radius:26px
+}
+[data-theme="dark"]{
+  --bg:#090e1d;--panel:#121a2e;--ink:#edf3ff;--muted:#a9b4c7;--line:#2b3856;
+  --blue:#60a5fa;--cyan:#22d3ee;--orange:#fbbf24;--red:#fb7185;--green:#34d399;--violet:#a78bfa;
+  --soft:#101a31;--shadow:0 24px 60px rgba(0,0,0,.38)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 8% 0%,rgba(37,99,235,.16),transparent 32%),
+    radial-gradient(circle at 92% 12%,rgba(6,182,212,.13),transparent 30%),
+    var(--bg);
+  color:var(--ink);
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  line-height:1.58
+}
+header{
+  position:sticky;top:0;z-index:30;
+  background:color-mix(in srgb,var(--bg) 84%,transparent);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line)
+}
+.wrap{max-width:1280px;margin:0 auto;padding:22px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;font-weight:950;letter-spacing:-.025em}
+.logo{width:46px;height:46px;border-radius:17px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:grid;place-items:center;color:white;box-shadow:var(--shadow)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{
+  border:1px solid var(--line);background:var(--panel);color:var(--ink);
+  padding:10px 14px;border-radius:14px;font-weight:850;cursor:pointer;
+  transition:.18s;box-shadow:0 3px 14px rgba(15,23,42,.06);text-decoration:none
+}
+.btn:hover{transform:translateY(-1px);border-color:var(--blue)}
+.btn.primary{background:linear-gradient(135deg,var(--blue),var(--cyan));color:white;border:0}
+.btn.warn{background:linear-gradient(135deg,var(--orange),#f97316);color:white;border:0}
+.btn.danger{background:linear-gradient(135deg,var(--red),#f97316);color:white;border:0}
+.btn.ok{background:linear-gradient(135deg,var(--green),#14b8a6);color:white;border:0}
+.btn.violet{background:linear-gradient(135deg,var(--violet),var(--blue));color:white;border:0}
+.hero{padding:48px 0 22px}
+.kicker{color:var(--blue);font-weight:950;text-transform:uppercase;letter-spacing:.14em;font-size:.78rem}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;border:1px solid var(--line);background:color-mix(in srgb,var(--panel),var(--blue) 6%);color:var(--blue);font-size:.8rem;font-weight:900;margin:4px 6px 4px 0}
+h1{font-size:clamp(2.2rem,5vw,4.8rem);line-height:1.01;margin:12px 0 16px;letter-spacing:-.062em}
+h2{font-size:clamp(1.45rem,3vw,2.42rem);line-height:1.1;margin:34px 0 14px;letter-spacing:-.038em}
+h3{font-size:1.22rem;margin:20px 0 10px}
+p{margin:0 0 14px}.lead{font-size:1.18rem;color:var(--muted);max-width:970px}.small{font-size:.92rem;color:var(--muted)}
+.grid{display:grid;gap:18px}.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.split{display:grid;grid-template-columns:430px 1fr;gap:18px;align-items:start}
+.card{background:color-mix(in srgb,var(--panel) 96%,var(--blue) 4%);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+.mini{padding:16px;border-radius:20px;background:color-mix(in srgb,var(--panel),var(--blue) 5%);border:1px solid var(--line)}
+.metric{padding:16px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,color-mix(in srgb,var(--panel),var(--blue) 7%),var(--panel))}
+.metric strong{display:block;font-size:1.55rem;letter-spacing:-.04em}
+.eq{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--panel),var(--blue) 8%);border:1px solid color-mix(in srgb,var(--blue),var(--line) 70%);padding:13px 14px;border-radius:16px;overflow:auto;white-space:pre-wrap}
+.canvasBox{background:linear-gradient(180deg,color-mix(in srgb,var(--blue) 9%,transparent),color-mix(in srgb,var(--cyan) 6%,transparent));border:1px solid var(--line);border-radius:24px;padding:14px}
+canvas{width:100%;height:auto;display:block;border-radius:18px;background:var(--panel);border:1px solid var(--line)}
+label{font-weight:850}
+.rangeRow{display:grid;grid-template-columns:155px 1fr 80px;gap:10px;align-items:center;margin:11px 0}
+input[type=range]{width:100%}
+.tableWrap{max-height:250px;overflow:auto;border:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--panel),var(--blue) 3%)}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top;font-size:.9rem}
+.table th{position:sticky;top:0;color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;background:color-mix(in srgb,var(--panel),var(--blue) 9%)}
+.note{border-left:5px solid var(--blue);padding:14px 16px;background:color-mix(in srgb,var(--blue) 9%,var(--panel));border-radius:14px;margin:16px 0}
+.warnbox{border-left:5px solid var(--orange);padding:14px 16px;background:color-mix(in srgb,var(--orange) 13%,var(--panel));border-radius:14px;margin:16px 0}
+.okbox{border-left:5px solid var(--green);padding:14px 16px;background:color-mix(in srgb,var(--green) 10%,var(--panel));border-radius:14px;margin:16px 0}
+.dangerbox{border-left:5px solid var(--red);padding:14px 16px;background:color-mix(in srgb,var(--red) 10%,var(--panel));border-radius:14px;margin:16px 0}
+.step{display:flex;gap:14px;align-items:flex-start;margin:12px 0}.num{flex:0 0 34px;width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:grid;place-items:center;color:white;font-weight:950}
+footer{border-top:1px solid var(--line);margin-top:42px;color:var(--muted)}
+@media(max-width:1020px){.grid2,.grid3,.grid4,.split{grid-template-columns:1fr}.rangeRow{grid-template-columns:1fr}.hero{padding-top:30px}}
+@media print{header,.controls,.btn{display:none!important}body{background:#fff}.card{box-shadow:none;break-inside:avoid}canvas{max-width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap topbar">
+    <div class="brand"><div class="logo">LR</div><div>Regresión Lineal · Teoría y Simulación</div></div>
+    <div class="controls">
+      <button class="btn" onclick="toggleTheme()">Cambiar tema</button>
+      <button class="btn" onclick="window.print()">Imprimir / PDF</button>
+      <a class="btn" href="#simulador">Simulador</a>
+      <a class="btn" href="#teoria">Teoría</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+<section class="hero">
+  <div class="kicker">Machine Learning · Clase interactiva</div>
+  <h1>Regresión lineal: ajustar pesos, entrenar y validar</h1>
+  <p class="lead">Esta página integra teoría y simulación visual. El objetivo es comprender cómo un modelo lineal aprende una recta de la forma <strong>ŷ = mX + b</strong>, cómo se actualizan sus parámetros mediante descenso por gradiente y por qué separamos datos de entrenamiento y validación.</p>
+  <div>
+    <span class="pill">Modelo lineal</span><span class="pill">Pendiente m</span><span class="pill">Bias b</span><span class="pill">MSE</span><span class="pill">Gradiente</span><span class="pill">Train / Validación</span>
+  </div>
+</section>
+
+<section class="grid grid4">
+  <div class="metric"><strong id="metricEpoch">0</strong><span>epochs</span></div>
+  <div class="metric"><strong id="metricTrain">–</strong><span>MSE entrenamiento</span></div>
+  <div class="metric"><strong id="metricVal">–</strong><span>MSE validación</span></div>
+  <div class="metric"><strong id="metricParams">m=– b=–</strong><span>parámetros aprendidos</span></div>
+</section>
+
+<section id="simulador" class="split" style="margin-top:18px">
+  <div class="card">
+    <h2>Panel de entrenamiento</h2>
+    <div class="controls">
+      <button class="btn primary" onclick="trainStep()">Entrenar un epoch</button>
+      <button class="btn warn" onclick="toggleAuto()">Simulación dinámica</button>
+      <button class="btn ok" onclick="nextTeacherStep()">Paso docente</button>
+      <button class="btn" onclick="reset()">Reiniciar</button>
+    </div>
+
+    <div class="rangeRow"><label>learning rate α</label><input id="lr" type="range" min=".001" max=".25" step=".001" value=".045" oninput="draw()"><span id="lrv"></span></div>
+    <div class="rangeRow"><label>m inicial</label><input id="mInit" type="range" min="-5" max="5" step=".1" value="-1.5" onchange="reset()"><span id="mInitv"></span></div>
+    <div class="rangeRow"><label>b inicial</label><input id="bInit" type="range" min="-4" max="4" step=".1" value="1.5" onchange="reset()"><span id="bInitv"></span></div>
+    <div class="rangeRow"><label>ruido</label><input id="noise" type="range" min="0" max="1.6" step=".05" value=".55" onchange="makeData();reset()"><span id="noisev"></span></div>
+    <div class="rangeRow"><label>% validación</label><input id="valPct" type="range" min="10" max="45" step="5" value="25" onchange="makeData();reset()"><span id="valPctv"></span></div>
+
+    <div class="note" id="status">Presioná “Entrenar un epoch” para que la recta empiece a acercarse a los datos.</div>
+
+    <div class="card" style="box-shadow:none;margin-top:16px">
+      <h3 id="teacherTitle">Paso docente 1 · Problema</h3>
+      <p id="teacherText">Tenemos puntos dispersos y buscamos una recta que represente la tendencia general.</p>
+      <div class="eq" id="teacherFormula">ŷ = mX + b</div>
+    </div>
+  </div>
+
+  <div class="card canvasBox">
+    <canvas id="c" width="940" height="670"></canvas>
+  </div>
+</section>
+
+<section class="grid grid2" style="margin-top:18px">
+  <div class="card">
+    <h2>Cálculo actual</h2>
+    <div class="eq" id="calcBox"></div>
+    <div class="warnbox"><strong>Lectura:</strong> si el gradiente es grande, los parámetros todavía están lejos de un buen ajuste. Si el gradiente se acerca a cero, la recta cambia cada vez menos.</div>
+  </div>
+  <div class="card">
+    <h2>Historial de entrenamiento</h2>
+    <p class="small">Cada fila muestra cómo cambian los parámetros y las pérdidas. Sirve para ver si el modelo está aprendiendo.</p>
+    <div class="tableWrap">
+      <table class="table" id="histTable">
+        <thead><tr><th>Epoch</th><th>m</th><th>b</th><th>Train MSE</th><th>Val MSE</th><th>|grad|</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="teoria">
+  <h2>1. Qué problema resuelve la regresión lineal</h2>
+  <div class="grid grid2">
+    <div class="card">
+      <h3>La idea</h3>
+      <p>La regresión lineal busca explicar una variable numérica mediante una o más variables de entrada. En el caso más simple, tenemos una sola variable <strong>X</strong> y queremos predecir una salida <strong>Y</strong>.</p>
+      <div class="eq">ŷ = mX + b</div>
+      <p>La recta no pretende pasar por todos los puntos. Busca representar la tendencia general minimizando el error global.</p>
+    </div>
+    <div class="card">
+      <h3>Qué son m y b</h3>
+      <p><strong>m</strong> es la pendiente. Indica cuánto cambia la predicción cuando X aumenta una unidad.</p>
+      <p><strong>b</strong> es la ordenada al origen o sesgo. Indica el valor de la predicción cuando X vale cero.</p>
+      <div class="note"><strong>En lenguaje de redes:</strong> m es un peso y b es un bias. Entrenar es ajustar esos parámetros.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>2. Función de pérdida: error cuadrático medio</h2>
+  <div class="card">
+    <p>Para saber si una recta ajusta bien, necesitamos medir el error entre el valor real y el valor predicho. Una medida habitual es el <strong>MSE</strong>, o error cuadrático medio.</p>
+    <div class="eq">MSE = (1/n) · Σ(yᵢ − ŷᵢ)²</div>
+    <p>El cuadrado hace que los errores positivos y negativos no se cancelen. También penaliza más los errores grandes.</p>
+  </div>
+</section>
+
+<section>
+  <h2>3. Descenso por gradiente</h2>
+  <div class="grid grid2">
+    <div class="card">
+      <h3>Actualizar m y b</h3>
+      <p>El modelo comienza con valores iniciales de <strong>m</strong> y <strong>b</strong>. Luego calcula el error y pregunta: ¿en qué dirección debo mover m y b para bajar el MSE?</p>
+      <div class="eq">m nuevo = m − α · ∂MSE/∂m
+b nuevo = b − α · ∂MSE/∂b</div>
+      <p>El parámetro <strong>α</strong> es el learning rate. Controla el tamaño del paso.</p>
+    </div>
+    <div class="card">
+      <h3>Gradientes de la regresión lineal</h3>
+      <p>Para un modelo ŷ = mX + b, los gradientes se pueden calcular de forma directa:</p>
+      <div class="eq">∂MSE/∂m = (-2/n) · Σ xᵢ(yᵢ − ŷᵢ)
+∂MSE/∂b = (-2/n) · Σ (yᵢ − ŷᵢ)</div>
+      <p>Estos valores indican cómo cambiar la pendiente y el bias para reducir la pérdida.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>4. Entrenamiento y validación</h2>
+  <div class="grid grid2">
+    <div class="card">
+      <h3>Datos de entrenamiento</h3>
+      <p>Son los puntos que el modelo usa para calcular los gradientes y ajustar los parámetros. La curva de entrenamiento muestra si el modelo aprende lo que ve.</p>
+    </div>
+    <div class="card">
+      <h3>Datos de validación</h3>
+      <p>Son puntos separados que el modelo no usa para modificar m y b. Sirven para evaluar si la recta generaliza a datos no usados en el ajuste.</p>
+      <div class="okbox"><strong>Idea clave:</strong> no alcanza con bajar el error de entrenamiento. Queremos que también baje o se mantenga bajo el error de validación.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>5. Actividad guiada</h2>
+  <div class="card">
+    <div class="step"><div class="num">1</div><div>Aumentá el ruido y observá que la recta no puede explicar todos los puntos perfectamente.</div></div>
+    <div class="step"><div class="num">2</div><div>Probá un learning rate muy bajo. La recta mejora, pero demasiado lento.</div></div>
+    <div class="step"><div class="num">3</div><div>Probá un learning rate alto. Observá si el entrenamiento se vuelve inestable.</div></div>
+    <div class="step"><div class="num">4</div><div>Compará MSE de entrenamiento y validación. Explicá qué significa que ambos sean parecidos.</div></div>
+  </div>
+</section>
+
+</main>
+<footer><div class="wrap">Material elaborado por el profesor Sergio Gevatschnaider · Clase interactiva de Machine Learning</div></footer>
+
+<script>
+function toggleTheme(){
+  const r=document.documentElement;
+  const n=r.getAttribute('data-theme')==='dark'?'light':'dark';
+  r.setAttribute('data-theme',n);
+  localStorage.setItem('lr_theme',n);
+  draw();
+}
+(function(){document.documentElement.setAttribute('data-theme',localStorage.getItem('lr_theme')||'dark');})();
+function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()}
+function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
+const c=document.getElementById('c'), ctx=c.getContext('2d');
+
+let data=[], train=[], val=[], m=0, b=0, epoch=0, history=[], timer=null, teacherIdx=0;
+const trueM=2.15, trueB=-0.8;
+
+function seededNoise(i){
+  return Math.sin(i*12.9898+78.233)*43758.5453 % 1;
+}
+function makeData(){
+  data=[];
+  const n=90, nz=+noise.value;
+  for(let i=0;i<n;i++){
+    let x=-2.8 + 5.6*i/(n-1);
+    let shape=.65*Math.sin(1.3*x);
+    let eps=(Math.sin(i*3.17)+Math.cos(i*1.91))*0.5*nz;
+    let y=trueM*x+trueB+shape+eps;
+    data.push({x,y});
+  }
+  const cut=Math.round(n*(1-(+valPct.value)/100));
+  train=data.slice(0,cut).filter((_,i)=>i%2===0).concat(data.slice(0,cut).filter((_,i)=>i%2===1));
+  val=data.slice(cut);
+}
+function pred(x){return m*x+b}
+function mse(arr){
+  return arr.reduce((s,p)=>s+(p.y-pred(p.x))**2,0)/arr.length;
+}
+function gradients(){
+  const n=train.length;
+  let gm=0, gb=0;
+  for(const p of train){
+    const e=p.y-pred(p.x);
+    gm += -2*p.x*e;
+    gb += -2*e;
+  }
+  return {gm:gm/n, gb:gb/n};
+}
+function reset(){
+  m=+mInit.value; b=+bInit.value; epoch=0; history=[]; teacherIdx=0;
+  if(timer){clearInterval(timer); timer=null;}
+  draw();
+}
+function trainStep(){
+  const g=gradients(), alpha=+lr.value;
+  m -= alpha*g.gm;
+  b -= alpha*g.gb;
+  epoch++;
+  const tr=mse(train), va=mse(val), mag=Math.sqrt(g.gm*g.gm+g.gb*g.gb);
+  history.unshift({epoch,m,b,tr,va,mag});
+  history=history.slice(0,12);
+  teacherIdx=Math.min(teacherIdx+1,teacherSteps.length-1);
+  draw();
+}
+function toggleAuto(){
+  if(timer){clearInterval(timer);timer=null;return}
+  timer=setInterval(trainStep,420);
+}
+
+const teacherSteps=[
+  {t:'Paso docente 1 · Problema',x:'Tenemos puntos dispersos y buscamos una recta que represente la tendencia general.',f:'ŷ = mX + b'},
+  {t:'Paso docente 2 · Predicción',x:'Con los valores actuales de m y b, el modelo calcula una predicción para cada punto.',f:'ŷᵢ = m xᵢ + b'},
+  {t:'Paso docente 3 · Error',x:'La diferencia entre y real y ŷ predicha produce un error. El MSE resume todos esos errores.',f:'MSE = (1/n) · Σ(yᵢ − ŷᵢ)²'},
+  {t:'Paso docente 4 · Gradiente',x:'El gradiente indica cómo cambiar m y b para bajar la pérdida.',f:'∂MSE/∂m y ∂MSE/∂b'},
+  {t:'Paso docente 5 · Actualización',x:'El descenso por gradiente actualiza los parámetros usando el learning rate.',f:'m ← m − α·∂MSE/∂m\nb ← b − α·∂MSE/∂b'},
+  {t:'Paso docente 6 · Validación',x:'La validación evalúa la recta en datos que no se usan para ajustar m y b.',f:'Comparar MSE_train vs MSE_val'}
+];
+function nextTeacherStep(){teacherIdx=(teacherIdx+1)%teacherSteps.length;draw();}
+
+function sx(x){return 80+(x+3.2)/6.4*520}
+function sy(y){return 500-(y+8)/16*420}
+function lx(i){return 655+i/80*240}
+function ly(v){return 500-clamp(v,0,18)/18*270}
+
+function drawAxes(){
+  const ink=cssVar('--ink'), muted=cssVar('--muted'), line=cssVar('--line');
+  ctx.strokeStyle=line; ctx.lineWidth=1;
+  for(let i=0;i<=8;i++){
+    let x=80+i*65; ctx.beginPath(); ctx.moveTo(x,80); ctx.lineTo(x,500); ctx.stroke();
+    let y=80+i*52.5; ctx.beginPath(); ctx.moveTo(80,y); ctx.lineTo(600,y); ctx.stroke();
+  }
+  ctx.strokeStyle=muted; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(80,500); ctx.lineTo(600,500); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(80,80); ctx.lineTo(80,500); ctx.stroke();
+  ctx.fillStyle=ink; ctx.font='900 17px Inter,Arial'; ctx.fillText('Ajuste lineal sobre datos',80,46);
+  ctx.font='13px Inter,Arial'; ctx.fillStyle=muted; ctx.fillText('Azul: entrenamiento | Violeta: validación | Naranja: recta aprendida | Verde: tendencia generadora aproximada',80,66);
+}
+function drawLine(mv,bv,color,width,dashed=false){
+  if(dashed) ctx.setLineDash([8,6]);
+  ctx.strokeStyle=color; ctx.lineWidth=width; ctx.beginPath();
+  const x1=-3.1,x2=3.1; ctx.moveTo(sx(x1),sy(mv*x1+bv)); ctx.lineTo(sx(x2),sy(mv*x2+bv)); ctx.stroke();
+  ctx.setLineDash([]);
+}
+function drawLossChart(){
+  const ink=cssVar('--ink'), muted=cssVar('--muted'), line=cssVar('--line'), blue=cssVar('--blue'), red=cssVar('--red');
+  ctx.strokeStyle=line; ctx.lineWidth=1;
+  ctx.strokeRect(650,210,260,290);
+  for(let i=0;i<5;i++){ctx.beginPath();ctx.moveTo(650,210+i*72.5);ctx.lineTo(910,210+i*72.5);ctx.stroke();}
+  ctx.fillStyle=ink; ctx.font='900 16px Inter,Arial'; ctx.fillText('Curvas de pérdida',650,185);
+  ctx.fillStyle=muted; ctx.font='12px Inter,Arial'; ctx.fillText('MSE train vs validación',650,202);
+  const arr=[...history].reverse();
+  function plot(key,color){
+    if(arr.length<2) return;
+    ctx.strokeStyle=color; ctx.lineWidth=3; ctx.beginPath();
+    arr.forEach((h,i)=>{let x=650+i/Math.max(1,arr.length-1)*260, y=ly(h[key]); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);});
+    ctx.stroke();
+  }
+  plot('tr',blue); plot('va',red);
+  ctx.fillStyle=blue; ctx.fillText('train',825,230);
+  ctx.fillStyle=red; ctx.fillText('validación',825,248);
+}
+function draw(){
+  lrv.textContent=(+lr.value).toFixed(3); mInitv.textContent=(+mInit.value).toFixed(1); bInitv.textContent=(+bInit.value).toFixed(1);
+  noisev.textContent=(+noise.value).toFixed(2); valPctv.textContent=valPct.value+'%';
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle=cssVar('--panel'); ctx.fillRect(0,0,c.width,c.height);
+  drawAxes();
+  const blue=cssVar('--blue'), violet=cssVar('--violet'), orange=cssVar('--orange'), green=cssVar('--green'), red=cssVar('--red'), ink=cssVar('--ink'), muted=cssVar('--muted');
+  for(const p of train){ctx.fillStyle=blue; ctx.globalAlpha=.82; ctx.beginPath(); ctx.arc(sx(p.x),sy(p.y),4.2,0,Math.PI*2); ctx.fill();}
+  for(const p of val){ctx.fillStyle=violet; ctx.globalAlpha=.9; ctx.beginPath(); ctx.arc(sx(p.x),sy(p.y),5,0,Math.PI*2); ctx.fill();}
+  ctx.globalAlpha=1;
+  drawLine(trueM,trueB,green,3,true);
+  drawLine(m,b,orange,4,false);
+
+  const g=gradients(), tr=mse(train), va=mse(val), mag=Math.sqrt(g.gm*g.gm+g.gb*g.gb);
+  ctx.fillStyle=ink; ctx.font='900 18px Inter,Arial'; ctx.fillText(`ŷ = ${m.toFixed(3)}X + ${b.toFixed(3)}`,650,70);
+  ctx.font='14px Inter,Arial'; ctx.fillStyle=muted;
+  ctx.fillText(`gradiente m: ${g.gm.toFixed(3)} | gradiente b: ${g.gb.toFixed(3)}`,650,94);
+  ctx.fillText(`MSE train: ${tr.toFixed(3)} | MSE validación: ${va.toFixed(3)}`,650,116);
+  ctx.fillStyle=orange; ctx.font='900 14px Inter,Arial'; ctx.fillText('recta aprendida',485,115);
+  ctx.fillStyle=green; ctx.fillText('tendencia real',485,136);
+  ctx.fillStyle=blue; ctx.fillText('train',485,157);
+  ctx.fillStyle=violet; ctx.fillText('validación',485,178);
+  drawLossChart();
+
+  metricEpoch.textContent=epoch;
+  metricTrain.textContent=tr.toFixed(3);
+  metricVal.textContent=va.toFixed(3);
+  metricParams.textContent=`m=${m.toFixed(2)} b=${b.toFixed(2)}`;
+  const s=teacherSteps[teacherIdx];
+  teacherTitle.textContent=s.t; teacherText.textContent=s.x; teacherFormula.textContent=s.f;
+  calcBox.textContent=`Modelo actual:
+ŷ = ${m.toFixed(4)}X + ${b.toFixed(4)}
+
+Pérdida:
+MSE_train = ${tr.toFixed(4)}
+MSE_validación = ${va.toFixed(4)}
+
+Gradientes:
+∂MSE/∂m = ${g.gm.toFixed(4)}
+∂MSE/∂b = ${g.gb.toFixed(4)}
+
+Actualización con α = ${(+lr.value).toFixed(3)}:
+m nuevo = ${m.toFixed(4)} − ${(+lr.value).toFixed(3)} · (${g.gm.toFixed(4)})
+b nuevo = ${b.toFixed(4)} − ${(+lr.value).toFixed(3)} · (${g.gb.toFixed(4)})`;
+
+  const gap=Math.abs(va-tr);
+  let msg='Presioná “Entrenar un epoch” para ajustar m y b.';
+  if(epoch>0){
+    if(+lr.value>.17) msg='Learning rate alto: si ves saltos grandes o pérdida inestable, bajá α.';
+    else if(gap<1.5) msg='Train y validación están relativamente cerca: el ajuste parece generalizar razonablemente.';
+    else msg='Hay diferencia entre train y validación. Revisá si el modelo está ajustando mejor un conjunto que otro.';
+  }
+  status.innerHTML=msg;
+
+  renderHistory();
+}
+function renderHistory(){
+  const tb=document.querySelector('#histTable tbody');
+  tb.innerHTML=history.length?history.map(h=>`<tr><td>${h.epoch}</td><td>${h.m.toFixed(3)}</td><td>${h.b.toFixed(3)}</td><td>${h.tr.toFixed(3)}</td><td>${h.va.toFixed(3)}</td><td>${h.mag.toFixed(3)}</td></tr>`).join(''):'<tr><td colspan="6" class="small">Todavía no hay entrenamiento. Presioná “Entrenar un epoch”.</td></tr>';
+}
+makeData(); reset();
+</script>
+</body>
+</html>
