@@ -2167,11 +2167,810 @@ Su valor pedagógico está en que combina:
 * análisis crítico de limitaciones;
 * implementación práctica en Python.
 
-El recorrido recomendado para este módulo es comenzar con la explicación conceptual, continuar con la simulación interactiva, repasar con el cuestionario, consolidar vocabulario con el glosario y finalmente practicar en Colab.
+# 🧠 Redes Neuronales · Recursos interactivos de estudio
 
+> Material organizado para estudiar **redes neuronales artificiales**, **perceptrón**, **funciones de activación**, **descenso por gradiente**, **forward propagation**, **backpropagation**, **regularización** y **actividad integradora** mediante teoría visual, simulaciones interactivas y recursos didácticos para clase.
 
+---
 
+## 🎯 Objetivo general del bloque
 
+Este conjunto de recursos tiene como objetivo comprender las **redes neuronales artificiales** desde una perspectiva conceptual, visual y práctica.
 
+El bloque parte de la idea de una neurona artificial como una unidad que recibe entradas, calcula una combinación ponderada, aplica una función de activación y produce una salida. A partir de esa intuición inicial, se avanza hacia el perceptrón, las fronteras de decisión, las funciones de activación, el proceso de entrenamiento, el descenso por gradiente, la propagación hacia adelante, la retropropagación del error y las técnicas de regularización.
 
+La finalidad es que el estudiante pueda comprender que una red neuronal no es una “caja mágica”, sino un sistema matemático entrenable que transforma datos mediante pesos, sesgos, activaciones y actualizaciones iterativas.
+
+---
+
+## 🧭 Secuencia didáctica sugerida
+
+```text
+1. Teoría completa de redes neuronales
+        ↓
+2. Perceptrón y fronteras de decisión
+        ↓
+3. Funciones de activación
+        ↓
+4. Descenso por gradiente
+        ↓
+5. Forward propagation y backpropagation paso a paso
+        ↓
+6. Forward propagation y backpropagation con teoría dinámica
+        ↓
+7. Regularización y generalización
+        ↓
+8. Actividad integrada
+```
+
+---
+
+## 📚 Recursos interactivos
+
+<table>
+  <thead>
+    <tr>
+      <th align="center">Orden</th>
+      <th align="left">Recurso</th>
+      <th align="left">Propósito didáctico</th>
+      <th align="center">Abrir HTML</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center"><strong>0</strong></td>
+      <td><strong>Índice de la clase</strong></td>
+      <td>Presentar la estructura general del bloque, ordenar los recursos y facilitar el acceso a cada HTML desde un punto central.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/00_indice_clase_redes_neuronales.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-%C3%8Dndice-1f4e79?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir índice">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>1</strong></td>
+      <td><strong>Teoría completa de redes neuronales</strong></td>
+      <td>Introducir el marco conceptual del tema: neurona artificial, pesos, sesgo, activaciones, capas, entrenamiento, error y aprendizaje.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_teoria_completa_redes_neuronales.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Teor%C3%ADa%20completa-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir teoría completa">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>2</strong></td>
+      <td><strong>Perceptrón y fronteras de decisión</strong></td>
+      <td>Visualizar cómo un perceptrón construye fronteras lineales para resolver problemas lógicos como AND, OR, NAND y NOR, y por qué XOR requiere mayor complejidad.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/02_simulacion_perceptron_fronteras.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Perceptr%C3%B3n-7c3aed?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir perceptrón">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>3</strong></td>
+      <td><strong>Funciones de activación</strong></td>
+      <td>Comparar identidad, escalón, sigmoide, tangente hiperbólica, ReLU y variantes, observando forma, derivada, saturación y uso práctico.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/03_simulacion_activaciones.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Activaciones-15803d?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir activaciones">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>4</strong></td>
+      <td><strong>Descenso por gradiente</strong></td>
+      <td>Mostrar cómo un modelo reduce el error moviéndose en la dirección opuesta al gradiente, y cómo el learning rate afecta la convergencia.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/04_simulacion_descenso_gradiente.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Gradiente-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir descenso por gradiente">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>5</strong></td>
+      <td><strong>Forward y backpropagation paso a paso</strong></td>
+      <td>Explicar el flujo de cálculo de una red pequeña: entradas, pesos, activaciones, predicción, error, gradientes y actualización de parámetros.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_forward_backprop_paso_a_paso.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Backprop%20paso%20a%20paso-dc2626?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir backprop paso a paso">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>6</strong></td>
+      <td><strong>Forward y backpropagation con teoría dinámica</strong></td>
+      <td>Reforzar la comprensión conceptual del aprendizaje de una red neuronal mediante explicaciones dinámicas, métricas y visualización del proceso de ajuste.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_forward_backprop_teoria_dinamica.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Backprop%20din%C3%A1mico-9333ea?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir backprop dinámico">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>7</strong></td>
+      <td><strong>Regularización en redes neuronales</strong></td>
+      <td>Comprender el sobreajuste y estudiar técnicas para mejorar la generalización, como penalización L2, dropout, early stopping y control de complejidad.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/06_regularizacion_teoria_practica_interactiva.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Regularizaci%C3%B3n-0891b2?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir regularización">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>8</strong></td>
+      <td><strong>Actividad integrada</strong></td>
+      <td>Integrar los conceptos del bloque mediante preguntas, ejercicios guiados, interpretación de resultados y consignas para discusión en clase.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_actividad_integrada_redes_neuronales.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Actividad%20integrada-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir actividad integrada">
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+---
+
+## 🔗 Acceso directo a los recursos
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/00_indice_clase_redes_neuronales.html">
+    <img src="https://img.shields.io/badge/0.%20Abrir%20HTML-%C3%8Dndice-1f4e79?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir índice">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_teoria_completa_redes_neuronales.html">
+    <img src="https://img.shields.io/badge/1.%20Abrir%20HTML-Teor%C3%ADa%20completa-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir teoría completa">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/02_simulacion_perceptron_fronteras.html">
+    <img src="https://img.shields.io/badge/2.%20Abrir%20HTML-Perceptr%C3%B3n%20y%20fronteras-7c3aed?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir perceptrón y fronteras">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/03_simulacion_activaciones.html">
+    <img src="https://img.shields.io/badge/3.%20Abrir%20HTML-Funciones%20de%20activaci%C3%B3n-15803d?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir funciones de activación">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/04_simulacion_descenso_gradiente.html">
+    <img src="https://img.shields.io/badge/4.%20Abrir%20HTML-Descenso%20por%20gradiente-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir descenso por gradiente">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_forward_backprop_paso_a_paso.html">
+    <img src="https://img.shields.io/badge/5.%20Abrir%20HTML-Forward%20y%20Backprop%20paso%20a%20paso-dc2626?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir forward y backprop paso a paso">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_forward_backprop_teoria_dinamica.html">
+    <img src="https://img.shields.io/badge/6.%20Abrir%20HTML-Backprop%20teor%C3%ADa%20din%C3%A1mica-9333ea?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir backprop teoría dinámica">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/06_regularizacion_teoria_practica_interactiva.html">
+    <img src="https://img.shields.io/badge/7.%20Abrir%20HTML-Regularizaci%C3%B3n-0891b2?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir regularización">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_actividad_integrada_redes_neuronales.html">
+    <img src="https://img.shields.io/badge/8.%20Abrir%20HTML-Actividad%20integrada-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir actividad integrada">
+  </a>
+</p>
+
+---
+
+## 🧩 Resumen didáctico de cada recurso
+
+### 0. Índice de la clase
+
+El índice funciona como la **puerta de entrada al bloque completo**. Permite ordenar los materiales, acceder rápidamente a cada HTML y presentar una secuencia clara para el estudio de redes neuronales.
+
+Su utilidad principal es transformar varios archivos separados en una experiencia de aprendizaje organizada. Desde este recurso, el estudiante puede iniciar la clase, recorrer las simulaciones y volver al punto central cuando lo necesite.
+
+**Idea clave:** el índice convierte el paquete en un recorrido didáctico navegable.
+
+---
+
+### 1. Teoría completa de redes neuronales
+
+Este recurso introduce el marco conceptual del tema. Presenta la neurona artificial como una unidad matemática que recibe entradas, las combina con pesos, incorpora un sesgo, aplica una función de activación y produce una salida.
+
+También permite comprender que una red neuronal aprende ajustando parámetros. Es decir, no memoriza reglas escritas manualmente, sino que modifica pesos y sesgos a partir del error observado durante el entrenamiento.
+
+Permite trabajar:
+
+- neurona artificial;
+- entradas;
+- pesos;
+- sesgo;
+- combinación lineal;
+- función de activación;
+- capas;
+- predicción;
+- error;
+- entrenamiento;
+- aprendizaje supervisado.
+
+**Idea clave:** una red neuronal aprende ajustando pesos y sesgos para transformar entradas en salidas cada vez más cercanas al objetivo.
+
+---
+
+### 2. Perceptrón y fronteras de decisión
+
+Este recurso funciona como el primer laboratorio visual del bloque. Permite observar cómo una neurona simple puede resolver problemas de clasificación binaria cuando las clases son linealmente separables.
+
+A través de ejemplos como AND, OR, NAND y NOR, el estudiante puede ver cómo una frontera de decisión separa regiones del espacio. El caso XOR permite mostrar el límite del perceptrón simple y justificar la necesidad de redes con capas ocultas.
+
+Permite trabajar:
+
+- perceptrón;
+- clasificación binaria;
+- tabla de verdad;
+- funciones lógicas;
+- AND;
+- OR;
+- NAND;
+- NOR;
+- XOR;
+- pesos y sesgo;
+- frontera de decisión;
+- separación lineal.
+
+**Idea clave:** el perceptrón puede resolver problemas linealmente separables, pero necesita mayor arquitectura para representar patrones no lineales como XOR.
+
+---
+
+### 3. Funciones de activación
+
+Este recurso permite comprender por qué las redes neuronales necesitan funciones de activación. Sin activaciones no lineales, una red profunda equivaldría a una transformación lineal más grande, pero no ganaría verdadera capacidad de representación.
+
+La comparación entre identidad, escalón, sigmoide, tangente hiperbólica, ReLU y Leaky ReLU ayuda a visualizar forma, rango, derivada, saturación y utilidad práctica de cada función.
+
+Permite trabajar:
+
+- función identidad;
+- función escalón;
+- sigmoide;
+- tangente hiperbólica;
+- ReLU;
+- Leaky ReLU;
+- derivadas;
+- saturación;
+- gradientes;
+- no linealidad.
+
+**Idea clave:** las funciones de activación permiten que la red modele relaciones no lineales.
+
+---
+
+### 4. Descenso por gradiente
+
+Este recurso muestra el motor del aprendizaje en redes neuronales. Permite visualizar cómo un modelo reduce su error moviéndose en la dirección opuesta al gradiente de la función de pérdida.
+
+El estudiante puede analizar qué ocurre cuando el learning rate es muy pequeño, adecuado o demasiado grande. Esto permite comprender por qué el entrenamiento puede ser lento, estable, oscilante o incluso divergente.
+
+Permite trabajar:
+
+- función de pérdida;
+- costo;
+- gradiente;
+- pendiente;
+- mínimo;
+- learning rate;
+- trayectoria de optimización;
+- convergencia;
+- oscilación;
+- divergencia.
+
+**Idea clave:** entrenar una red significa ajustar parámetros en la dirección que reduce la pérdida.
+
+---
+
+### 5. Forward y backpropagation paso a paso
+
+Este recurso permite observar el ciclo completo de aprendizaje en una red pequeña. Primero se calcula una predicción hacia adelante y luego se calcula cómo debe ajustarse cada peso para reducir el error.
+
+Es especialmente útil para mostrar que el entrenamiento no ocurre de manera intuitiva o arbitraria, sino mediante una cadena de cálculos ordenados.
+
+Permite trabajar:
+
+- entrada de datos;
+- cálculo de activaciones;
+- propagación hacia adelante;
+- predicción;
+- cálculo del error;
+- pérdida;
+- gradientes;
+- retropropagación;
+- actualización de pesos.
+
+**Idea clave:** forward propagation calcula la predicción, mientras que backpropagation calcula cómo debe modificarse cada peso.
+
+---
+
+### 6. Forward y backpropagation con teoría dinámica
+
+Este recurso complementa el anterior con una explicación más conceptual del proceso de aprendizaje. Su valor didáctico está en conectar el flujo visual de la red con la interpretación del error y la responsabilidad de cada parámetro.
+
+Permite reforzar que backpropagation no distribuye el error de forma uniforme, sino de acuerdo con la contribución de cada peso dentro de la cadena de operaciones.
+
+Permite trabajar:
+
+- flujo de información;
+- relación entre capas;
+- interpretación del error;
+- propagación del error hacia atrás;
+- sensibilidad de los pesos;
+- efecto de cada actualización;
+- aprendizaje como proceso iterativo.
+
+**Idea clave:** backpropagation distribuye responsabilidad sobre el error según la contribución de cada parámetro.
+
+---
+
+### 7. Regularización en redes neuronales
+
+Este recurso introduce el problema del sobreajuste y la necesidad de construir modelos que generalicen. El objetivo no es solamente reducir el error de entrenamiento, sino lograr buen desempeño sobre datos nuevos.
+
+La simulación permite distinguir entre memorizar ruido y aprender patrones relevantes. También permite estudiar técnicas como L1, L2, dropout, early stopping y control de complejidad.
+
+Permite trabajar:
+
+- overfitting;
+- underfitting;
+- generalización;
+- complejidad del modelo;
+- entrenamiento;
+- validación;
+- penalización L2;
+- penalización L1;
+- dropout;
+- early stopping.
+
+**Idea clave:** una red útil no debe memorizar los datos de entrenamiento, sino aprender patrones que funcionen sobre datos nuevos.
+
+---
+
+### 8. Actividad integrada
+
+La actividad integrada funciona como cierre del bloque. Permite repasar, ordenar y aplicar los conceptos centrales mediante preguntas, consignas y ejercicios de interpretación.
+
+Es útil para verificar si el estudiante puede explicar cómo se conectan neurona, activación, pérdida, gradiente, backpropagation y regularización en un mismo proceso de aprendizaje.
+
+Permite trabajar:
+
+- preguntas conceptuales;
+- lectura de simulaciones;
+- interpretación de resultados;
+- comparación entre técnicas;
+- errores frecuentes;
+- explicación oral o escrita;
+- preparación para evaluación.
+
+**Idea clave:** el aprendizaje se consolida cuando el estudiante puede explicar el flujo completo de una red neuronal.
+
+---
+
+## 🗺️ Mapa conceptual del módulo
+
+```text
+Redes Neuronales
+│
+├── 1. Neurona artificial
+│   ├── Entradas
+│   ├── Pesos
+│   ├── Sesgo
+│   ├── Combinación lineal
+│   └── Salida
+│
+├── 2. Funciones de activación
+│   ├── Identidad
+│   ├── Escalón
+│   ├── Sigmoide
+│   ├── Tanh
+│   ├── ReLU
+│   └── Leaky ReLU
+│
+├── 3. Perceptrón
+│   ├── Clasificación binaria
+│   ├── Tabla de verdad
+│   ├── Frontera de decisión
+│   ├── Separación lineal
+│   └── Limitaciones con XOR
+│
+├── 4. Entrenamiento
+│   ├── Predicción
+│   ├── Error
+│   ├── Función de pérdida
+│   ├── Gradiente
+│   └── Actualización de pesos
+│
+├── 5. Descenso por gradiente
+│   ├── Learning rate
+│   ├── Dirección de descenso
+│   ├── Convergencia
+│   ├── Oscilación
+│   └── Divergencia
+│
+├── 6. Propagación
+│   ├── Forward propagation
+│   ├── Cálculo de activaciones
+│   ├── Backpropagation
+│   ├── Regla de la cadena
+│   └── Gradientes por parámetro
+│
+├── 7. Regularización
+│   ├── Overfitting
+│   ├── Underfitting
+│   ├── L1
+│   ├── L2
+│   ├── Dropout
+│   ├── Early stopping
+│   └── Generalización
+│
+└── 8. Integración
+    ├── Interpretación
+    ├── Diagnóstico de errores
+    ├── Comparación de métodos
+    ├── Explicación conceptual
+    └── Aplicación en clase
+```
+
+---
+
+## 📖 Guía rápida de uso
+
+### Para comenzar desde cero
+
+Usar primero la teoría completa.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_teoria_completa_redes_neuronales.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Teor%C3%ADa%20completa-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir teoría completa">
+</a>
+
+Este recurso permite presentar la intuición general: una red neuronal recibe datos, los transforma mediante pesos y activaciones, produce una predicción y aprende a partir del error.
+
+---
+
+### Para explicar la primera neurona clasificadora
+
+Usar el recurso de perceptrón y fronteras de decisión.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/02_simulacion_perceptron_fronteras.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Perceptr%C3%B3n-7c3aed?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir perceptrón">
+</a>
+
+Flujo sugerido:
+
+```text
+Entradas
+        ↓
+Pesos y sesgo
+        ↓
+Combinación lineal
+        ↓
+Activación
+        ↓
+Clasificación
+        ↓
+Frontera de decisión
+```
+
+---
+
+### Para explicar por qué una red necesita no linealidad
+
+Usar el recurso de funciones de activación.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/03_simulacion_activaciones.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Activaciones-15803d?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir activaciones">
+</a>
+
+Este recurso permite mostrar que las funciones de activación no solo transforman valores, sino que permiten que la red modele relaciones no lineales.
+
+---
+
+### Para explicar cómo aprende el modelo
+
+Usar el recurso de descenso por gradiente.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/04_simulacion_descenso_gradiente.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Gradiente-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir gradiente">
+</a>
+
+Flujo sugerido:
+
+```text
+Predicción
+        ↓
+Error
+        ↓
+Función de pérdida
+        ↓
+Gradiente
+        ↓
+Actualización
+        ↓
+Nueva predicción
+```
+
+---
+
+### Para explicar el ciclo completo de entrenamiento
+
+Usar primero forward y backpropagation paso a paso.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_forward_backprop_paso_a_paso.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Backprop%20paso%20a%20paso-dc2626?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir backprop paso a paso">
+</a>
+
+Luego complementar con la explicación dinámica.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_forward_backprop_teoria_dinamica.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Backprop%20din%C3%A1mico-9333ea?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir backprop dinámico">
+</a>
+
+---
+
+### Para cerrar con generalización
+
+Usar el recurso de regularización.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/06_regularizacion_teoria_practica_interactiva.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Regularizaci%C3%B3n-0891b2?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir regularización">
+</a>
+
+Este recurso permite explicar que entrenar bien no significa solamente reducir el error de entrenamiento, sino lograr que el modelo funcione con datos nuevos.
+
+---
+
+### Para repasar y evaluar
+
+Usar la actividad integrada.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_actividad_integrada_redes_neuronales.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Actividad%20integrada-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir actividad integrada">
+</a>
+
+---
+
+## 🧠 Desarrollo conceptual del tema
+
+### Qué es una red neuronal artificial
+
+Una red neuronal artificial es un modelo computacional inspirado de manera abstracta en la idea de neuronas conectadas. No reproduce el cerebro humano de forma biológica, sino que utiliza unidades matemáticas que reciben entradas, las ponderan, aplican transformaciones y producen salidas.
+
+En términos simples, una red neuronal aprende una función que relaciona datos de entrada con una salida esperada.
+
+```text
+Datos de entrada
+        ↓
+Transformaciones internas
+        ↓
+Predicción
+        ↓
+Comparación con el valor real
+        ↓
+Ajuste de parámetros
+```
+
+---
+
+### Qué es una neurona artificial
+
+Una neurona artificial recibe valores de entrada, multiplica cada uno por un peso, suma esos resultados, agrega un sesgo y aplica una función de activación.
+
+```text
+z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b
+```
+
+Donde:
+
+- `x₁, x₂, ..., xₙ` son las entradas;
+- `w₁, w₂, ..., wₙ` son los pesos;
+- `b` es el sesgo;
+- `z` es la combinación lineal previa a la activación.
+
+Luego se aplica una función de activación:
+
+```text
+a = f(z)
+```
+
+Donde:
+
+- `f` es la función de activación;
+- `a` es la salida de la neurona.
+
+---
+
+### Qué es una función de activación
+
+Una función de activación transforma el valor `z` calculado por la neurona.
+
+Su función principal es introducir no linealidad. Esto permite que una red neuronal pueda aprender patrones complejos que no pueden representarse con una simple recta o plano.
+
+| Función | Uso habitual | Idea principal |
+| :------ | :----------- | :------------- |
+| Identidad | Regresión lineal o salida continua | No cambia el valor |
+| Escalón | Perceptrón clásico | Produce una salida binaria |
+| Sigmoide | Probabilidad binaria | Comprime valores entre 0 y 1 |
+| Tanh | Representaciones centradas | Comprime valores entre -1 y 1 |
+| ReLU | Capas ocultas profundas | Activa valores positivos y anula negativos |
+| Leaky ReLU | Variante de ReLU | Evita que neuronas queden completamente inactivas |
+
+---
+
+### Qué es el perceptrón
+
+El perceptrón es una de las formas más simples de red neuronal. Puede entenderse como una neurona artificial utilizada para clasificación binaria.
+
+Recibe entradas, calcula una combinación lineal, aplica una función de activación y decide entre dos clases.
+
+```text
+Entrada
+   ↓
+Suma ponderada
+   ↓
+Función de activación
+   ↓
+Clase 0 o clase 1
+```
+
+---
+
+### Qué es una frontera de decisión
+
+Una frontera de decisión es la línea, plano o superficie que separa clases en el espacio de datos.
+
+En dos dimensiones, un perceptrón genera una recta:
+
+```text
+w₁x₁ + w₂x₂ + b = 0
+```
+
+Los puntos que quedan de un lado se clasifican como una clase, y los puntos que quedan del otro lado se clasifican como la otra clase.
+
+---
+
+### Por qué XOR es importante
+
+XOR es un ejemplo clásico porque no puede separarse con una sola recta.
+
+Esto muestra una limitación del perceptrón simple y permite introducir la necesidad de redes con capas ocultas.
+
+```text
+AND, OR, NAND, NOR → pueden separarse linealmente
+XOR → no puede separarse linealmente con una sola neurona
+```
+
+---
+
+### Qué es una función de pérdida
+
+Una función de pérdida mide qué tan lejos está la predicción del modelo respecto del valor verdadero.
+
+Si la pérdida es alta, el modelo está prediciendo mal. Si la pérdida baja, el modelo está mejorando.
+
+```text
+L = (y - ŷ)²
+```
+
+---
+
+### Qué es el descenso por gradiente
+
+El descenso por gradiente es un método de optimización que permite ajustar los parámetros del modelo para reducir la pérdida.
+
+La idea es moverse en la dirección contraria al gradiente, porque el gradiente indica hacia dónde aumenta más rápido la pérdida.
+
+```text
+w ← w - η · ∂L/∂w
+```
+
+Donde:
+
+- `w` es el peso;
+- `η` es el learning rate;
+- `∂L/∂w` es la derivada de la pérdida respecto del peso.
+
+---
+
+### Qué es forward propagation
+
+Forward propagation es el proceso mediante el cual la información avanza desde las entradas hasta la salida de la red.
+
+```text
+Entrada
+   ↓
+Capa oculta
+   ↓
+Activación
+   ↓
+Capa de salida
+   ↓
+Predicción
+```
+
+Durante este proceso, la red calcula una predicción usando los pesos y sesgos actuales.
+
+---
+
+### Qué es backpropagation
+
+Backpropagation es el proceso mediante el cual la red calcula cómo debe modificar sus pesos para reducir el error.
+
+Primero se calcula la pérdida. Luego se calcula cómo cambia esa pérdida respecto de cada parámetro. Finalmente, los pesos se actualizan usando descenso por gradiente.
+
+```text
+Error en la salida
+        ↓
+Cálculo de gradientes
+        ↓
+Propagación hacia atrás
+        ↓
+Actualización de pesos
+```
+
+---
+
+### Qué es regularización
+
+La regularización agrupa técnicas orientadas a reducir el sobreajuste y mejorar la capacidad de generalización del modelo.
+
+| Técnica | Idea principal |
+| :------ | :------------- |
+| L1 | Favorece pesos exactamente cero |
+| L2 | Penaliza pesos grandes |
+| Dropout | Desactiva neuronas durante entrenamiento |
+| Early stopping | Detiene el entrenamiento cuando empeora la validación |
+| Menor complejidad | Reduce cantidad de parámetros |
+| Más datos | Mejora la capacidad de generalizar |
+
+---
+
+## ✅ Preguntas orientadoras para estudiantes
+
+1. ¿Qué representa un peso en una neurona artificial?
+2. ¿Qué función cumple el sesgo?
+3. ¿Por qué una función de activación es necesaria?
+4. ¿Qué diferencia hay entre una función lineal y una no lineal?
+5. ¿Qué es una frontera de decisión?
+6. ¿Por qué XOR no puede resolverse con un perceptrón simple?
+7. ¿Qué mide una función de pérdida?
+8. ¿Qué indica el gradiente?
+9. ¿Qué ocurre si el learning rate es demasiado alto?
+10. ¿Qué calcula forward propagation?
+11. ¿Qué calcula backpropagation?
+12. ¿Por qué se usa la regla de la cadena?
+13. ¿Qué es overfitting?
+14. ¿Qué diferencia hay entre error de entrenamiento y error de validación?
+15. ¿Cómo ayuda la regularización a mejorar la generalización?
+
+---
+
+## 🧾 Síntesis final
+
+Una red neuronal puede entenderse como una composición de funciones parametrizadas. Cada neurona transforma entradas mediante pesos, sesgo y activación. Al combinar muchas neuronas en capas, la red puede representar patrones complejos.
+
+El entrenamiento consiste en comparar predicciones con valores reales, calcular una pérdida, estimar gradientes y actualizar pesos para reducir el error.
+
+Sin embargo, reducir el error de entrenamiento no es suficiente. Un modelo útil debe generalizar. Por eso, técnicas como regularización, dropout, early stopping y control de complejidad son fundamentales para construir redes neuronales más robustas.
+
+---
+
+## 👨‍🏫 Autor
+
+Material elaborado por el profesor **Sergio Gevatschnaider** para el estudio de Machine Learning, Ciencia de Datos y Redes Neuronales.
 
