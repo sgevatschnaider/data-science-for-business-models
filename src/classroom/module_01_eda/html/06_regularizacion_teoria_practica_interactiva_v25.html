@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Regularización en Redes Neuronales · Simulación y guía práctica</title>
+<style>
+:root{
+ --bg:#f4f7fb;--panel:#fff;--ink:#142033;--muted:#667085;--line:#d0d7e2;
+ --blue:#2563eb;--cyan:#06b6d4;--orange:#f59e0b;--red:#ef4444;--green:#10b981;--violet:#7c3aed;
+ --soft:#eef5ff;--shadow:0 22px 55px rgba(15,23,42,.12);--radius:26px
+}
+[data-theme="dark"]{
+ --bg:#090e1d;--panel:#121a2e;--ink:#edf3ff;--muted:#a9b4c7;--line:#2b3856;
+ --blue:#60a5fa;--cyan:#22d3ee;--orange:#fbbf24;--red:#fb7185;--green:#34d399;--violet:#a78bfa;
+ --soft:#101a31;--shadow:0 24px 60px rgba(0,0,0,.38)
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:radial-gradient(circle at 8% 0%,rgba(37,99,235,.16),transparent 32%),radial-gradient(circle at 92% 12%,rgba(6,182,212,.13),transparent 30%),var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.58}
+header{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.wrap{max-width:1260px;margin:0 auto;padding:22px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.brand{display:flex;align-items:center;gap:12px;font-weight:950;letter-spacing:-.025em}.logo{width:46px;height:46px;border-radius:17px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:grid;place-items:center;color:white;box-shadow:var(--shadow)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:10px 14px;border-radius:14px;font-weight:850;cursor:pointer;transition:.18s;box-shadow:0 3px 14px rgba(15,23,42,.06);text-decoration:none}.btn:hover{transform:translateY(-1px);border-color:var(--blue)}.btn.primary{background:linear-gradient(135deg,var(--blue),var(--cyan));color:white;border:0}.btn.warn{background:linear-gradient(135deg,var(--orange),#f97316);color:white;border:0}.btn.danger{background:linear-gradient(135deg,var(--red),#f97316);color:white;border:0}.btn.ok{background:linear-gradient(135deg,var(--green),#14b8a6);color:white;border:0}.btn.violet{background:linear-gradient(135deg,var(--violet),var(--blue));color:white;border:0}.btn.active{outline:3px solid color-mix(in srgb,var(--blue) 25%,transparent)}
+.hero{padding:48px 0 22px}.kicker{color:var(--blue);font-weight:950;text-transform:uppercase;letter-spacing:.14em;font-size:.78rem}.pill{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;border:1px solid var(--line);background:color-mix(in srgb,var(--panel),var(--blue) 6%);color:var(--blue);font-size:.8rem;font-weight:900;margin:4px 6px 4px 0}h1{font-size:clamp(2.2rem,5vw,4.85rem);line-height:1.01;margin:12px 0 16px;letter-spacing:-.062em}h2{font-size:clamp(1.45rem,3vw,2.45rem);line-height:1.1;margin:36px 0 14px;letter-spacing:-.038em}h3{font-size:1.22rem;margin:20px 0 10px}p{margin:0 0 14px}.lead{font-size:1.18rem;color:var(--muted);max-width:940px}.small{font-size:.92rem;color:var(--muted)}
+.grid{display:grid;gap:18px}.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.split{display:grid;grid-template-columns:430px 1fr;gap:18px}.card{background:color-mix(in srgb,var(--panel) 96%,var(--blue) 4%);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}.mini{padding:16px;border-radius:20px;background:color-mix(in srgb,var(--panel),var(--blue) 5%);border:1px solid var(--line)}.metric{padding:16px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,color-mix(in srgb,var(--panel),var(--blue) 7%),var(--panel))}.metric strong{display:block;font-size:1.65rem;letter-spacing:-.04em}.eq{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--panel),var(--blue) 8%);border:1px solid color-mix(in srgb,var(--blue),var(--line) 70%);padding:13px 14px;border-radius:16px;overflow:auto}.canvasBox{background:linear-gradient(180deg,color-mix(in srgb,var(--blue) 9%,transparent),color-mix(in srgb,var(--cyan) 6%,transparent));border:1px solid var(--line);border-radius:24px;padding:14px}canvas{width:100%;height:auto;display:block;border-radius:18px;background:var(--panel);border:1px solid var(--line)}label{font-weight:850}.rangeRow{display:grid;grid-template-columns:175px 1fr 80px;gap:10px;align-items:center;margin:11px 0}input[type=range]{width:100%}.table{width:100%;border-collapse:collapse;margin:14px 0;border-radius:16px;overflow:hidden}.table th,.table td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}.table th{color:var(--muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.08em;background:color-mix(in srgb,var(--panel),var(--blue) 7%)}.note{border-left:5px solid var(--blue);padding:14px 16px;background:color-mix(in srgb,var(--blue) 9%,var(--panel));border-radius:14px;margin:16px 0}.warnbox{border-left:5px solid var(--orange);padding:14px 16px;background:color-mix(in srgb,var(--orange) 13%,var(--panel));border-radius:14px;margin:16px 0}.okbox{border-left:5px solid var(--green);padding:14px 16px;background:color-mix(in srgb,var(--green) 10%,var(--panel));border-radius:14px;margin:16px 0}.dangerbox{border-left:5px solid var(--red);padding:14px 16px;background:color-mix(in srgb,var(--red) 10%,var(--panel));border-radius:14px;margin:16px 0}.step{display:flex;gap:14px;align-items:flex-start;margin:12px 0}.num{flex:0 0 34px;width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:grid;place-items:center;color:white;font-weight:950}.tabs{display:flex;gap:8px;flex-wrap:wrap}.hidden{display:none}.scenario{cursor:pointer}.scenario:hover{border-color:var(--blue)} footer{border-top:1px solid var(--line);margin-top:42px;color:var(--muted)}
+@media(max-width:980px){.grid2,.grid3,.grid4,.split{grid-template-columns:1fr}.rangeRow{grid-template-columns:1fr}.hero{padding-top:30px}}@media print{header,.controls,.btn{display:none!important}body{background:#fff}.card{box-shadow:none;break-inside:avoid}canvas{max-width:100%}}
+</style>
+</head>
+<body>
+<header><div class="wrap topbar"><div class="brand"><div class="logo">NN</div><div>Regularización en Redes Neuronales</div></div><div class="controls"><button class="btn" onclick="toggleTheme()">Cambiar tema</button><button class="btn" onclick="window.print()">Imprimir / PDF</button><a class="btn" href="00_indice_clase_redes_neuronales_v25.html">Índice</a></div></div></header>
+<main class="wrap">
+<section class="hero">
+ <div class="kicker">Simulación interactiva y guía práctica</div>
+ <h1>Regularización: cómo lograr que una red generalice y no memorice</h1>
+ <p class="lead">Esta clase interactiva integra teoría, simulación visual y práctica guiada. El objetivo es que el alumno vea la diferencia entre aprender un patrón real y memorizar ruido, y que pueda decidir cuándo usar L2, L1, dropout, early stopping, data augmentation y reducción de complejidad.</p>
+ <div><span class="pill">Overfitting</span><span class="pill">L1 y L2</span><span class="pill">Dropout</span><span class="pill">Early stopping</span><span class="pill">Generalización</span></div>
+</section>
+
+<section class="grid grid3">
+ <div class="metric"><strong id="mEpoch">0</strong><span>epochs entrenados</span></div>
+ <div class="metric"><strong id="mGap">0.00</strong><span>brecha validación - entrenamiento</span></div>
+ <div class="metric"><strong id="mDiag">Listo</strong><span>diagnóstico del modelo</span></div>
+</section>
+
+<section class="split" style="margin-top:18px">
+ <div class="card"><h2>Panel de entrenamiento</h2>
+  <div class="controls"><button class="btn primary" onclick="trainStep()">Entrenar un epoch</button><button class="btn warn" onclick="toggleAuto()">Simulación dinámica</button><button class="btn" onclick="reset()">Reiniciar</button></div>
+  <div class="rangeRow"><label>Complejidad del modelo</label><input id="comp" type="range" min="1" max="12" step="1" value="8" oninput="reset()"><span id="compv"></span></div>
+  <div class="rangeRow"><label>L2 / weight decay</label><input id="l2" type="range" min="0" max="1.2" step=".05" value=".25" oninput="reset()"><span id="l2v"></span></div>
+  <div class="rangeRow"><label>L1 / sparsity</label><input id="l1" type="range" min="0" max="1" step=".05" value=".05" oninput="reset()"><span id="l1v"></span></div>
+  <div class="rangeRow"><label>Dropout</label><input id="drop" type="range" min="0" max=".85" step=".05" value=".2" oninput="reset()"><span id="dropv"></span></div>
+  <div class="rangeRow"><label>Ruido de datos</label><input id="noise" type="range" min="0" max=".45" step=".01" value=".16" oninput="reset()"><span id="noisev"></span></div>
+  <div class="rangeRow"><label>Paciencia early stopping</label><input id="patience" type="range" min="3" max="25" step="1" value="8" oninput="draw()"><span id="patiencev"></span></div>
+  <div class="note" id="msg">Ajustá los controles y entrená. Observá curva de train, curva de validación y ajuste sobre los datos.</div>
+ </div>
+ <div class="card canvasBox"><canvas id="c" width="900" height="660"></canvas></div>
+</section>
+
+<section>
+ <h2>1. Idea central: el error bajo no siempre significa buen aprendizaje</h2>
+ <div class="grid grid2">
+  <div class="card"><h3>Entrenar no es memorizar</h3><p>Una red neuronal puede reducir mucho el error de entrenamiento aprendiendo detalles accidentales del conjunto de datos. Eso puede parecer éxito durante el entrenamiento, pero falla cuando aparecen datos nuevos.</p><div class="dangerbox"><strong>Señal típica de sobreajuste:</strong> la pérdida de entrenamiento baja, mientras la pérdida de validación deja de bajar o empieza a subir.</div></div>
+  <div class="card"><h3>Regularizar es restringir inteligentemente</h3><p>Regularizar significa introducir una presión para que el modelo prefiera soluciones más simples, más estables y menos dependientes del ruido. No busca empeorar el modelo; busca mejorar su capacidad de generalizar.</p><div class="okbox"><strong>Meta:</strong> no obtener el menor error posible en train, sino el mejor desempeño posible en datos no vistos.</div></div>
+ </div>
+</section>
+
+<section>
+ <h2>2. Técnicas principales de regularización</h2>
+ <div class="tabs controls"><button class="btn primary active" onclick="showTab('l2tab',this)">L2</button><button class="btn primary" onclick="showTab('l1tab',this)">L1</button><button class="btn primary" onclick="showTab('droptab',this)">Dropout</button><button class="btn primary" onclick="showTab('earlytab',this)">Early stopping</button><button class="btn primary" onclick="showTab('datatab',this)">Más datos</button></div>
+ <div id="l2tab" class="card tab"><h3>L2 / Weight Decay</h3><p>L2 agrega una penalización proporcional al cuadrado de los pesos. En términos intuitivos, le dice al modelo: “podés aprender, pero evitá pesos demasiado grandes”. Los pesos grandes suelen hacer que la función sea muy sensible a pequeñas variaciones de entrada.</p><div class="eq">Loss_total = Loss_datos + λ · Σ w²</div><p><strong>Efecto visual:</strong> la curva aprendida se vuelve más suave. <strong>Cuándo usarla:</strong> como regularizador general por defecto en redes densas o convolucionales. <strong>Riesgo:</strong> un λ excesivo produce underfitting.</p></div>
+ <div id="l1tab" class="card tab hidden"><h3>L1 / Sparsity</h3><p>L1 penaliza la suma de valores absolutos de los pesos. A diferencia de L2, tiende a empujar algunos pesos exactamente hacia cero. Esto favorece modelos más escasos, donde algunas variables o conexiones dejan de participar.</p><div class="eq">Loss_total = Loss_datos + λ · Σ |w|</div><p><strong>Efecto didáctico:</strong> actúa como selección de variables o selección de conexiones. <strong>Cuándo usarla:</strong> cuando se busca interpretabilidad o reducir variables irrelevantes. <strong>Riesgo:</strong> demasiada L1 puede eliminar información útil.</p></div>
+ <div id="droptab" class="card tab hidden"><h3>Dropout</h3><p>Dropout apaga aleatoriamente un porcentaje de neuronas durante el entrenamiento. Esto obliga a la red a no depender de una única ruta interna y a construir representaciones más robustas.</p><div class="eq">Durante entrenamiento: algunas activaciones se ponen en cero.<br>Durante inferencia: se usa la red completa ajustando la escala.</div><p><strong>Analogía:</strong> entrenar un equipo donde algunos jugadores faltan aleatoriamente, para que el sistema no dependa de una sola figura. <strong>Riesgo:</strong> dropout demasiado alto hace difícil aprender.</p></div>
+ <div id="earlytab" class="card tab hidden"><h3>Early Stopping</h3><p>Early stopping no cambia la arquitectura ni la función de costo. Observa la pérdida de validación y detiene el entrenamiento cuando deja de mejorar durante cierta cantidad de epochs, llamada paciencia.</p><div class="eq">Si val_loss no mejora durante p epochs → detener entrenamiento.</div><p><strong>Ventaja:</strong> simple, eficaz y muy usado. <strong>Idea clave:</strong> el mejor modelo no siempre es el del último epoch, sino el del mejor punto de validación.</p></div>
+ <div id="datatab" class="card tab hidden"><h3>Más datos, data augmentation y simplificación</h3><p>Una forma muy potente de regularizar es mejorar la información disponible: más datos, datos más diversos o transformaciones realistas. En imágenes se usan rotaciones, recortes o cambios de brillo; en series temporales se pueden usar ventanas; en texto, variaciones controladas.</p><p>También se puede regularizar reduciendo la complejidad: menos capas, menos neuronas, menos parámetros o arquitectura más adecuada al problema.</p></div>
+</section>
+
+<section>
+ <h2>3. Lectura práctica de curvas</h2>
+ <table class="table"><tr><th>Situación</th><th>Curva de entrenamiento</th><th>Curva de validación</th><th>Diagnóstico</th><th>Acción recomendada</th></tr>
+ <tr><td>Underfitting</td><td>Alta</td><td>Alta</td><td>El modelo no aprende suficiente.</td><td>Aumentar complejidad, entrenar más, bajar regularización.</td></tr>
+ <tr><td>Buen ajuste</td><td>Baja progresivamente</td><td>Baja y se estabiliza cerca de train</td><td>Generalización razonable.</td><td>Guardar mejor checkpoint y evaluar test.</td></tr>
+ <tr><td>Overfitting</td><td>Baja mucho</td><td>Sube o queda muy por encima</td><td>Memorización de ruido.</td><td>Subir L2/dropout, early stopping, más datos o menos complejidad.</td></tr>
+ <tr><td>Regularización excesiva</td><td>No baja lo suficiente</td><td>No baja lo suficiente</td><td>Modelo demasiado restringido.</td><td>Bajar L1/L2/dropout o aumentar capacidad.</td></tr></table>
+</section>
+
+<section>
+ <h2>4. Práctica guiada para clase</h2>
+ <div class="grid grid3">
+  <div class="card scenario" onclick="scenario('over')"><h3>Escenario A: provocar overfitting</h3><p>Alta complejidad, bajo L2, bajo dropout y ruido moderado. El objetivo es ver cómo train baja mientras validación empeora.</p></div>
+  <div class="card scenario" onclick="scenario('balanced')"><h3>Escenario B: buscar equilibrio</h3><p>Complejidad media, L2 moderado, dropout controlado. La validación debería acompañar mejor al entrenamiento.</p></div>
+  <div class="card scenario" onclick="scenario('under')"><h3>Escenario C: provocar underfitting</h3><p>Baja complejidad o regularización excesiva. La red queda demasiado limitada y no aprende bien ni en entrenamiento.</p></div>
+ </div>
+ <div class="card" style="margin-top:18px"><h3>Consigna desarrollada</h3>
+  <div class="step"><div class="num">1</div><div>Ejecutá el escenario A y entrená 40 epochs. Anotá cuándo comienza a crecer la brecha entre train y validación.</div></div>
+  <div class="step"><div class="num">2</div><div>Subí L2 y dropout de forma gradual. Observá si la brecha baja y si la curva ajustada deja de perseguir el ruido.</div></div>
+  <div class="step"><div class="num">3</div><div>Activá una paciencia baja de early stopping. Identificá visualmente el punto donde conviene detener el entrenamiento.</div></div>
+  <div class="step"><div class="num">4</div><div>Compará los tres diagnósticos: underfitting, buen ajuste y overfitting. Explicá cuál modelo elegirías y por qué.</div></div>
+ </div>
+</section>
+
+<section>
+ <h2>5. Conexión con Keras / TensorFlow</h2>
+ <div class="grid grid2">
+  <div class="card"><h3>Regularización L2 y dropout</h3><div class="eq">from tensorflow.keras import regularizers<br><br>model.add(Dense(64, activation='relu',<br>&nbsp;&nbsp;kernel_regularizer=regularizers.l2(0.001)))<br>model.add(Dropout(0.3))</div></div>
+  <div class="card"><h3>Early stopping</h3><div class="eq">from tensorflow.keras.callbacks import EarlyStopping<br><br>early = EarlyStopping(<br>&nbsp;&nbsp;monitor='val_loss', patience=8,<br>&nbsp;&nbsp;restore_best_weights=True<br>)</div></div>
+ </div>
+ <div class="note"><strong>Idea para remarcar:</strong> en una práctica real se debe separar train, validation y test. La validación ayuda a elegir hiperparámetros; el test se reserva para una evaluación final honesta.</div>
+</section>
+
+<section>
+ <h2>6. Preguntas de comprensión</h2>
+ <div class="grid grid2">
+  <div class="card"><h3>Preguntas</h3><ol><li>¿Por qué un error de entrenamiento muy bajo puede ser una mala señal?</li><li>¿Qué diferencia conceptual hay entre L1 y L2?</li><li>¿Por qué dropout no se interpreta como “borrar neuronas para siempre”?</li><li>¿Qué significa restaurar los mejores pesos en early stopping?</li><li>¿Cómo detectarías regularización excesiva mirando curvas?</li></ol></div>
+  <div class="card"><h3>Respuestas esperadas</h3><ol><li>Porque puede indicar memorización y no generalización.</li><li>L2 suaviza pesos grandes; L1 favorece pesos cero y modelos más escasos.</li><li>Porque el apagado ocurre durante entrenamiento; en inferencia se usa la red completa.</li><li>Volver al epoch con mejor desempeño de validación.</li><li>Train y validación permanecen altos: el modelo no tiene capacidad efectiva para aprender.</li></ol></div>
+ </div>
+</section>
+
+</main>
+<footer><div class="wrap">Material elaborado por el profesor Sergio Gevatschnaider · Clase interactiva de Machine Learning</div></footer>
+<script>
+function toggleTheme(){const r=document.documentElement;const n=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',n);localStorage.setItem('nn_theme',n);draw();}
+(function(){document.documentElement.setAttribute('data-theme',localStorage.getItem('nn_theme')||'light');})();
+function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()} function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
+function showTab(id,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('.tabs .btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+const c=document.getElementById('c'),ctx=c.getContext('2d');let ep=0,train=[],val=[],best=Infinity,bestEp=0,bad=0,timer=null,stopped=false;
+function getVals(){return {complexity:+comp.value,l2:+l2.value,l1:+l1.value,drop:+drop.value,noise:+noise.value,patience:+patience.value}}
+function reset(){ep=0;train=[];val=[];best=Infinity;bestEp=0;bad=0;stopped=false;draw()}
+function scenario(type){if(type==='over'){comp.value=12;l2.value=0; l1.value=0; drop.value=0; noise.value=.22; patience.value=15}
+ if(type==='balanced'){comp.value=7;l2.value=.35; l1.value=.05; drop.value=.25; noise.value=.16; patience.value=8}
+ if(type==='under'){comp.value=2;l2.value=1.05; l1.value=.65; drop.value=.6; noise.value=.14; patience.value=6} reset(); for(let i=0;i<10;i++) trainStep();}
+function trainStep(){if(stopped)return;let v=getVals();ep++;let reg=v.l2*.85+v.l1*.6+v.drop*.95;let capacity=v.complexity/12;let learnSpeed=.08+.07*capacity-.03*reg;learnSpeed=clamp(learnSpeed,.025,.13);let irreducible=.045+v.noise*.32;let under=Math.max(0,.45-capacity)+Math.max(0,reg-1.05)*.35;let tr=irreducible+under+.78*Math.exp(-ep*learnSpeed)+.012*Math.sin(ep*.7);let over=Math.max(0,capacity-.45)*(1/(1+reg*2.2))*v.noise*2.4*Math.pow(ep/80,1.55);let va=irreducible+under*.9+.68*Math.exp(-ep*(learnSpeed*.88))+over+.018*Math.sin(ep*.38+1);tr=Math.max(.025,tr);va=Math.max(.03,va);train.push(tr);val.push(va);if(va<best-.004){best=va;bestEp=ep;bad=0}else{bad++} if(bad>=v.patience){stopped=true} if(train.length>95){train.shift();val.shift()} draw()}
+function toggleAuto(){if(timer){clearInterval(timer);timer=null;return}timer=setInterval(()=>{if(stopped){clearInterval(timer);timer=null}else trainStep()},310)}
+function sx(i){return 74+i/95*760} function sy(v){return 560-v/1.25*450}
+function trueF(x){return .5+Math.sin(x*2.7)*.24+Math.cos(x*1.1)*.08}
+function modelF(x){let v=getVals();let reg=v.l2+v.l1*.7+v.drop*.8;let wiggle=(v.complexity/12)*(1/(1+reg*1.5))*(.15+v.noise*.55);let under=Math.max(0,.38-v.complexity/12)*.35;return trueF(x)*(1-under)+.5*under+wiggle*Math.sin(x*(4+v.complexity*.9))+.03*Math.cos(x*(2+v.complexity))}
+function draw(){let v=getVals();compv.textContent=v.complexity;l2v.textContent=v.l2.toFixed(2);l1v.textContent=v.l1.toFixed(2);dropv.textContent=v.drop.toFixed(2);noisev.textContent=v.noise.toFixed(2);patiencev.textContent=v.patience;mEpoch.textContent=ep;let lastT=train.at(-1)||0,lastV=val.at(-1)||0,gap=lastV-lastT;mGap.textContent=gap.toFixed(3);let diag='Listo';if(ep>3){diag=gap>.18?'Overfitting':(lastV>.45&&lastT>.38?'Underfitting':'Buen ajuste')}mDiag.textContent=stopped?'Early stop':diag;
+let ink=cssVar('--ink'),muted=cssVar('--muted'),line=cssVar('--line'),blue=cssVar('--blue'),red=cssVar('--red'),green=cssVar('--green'),orange=cssVar('--orange'),violet=cssVar('--violet'),panel=cssVar('--panel');ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle=panel;ctx.fillRect(0,0,c.width,c.height);
+ctx.strokeStyle=line;ctx.lineWidth=1;for(let i=0;i<8;i++){ctx.beginPath();ctx.moveTo(70,80+i*65);ctx.lineTo(840,80+i*65);ctx.stroke()}ctx.fillStyle=ink;ctx.font='800 19px Inter,Arial';ctx.fillText('Curvas de pérdida: entrenamiento vs validación',86,48);ctx.font='13px Inter,Arial';ctx.fillStyle=muted;ctx.fillText('La mejor época de validación se marca con una línea vertical. Si la validación sube y train baja, aparece overfitting.',86,68);
+function plot(arr,color,width=4){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();arr.forEach((y,i)=>{let x=sx(i),py=sy(y);if(i===0)ctx.moveTo(x,py);else ctx.lineTo(x,py)});ctx.stroke()}plot(train,blue);plot(val,red);if(bestEp>0){let idx=Math.min(bestEp-1,94);ctx.strokeStyle=green;ctx.setLineDash([6,5]);ctx.beginPath();ctx.moveTo(sx(idx),95);ctx.lineTo(sx(idx),560);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=green;ctx.font='800 13px Inter,Arial';ctx.fillText('mejor validación',sx(idx)+8,112)}
+ctx.fillStyle=blue;ctx.font='900 14px Inter,Arial';ctx.fillText('train',704,102);ctx.fillStyle=red;ctx.fillText('validación',754,102);ctx.fillStyle=green;ctx.fillText(stopped?'early stopping activado':'',640,130);
+let ox=96,oy=392,w=320,h=188;ctx.strokeStyle=line;ctx.strokeRect(ox,oy,w,h);ctx.fillStyle=ink;ctx.font='800 14px Inter,Arial';ctx.fillText('Ajuste sobre datos con ruido',ox,oy-12);ctx.save();ctx.beginPath();ctx.rect(ox,oy,w,h);ctx.clip();ctx.strokeStyle=green;ctx.lineWidth=3;ctx.beginPath();for(let i=0;i<260;i++){let x=i/259*6.28,y=trueF(x),px=ox+x/6.28*w,py=oy+h-y*h;if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py)}ctx.stroke();ctx.strokeStyle=orange;ctx.lineWidth=3;ctx.beginPath();for(let i=0;i<260;i++){let x=i/259*6.28,y=clamp(modelF(x),0,1),px=ox+x/6.28*w,py=oy+h-y*h;if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py)}ctx.stroke();for(let i=0;i<28;i++){let x=i/27*6.28,y=trueF(x)+v.noise*Math.sin(i*2.37);ctx.fillStyle=violet;ctx.globalAlpha=.8;ctx.beginPath();ctx.arc(ox+x/6.28*w,oy+h-clamp(y,0,1)*h,3.4,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;ctx.restore();ctx.fillStyle=green;ctx.fillText('patrón real',ox+218,oy+24);ctx.fillStyle=orange;ctx.fillText('modelo aprendido',ox+210,oy+44);
+let msgText='Ajustá los controles y entrená. Observá curva de train, validación y ajuste sobre datos.';if(stopped) msgText=`Early stopping se activó: la validación no mejoró durante ${v.patience} epochs. Conviene restaurar pesos del epoch ${bestEp}.`;else if(ep>3 && gap>.18) msgText='Diagnóstico: sobreajuste. La red está aprendiendo demasiado bien el conjunto de entrenamiento y peor en validación. Probá subir L2/dropout, bajar complejidad o usar early stopping.';else if(ep>3 && lastV>.45&&lastT>.38) msgText='Diagnóstico: underfitting. El modelo está demasiado restringido o es demasiado simple. Probá bajar regularización o subir complejidad.';else if(ep>3) msgText='Diagnóstico: ajuste razonable. Train y validación evolucionan cerca. Guardá el mejor checkpoint y evaluá en test.';msg.innerHTML=msgText}
+reset();
+</script>
+</body></html>

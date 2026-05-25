@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simulación · Forward y Backpropagation</title>
+<style>
+:root{
+  --bg:#f4f7fb;--panel:#ffffff;--text:#162033;--muted:#667085;--brand:#2563eb;--brand2:#06b6d4;
+  --accent:#f59e0b;--danger:#ef4444;--ok:#10b981;--violet:#7c3aed;--line:#d0d7e2;--soft:#eef5ff;
+  --shadow:0 18px 45px rgba(15,23,42,.12);--glass:rgba(255,255,255,.72)
+}
+[data-theme="dark"]{
+  --bg:#090e1d;--panel:#121a2e;--text:#edf3ff;--muted:#a9b4c7;--brand:#60a5fa;--brand2:#22d3ee;
+  --accent:#fbbf24;--danger:#fb7185;--ok:#34d399;--violet:#a78bfa;--line:#2b3856;--soft:#111c34;
+  --shadow:0 22px 55px rgba(0,0,0,.38);--glass:rgba(18,26,46,.76)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 8% 0%,rgba(37,99,235,.16),transparent 32%),radial-gradient(circle at 92% 12%,rgba(6,182,212,.13),transparent 30%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.58}
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.wrap{max-width:1280px;margin:0 auto;padding:22px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:-.025em}
+.logo{width:44px;height:44px;border-radius:16px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;color:#fff;box-shadow:var(--shadow)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:10px 14px;border-radius:14px;font-weight:800;cursor:pointer;transition:.18s;box-shadow:0 3px 14px rgba(15,23,42,.06);text-decoration:none}
+.btn:hover{transform:translateY(-1px);border-color:var(--brand)}
+.btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border:0}
+.btn.warn{background:linear-gradient(135deg,var(--accent),#f97316);color:#fff;border:0}
+.btn.danger{background:linear-gradient(135deg,var(--danger),#f97316);color:#fff;border:0}
+.btn.ok{background:linear-gradient(135deg,var(--ok),#14b8a6);color:#fff;border:0}
+.hero{padding:44px 0 22px}
+.kicker{color:var(--brand);font-weight:900;text-transform:uppercase;letter-spacing:.14em;font-size:.78rem}
+h1{font-size:clamp(2.05rem,4.8vw,4.35rem);line-height:1.02;margin:12px 0 16px;letter-spacing:-.058em}
+h2{font-size:clamp(1.45rem,3vw,2.28rem);line-height:1.1;margin:0 0 14px;letter-spacing:-.038em}
+h3{font-size:1.12rem;margin:16px 0 8px}
+p{margin:0 0 14px}.lead{font-size:1.14rem;color:var(--muted);max-width:960px}
+.grid{display:grid;gap:18px}.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:color-mix(in srgb,var(--panel) 96%,var(--brand) 4%);border:1px solid var(--line);border-radius:26px;padding:22px;box-shadow:var(--shadow)}
+.mini{padding:15px;border-radius:20px;background:color-mix(in srgb,var(--panel),var(--brand) 5%);border:1px solid var(--line)}
+.small{font-size:.92rem;color:var(--muted)}
+.eq{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:color-mix(in srgb,var(--panel),var(--brand) 8%);border:1px solid color-mix(in srgb,var(--brand),var(--line) 70%);padding:12px 14px;border-radius:16px;overflow:auto;white-space:pre-wrap}
+.canvasBox{background:linear-gradient(180deg,color-mix(in srgb,var(--brand) 9%,transparent),color-mix(in srgb,var(--brand2) 6%,transparent));border:1px solid var(--line);border-radius:24px;padding:14px}
+canvas{width:100%;height:auto;display:block;border-radius:18px;background:var(--panel);border:1px solid var(--line)}
+label{font-weight:800}
+.rangeRow{display:grid;grid-template-columns:145px 1fr 70px;gap:10px;align-items:center;margin:11px 0}
+input[type=range]{width:100%}
+.tableWrap{max-height:245px;overflow:auto;border:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--panel),var(--brand) 3%)}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;font-size:.9rem}
+.table th{position:sticky;top:0;color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;background:color-mix(in srgb,var(--panel),var(--brand) 9%)}
+.note{border-left:5px solid var(--brand);padding:14px 16px;background:color-mix(in srgb,var(--brand) 9%,var(--panel));border-radius:14px;margin:14px 0}
+.warnbox{border-left:5px solid var(--accent);padding:14px 16px;background:color-mix(in srgb,var(--accent) 13%,var(--panel));border-radius:14px;margin:14px 0}
+.okbox{border-left:5px solid var(--ok);padding:14px 16px;background:color-mix(in srgb,var(--ok) 10%,var(--panel));border-radius:14px;margin:14px 0}
+.split{display:grid;grid-template-columns:410px 1fr;gap:18px;align-items:start}
+.panelStack{display:grid;gap:18px}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}
+.metric{border:1px solid var(--line);border-radius:18px;padding:13px;background:color-mix(in srgb,var(--panel),var(--brand) 4%)}
+.metric strong{display:block;font-size:1.28rem}
+.stepper{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.stepPill{border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-weight:900;color:var(--muted);background:var(--panel)}
+.stepPill.active{background:linear-gradient(135deg,var(--brand),var(--brand2));color:white;border:0}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tabs .btn.active{outline:3px solid color-mix(in srgb,var(--brand) 25%,transparent)}
+footer{border-top:1px solid var(--line);margin-top:42px;color:var(--muted)}
+@media(max-width:1050px){.split{grid-template-columns:1fr}.grid2,.grid3,.metrics{grid-template-columns:1fr}.rangeRow{grid-template-columns:1fr}.hero{padding-top:30px}}
+@media print{header,.controls,.btn{display:none!important}body{background:#fff}.card{box-shadow:none;break-inside:avoid}.split{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap topbar">
+    <div class="brand"><div class="logo">NN</div><div>Simulación · Forward y Backpropagation</div></div>
+    <div class="controls">
+      <button class="btn" onclick="toggleTheme()">Cambiar tema</button>
+      <button class="btn" onclick="window.print()">Imprimir / PDF</button>
+      <a class="btn" href="00_indice_clase_redes_neuronales_v25.html">Índice</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+<section class="hero">
+  <div class="kicker">Simulación interactiva con teoría integrada</div>
+  <h1>Forward propagation y Backpropagation</h1>
+  <p class="lead">Esta simulación muestra el ciclo de aprendizaje de una red neuronal pequeña: primero calcula una predicción hacia adelante, luego mide la pérdida y finalmente ajusta los pesos hacia atrás para reducir el error.</p>
+</section>
+
+<section class="grid grid3" style="margin-bottom:18px">
+  <div class="card"><h3>1. Forward</h3><p>Las entradas pasan por los pesos, se calculan las neuronas ocultas y se obtiene la predicción ŷ.</p><div class="eq">h = σ(Wx + b)
+ŷ = σ(Vh + c)</div></div>
+  <div class="card"><h3>2. Pérdida</h3><p>La red compara la predicción con el objetivo real. Si ŷ está lejos de y, la pérdida aumenta.</p><div class="eq">L = 1/2 · (ŷ − y)²</div></div>
+  <div class="card"><h3>3. Backpropagation</h3><p>El error se reparte hacia atrás para corregir las conexiones que más contribuyeron al error.</p><div class="eq">w nuevo = w − η · ∂L/∂w</div></div>
+</section>
+
+<div class="split">
+  <div class="panelStack">
+    <div class="card">
+      <h2>Controles</h2>
+      <div class="controls">
+        <button class="btn primary" onclick="forward()">Forward</button>
+        <button class="btn danger" onclick="backward()">Backpropagation</button>
+        <button class="btn warn" onclick="toggleAuto()">Simulación dinámica</button>
+        <button class="btn" onclick="reset()">Reiniciar</button>
+      </div>
+
+      <div class="stepper">
+        <span id="pillForward" class="stepPill">Forward</span>
+        <span id="pillLoss" class="stepPill">Pérdida</span>
+        <span id="pillBack" class="stepPill">Backward</span>
+        <span id="pillUpdate" class="stepPill">Actualización</span>
+      </div>
+
+      <div class="rangeRow"><label>x₁</label><input id="x1" type="range" min="0" max="1" step=".05" value="1" oninput="forward()"><span id="x1v"></span></div>
+      <div class="rangeRow"><label>x₂</label><input id="x2" type="range" min="0" max="1" step=".05" value="1" oninput="forward()"><span id="x2v"></span></div>
+      <div class="rangeRow"><label>objetivo y</label><input id="y" type="range" min="0" max="1" step="1" value="1" oninput="forward()"><span id="yv"></span></div>
+      <div class="rangeRow"><label>learning rate η</label><input id="lr" type="range" min=".05" max="1" step=".05" value=".35" oninput="draw()"><span id="lrv"></span></div>
+      <div class="note" id="info"></div>
+    </div>
+
+    <div class="card">
+      <h2>Lectura docente</h2>
+      <div class="controls" style="margin-bottom:10px">
+        <button class="btn ok" onclick="nextExplain()">Siguiente paso docente</button>
+        <button class="btn" onclick="resetExplain()">Reiniciar explicación</button>
+      </div>
+      <div class="stepper" id="explainPills" style="margin-bottom:12px"></div>
+      <div class="mini">
+        <h3 id="teacherTitle">Paso 1. Entradas</h3>
+        <p id="teacherText">Presioná el botón para recorrer la explicación de manera pausada, paso a paso.</p>
+        <div class="eq" id="teacherFormula">x = [x₁, x₂]</div>
+      </div>
+      <div class="warnbox" id="phaseHint"><strong>Idea clave:</strong> los nodos contienen activaciones y las aristas contienen pesos. Aprender significa modificar esos pesos para reducir la pérdida.</div>
+    </div>
+  </div>
+
+  <div class="panelStack">
+    <div class="card canvasBox">
+      <canvas id="c" width="900" height="640"></canvas>
+    </div>
+
+    <div class="card">
+      <h2>Estado numérico de la red</h2>
+      <div class="metrics">
+        <div class="metric"><span class="small">Predicción</span><strong id="mPred">–</strong></div>
+        <div class="metric"><span class="small">Objetivo</span><strong id="mTarget">–</strong></div>
+        <div class="metric"><span class="small">Pérdida</span><strong id="mLoss">–</strong></div>
+        <div class="metric"><span class="small">Fase</span><strong id="mPhase">–</strong></div>
+      </div>
+      <div class="grid grid2">
+        <div class="mini">
+          <h3>Cálculo forward</h3>
+          <div class="eq" id="calcForward"></div>
+        </div>
+        <div class="mini">
+          <h3>Interpretación del ajuste</h3>
+          <p id="adjustText" class="small"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Historial de aprendizaje</h2>
+      <p class="small">Cada fila registra una iteración después de aplicar backpropagation. Sirve para ver si la pérdida baja y si la predicción se acerca al objetivo.</p>
+      <div class="tableWrap">
+        <table class="table" id="histTable">
+          <thead><tr><th>Iter.</th><th>ŷ</th><th>y</th><th>Pérdida</th><th>w h₁→ŷ</th><th>w h₂→ŷ</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+<footer><div class="wrap">Material elaborado por el profesor Sergio Gevatschnaider · Clase interactiva de Machine Learning</div></footer>
+
+<script>
+function toggleTheme(){
+  const r=document.documentElement;
+  const n=r.getAttribute('data-theme')==='dark'?'light':'dark';
+  r.setAttribute('data-theme',n);
+  localStorage.setItem('nn_theme',n);
+  document.querySelectorAll('canvas').forEach(c=>{if(c._redraw)c._redraw();});
+}
+(function(){document.documentElement.setAttribute('data-theme',localStorage.getItem('nn_theme')||'light');})();
+function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+function sigmoid(z){return 1/(1+Math.exp(-z));}
+function dsigmoid(a){return a*(1-a);}
+function drawArrow(ctx,x1,y1,x2,y2,color,width=2){
+  ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+  const a=Math.atan2(y2-y1,x2-x1),s=9;
+  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-s*Math.cos(a-.45),y2-s*Math.sin(a-.45));ctx.lineTo(x2-s*Math.cos(a+.45),y2-s*Math.sin(a+.45));ctx.closePath();ctx.fill();
+}
+const c=document.getElementById('c'),ctx=c.getContext('2d');c._redraw=draw;
+let W=[.8,-.4,.3,.9,1.0,-.7], B=[0,0,0], phase='idle', timer=null, last={}, iteration=0, history=[];
+const explainSteps=[
+  {short:'1',title:'Paso 1. Entradas',text:'La red comienza leyendo las entradas x₁ y x₂. Estos valores son la información inicial que viaja hacia la capa oculta.',formula:'x = [x₁, x₂]'},
+  {short:'2',title:'Paso 2. Combinación lineal',text:'Cada neurona oculta calcula una suma ponderada. Los pesos determinan cuánto influye cada entrada y el sesgo desplaza la activación.',formula:'z₁ = w₁x₁ + w₂x₂ + b₁\nz₂ = w₃x₁ + w₄x₂ + b₂'},
+  {short:'3',title:'Paso 3. Activación oculta',text:'La función sigmoide transforma esas sumas en activaciones entre 0 y 1. Así aparecen h₁ y h₂.',formula:'h₁ = σ(z₁)\nh₂ = σ(z₂)'},
+  {short:'4',title:'Paso 4. Salida de la red',text:'La capa de salida combina h₁ y h₂ con nuevos pesos para producir la predicción ŷ.',formula:'zₒ = v₁h₁ + v₂h₂ + b₃\nŷ = σ(zₒ)'},
+  {short:'5',title:'Paso 5. Pérdida',text:'La red compara la predicción con el objetivo y. Si hay diferencia, aparece una pérdida que mide el error.',formula:'L = 1/2 · (ŷ − y)²'},
+  {short:'6',title:'Paso 6. Backpropagation',text:'El error se propaga hacia atrás. La red calcula gradientes para saber qué pesos deben cambiar y en qué dirección.',formula:'∂L/∂w'},
+  {short:'7',title:'Paso 7. Actualización',text:'Finalmente, los pesos se ajustan usando el learning rate. Luego comienza una nueva iteración con una predicción potencialmente mejor.',formula:'w_nuevo = w − η · ∂L/∂w'}
+];
+let explainIndex=0;
+function renderExplain(){
+  teacherTitle.textContent=explainSteps[explainIndex].title;
+  teacherText.textContent=explainSteps[explainIndex].text;
+  teacherFormula.textContent=explainSteps[explainIndex].formula;
+  explainPills.innerHTML=explainSteps.map((s,i)=>`<span class="stepPill ${i===explainIndex?'active':''}">${s.short}</span>`).join('');
+}
+function nextExplain(){explainIndex=(explainIndex+1)%explainSteps.length;renderExplain();}
+function resetExplain(){explainIndex=0;renderExplain();}
+
+function reset(){
+  W=[.8,-.4,.3,.9,1.0,-.7]; B=[0,0,0]; phase='idle'; iteration=0; history=[]; forward();
+}
+function calc(){
+  const a=+x1.value,b=+x2.value,target=+y.value;
+  const z1=W[0]*a+W[1]*b+B[0], z2=W[2]*a+W[3]*b+B[1];
+  const h1=sigmoid(z1), h2=sigmoid(z2);
+  const zo=W[4]*h1+W[5]*h2+B[2], o=sigmoid(zo);
+  const err=o-target, loss=.5*err*err;
+  return{x1:a,x2:b,target,z1,z2,h1,h2,zo,o,err,loss};
+}
+function setPills(p){
+  ['pillForward','pillLoss','pillBack','pillUpdate'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  if(p==='forward'){pillForward.classList.add('active');pillLoss.classList.add('active');}
+  if(p==='backward'){pillBack.classList.add('active');pillUpdate.classList.add('active');}
+}
+function forward(){
+  phase='forward'; last=calc(); setPills('forward'); draw();
+}
+function backward(){
+  const before=calc(), eta=+lr.value;
+  const dO=before.err*dsigmoid(before.o);
+  const oldW4=W[4], oldW5=W[5];
+  const dW4=dO*before.h1, dW5=dO*before.h2, dB3=dO;
+  const dH1=dO*oldW4*dsigmoid(before.h1);
+  const dH2=dO*oldW5*dsigmoid(before.h2);
+  const dW0=dH1*before.x1, dW1=dH1*before.x2, dB1=dH1;
+  const dW2=dH2*before.x1, dW3=dH2*before.x2, dB2=dH2;
+  W[4]-=eta*dW4; W[5]-=eta*dW5; B[2]-=eta*dB3;
+  W[0]-=eta*dW0; W[1]-=eta*dW1; B[0]-=eta*dB1;
+  W[2]-=eta*dW2; W[3]-=eta*dW3; B[1]-=eta*dB2;
+  phase='backward'; last=calc(); iteration++;
+  history.unshift({i:iteration,o:last.o,target:last.target,loss:last.loss,w4:W[4],w5:W[5]});
+  history=history.slice(0,12);
+  setPills('backward'); draw();
+}
+function toggleAuto(){
+  if(timer){clearInterval(timer);timer=null;return}
+  timer=setInterval(()=>{forward();setTimeout(backward,360)},1050);
+}
+function node(x,y,label,val,color){
+  ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,35,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle=cssVar('--text');ctx.lineWidth=3;ctx.stroke();
+  ctx.fillStyle='#fff';ctx.font='bold 18px Inter,Arial';ctx.textAlign='center';ctx.fillText(label,x,y-5);
+  ctx.font='13px Inter,Arial';ctx.fillText(val.toFixed(2),x,y+16);ctx.textAlign='left';
+}
+function edge(x1,y1,x2,y2,w,name){
+  const col=w>=0?cssVar('--ok'):cssVar('--danger');
+  drawArrow(ctx,x1,y1,x2,y2,col,Math.max(1.2,Math.abs(w)*4.2));
+  ctx.fillStyle=cssVar('--muted');ctx.font='13px Inter,Arial';
+  ctx.fillText(`${name}=${w.toFixed(2)}`,(x1+x2)/2-22,(y1+y2)/2-4);
+}
+function draw(){
+  x1v.textContent=(+x1.value).toFixed(2);x2v.textContent=(+x2.value).toFixed(2);yv.textContent=y.value;lrv.textContent=(+lr.value).toFixed(2);
+  const r=last.o!==undefined?last:calc(), text=cssVar('--text');
+  ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle=cssVar('--panel');ctx.fillRect(0,0,c.width,c.height);
+  edge(120,220,400,175,W[0],'w₁'); edge(120,420,400,175,W[1],'w₂');
+  edge(120,220,400,420,W[2],'w₃'); edge(120,420,400,420,W[3],'w₄');
+  edge(400,175,690,300,W[4],'v₁'); edge(400,420,690,300,W[5],'v₂');
+  node(120,220,'x₁',r.x1,cssVar('--brand')); node(120,420,'x₂',r.x2,cssVar('--brand'));
+  node(400,175,'h₁',r.h1,cssVar('--violet')); node(400,420,'h₂',r.h2,cssVar('--violet'));
+  node(690,300,'ŷ',r.o,cssVar('--ok'));
+  ctx.fillStyle=text;ctx.font='bold 20px Inter,Arial';
+  ctx.fillText(`objetivo y=${r.target} | pérdida=${r.loss.toFixed(4)} | fase: ${phase}`,95,62);
+  ctx.font='14px Inter,Arial';ctx.fillStyle=cssVar('--muted');
+  ctx.fillText('Verde: peso positivo | Rojo: peso negativo | Grosor: magnitud del peso',95,590);
+
+  mPred.textContent=r.o.toFixed(3); mTarget.textContent=r.target.toFixed(0); mLoss.textContent=r.loss.toFixed(4); mPhase.textContent=phase;
+  calcForward.textContent=`z₁ = ${W[0].toFixed(2)}·${r.x1.toFixed(2)} + ${W[1].toFixed(2)}·${r.x2.toFixed(2)} + ${B[0].toFixed(2)} = ${r.z1.toFixed(3)}
+h₁ = σ(z₁) = ${r.h1.toFixed(3)}
+
+z₂ = ${W[2].toFixed(2)}·${r.x1.toFixed(2)} + ${W[3].toFixed(2)}·${r.x2.toFixed(2)} + ${B[1].toFixed(2)} = ${r.z2.toFixed(3)}
+h₂ = σ(z₂) = ${r.h2.toFixed(3)}
+
+zₒ = ${W[4].toFixed(2)}·${r.h1.toFixed(2)} + ${W[5].toFixed(2)}·${r.h2.toFixed(2)} + ${B[2].toFixed(2)} = ${r.zo.toFixed(3)}
+ŷ = σ(zₒ) = ${r.o.toFixed(3)}
+L = 1/2·(ŷ-y)² = ${r.loss.toFixed(4)}`;
+  info.innerHTML=phase==='backward'
+    ?`Backpropagation ajustó los pesos para reducir el error. Nueva predicción: <strong>${r.o.toFixed(3)}</strong>.`
+    :`Forward calcula activaciones capa por capa. Predicción actual: <strong>${r.o.toFixed(3)}</strong>, pérdida: <strong>${r.loss.toFixed(4)}</strong>.`;
+  phaseHint.innerHTML=phase==='backward'
+    ?'<strong>Fase actual:</strong> backward. Ahora la red usa el error para corregir pesos y reducir la pérdida en la siguiente iteración.'
+    :'<strong>Fase actual:</strong> forward. La red todavía no corrige pesos: solo calcula activaciones, predicción y pérdida.';
+  adjustText.textContent=Math.abs(r.err)<.12
+    ?'La predicción está bastante cerca del objetivo. Las próximas actualizaciones serán más pequeñas porque el error disponible es menor.'
+    :r.o<r.target
+      ?'La predicción está por debajo del objetivo. El ajuste intentará aumentar la salida en las próximas iteraciones.'
+      :'La predicción está por encima del objetivo. El ajuste intentará reducir la salida en las próximas iteraciones.';
+  renderHistory();
+}
+function renderHistory(){
+  const tbody=document.querySelector('#histTable tbody');
+  tbody.innerHTML = history.length ? history.map(h=>`<tr><td>${h.i}</td><td>${h.o.toFixed(3)}</td><td>${h.target.toFixed(0)}</td><td>${h.loss.toFixed(4)}</td><td>${h.w4.toFixed(2)}</td><td>${h.w5.toFixed(2)}</td></tr>`).join('') : '<tr><td colspan="6" class="small">Todavía no hay iteraciones. Presioná Backpropagation o Simulación dinámica.</td></tr>';
+}
+renderExplain();
+reset();
+</script>
+</body>
+</html>
