@@ -2167,6 +2167,703 @@ Su valor pedagógico está en que combina:
 * análisis crítico de limitaciones;
 * implementación práctica en Python.
 
+  ## 🎯 Objetivo general del bloque
+
+Este conjunto de recursos tiene como objetivo comprender la **regresión lineal** como uno de los modelos fundamentales del aprendizaje automático supervisado y, al mismo tiempo, utilizarla como base conceptual para introducir la estructura de una **neurona artificial**.
+
+El bloque parte de la idea de que un modelo lineal aprende una relación entre variables de entrada y una salida numérica mediante una combinación de pesos, sesgo y predicción. A partir de esa intuición inicial, se avanza hacia el entrenamiento del modelo, el ajuste de parámetros, el cálculo del error, la función de pérdida, el descenso por gradiente, la validación y la conexión conceptual con una neurona artificial.
+
+La finalidad es que el estudiante pueda comprender que la regresión lineal no es solamente una técnica estadística clásica, sino también una puerta de entrada para entender cómo aprenden modelos más complejos. En particular, permite visualizar con claridad los conceptos de entrada, peso, sesgo, predicción, error, pérdida y actualización iterativa de parámetros, que luego reaparecen en redes neuronales artificiales.
+
+---
+
+## 🧭 Secuencia didáctica sugerida
+
+```text
+1. Índice general del paquete
+        ↓
+2. Introducción a regresión lineal
+        ↓
+3. Teoría y simulación de regresión lineal
+        ↓
+4. Regresión lineal como base de la neurona artificial
+        ↓
+5. Glosario completo de regresión lineal
+        ↓
+6. Cuestionario interactivo de integración
+```
+
+---
+
+## 📚 Recursos interactivos
+
+<table>
+  <thead>
+    <tr>
+      <th align="center">Orden</th>
+      <th align="left">Recurso</th>
+      <th align="left">Propósito didáctico</th>
+      <th align="center">Abrir HTML</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center"><strong>0</strong></td>
+      <td><strong>Índice general del paquete</strong></td>
+      <td>Presentar la estructura completa del bloque, ordenar los recursos y facilitar el acceso a cada HTML desde un punto central de navegación.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Regresion_lineal_indice.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-%C3%8Dndice%20general-1f4e79?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir índice general">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>1</strong></td>
+      <td><strong>Introducción a regresión lineal</strong></td>
+      <td>Introducir el modelo lineal básico, su ecuación principal, la relación entre variables, la idea de predicción y la interpretación inicial de pendiente e intercepto.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/regresion_lineal.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Regresi%C3%B3n%20lineal-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir regresión lineal">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>2</strong></td>
+      <td><strong>Regresión lineal: teoría y simulación</strong></td>
+      <td>Comprender cómo un modelo lineal aprende una recta, cómo se ajustan la pendiente y el intercepto, cómo se calcula el error y por qué se separan datos de entrenamiento y validación.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Regresion_lineal_teoria_simulacion.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Teor%C3%ADa%20y%20simulaci%C3%B3n-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir teoría y simulación">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>3</strong></td>
+      <td><strong>Regresión lineal y neurona artificial</strong></td>
+      <td>Mostrar la conexión entre regresión lineal y neurona artificial mediante entradas, pesos, sesgo, combinación lineal, predicción, error, función de pérdida y activación.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Regresion_lineal_neurona_artificial_interactiva.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Neurona%20artificial-7c3aed?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir regresión lineal y neurona artificial">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>4</strong></td>
+      <td><strong>Glosario completo de regresión lineal</strong></td>
+      <td>Reunir y desarrollar los conceptos centrales del bloque, incluyendo modelo lineal, pesos, sesgo, predicción, error, MSE, R², entrenamiento, validación, generalización y métricas.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Regresion_lineal_glosario.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Glosario%20completo-15803d?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir glosario completo">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>5</strong></td>
+      <td><strong>Cuestionario interactivo</strong></td>
+      <td>Integrar los contenidos mediante preguntas desarrolladas sobre regresión lineal, pesos, sesgo, función de pérdida, descenso por gradiente, neurona artificial y redes neuronales.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Regresion_lineal_Cuestionario_regresion_neurona_interactivo.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Cuestionario%20interactivo-dc2626?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir cuestionario interactivo">
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+---
+
+## 🔗 Acceso directo a los recursos
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Regresion_lineal_indice.html">
+    <img src="https://img.shields.io/badge/0.%20Abrir%20HTML-%C3%8Dndice%20general-1f4e79?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir índice general">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/regresion_lineal.html">
+    <img src="https://img.shields.io/badge/1.%20Abrir%20HTML-Regresi%C3%B3n%20lineal-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir regresión lineal">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Regresion_lineal_teoria_simulacion.html">
+    <img src="https://img.shields.io/badge/2.%20Abrir%20HTML-Teor%C3%ADa%20y%20simulaci%C3%B3n-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir teoría y simulación">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Regresion_lineal_neurona_artificial_interactiva.html">
+    <img src="https://img.shields.io/badge/3.%20Abrir%20HTML-Regresi%C3%B3n%20y%20neurona%20artificial-7c3aed?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir regresión lineal y neurona artificial">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Regresion_lineal_glosario.html">
+    <img src="https://img.shields.io/badge/4.%20Abrir%20HTML-Glosario%20completo-15803d?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir glosario completo">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Regresion_lineal_Cuestionario_regresion_neurona_interactivo.html">
+    <img src="https://img.shields.io/badge/5.%20Abrir%20HTML-Cuestionario%20interactivo-dc2626?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir cuestionario interactivo">
+  </a>
+</p>
+
+---
+
+## 🧩 Resumen didáctico de cada recurso
+
+### 0. Índice general del paquete
+
+El índice funciona como la **puerta de entrada al bloque completo**. Permite ordenar los materiales, acceder rápidamente a cada HTML y presentar una secuencia clara para el estudio de la regresión lineal y su conexión con la neurona artificial.
+
+Su utilidad principal es transformar varios archivos separados en una experiencia de aprendizaje organizada. Desde este recurso, el estudiante puede iniciar el recorrido, acceder a las simulaciones, consultar el glosario y cerrar con el cuestionario interactivo.
+
+**Idea clave:** el índice convierte el paquete en un recorrido didáctico navegable.
+
+---
+
+### 1. Introducción a regresión lineal
+
+Este recurso introduce la regresión lineal como modelo supervisado orientado a predecir una variable numérica a partir de una o más variables de entrada.
+
+La idea central es comprender que el modelo intenta representar una relación entre variables mediante una función lineal. En el caso más simple, esa función se expresa como una recta:
+
+```text
+ŷ = wx + b
+```
+
+Donde:
+
+- `x` representa la entrada;
+- `w` representa el peso o pendiente;
+- `b` representa el sesgo o intercepto;
+- `ŷ` representa la predicción del modelo.
+
+Este recurso permite trabajar la intuición inicial del modelo, la interpretación de sus parámetros y la diferencia entre valor observado y valor predicho.
+
+**Idea clave:** la regresión lineal aprende una relación aproximada entre datos de entrada y una salida numérica.
+
+---
+
+### 2. Regresión lineal: teoría y simulación
+
+Este recurso profundiza en el proceso de aprendizaje de un modelo lineal. Permite visualizar cómo se ajustan los parámetros del modelo, cómo cambia la recta de predicción y cómo se reduce el error durante el entrenamiento.
+
+También introduce una distinción fundamental para Machine Learning: la separación entre datos de entrenamiento y datos de validación. Esta diferencia permite comprender que un modelo no solo debe ajustarse a los datos conocidos, sino también funcionar razonablemente bien sobre datos nuevos.
+
+Permite trabajar:
+
+- pendiente;
+- intercepto;
+- predicción;
+- error;
+- función de pérdida;
+- MSE;
+- entrenamiento;
+- validación;
+- epochs;
+- descenso por gradiente;
+- ajuste iterativo de parámetros.
+
+**Idea clave:** entrenar un modelo lineal significa ajustar sus parámetros para reducir el error de predicción.
+
+---
+
+### 3. Regresión lineal y neurona artificial
+
+Este recurso muestra que la estructura matemática de la regresión lineal permite comprender la base de una neurona artificial.
+
+Una neurona artificial recibe entradas, multiplica cada entrada por un peso, suma esos productos, incorpora un sesgo y genera una salida. Esta estructura coincide con la combinación lineal que aparece en la regresión:
+
+```text
+z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b
+```
+
+La diferencia central es que, en una neurona artificial, luego puede aplicarse una función de activación:
+
+```text
+a = f(z)
+```
+
+Esto permite pasar de un modelo puramente lineal a modelos capaces de representar relaciones no lineales cuando se combinan muchas neuronas y capas.
+
+Permite trabajar:
+
+- entradas;
+- pesos;
+- sesgo;
+- producto ponderado;
+- combinación lineal;
+- predicción;
+- activación;
+- error;
+- función de pérdida;
+- aprendizaje;
+- conexión entre regresión lineal y redes neuronales.
+
+**Idea clave:** la regresión lineal permite entender la operación matemática básica de una neurona artificial.
+
+---
+
+### 4. Glosario completo de regresión lineal
+
+El glosario funciona como recurso de consulta y consolidación conceptual. Reúne los términos centrales del bloque y los desarrolla de manera explicativa para que el estudiante pueda repasar antes, durante o después de la clase.
+
+Incluye conceptos fundamentales del modelo lineal, del entrenamiento, de la evaluación y de la interpretación de resultados.
+
+Permite trabajar:
+
+- regresión lineal;
+- variable independiente;
+- variable dependiente;
+- peso;
+- sesgo;
+- pendiente;
+- intercepto;
+- predicción;
+- residuo;
+- error;
+- MSE;
+- MAE;
+- RMSE;
+- R²;
+- entrenamiento;
+- validación;
+- sobreajuste;
+- subajuste;
+- generalización.
+
+**Idea clave:** el glosario permite transformar conceptos técnicos en una guía de estudio clara, ordenada y consultable.
+
+---
+
+### 5. Cuestionario interactivo
+
+El cuestionario interactivo funciona como cierre del bloque. Permite repasar los conceptos centrales mediante preguntas desarrolladas y orientadas a la comprensión, no solo a la memorización.
+
+Su valor didáctico está en conectar regresión lineal, neurona artificial, pesos, sesgo, función de pérdida, descenso por gradiente y redes neuronales dentro de un mismo recorrido conceptual.
+
+Permite trabajar:
+
+- preguntas conceptuales;
+- respuestas desarrolladas;
+- interpretación de fórmulas;
+- explicación del entrenamiento;
+- relación entre regresión lineal y neurona artificial;
+- función de pérdida;
+- descenso por gradiente;
+- activación;
+- límites del modelo lineal;
+- preparación para evaluación.
+
+**Idea clave:** el cuestionario consolida el aprendizaje al exigir que el estudiante explique cómo se conectan los conceptos del bloque.
+
+---
+
+## 🗺️ Mapa conceptual del módulo
+
+```text
+Regresión lineal
+│
+├── 1. Modelo lineal
+│   ├── Entrada x
+│   ├── Peso w
+│   ├── Sesgo b
+│   ├── Predicción ŷ
+│   └── Recta de ajuste
+│
+├── 2. Interpretación de parámetros
+│   ├── Pendiente
+│   ├── Intercepto
+│   ├── Cambio esperado en la salida
+│   └── Relación entre variables
+│
+├── 3. Error y pérdida
+│   ├── Valor real y
+│   ├── Valor predicho ŷ
+│   ├── Residuo
+│   ├── Error cuadrático
+│   ├── MSE
+│   ├── MAE
+│   └── RMSE
+│
+├── 4. Entrenamiento
+│   ├── Ajuste de parámetros
+│   ├── Descenso por gradiente
+│   ├── Learning rate
+│   ├── Epochs
+│   └── Reducción de la pérdida
+│
+├── 5. Evaluación
+│   ├── Datos de entrenamiento
+│   ├── Datos de validación
+│   ├── Generalización
+│   ├── Overfitting
+│   ├── Underfitting
+│   └── R²
+│
+├── 6. Conexión con neurona artificial
+│   ├── Entradas
+│   ├── Pesos
+│   ├── Sesgo
+│   ├── Combinación lineal
+│   ├── Activación
+│   └── Salida
+│
+└── 7. Integración
+    ├── Simulación
+    ├── Glosario
+    ├── Preguntas desarrolladas
+    ├── Interpretación conceptual
+    └── Aplicación en clase
+```
+
+---
+
+## 📖 Guía rápida de uso
+
+### Para comenzar el recorrido
+
+Usar primero el índice general del paquete.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Regresion_lineal_indice.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-%C3%8Dndice%20general-1f4e79?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir índice general">
+</a>
+
+Este recurso permite presentar la estructura del bloque y orientar al estudiante en el recorrido completo.
+
+---
+
+### Para introducir la regresión lineal
+
+Usar el recurso introductorio de regresión lineal.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/regresion_lineal.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Regresi%C3%B3n%20lineal-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir regresión lineal">
+</a>
+
+Flujo sugerido:
+
+```text
+Variable de entrada
+        ↓
+Peso
+        ↓
+Sesgo
+        ↓
+Predicción
+        ↓
+Comparación con el valor real
+```
+
+---
+
+### Para explicar entrenamiento y validación
+
+Usar el recurso de teoría y simulación.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Regresion_lineal_teoria_simulacion.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Teor%C3%ADa%20y%20simulaci%C3%B3n-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir teoría y simulación">
+</a>
+
+Este recurso permite mostrar cómo un modelo aprende de forma iterativa ajustando sus parámetros para reducir el error.
+
+---
+
+### Para conectar regresión lineal con neurona artificial
+
+Usar el recurso de regresión lineal y neurona artificial.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Regresion_lineal_neurona_artificial_interactiva.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Regresi%C3%B3n%20y%20neurona%20artificial-7c3aed?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir regresión lineal y neurona artificial">
+</a>
+
+Flujo sugerido:
+
+```text
+Regresión lineal
+        ↓
+Combinación lineal
+        ↓
+Entradas, pesos y sesgo
+        ↓
+Neurona artificial
+        ↓
+Función de activación
+```
+
+---
+
+### Para repasar conceptos clave
+
+Usar el glosario completo.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Regresion_lineal_glosario.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Glosario%20completo-15803d?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir glosario completo">
+</a>
+
+Este recurso permite consolidar el vocabulario técnico y funciona como guía de estudio.
+
+---
+
+### Para evaluar e integrar
+
+Usar el cuestionario interactivo.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Regresion_lineal_Cuestionario_regresion_neurona_interactivo.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Cuestionario%20interactivo-dc2626?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir cuestionario interactivo">
+</a>
+
+Este recurso permite verificar comprensión conceptual y preparar al estudiante para explicar el tema con sus propias palabras.
+
+---
+
+## 🧠 Desarrollo conceptual del tema
+
+### Qué es la regresión lineal
+
+La regresión lineal es un modelo de aprendizaje supervisado utilizado para predecir una variable numérica a partir de una o más variables de entrada.
+
+En su forma más simple, el modelo busca ajustar una recta que represente la relación entre una entrada y una salida.
+
+```text
+ŷ = wx + b
+```
+
+Donde:
+
+- `x` es la variable de entrada;
+- `w` es el peso o coeficiente;
+- `b` es el sesgo o intercepto;
+- `ŷ` es la predicción del modelo.
+
+---
+
+### Qué representa el peso
+
+El peso indica cuánto cambia la predicción cuando cambia la variable de entrada. En una regresión lineal simple, el peso coincide con la pendiente de la recta.
+
+Si el peso es positivo, la predicción tiende a aumentar cuando aumenta la entrada. Si el peso es negativo, la predicción tiende a disminuir cuando aumenta la entrada.
+
+```text
+ŷ = wx + b
+```
+
+En esta expresión, `w` controla la inclinación de la recta.
+
+---
+
+### Qué representa el sesgo
+
+El sesgo o intercepto indica el valor de la predicción cuando la entrada vale cero.
+
+También permite desplazar la recta hacia arriba o hacia abajo sin cambiar su inclinación.
+
+```text
+ŷ = wx + b
+```
+
+En esta expresión, `b` controla el desplazamiento vertical del modelo.
+
+---
+
+### Qué es una predicción
+
+Una predicción es el valor que genera el modelo a partir de una entrada.
+
+El modelo recibe `x`, aplica la ecuación aprendida y produce `ŷ`.
+
+```text
+Entrada x
+        ↓
+Modelo lineal
+        ↓
+Predicción ŷ
+```
+
+La predicción luego se compara con el valor real `y` para calcular el error.
+
+---
+
+### Qué es el error
+
+El error mide la diferencia entre el valor real y el valor predicho.
+
+```text
+error = y - ŷ
+```
+
+Si el error es grande, el modelo está prediciendo mal. Si el error es pequeño, el modelo está más cerca del valor real.
+
+---
+
+### Qué es una función de pérdida
+
+Una función de pérdida resume qué tan mal está prediciendo el modelo. En regresión lineal, una de las funciones más utilizadas es el error cuadrático medio.
+
+```text
+MSE = promedio de (y - ŷ)²
+```
+
+El objetivo del entrenamiento es reducir esta pérdida.
+
+---
+
+### Qué es el descenso por gradiente
+
+El descenso por gradiente es un método de optimización que permite ajustar los parámetros del modelo para reducir la función de pérdida.
+
+La idea es modificar los pesos y el sesgo en la dirección que disminuye el error.
+
+```text
+w ← w - η · ∂L/∂w
+b ← b - η · ∂L/∂b
+```
+
+Donde:
+
+- `η` es el learning rate;
+- `L` es la función de pérdida;
+- `∂L/∂w` indica cómo cambia la pérdida respecto del peso;
+- `∂L/∂b` indica cómo cambia la pérdida respecto del sesgo.
+
+---
+
+### Qué es entrenamiento
+
+Entrenar un modelo significa ajustar sus parámetros usando datos conocidos.
+
+En regresión lineal, el entrenamiento consiste en encontrar valores adecuados para `w` y `b` de modo que las predicciones se acerquen lo más posible a los valores reales.
+
+```text
+Datos
+        ↓
+Predicción
+        ↓
+Error
+        ↓
+Pérdida
+        ↓
+Actualización de parámetros
+        ↓
+Nueva predicción
+```
+
+---
+
+### Qué es validación
+
+La validación consiste en evaluar el modelo con datos que no fueron usados directamente para entrenarlo.
+
+Esto permite analizar si el modelo aprendió una relación general o si simplemente se ajustó demasiado a los datos de entrenamiento.
+
+```text
+Datos de entrenamiento → ajustar el modelo
+Datos de validación    → evaluar generalización
+```
+
+---
+
+### Qué es overfitting
+
+El overfitting o sobreajuste ocurre cuando un modelo aprende demasiado bien los datos de entrenamiento, incluyendo ruido o particularidades que no se repiten en nuevos datos.
+
+Un modelo sobreajustado puede tener bajo error de entrenamiento, pero alto error de validación.
+
+```text
+Buen desempeño en entrenamiento
+        ↓
+Mal desempeño en datos nuevos
+        ↓
+Sobreajuste
+```
+
+---
+
+### Qué es underfitting
+
+El underfitting o subajuste ocurre cuando el modelo es demasiado simple o no logra capturar la relación presente en los datos.
+
+En ese caso, el error suele ser alto tanto en entrenamiento como en validación.
+
+```text
+Mal desempeño en entrenamiento
+        ↓
+Mal desempeño en validación
+        ↓
+Subajuste
+```
+
+---
+
+### Qué es R²
+
+El coeficiente de determinación `R²` mide qué proporción de la variabilidad de la variable objetivo puede ser explicada por el modelo.
+
+Un valor de `R²` más alto indica que el modelo explica mejor la variabilidad de los datos, aunque siempre debe interpretarse junto con otras métricas y con el contexto del problema.
+
+---
+
+### Cómo se conecta la regresión lineal con una neurona artificial
+
+La regresión lineal y una neurona artificial comparten una estructura matemática básica: ambas combinan entradas con pesos y agregan un sesgo.
+
+En una regresión lineal múltiple:
+
+```text
+ŷ = w₁x₁ + w₂x₂ + ... + wₙxₙ + b
+```
+
+En una neurona artificial:
+
+```text
+z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b
+a = f(z)
+```
+
+La diferencia es que la neurona puede aplicar una función de activación `f`, lo que permite introducir no linealidad y construir modelos más complejos cuando se combinan muchas neuronas.
+
+---
+
+## ✅ Preguntas orientadoras para estudiantes
+
+1. ¿Qué problema busca resolver la regresión lineal?
+2. ¿Qué representa la variable de entrada en un modelo lineal?
+3. ¿Qué representa la variable objetivo?
+4. ¿Qué significa la predicción `ŷ`?
+5. ¿Qué representa el peso `w`?
+6. ¿Qué representa el sesgo `b`?
+7. ¿Qué diferencia hay entre valor real y valor predicho?
+8. ¿Qué mide el error?
+9. ¿Por qué se utiliza una función de pérdida?
+10. ¿Qué significa minimizar el MSE?
+11. ¿Qué es el descenso por gradiente?
+12. ¿Qué función cumple el learning rate?
+13. ¿Qué es una epoch?
+14. ¿Por qué se separan datos de entrenamiento y validación?
+15. ¿Qué diferencia hay entre overfitting y underfitting?
+16. ¿Qué mide el coeficiente R²?
+17. ¿Por qué la regresión lineal es interpretable?
+18. ¿Qué relación existe entre regresión lineal y una neurona artificial?
+19. ¿Qué agrega una función de activación a una neurona?
+20. ¿Por qué este tema sirve como base para estudiar redes neuronales?
+
+---
+
+## 🧾 Síntesis final
+
+La regresión lineal es uno de los modelos más importantes para iniciar el estudio del aprendizaje automático porque permite comprender, de manera clara e interpretable, cómo un modelo transforma datos de entrada en predicciones.
+
+Su estructura se basa en pesos, sesgo, predicción, error y ajuste de parámetros. Estos mismos elementos aparecen luego en modelos más complejos, como las neuronas artificiales y las redes neuronales.
+
+Por eso, estudiar regresión lineal no solo permite aprender una técnica útil para problemas de predicción numérica, sino también construir una base conceptual sólida para comprender cómo aprenden los modelos de Machine Learning.
+
+El recorrido propuesto integra teoría, simulación, conexión con neuronas artificiales, glosario y cuestionario. De esta manera, el estudiante puede avanzar desde la intuición básica hasta una comprensión más profunda del entrenamiento y la evaluación de modelos.
+
+---
+
 # 🧠 Redes Neuronales · Recursos interactivos de estudio
 
 > Material organizado para estudiar **redes neuronales artificiales**, **perceptrón**, **funciones de activación**, **descenso por gradiente**, **forward propagation**, **backpropagation**, **regularización** y **actividad integradora** mediante teoría visual, simulaciones interactivas y recursos didácticos para clase.
