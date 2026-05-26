@@ -1236,7 +1236,6 @@ El escalado evita que una variable domine artificialmente el cálculo de distanc
 
 # 📘 Parcial Ciencia de Datos · Banco de Preguntas y Glosario Interactivo
 
-> **Versión 2.0 mejorada del bloque de recursos para el parcial**  
 > Material organizado para estudiar, repasar y consolidar los conceptos principales de Ciencia de Datos mediante un **banco de preguntas** y un **glosario interactivo**.
 
 ---
