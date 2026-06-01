@@ -1,0 +1,118 @@
+<!DOCTYPE html><html lang="es" data-theme="light"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Simulación Autoencoder - Arquitectura y bottleneck</title><style>
+:root{--bg:#f4f7fb;--card:#ffffff;--card2:#f9fbff;--text:#142033;--muted:#64748b;--line:#d9e4f2;--accent:#2563eb;--accent2:#7c3aed;--accent3:#06b6d4;--good:#059669;--warn:#d97706;--bad:#dc2626;--shadow:0 22px 54px rgba(23,37,84,.14);--soft:0 8px 22px rgba(15,23,42,.08);--radius:28px}
+[data-theme="dark"]{--bg:#07111f;--card:#111c31;--card2:#0d1729;--text:#eef6ff;--muted:#afbdd2;--line:#263956;--accent:#60a5fa;--accent2:#a78bfa;--accent3:#22d3ee;--good:#34d399;--warn:#fbbf24;--bad:#fb7185;--shadow:0 22px 54px rgba(0,0,0,.38);--soft:0 8px 22px rgba(0,0,0,.25)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at top left,color-mix(in srgb,var(--accent) 18%,transparent),transparent 34%),radial-gradient(circle at top right,color-mix(in srgb,var(--accent2) 14%,transparent),transparent 30%),linear-gradient(135deg,var(--bg),color-mix(in srgb,var(--bg),var(--accent3) 8%));color:var(--text);line-height:1.62}a{color:var(--accent);font-weight:800;text-decoration:none}a:hover{text-decoration:underline}header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}.nav{max-width:1240px;margin:auto;padding:13px 20px;display:flex;gap:12px;align-items:center;justify-content:space-between}.brand{font-weight:900;letter-spacing:-.025em}.controls{display:flex;gap:10px;flex-wrap:wrap}button,.btn{border:1px solid var(--line);background:var(--card);color:var(--text);padding:10px 14px;border-radius:15px;cursor:pointer;font-weight:800;box-shadow:var(--soft);transition:.18s transform,.18s opacity}.btn{display:inline-flex;align-items:center;gap:8px}button.primary,.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none}button:hover,.btn:hover{transform:translateY(-1px)}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:3px}main{max-width:1240px;margin:auto;padding:28px 20px 64px}.card{background:color-mix(in srgb,var(--card) 96%,transparent);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:22px;align-items:stretch;margin:18px 0 28px}.hero .card{min-height:100%}h1{font-size:clamp(34px,5vw,60px);line-height:1.02;margin:10px 0 14px;letter-spacing:-.05em}h2{font-size:clamp(25px,3.2vw,38px);line-height:1.1;margin:38px 0 16px;letter-spacing:-.035em}h3{font-size:21px;margin:6px 0 10px}.lead{font-size:18px;color:var(--muted);max-width:82ch}.muted{color:var(--muted)}.tag{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:6px 11px;margin:4px 6px 4px 0;background:color-mix(in srgb,var(--card),var(--accent) 5%);font-size:13px;font-weight:900;color:var(--muted)}.notice{border-left:5px solid var(--accent);padding:15px 17px;border-radius:18px;background:color-mix(in srgb,var(--accent) 8%,var(--card));margin:14px 0}.good{border-left-color:var(--good)}.warn{border-left-color:var(--warn)}.bad{border-left-color:var(--bad)}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.mini{padding:16px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--soft)}.mini strong{display:block;font-size:20px;letter-spacing:-.02em}.mini small{color:var(--muted)}.table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:var(--soft)}.table th,.table td{border-bottom:1px solid var(--line);padding:13px;text-align:left;vertical-align:top}.table th{background:color-mix(in srgb,var(--accent) 11%,var(--card));font-size:14px;text-transform:uppercase;letter-spacing:.04em}.table tr:last-child td{border-bottom:none}pre{background:color-mix(in srgb,var(--card),#000 7%);border:1px solid var(--line);border-radius:20px;padding:16px;overflow:auto}code{font-family:Consolas,Monaco,monospace}.formula{font-size:18px;white-space:pre-wrap}.timeline{display:grid;gap:12px}.step{display:grid;grid-template-columns:105px 1fr;gap:14px;align-items:start;padding:15px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--soft)}.time{font-weight:950;color:var(--accent)}.footer{margin-top:42px;color:var(--muted);font-size:14px;text-align:center}.toc{display:grid;gap:10px}.toc a{display:flex;justify-content:space-between;gap:10px;padding:12px 14px;border:1px solid var(--line);border-radius:18px;background:var(--card2);color:var(--text)}.toc span{color:var(--muted);font-size:13px}.pill{display:inline-flex;align-items:center;border-radius:999px;padding:6px 10px;border:1px solid var(--line);font-weight:900;font-size:12px;color:var(--muted);background:var(--card2)}.simwrap{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px;margin-top:20px}.canvas{min-height:560px;position:relative;overflow:hidden}.panel{display:grid;gap:12px}.box{border:1px solid var(--line);border-radius:22px;padding:18px;background:linear-gradient(180deg,var(--card),color-mix(in srgb,var(--card),var(--accent) 5%));box-shadow:var(--soft)}.bar{height:24px;border-radius:999px;border:1px solid var(--line);background:color-mix(in srgb,var(--card),#000 8%);overflow:hidden}.fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));transition:.4s}.big{font-size:clamp(30px,4vw,42px);font-weight:950;letter-spacing:-.04em;margin:6px 0}.badge{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;border:1px solid var(--line);font-size:13px;font-weight:900;background:var(--card2);color:var(--muted)}input[type=range]{width:100%;accent-color:var(--accent)}select{width:100%;padding:10px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);font-weight:800}.diagram{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:18px 0}.node{min-width:115px;text-align:center;padding:16px;border-radius:24px;border:1px solid var(--line);background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--soft);font-weight:950}.node.hot{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}.arrow{font-weight:950;color:var(--accent);font-size:30px}.latentGrid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}.cell{aspect-ratio:1;border-radius:8px;border:1px solid var(--line);background:var(--card2);transition:.2s}.cell.on{background:linear-gradient(135deg,var(--accent),var(--accent2))}.xy{height:410px;border:1px dashed var(--line);border-radius:24px;position:relative;background:radial-gradient(circle at center,color-mix(in srgb,var(--accent) 5%,transparent),transparent 60%)}.point{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 14%,transparent);transform:translate(-50%,-50%);transition:.35s}.point.alt{background:var(--accent2)}.pixel{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;max-width:360px;margin:auto}.px{aspect-ratio:1;border-radius:6px;background:var(--card2);border:1px solid var(--line)}.px.dark{background:linear-gradient(135deg,var(--accent),var(--accent2))}.px.noise{background:var(--bad)}@media(max-width:930px){.hero,.grid,.grid2,.grid4,.simwrap{grid-template-columns:1fr}.canvas{min-height:640px}.nav{align-items:flex-start;flex-direction:column}.controls{width:100%}.controls button{flex:1}.step{grid-template-columns:1fr}.diagram{justify-content:center}.arrow{transform:rotate(90deg)}}@media print{header,.controls,button,.btn{display:none!important}body{background:white}.card,.mini,.table{box-shadow:none}main{max-width:100%;padding:0}.footer{page-break-before:avoid}}
+
+.floatSim{position:fixed;right:22px;bottom:22px;z-index:80;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;padding:14px 18px;border-radius:999px;font-weight:950;box-shadow:0 18px 40px rgba(37,99,235,.32)}
+.simRunPanel{margin:18px 0;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:2px solid color-mix(in srgb,var(--accent) 35%,var(--line));}
+@media print{.floatSim,.simRunPanel{display:none!important}}
+
+</style></head><body><header><div class="nav"><div class="brand">Arquitectura y bottleneck</div><div class="controls"><button id="themeBtn">🌙 Tema oscuro</button><button class="primary quickRun" type="button">▶ Simulación</button><button onclick="window.print()">🖨️ Imprimir</button><a class="btn" href="00_indice_clase_autoencoders.html">Índice</a></div></div></header><main>
+<section class="card"><span class="tag">Simulación interactiva</span><span class="tag">Encoder</span><span class="tag">Bottleneck</span><h1>Arquitectura de un autoencoder</h1><p class="lead">Modificá el tamaño del espacio latente y observá cómo cambia el balance entre compresión, capacidad y error de reconstrucción. La simulación es conceptual: busca generar intuición, no reemplazar el entrenamiento real.</p><div class="box simRunPanel">
+  <div><strong>Control visible de simulación</strong><br><span class="muted">Ejecuta una animación automática del bottleneck, la compresión y el error de reconstrucción.</span></div>
+  <button class="primary" id="runSim" type="button">▶ Ejecutar simulación automática</button>
+</div><div class="simwrap"><div class="card canvas"><div class="diagram"><div class="node">Entrada<br><span id="inDim">784</span></div><div class="arrow">→</div><div class="node">Encoder</div><div class="arrow">→</div><div class="node hot">z<br><span id="zDim">32</span></div><div class="arrow">→</div><div class="node">Decoder</div><div class="arrow">→</div><div class="node">Reconstrucción</div></div><div class="box"><div class="badge">Activación latente simulada</div><div class="latentGrid" id="latentGrid"></div></div><div class="grid2" style="margin-top:16px"><div class="box"><div class="badge">Compresión</div><div class="bar"><div class="fill" id="compFill"></div></div><p class="big" id="compTxt">24.5x</p></div><div class="box"><div class="badge">Error esperado</div><div class="bar"><div class="fill" id="errFill"></div></div><p class="big" id="errTxt">medio</p></div></div><p id="reading" class="notice">Un cuello de botella moderado obliga a capturar rasgos esenciales sin destruir demasiada información.</p></div><div class="panel"><div class="card"><h3>Controles</h3><label>Dimensión de entrada: <strong id="inputLabel">784</strong></label><input type="range" min="64" max="4096" step="64" value="784" id="inputDim"><label>Dimensión latente: <strong id="latentLabel">32</strong></label><input type="range" min="2" max="256" step="2" value="32" id="latentDim"><label>Regularización: <strong id="regLabel">0.30</strong></label><input type="range" min="0" max="100" value="30" id="reg"><button id="resetBtn">↺ Reiniciar</button></div><div class="card"><h3>Lectura didáctica</h3><p>Si z es muy chico, el modelo pierde detalle. Si z es demasiado grande y no hay regularización, puede copiar demasiado. El punto útil depende del dato, del objetivo y de la evaluación.</p><pre><code>z = encoder(x)
+x̂ = decoder(z)
+loss = reconstrucción + regularización</code></pre></div></div></div></section>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const inputDim=document.getElementById('inputDim');
+  const latentDim=document.getElementById('latentDim');
+  const reg=document.getElementById('reg');
+  const grid=document.getElementById('latentGrid');
+  const runSim=document.getElementById('runSim');
+  const resetBtn=document.getElementById('resetBtn');
+  let raf=null, running=false, frame=0, phase=0;
+
+  function setValue(el,val){
+    const min=Number(el.min), max=Number(el.max), step=Number(el.step||1);
+    const snapped=Math.round(val/step)*step;
+    el.value=Math.max(min,Math.min(max,snapped));
+  }
+
+  function draw(pulse=0){
+    const n=Number(inputDim.value);
+    const z=Number(latentDim.value);
+    const r=Number(reg.value)/100;
+
+    document.getElementById('inDim').textContent=n;
+    document.getElementById('zDim').textContent=z;
+    inputLabel.textContent=n;
+    latentLabel.textContent=z;
+    regLabel.textContent=r.toFixed(2);
+
+    const comp=n/z;
+    compTxt.textContent=comp.toFixed(1)+'x';
+    compFill.style.width=Math.min(100,comp/40*100)+'%';
+
+    let rawErr=0.08+0.75*Math.exp(-z/(n/30))+0.18*r;
+    rawErr=Math.max(.03,Math.min(.95,rawErr));
+    errFill.style.width=(rawErr*100)+'%';
+    errTxt.textContent=rawErr<.22?'bajo':rawErr<.48?'medio':'alto';
+
+    grid.innerHTML='';
+    const cells=Math.min(64,Math.max(8,Math.round(z/4)));
+    for(let i=0;i<64;i++){
+      const c=document.createElement('div');
+      c.className='cell '+(i<cells?'on':'');
+      const active=i<cells;
+      const wave=active ? .20*Math.sin(frame*.12+i*.55) : 0;
+      c.style.opacity=active ? Math.max(.25,.55+.35*Math.random()+wave+pulse*.25) : .28;
+      c.style.transform=active ? `scale(${1+pulse*.08*Math.sin(frame*.12+i)})` : 'scale(1)';
+      grid.appendChild(c);
+    }
+
+    reading.innerHTML=comp>60
+      ? '<strong>Bottleneck extremo:</strong> mucha compresión, pero se pierden detalles finos.'
+      : comp<5
+        ? '<strong>Bottleneck débil:</strong> alta capacidad; sin restricciones puede aprender una identidad casi trivial.'
+        : '<strong>Bottleneck útil:</strong> fuerza al modelo a conservar estructura relevante y descartar ruido.';
+  }
+
+  function animate(){
+    if(!running) return;
+    frame++;
+    phase += 0.018;
+
+    const n = 784 + 256*Math.sin(phase*.7);
+    const z = 8 + 120*(0.5+0.5*Math.sin(phase*1.25));
+    const rr = 50 + 40*Math.sin(phase*.9 + 1.2);
+
+    setValue(inputDim,n);
+    setValue(latentDim,z);
+    setValue(reg,rr);
+
+    draw(0.8);
+
+    if(frame < 520){
+      raf=requestAnimationFrame(animate);
+    }else{
+      running=false;
+      draw(0);
+    }
+  }
+
+  function startSimulation(){
+    if(raf) cancelAnimationFrame(raf);
+    running=true;
+    frame=0;
+    phase=0;
+    animate();
+    const target=document.querySelector('.simwrap');
+    if(target){target.scrollIntoView({behavior:'smooth',block:'center'});}
+  }
+
+  [inputDim,latentDim,reg].forEach(e=>e.addEventListener('input',()=>{running=false;if(raf)cancelAnimationFrame(raf);draw(0);}));
+  resetBtn.addEventListener('click',()=>{running=false;if(raf)cancelAnimationFrame(raf);inputDim.value=784;latentDim.value=32;reg.value=30;draw(0);});
+  runSim.addEventListener('click',startSimulation);
+  document.querySelectorAll('.quickRun').forEach(btn=>btn.addEventListener('click',startSimulation));
+  draw(0);
+});
+</script>
+<div class="footer"><strong>Material elaborado por el profesor Sergio Gevatschnaider</strong></div></main>
+<script>
+const themeBtn=document.getElementById('themeBtn');
+if(themeBtn){themeBtn.onclick=()=>{const h=document.documentElement;const dark=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',dark?'light':'dark');themeBtn.textContent=dark?'🌙 Tema oscuro':'☀️ Tema claro';}}
+</script>
+<button class="floatSim quickRun" type="button">▶ Simulación</button>
+</body></html>

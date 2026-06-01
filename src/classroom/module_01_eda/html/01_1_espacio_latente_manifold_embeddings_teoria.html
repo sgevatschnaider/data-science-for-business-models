@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espacio latente, manifold y embeddings - Teoría para exponer</title>
+<style>
+:root{
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --card2:#f9fbff;
+  --text:#142033;
+  --muted:#64748b;
+  --line:#d9e4f2;
+  --accent:#2563eb;
+  --accent2:#7c3aed;
+  --accent3:#06b6d4;
+  --good:#059669;
+  --warn:#d97706;
+  --shadow:0 22px 54px rgba(23,37,84,.14);
+  --soft:0 8px 22px rgba(15,23,42,.08);
+  --radius:28px;
+}
+[data-theme="dark"]{
+  --bg:#07111f;
+  --card:#111c31;
+  --card2:#0d1729;
+  --text:#eef6ff;
+  --muted:#afbdd2;
+  --line:#263956;
+  --accent:#60a5fa;
+  --accent2:#a78bfa;
+  --accent3:#22d3ee;
+  --good:#34d399;
+  --warn:#fbbf24;
+  --shadow:0 22px 54px rgba(0,0,0,.38);
+  --soft:0 8px 22px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(circle at top left,color-mix(in srgb,var(--accent) 18%,transparent),transparent 34%),
+    radial-gradient(circle at top right,color-mix(in srgb,var(--accent2) 14%,transparent),transparent 30%),
+    linear-gradient(135deg,var(--bg),color-mix(in srgb,var(--bg),var(--accent3) 8%));
+  color:var(--text);
+  line-height:1.68;
+}
+header{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:color-mix(in srgb,var(--card) 88%,transparent);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+}
+.nav{
+  max-width:1180px;
+  margin:auto;
+  padding:13px 20px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:space-between;
+}
+.brand{font-weight:900;letter-spacing:-.025em}
+.controls{display:flex;gap:10px;flex-wrap:wrap}
+button{
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--text);
+  padding:10px 14px;
+  border-radius:15px;
+  cursor:pointer;
+  font-weight:800;
+  box-shadow:var(--soft);
+  transition:.18s transform;
+}
+button:hover{transform:translateY(-1px)}
+main{max-width:1180px;margin:auto;padding:28px 20px 64px}
+.card{
+  background:color-mix(in srgb,var(--card) 96%,transparent);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:26px;
+  box-shadow:var(--shadow);
+}
+.hero{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);
+  gap:22px;
+  align-items:stretch;
+  margin:18px 0 30px;
+}
+h1{
+  font-size:clamp(34px,5vw,58px);
+  line-height:1.02;
+  margin:10px 0 16px;
+  letter-spacing:-.05em;
+}
+h2{
+  font-size:clamp(25px,3.1vw,38px);
+  line-height:1.1;
+  margin:38px 0 16px;
+  letter-spacing:-.035em;
+}
+h3{font-size:21px;margin:6px 0 10px}
+p{font-size:17px}
+.lead{font-size:19px;color:var(--muted);max-width:82ch}
+.muted{color:var(--muted)}
+.tag{
+  display:inline-flex;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:6px 11px;
+  margin:4px 6px 4px 0;
+  background:color-mix(in srgb,var(--card),var(--accent) 5%);
+  font-size:13px;
+  font-weight:900;
+  color:var(--muted);
+}
+.toc{display:grid;gap:10px}
+.toc a{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:var(--card2);
+  color:var(--text);
+  text-decoration:none;
+  font-weight:850;
+}
+.toc span{color:var(--muted);font-size:13px}
+.notice{
+  border-left:5px solid var(--accent);
+  padding:15px 17px;
+  border-radius:18px;
+  background:color-mix(in srgb,var(--accent) 8%,var(--card));
+  margin:16px 0;
+}
+.notice.good{border-left-color:var(--good)}
+.notice.warn{border-left-color:var(--warn)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.mini{
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  box-shadow:var(--soft);
+}
+.mini strong{display:block;font-size:20px;letter-spacing:-.02em;margin-bottom:6px}
+.mini small{color:var(--muted);font-size:15px}
+.table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:var(--card);
+  box-shadow:var(--soft);
+  margin:18px 0;
+}
+.table th,.table td{
+  border-bottom:1px solid var(--line);
+  padding:14px;
+  text-align:left;
+  vertical-align:top;
+}
+.table th{
+  background:color-mix(in srgb,var(--accent) 11%,var(--card));
+  font-size:14px;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.table tr:last-child td{border-bottom:none}
+.diagram{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  margin:20px 0;
+}
+.node{
+  min-width:130px;
+  text-align:center;
+  padding:16px;
+  border-radius:24px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  box-shadow:var(--soft);
+  font-weight:950;
+}
+.node.hot{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
+.arrow{font-weight:950;color:var(--accent);font-size:30px}
+pre{
+  background:color-mix(in srgb,var(--card),#000 7%);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:16px;
+  overflow:auto;
+  font-size:16px;
+}
+code{font-family:Consolas,Monaco,monospace}
+.footer{
+  margin-top:42px;
+  color:var(--muted);
+  font-size:14px;
+  text-align:center;
+}
+@media(max-width:930px){
+  .hero,.grid,.grid2{grid-template-columns:1fr}
+  .nav{align-items:flex-start;flex-direction:column}
+  .controls{width:100%}
+  .controls button{flex:1}
+  .diagram{justify-content:center}
+  .arrow{transform:rotate(90deg)}
+}
+@media print{
+  header,.controls,button{display:none!important}
+  body{background:white}
+  .card,.mini,.table{box-shadow:none}
+  main{max-width:100%;padding:0}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <div class="brand">Teoría para exponer · Espacio latente, manifold y embeddings</div>
+    <div class="controls">
+      <button id="themeBtn">🌙 Tema oscuro</button>
+      <button onclick="window.print()">🖨️ Imprimir</button>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="card">
+    <span class="tag">Deep Learning</span>
+    <span class="tag">Autoencoders</span>
+    <span class="tag">Representaciones</span>
+    <h1>Espacio latente, manifold y embeddings</h1>
+    <p class="lead">
+      Estos tres conceptos permiten entender cómo una red neuronal transforma datos complejos en representaciones internas más simples, útiles y manipulables.
+      Son ideas centrales para comprender autoencoders, modelos generativos, búsqueda semántica, clustering, recomendación y análisis de datos de alta dimensión.
+    </p>
+    <div class="notice">
+      <strong>Idea central:</strong> el aprendizaje profundo no trabaja solamente con datos visibles; aprende representaciones internas.
+      Esas representaciones condensan información, organizan similitudes y permiten descubrir estructura donde el dato original parece demasiado grande o desordenado.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Mapa de exposición</h3>
+    <div class="toc">
+      <a href="#problema">1. El problema de la alta dimensión <span>Por qué comprimir</span></a>
+      <a href="#latente">2. Espacio latente <span>Representación interna</span></a>
+      <a href="#manifold">3. Manifold <span>Geometría de los datos</span></a>
+      <a href="#embeddings">4. Embeddings <span>Vectores con significado</span></a>
+      <a href="#relacion">5. Relación entre conceptos <span>Diferencias claras</span></a>
+      <a href="#autoencoders">6. En autoencoders <span>Encoder y decoder</span></a>
+      <a href="#ejemplos">7. Ejemplos aplicados <span>Texto, imágenes y datos</span></a>
+      <a href="#cierre">8. Cierre conceptual <span>Mensaje final</span></a>
+    </div>
+  </div>
+</section>
+
+<section id="problema" class="card">
+  <h2>1. El problema de la alta dimensión</h2>
+  <p>
+    Muchos datos modernos son de alta dimensión. Una imagen puede tener miles o millones de píxeles. Un texto puede representarse mediante miles de palabras o tokens.
+    Una base de clientes puede incluir decenas o cientos de variables. Una señal temporal puede tener miles de observaciones consecutivas.
+  </p>
+  <p>
+    Sin embargo, aunque el dato original tenga muchas dimensiones, no toda esa información es igualmente relevante. En una imagen de un rostro, por ejemplo,
+    los píxeles individuales son muchísimos, pero la identidad visual puede depender de un conjunto más reducido de factores: forma general, posición de los ojos,
+    iluminación, orientación, expresión, textura y proporciones.
+  </p>
+  <div class="notice good">
+    <strong>Intuición para explicar:</strong> el dato visible puede ser muy grande, pero la estructura que lo genera puede ser mucho más pequeña.
+    El objetivo de una representación latente es encontrar esa estructura más compacta.
+  </div>
+</section>
+
+<section id="latente" class="card">
+  <h2>2. ¿Qué es el espacio latente?</h2>
+  <p>
+    El espacio latente es un espacio interno aprendido por un modelo. No se observa directamente en los datos originales, sino que aparece como resultado del entrenamiento.
+    Allí cada dato se transforma en un vector más compacto o más organizado que intenta conservar la información esencial.
+  </p>
+  <p>
+    La palabra “latente” significa que está oculto. No vemos directamente esas variables en la realidad, pero el modelo las aprende porque le ayudan a explicar,
+    reconstruir, clasificar, agrupar o generar datos.
+  </p>
+
+  <div class="diagram">
+    <div class="node">Dato original x</div>
+    <div class="arrow">→</div>
+    <div class="node">Modelo / Encoder</div>
+    <div class="arrow">→</div>
+    <div class="node hot">Vector latente z</div>
+    <div class="arrow">→</div>
+    <div class="node">Uso posterior</div>
+  </div>
+
+  <p>
+    En un autoencoder, el encoder transforma la entrada en una representación latente. Esa representación puede ser de menor dimensión que el dato original.
+    Si el modelo logra reconstruir bien la entrada a partir de esa versión reducida, significa que el espacio latente capturó información importante.
+  </p>
+
+  <pre><code>Entrada original:        x
+Representación latente:  z = encoder(x)
+Reconstrucción:          x̂ = decoder(z)</code></pre>
+
+  <div class="grid">
+    <div class="mini">
+      <strong>Comprime</strong>
+      <small>Reduce información redundante o poco relevante.</small>
+    </div>
+    <div class="mini">
+      <strong>Organiza</strong>
+      <small>Ubica datos parecidos en regiones cercanas.</small>
+    </div>
+    <div class="mini">
+      <strong>Abstrae</strong>
+      <small>Representa factores generales detrás de los datos.</small>
+    </div>
+  </div>
+</section>
+
+<section id="manifold" class="card">
+  <h2>3. ¿Qué es un manifold?</h2>
+  <p>
+    Un manifold, o variedad, es una estructura geométrica de menor dimensión que vive dentro de un espacio de mayor dimensión.
+    La idea puede parecer abstracta, pero es muy intuitiva: aunque un dato tenga muchísimas coordenadas posibles, los datos reales no ocupan todas las combinaciones imaginables.
+    Suelen concentrarse en zonas con estructura.
+  </p>
+  <p>
+    Pensemos en imágenes de rostros. Si una imagen tiene miles de píxeles, matemáticamente existen infinitas combinaciones posibles de esos píxeles.
+    Pero casi todas esas combinaciones serían ruido sin sentido. Las imágenes reales de rostros ocupan una región mucho más restringida dentro de ese espacio enorme.
+    Esa región estructurada puede entenderse como un manifold.
+  </p>
+
+  <div class="notice">
+    <strong>Idea clave:</strong> el manifold es la forma geométrica subyacente donde viven los datos reales.
+    Aprender un buen espacio latente significa aproximar esa forma de manera útil.
+  </div>
+
+  <p>
+    El manifold no necesariamente es plano. Puede ser curvo, complejo y no lineal. Por eso las técnicas lineales clásicas, como PCA, pueden ser insuficientes para capturar
+    estructuras profundas. Los autoencoders y otros modelos neuronales pueden aprender transformaciones no lineales que “desenrollan” o reorganizan ese manifold.
+  </p>
+
+  <table class="table">
+    <tr>
+      <th>Concepto</th>
+      <th>Explicación clara</th>
+      <th>Ejemplo</th>
+    </tr>
+    <tr>
+      <td>Espacio original</td>
+      <td>El lugar donde se representan los datos tal como entran al modelo.</td>
+      <td>Todos los píxeles de una imagen.</td>
+    </tr>
+    <tr>
+      <td>Manifold</td>
+      <td>La región estructurada donde se concentran los datos reales.</td>
+      <td>El conjunto de imágenes plausibles de rostros.</td>
+    </tr>
+    <tr>
+      <td>Espacio latente</td>
+      <td>Una representación aprendida que intenta capturar coordenadas útiles de ese manifold.</td>
+      <td>Un vector que resume identidad, orientación, iluminación y expresión.</td>
+    </tr>
+  </table>
+</section>
+
+<section id="embeddings" class="card">
+  <h2>4. ¿Qué son los embeddings?</h2>
+  <p>
+    Un embedding es una representación vectorial de un objeto. Ese objeto puede ser una palabra, una frase, una imagen, un usuario, un producto,
+    una molécula, una canción, una transacción o un documento. La idea central es convertir algo complejo en un vector numérico que conserve relaciones relevantes.
+  </p>
+  <p>
+    Los embeddings permiten que los modelos trabajen con similitud. Si dos objetos tienen significado parecido, comportamiento parecido o estructura parecida,
+    sus vectores deberían quedar cerca en el espacio. Por eso son fundamentales para búsqueda semántica, recomendadores, clustering, clasificación y recuperación de información.
+  </p>
+
+  <div class="grid">
+    <div class="mini">
+      <strong>Texto</strong>
+      <small>Palabras o documentos cercanos representan significados relacionados.</small>
+    </div>
+    <div class="mini">
+      <strong>Usuarios</strong>
+      <small>Clientes con patrones similares quedan próximos en el espacio vectorial.</small>
+    </div>
+    <div class="mini">
+      <strong>Imágenes</strong>
+      <small>Objetos visualmente parecidos se ubican en regiones cercanas.</small>
+    </div>
+  </div>
+
+  <p>
+    Un embedding puede ser aprendido por un autoencoder, por una red supervisada, por un modelo de lenguaje, por un sistema de recomendación o por una arquitectura contrastiva.
+    Lo importante no es solamente que sea un vector, sino que ese vector tenga una geometría significativa.
+  </p>
+
+  <div class="notice good">
+    <strong>Frase útil para exponer:</strong> un embedding es una forma de convertir significado, comportamiento o estructura en geometría.
+    Lo similar se vuelve cercano; lo diferente se separa.
+  </div>
+</section>
+
+<section id="relacion" class="card">
+  <h2>5. Diferencia entre espacio latente, manifold y embeddings</h2>
+  <p>
+    Los tres conceptos están conectados, pero no significan exactamente lo mismo. Conviene distinguirlos con precisión para evitar confusiones.
+  </p>
+
+  <table class="table">
+    <tr>
+      <th>Concepto</th>
+      <th>Qué es</th>
+      <th>Cómo explicarlo en una frase</th>
+    </tr>
+    <tr>
+      <td>Espacio latente</td>
+      <td>Espacio interno aprendido por el modelo para representar los datos.</td>
+      <td>Es el lugar donde el modelo guarda una versión comprimida o abstracta del dato.</td>
+    </tr>
+    <tr>
+      <td>Manifold</td>
+      <td>Estructura geométrica de baja dimensión donde se concentran los datos reales.</td>
+      <td>Es la forma oculta que siguen los datos dentro de un espacio enorme.</td>
+    </tr>
+    <tr>
+      <td>Embedding</td>
+      <td>Vector que representa un objeto de manera útil para medir similitud o alimentar otros modelos.</td>
+      <td>Es la traducción de un objeto a coordenadas numéricas con significado.</td>
+    </tr>
+  </table>
+
+  <div class="notice warn">
+    <strong>Diferencia importante:</strong> no todo embedding proviene de un autoencoder y no todo espacio latente es necesariamente interpretable.
+    Además, el manifold es una idea geométrica sobre la estructura de los datos, mientras que el embedding es una representación concreta en forma de vector.
+  </div>
+</section>
+
+<section id="autoencoders" class="card">
+  <h2>6. Estos conceptos dentro de un autoencoder</h2>
+  <p>
+    En un autoencoder, el encoder toma el dato original y lo lleva al espacio latente. El decoder toma esa representación latente y trata de reconstruir el dato original.
+    Si el espacio latente está bien aprendido, no necesita guardar cada detalle superficial; debe conservar los factores que explican la estructura principal del dato.
+  </p>
+
+  <div class="diagram">
+    <div class="node">Imagen / dato</div>
+    <div class="arrow">→</div>
+    <div class="node">Encoder</div>
+    <div class="arrow">→</div>
+    <div class="node hot">Embedding latente</div>
+    <div class="arrow">→</div>
+    <div class="node">Decoder</div>
+    <div class="arrow">→</div>
+    <div class="node">Reconstrucción</div>
+  </div>
+
+  <p>
+    Cuando el cuello de botella es estrecho, el modelo se ve obligado a priorizar. No puede copiar todo. Debe aprender una representación eficiente.
+    Esto es lo que vuelve interesante al autoencoder: su valor no está en reconstruir de memoria, sino en descubrir qué información permite reconstruir lo esencial.
+  </p>
+
+  <div class="grid2">
+    <div class="mini">
+      <strong>Buena representación latente</strong>
+      <small>Conserva estructura, agrupa casos similares, permite reconstrucción razonable y puede servir para tareas posteriores.</small>
+    </div>
+    <div class="mini">
+      <strong>Mala representación latente</strong>
+      <small>Memoriza, copia detalles irrelevantes, mezcla casos distintos o no generaliza a datos nuevos.</small>
+    </div>
+  </div>
+</section>
+
+<section id="ejemplos" class="card">
+  <h2>7. Ejemplos aplicados para exponer</h2>
+
+  <h3>Ejemplo 1: imágenes</h3>
+  <p>
+    Una imagen puede tener miles de píxeles, pero un autoencoder puede aprender un vector latente mucho más pequeño.
+    Ese vector puede capturar rasgos como orientación, forma, intensidad, textura o estilo. Si dos imágenes son parecidas, sus vectores latentes deberían quedar cerca.
+  </p>
+
+  <h3>Ejemplo 2: texto</h3>
+  <p>
+    En texto, un embedding transforma palabras, frases o documentos en vectores. La palabra “exportación” puede quedar cerca de “comercio internacional”,
+    “mercados externos” o “aduana”, aunque no sean exactamente la misma palabra. La cercanía representa relación semántica.
+  </p>
+
+  <h3>Ejemplo 3: clientes o usuarios</h3>
+  <p>
+    En un sistema de recomendación, cada usuario puede representarse mediante un embedding. Ese vector resume preferencias, historial de consumo y patrones de comportamiento.
+    Si dos usuarios quedan cerca, el sistema puede inferir que podrían interesarse por productos o contenidos similares.
+  </p>
+
+  <h3>Ejemplo 4: anomalías</h3>
+  <p>
+    Si un autoencoder se entrena con datos normales, aprende el manifold de la normalidad. Cuando aparece un dato muy distinto,
+    puede quedar lejos de esa estructura y reconstruirse mal. Ese error de reconstrucción puede usarse como señal de anomalía.
+  </p>
+</section>
+
+<section id="cierre" class="card">
+  <h2>8. Cierre conceptual</h2>
+  <p>
+    Espacio latente, manifold y embeddings son tres formas de hablar de una misma idea profunda: los datos tienen estructura, y los modelos pueden aprender a representarla.
+    El espacio latente es el lugar interno donde aparece esa representación. El manifold es la geometría subyacente que organiza los datos reales.
+    El embedding es el vector concreto que usamos para operar, comparar, agrupar o alimentar otros modelos.
+  </p>
+
+  <div class="notice good">
+    <strong>Mensaje final para la exposición:</strong> aprender no es solo predecir una salida. En deep learning, aprender también significa construir una representación.
+    Cuando esa representación es buena, los datos dejan de ser una colección de puntos aislados y pasan a formar un mapa de relaciones.
+  </div>
+</section>
+
+<div class="footer">
+  <strong>Material elaborado por el profesor Sergio Gevatschnaider</strong>
+</div>
+</main>
+
+<script>
+const themeBtn=document.getElementById('themeBtn');
+if(themeBtn){
+  themeBtn.onclick=()=>{
+    const h=document.documentElement;
+    const dark=h.getAttribute('data-theme')==='dark';
+    h.setAttribute('data-theme',dark?'light':'dark');
+    themeBtn.textContent=dark?'🌙 Tema oscuro':'☀️ Tema claro';
+  };
+}
+</script>
+</body>
+</html>

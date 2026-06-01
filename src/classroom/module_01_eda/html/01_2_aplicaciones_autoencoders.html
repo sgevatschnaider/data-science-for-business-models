@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplicaciones de los Autoencoders - Material para clase</title>
+<style>
+:root{
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --card2:#f9fbff;
+  --text:#142033;
+  --muted:#64748b;
+  --line:#d9e4f2;
+  --accent:#2563eb;
+  --accent2:#7c3aed;
+  --accent3:#06b6d4;
+  --good:#059669;
+  --warn:#d97706;
+  --bad:#dc2626;
+  --shadow:0 22px 54px rgba(23,37,84,.14);
+  --soft:0 8px 22px rgba(15,23,42,.08);
+  --radius:28px;
+}
+[data-theme="dark"]{
+  --bg:#07111f;
+  --card:#111c31;
+  --card2:#0d1729;
+  --text:#eef6ff;
+  --muted:#afbdd2;
+  --line:#263956;
+  --accent:#60a5fa;
+  --accent2:#a78bfa;
+  --accent3:#22d3ee;
+  --good:#34d399;
+  --warn:#fbbf24;
+  --bad:#fb7185;
+  --shadow:0 22px 54px rgba(0,0,0,.38);
+  --soft:0 8px 22px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(circle at top left,color-mix(in srgb,var(--accent) 18%,transparent),transparent 34%),
+    radial-gradient(circle at top right,color-mix(in srgb,var(--accent2) 14%,transparent),transparent 30%),
+    linear-gradient(135deg,var(--bg),color-mix(in srgb,var(--bg),var(--accent3) 8%));
+  color:var(--text);
+  line-height:1.68;
+}
+header{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:color-mix(in srgb,var(--card) 88%,transparent);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+}
+.nav{
+  max-width:1240px;
+  margin:auto;
+  padding:13px 20px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:space-between;
+}
+.brand{font-weight:900;letter-spacing:-.025em}
+.controls{display:flex;gap:10px;flex-wrap:wrap}
+button{
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--text);
+  padding:10px 14px;
+  border-radius:15px;
+  cursor:pointer;
+  font-weight:800;
+  box-shadow:var(--soft);
+  transition:.18s transform;
+}
+button:hover{transform:translateY(-1px)}
+main{max-width:1240px;margin:auto;padding:28px 20px 64px}
+.card{
+  background:color-mix(in srgb,var(--card) 96%,transparent);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:26px;
+  box-shadow:var(--shadow);
+}
+.hero{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);
+  gap:22px;
+  align-items:stretch;
+  margin:18px 0 30px;
+}
+h1{
+  font-size:clamp(34px,5vw,60px);
+  line-height:1.02;
+  margin:10px 0 16px;
+  letter-spacing:-.05em;
+}
+h2{
+  font-size:clamp(25px,3.1vw,38px);
+  line-height:1.1;
+  margin:38px 0 16px;
+  letter-spacing:-.035em;
+}
+h3{font-size:21px;margin:6px 0 10px}
+p{font-size:17px}
+.lead{font-size:19px;color:var(--muted);max-width:84ch}
+.muted{color:var(--muted)}
+.tag{
+  display:inline-flex;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:6px 11px;
+  margin:4px 6px 4px 0;
+  background:color-mix(in srgb,var(--card),var(--accent) 5%);
+  font-size:13px;
+  font-weight:900;
+  color:var(--muted);
+}
+.toc{display:grid;gap:10px}
+.toc a{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:var(--card2);
+  color:var(--text);
+  text-decoration:none;
+  font-weight:850;
+}
+.toc span{color:var(--muted);font-size:13px}
+.notice{
+  border-left:5px solid var(--accent);
+  padding:15px 17px;
+  border-radius:18px;
+  background:color-mix(in srgb,var(--accent) 8%,var(--card));
+  margin:16px 0;
+}
+.notice.good{border-left-color:var(--good)}
+.notice.warn{border-left-color:var(--warn)}
+.notice.bad{border-left-color:var(--bad)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.mini{
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  box-shadow:var(--soft);
+}
+.mini strong{display:block;font-size:20px;letter-spacing:-.02em;margin-bottom:6px}
+.mini small{color:var(--muted);font-size:15px}
+.table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:var(--card);
+  box-shadow:var(--soft);
+  margin:18px 0;
+}
+.table th,.table td{
+  border-bottom:1px solid var(--line);
+  padding:14px;
+  text-align:left;
+  vertical-align:top;
+}
+.table th{
+  background:color-mix(in srgb,var(--accent) 11%,var(--card));
+  font-size:14px;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.table tr:last-child td{border-bottom:none}
+.diagram{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  margin:20px 0;
+}
+.node{
+  min-width:130px;
+  text-align:center;
+  padding:16px;
+  border-radius:24px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  box-shadow:var(--soft);
+  font-weight:950;
+}
+.node.hot{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
+.arrow{font-weight:950;color:var(--accent);font-size:30px}
+pre{
+  background:color-mix(in srgb,var(--card),#000 7%);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:16px;
+  overflow:auto;
+  font-size:16px;
+}
+code{font-family:Consolas,Monaco,monospace}
+.case{
+  display:grid;
+  grid-template-columns:150px 1fr;
+  gap:16px;
+  align-items:start;
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  box-shadow:var(--soft);
+  margin:14px 0;
+}
+.case .icon{
+  width:86px;
+  height:86px;
+  border-radius:26px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:38px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:white;
+  box-shadow:var(--soft);
+}
+.kpi{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:7px 10px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  font-size:13px;
+  font-weight:900;
+  color:var(--muted);
+  background:var(--card2);
+  margin:4px 5px 4px 0;
+}
+.footer{
+  margin-top:42px;
+  color:var(--muted);
+  font-size:14px;
+  text-align:center;
+}
+@media(max-width:930px){
+  .hero,.grid,.grid2,.grid4{grid-template-columns:1fr}
+  .nav{align-items:flex-start;flex-direction:column}
+  .controls{width:100%}
+  .controls button{flex:1}
+  .diagram{justify-content:center}
+  .arrow{transform:rotate(90deg)}
+  .case{grid-template-columns:1fr}
+}
+@media print{
+  header,.controls,button{display:none!important}
+  body{background:white}
+  .card,.mini,.table,.case{box-shadow:none}
+  main{max-width:100%;padding:0}
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="nav">
+    <div class="brand">Clase · Aplicaciones de los Autoencoders</div>
+    <div class="controls">
+      <button id="themeBtn">🌙 Tema oscuro</button>
+      <button onclick="window.print()">🖨️ Imprimir</button>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="card">
+    <span class="tag">Deep Learning</span>
+    <span class="tag">Autoencoders</span>
+    <span class="tag">Aplicaciones</span>
+    <h1>Aplicaciones de los Autoencoders</h1>
+    <p class="lead">
+      Un autoencoder aprende a reconstruir una entrada después de pasarla por una representación interna.
+      A partir de esa idea simple surgen aplicaciones muy potentes: reducción de dimensionalidad, compresión,
+      eliminación de ruido, detección de anomalías, extracción de características, búsqueda por similitud,
+      recomendación, reconstrucción de datos faltantes y generación de nuevos ejemplos.
+    </p>
+    <div class="notice">
+      <strong>Idea central para clase:</strong> el valor del autoencoder no está solamente en copiar la entrada,
+      sino en aprender una representación latente útil. Esa representación permite entender, resumir,
+      limpiar, comparar y reconstruir datos complejos.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Mapa de exposición</h3>
+    <div class="toc">
+      <a href="#base">1. Idea base <span>Reconstrucción y representación</span></a>
+      <a href="#dimensionalidad">2. Reducción de dimensionalidad <span>Datos complejos</span></a>
+      <a href="#compresion">3. Compresión <span>Encoder y decoder</span></a>
+      <a href="#denoising">4. Eliminación de ruido <span>Denoising</span></a>
+      <a href="#anomalias">5. Anomalías <span>Error de reconstrucción</span></a>
+      <a href="#features">6. Features y embeddings <span>Representación latente</span></a>
+      <a href="#similitud">7. Similitud y clustering <span>Espacio latente</span></a>
+      <a href="#recomendacion">8. Recomendación <span>Preferencias</span></a>
+      <a href="#generacion">9. Generación e interpolación <span>VAE</span></a>
+      <a href="#faltantes">10. Datos faltantes <span>Reconstrucción</span></a>
+      <a href="#sintesis">11. Síntesis final <span>Mapa conceptual</span></a>
+    </div>
+  </div>
+</section>
+
+<section id="base" class="card">
+  <h2>1. Idea base: reconstruir para aprender representaciones</h2>
+  <p>
+    Un autoencoder es una red neuronal compuesta por dos partes principales. El <strong>encoder</strong>
+    transforma el dato original en una representación interna, normalmente más compacta. El <strong>decoder</strong>
+    toma esa representación y trata de reconstruir el dato original.
+  </p>
+
+  <div class="diagram">
+    <div class="node">Dato original</div>
+    <div class="arrow">→</div>
+    <div class="node">Encoder</div>
+    <div class="arrow">→</div>
+    <div class="node hot">Espacio latente</div>
+    <div class="arrow">→</div>
+    <div class="node">Decoder</div>
+    <div class="arrow">→</div>
+    <div class="node">Reconstrucción</div>
+  </div>
+
+  <pre><code>z = encoder(x)
+x̂ = decoder(z)
+
+Objetivo del entrenamiento:
+reconstruir x usando una representación interna z</code></pre>
+
+  <p>
+    Cuando la reconstrucción es buena, significa que el vector latente contiene información relevante.
+    Cuando el modelo se entrena correctamente, ese vector no es una simple copia: funciona como una síntesis
+    de los patrones más importantes del dato.
+  </p>
+
+  <div class="notice good">
+    <strong>Frase para exponer:</strong> el autoencoder aprende una versión interna del mundo de los datos.
+    Esa versión interna puede ser más pequeña, más limpia y más útil que el dato crudo.
+  </div>
+</section>
+
+<section id="dimensionalidad" class="card">
+  <h2>2. Reducción de dimensionalidad</h2>
+  <p>
+    Una de las aplicaciones más directas es reducir datos de alta dimensión a una representación más pequeña.
+    Esto es especialmente importante cuando el dato original contiene muchas variables, muchos píxeles,
+    muchas mediciones o muchas señales.
+  </p>
+
+  <p>
+    A diferencia de técnicas lineales como PCA, un autoencoder puede aprender transformaciones no lineales.
+    Esto permite capturar relaciones más complejas, especialmente cuando los datos se organizan en estructuras curvas
+    o manifolds dentro de espacios de alta dimensión.
+  </p>
+
+  <div class="grid">
+    <div class="mini">
+      <strong>Imágenes</strong>
+      <small>Reducir miles de píxeles a un vector latente compacto.</small>
+    </div>
+    <div class="mini">
+      <strong>Finanzas</strong>
+      <small>Condensar variables de mercado, riesgo, volatilidad o correlaciones.</small>
+    </div>
+    <div class="mini">
+      <strong>Salud</strong>
+      <small>Resumir imágenes médicas, señales o datos genómicos.</small>
+    </div>
+  </div>
+
+  <div class="notice">
+    <strong>Clave conceptual:</strong> reducir dimensionalidad no significa perder información al azar.
+    Significa conservar los factores que explican la mayor parte de la estructura relevante.
+  </div>
+</section>
+
+<section id="compresion" class="card">
+  <h2>3. Compresión de datos</h2>
+  <p>
+    El autoencoder puede funcionar como un sistema de compresión aprendido. El encoder comprime y el decoder reconstruye.
+    La diferencia con métodos tradicionales de compresión es que el autoencoder aprende patrones específicos del dominio.
+  </p>
+
+  <p>
+    Si se entrena con rostros, aprende a comprimir rostros. Si se entrena con sensores industriales, aprende a comprimir
+    señales de sensores. Si se entrena con datos transaccionales, aprende regularidades propias de ese tipo de registro.
+  </p>
+
+  <table class="table">
+    <tr>
+      <th>Elemento</th>
+      <th>Función</th>
+      <th>Interpretación</th>
+    </tr>
+    <tr>
+      <td>Encoder</td>
+      <td>Reduce el dato original a un código latente.</td>
+      <td>Compresor aprendido.</td>
+    </tr>
+    <tr>
+      <td>Espacio latente</td>
+      <td>Guarda la información esencial en menos dimensiones.</td>
+      <td>Representación comprimida.</td>
+    </tr>
+    <tr>
+      <td>Decoder</td>
+      <td>Reconstruye el dato a partir del código latente.</td>
+      <td>Descompresor aprendido.</td>
+    </tr>
+  </table>
+
+  <div class="notice warn">
+    <strong>Limitación:</strong> esta compresión suele ser específica del dominio. Un autoencoder entrenado con un tipo de dato
+    puede reconstruir mal datos muy distintos a los que vio durante el entrenamiento.
+  </div>
+</section>
+
+<section id="denoising" class="card">
+  <h2>4. Eliminación de ruido: denoising autoencoder</h2>
+  <p>
+    En un denoising autoencoder, el modelo recibe una versión corrupta o ruidosa del dato, pero aprende a reconstruir
+    la versión limpia. Esto obliga a la red a reconocer la estructura subyacente y a ignorar perturbaciones accidentales.
+  </p>
+
+  <div class="diagram">
+    <div class="node">Dato con ruido</div>
+    <div class="arrow">→</div>
+    <div class="node hot">Autoencoder</div>
+    <div class="arrow">→</div>
+    <div class="node">Dato limpio reconstruido</div>
+  </div>
+
+  <div class="grid2">
+    <div class="mini">
+      <strong>Imágenes</strong>
+      <small>Quitar ruido visual, mejorar reconstrucciones o recuperar patrones dañados.</small>
+    </div>
+    <div class="mini">
+      <strong>Señales</strong>
+      <small>Limpiar audio, sensores industriales, ECG u otras señales temporales.</small>
+    </div>
+  </div>
+
+  <div class="notice good">
+    <strong>Frase para clase:</strong> el denoising autoencoder no aprende a copiar ruido;
+    aprende a reconstruir la estructura que permanece detrás del ruido.
+  </div>
+</section>
+
+<section id="anomalias" class="card">
+  <h2>5. Detección de anomalías</h2>
+  <p>
+    Esta es una de las aplicaciones más importantes. El autoencoder se entrena con datos normales.
+    Como aprende la estructura de la normalidad, puede reconstruir bien los casos parecidos a los del entrenamiento.
+    En cambio, cuando aparece un caso raro, fuera de patrón o anómalo, la reconstrucción suele ser peor.
+  </p>
+
+  <pre><code>Error de reconstrucción = diferencia entre x y x̂
+
+Si el error es bajo:
+el dato se parece a la estructura aprendida.
+
+Si el error es alto:
+el dato puede ser raro, atípico o anómalo.</code></pre>
+
+  <table class="table">
+    <tr>
+      <th>Dominio</th>
+      <th>Aplicación</th>
+      <th>Señal esperada</th>
+    </tr>
+    <tr>
+      <td>Finanzas</td>
+      <td>Detección de transacciones atípicas.</td>
+      <td>Error de reconstrucción alto.</td>
+    </tr>
+    <tr>
+      <td>Industria</td>
+      <td>Fallas en sensores o comportamiento anormal de máquinas.</td>
+      <td>Patrón fuera de la normalidad operativa.</td>
+    </tr>
+    <tr>
+      <td>Ciberseguridad</td>
+      <td>Tráfico de red sospechoso.</td>
+      <td>Registros difíciles de reconstruir.</td>
+    </tr>
+    <tr>
+      <td>Salud</td>
+      <td>Señales o imágenes fuera del patrón esperado.</td>
+      <td>Diferencia alta respecto del manifold aprendido.</td>
+    </tr>
+  </table>
+
+  <div class="notice warn">
+    <strong>Aclaración importante:</strong> un error alto no prueba automáticamente fraude, enfermedad o falla.
+    Indica que el dato es poco parecido a lo que el modelo aprendió como normal. La interpretación final requiere contexto experto.
+  </div>
+</section>
+
+<section id="features" class="card">
+  <h2>6. Extracción de características y embeddings</h2>
+  <p>
+    El encoder puede utilizarse como extractor de características. En lugar de trabajar con el dato original,
+    usamos el vector latente como representación. Ese vector puede alimentar modelos de clasificación,
+    regresión, clustering, búsqueda por similitud o sistemas de recomendación.
+  </p>
+
+  <div class="diagram">
+    <div class="node">Dato original</div>
+    <div class="arrow">→</div>
+    <div class="node">Encoder</div>
+    <div class="arrow">→</div>
+    <div class="node hot">Embedding</div>
+    <div class="arrow">→</div>
+    <div class="node">Modelo posterior</div>
+  </div>
+
+  <p>
+    En este contexto, el autoencoder no necesariamente es el modelo final. Puede funcionar como una etapa previa
+    que transforma datos complejos en una representación más útil.
+  </p>
+
+  <div class="grid">
+    <div class="mini">
+      <strong>Clasificación</strong>
+      <small>Usar embeddings como entrada de un clasificador.</small>
+    </div>
+    <div class="mini">
+      <strong>Regresión</strong>
+      <small>Predecir variables usando factores latentes.</small>
+    </div>
+    <div class="mini">
+      <strong>Clustering</strong>
+      <small>Agrupar casos a partir de representaciones aprendidas.</small>
+    </div>
+  </div>
+</section>
+
+<section id="similitud" class="card">
+  <h2>7. Búsqueda por similitud, clustering y segmentación</h2>
+  <p>
+    Si el espacio latente está bien aprendido, los datos parecidos deberían quedar cerca.
+    Esto permite medir distancias entre embeddings y encontrar elementos similares.
+  </p>
+
+  <div class="case">
+    <div class="icon">🔎</div>
+    <div>
+      <h3>Búsqueda por similitud</h3>
+      <p>
+        Una imagen, documento, producto o cliente se transforma en un embedding. Luego se buscan otros embeddings cercanos.
+        Esta lógica se usa en motores de búsqueda semántica, recuperación de imágenes, recomendadores y análisis de documentos.
+      </p>
+      <span class="kpi">Distancia coseno</span>
+      <span class="kpi">Euclídea</span>
+      <span class="kpi">Vecinos cercanos</span>
+    </div>
+  </div>
+
+  <div class="case">
+    <div class="icon">🧩</div>
+    <div>
+      <h3>Clustering y segmentación</h3>
+      <p>
+        Una vez obtenidos los embeddings, se pueden aplicar técnicas como K-Means, DBSCAN o clustering jerárquico.
+        La ventaja es que el agrupamiento se realiza sobre una representación más compacta y estructurada que el dato original.
+      </p>
+      <span class="kpi">Segmentos de clientes</span>
+      <span class="kpi">Perfiles de riesgo</span>
+      <span class="kpi">Estados de máquinas</span>
+    </div>
+  </div>
+</section>
+
+<section id="recomendacion" class="card">
+  <h2>8. Sistemas de recomendación</h2>
+  <p>
+    Los autoencoders pueden utilizarse para aprender patrones de preferencias. En un recomendador,
+    el modelo puede recibir un historial de interacciones y reconstruir preferencias faltantes.
+  </p>
+
+  <pre><code>Historial observado del usuario
+        ↓
+Autoencoder
+        ↓
+Reconstrucción de preferencias
+        ↓
+Recomendaciones posibles</code></pre>
+
+  <p>
+    Por ejemplo, si un usuario vio algunas películas, compró ciertos productos o leyó determinados artículos,
+    el autoencoder puede inferir qué otros elementos podrían ser compatibles con su perfil.
+  </p>
+
+  <table class="table">
+    <tr>
+      <th>Sector</th>
+      <th>Uso del autoencoder</th>
+      <th>Resultado esperado</th>
+    </tr>
+    <tr>
+      <td>E-commerce</td>
+      <td>Reconstruir preferencias de compra.</td>
+      <td>Productos recomendados.</td>
+    </tr>
+    <tr>
+      <td>Streaming</td>
+      <td>Aprender gustos audiovisuales o musicales.</td>
+      <td>Películas, series o canciones sugeridas.</td>
+    </tr>
+    <tr>
+      <td>Educación</td>
+      <td>Modelar trayectorias de aprendizaje.</td>
+      <td>Cursos o materiales recomendados.</td>
+    </tr>
+    <tr>
+      <td>Noticias</td>
+      <td>Representar intereses de lectura.</td>
+      <td>Artículos personalizados.</td>
+    </tr>
+  </table>
+</section>
+
+<section id="generacion" class="card">
+  <h2>9. Generación de datos e interpolación latente</h2>
+  <p>
+    Los autoencoders clásicos reconstruyen datos. Los autoencoders variacionales, conocidos como VAE,
+    van un paso más allá: aprenden una distribución en el espacio latente. Esto permite tomar puntos nuevos
+    de ese espacio y pasarlos por el decoder para generar ejemplos plausibles.
+  </p>
+
+  <div class="diagram">
+    <div class="node">Punto latente nuevo</div>
+    <div class="arrow">→</div>
+    <div class="node hot">Decoder</div>
+    <div class="arrow">→</div>
+    <div class="node">Nuevo ejemplo generado</div>
+  </div>
+
+  <p>
+    También puede hacerse interpolación. Se toman dos datos, se codifican como vectores latentes y se recorren puntos intermedios
+    entre ambos. Al decodificar esos puntos, aparecen transiciones suaves.
+  </p>
+
+  <div class="grid2">
+    <div class="mini">
+      <strong>Generación</strong>
+      <small>Crear variantes plausibles a partir del espacio latente aprendido.</small>
+    </div>
+    <div class="mini">
+      <strong>Interpolación</strong>
+      <small>Explorar caminos intermedios entre dos ejemplos conocidos.</small>
+    </div>
+  </div>
+
+  <div class="notice">
+    <strong>Idea para exponer:</strong> si el espacio latente está bien organizado, moverse dentro de él produce cambios graduales y significativos en los datos reconstruidos.
+  </div>
+</section>
+
+<section id="faltantes" class="card">
+  <h2>10. Reconstrucción de datos faltantes</h2>
+  <p>
+    Un autoencoder también puede ayudar a completar información incompleta. Si falta una parte del dato,
+    el modelo puede reconstruir una versión plausible a partir de los patrones aprendidos durante el entrenamiento.
+  </p>
+
+  <div class="grid">
+    <div class="mini">
+      <strong>Imágenes</strong>
+      <small>Completar regiones dañadas, tapadas o perdidas.</small>
+    </div>
+    <div class="mini">
+      <strong>Series temporales</strong>
+      <small>Estimar valores faltantes en sensores o mediciones.</small>
+    </div>
+    <div class="mini">
+      <strong>Datos tabulares</strong>
+      <small>Imputar variables ausentes a partir de relaciones aprendidas.</small>
+    </div>
+  </div>
+
+  <p>
+    Esta aplicación se relaciona con la idea de que el modelo aprende la estructura global del dato.
+    Cuando falta una parte, puede usar el contexto restante para proponer una reconstrucción coherente.
+  </p>
+
+  <div class="notice warn">
+    <strong>Precaución:</strong> reconstruir un dato faltante no equivale a conocer el valor verdadero.
+    El modelo produce una estimación plausible según lo aprendido.
+  </div>
+</section>
+
+<section id="sintesis" class="card">
+  <h2>11. Síntesis final: mapa conceptual de aplicaciones</h2>
+
+  <table class="table">
+    <tr>
+      <th>Aplicación</th>
+      <th>Qué aprovecha del autoencoder</th>
+      <th>Ejemplo de uso</th>
+    </tr>
+    <tr>
+      <td>Reducción de dimensionalidad</td>
+      <td>La representación latente compacta.</td>
+      <td>Reducir imágenes, señales o tablas con muchas variables.</td>
+    </tr>
+    <tr>
+      <td>Compresión</td>
+      <td>El encoder como compresor y el decoder como reconstructor.</td>
+      <td>Comprimir datos específicos de un dominio.</td>
+    </tr>
+    <tr>
+      <td>Denoising</td>
+      <td>La capacidad de reconstruir estructura limpia.</td>
+      <td>Eliminar ruido en imágenes, audio o sensores.</td>
+    </tr>
+    <tr>
+      <td>Anomalías</td>
+      <td>El error de reconstrucción.</td>
+      <td>Detectar fraude, fallas o patrones raros.</td>
+    </tr>
+    <tr>
+      <td>Features y embeddings</td>
+      <td>El vector latente como representación reutilizable.</td>
+      <td>Alimentar clasificadores, regresores o clusters.</td>
+    </tr>
+    <tr>
+      <td>Similitud y clustering</td>
+      <td>La geometría del espacio latente.</td>
+      <td>Buscar casos parecidos o segmentar clientes.</td>
+    </tr>
+    <tr>
+      <td>Recomendación</td>
+      <td>La reconstrucción de preferencias faltantes.</td>
+      <td>Sugerir productos, películas, cursos o artículos.</td>
+    </tr>
+    <tr>
+      <td>Generación</td>
+      <td>La distribución latente aprendida en modelos VAE.</td>
+      <td>Crear ejemplos nuevos o variantes plausibles.</td>
+    </tr>
+    <tr>
+      <td>Datos faltantes</td>
+      <td>La reconstrucción contextual.</td>
+      <td>Completar imágenes, series o tablas incompletas.</td>
+    </tr>
+  </table>
+
+  <div class="notice good">
+    <strong>Mensaje final para la clase:</strong> donde hay datos complejos, ruidosos o de alta dimensión,
+    un autoencoder puede ayudar a descubrir una representación más simple, más estable y más informativa.
+    Sus aplicaciones nacen de una misma capacidad: aprender la estructura latente de los datos.
+  </div>
+</section>
+
+<div class="footer">
+  <strong>Material elaborado por el profesor Sergio Gevatschnaider</strong>
+</div>
+</main>
+
+<script>
+const themeBtn=document.getElementById('themeBtn');
+if(themeBtn){
+  themeBtn.onclick=()=>{
+    const h=document.documentElement;
+    const dark=h.getAttribute('data-theme')==='dark';
+    h.setAttribute('data-theme',dark?'light':'dark');
+    themeBtn.textContent=dark?'🌙 Tema oscuro':'☀️ Tema claro';
+  };
+}
+</script>
+</body>
+</html>

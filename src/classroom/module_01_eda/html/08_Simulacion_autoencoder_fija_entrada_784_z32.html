@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autoencoder - Simulación fija de entrada y espacio latente</title>
+<style>
+:root{
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --card2:#f9fbff;
+  --text:#142033;
+  --muted:#64748b;
+  --line:#d9e4f2;
+  --accent:#2563eb;
+  --accent2:#7c3aed;
+  --accent3:#06b6d4;
+  --good:#059669;
+  --warn:#d97706;
+  --bad:#dc2626;
+  --shadow:0 22px 54px rgba(23,37,84,.14);
+  --soft:0 8px 22px rgba(15,23,42,.08);
+  --radius:28px;
+}
+[data-theme="dark"]{
+  --bg:#07111f;
+  --card:#111c31;
+  --card2:#0d1729;
+  --text:#eef6ff;
+  --muted:#afbdd2;
+  --line:#263956;
+  --accent:#60a5fa;
+  --accent2:#a78bfa;
+  --accent3:#22d3ee;
+  --good:#34d399;
+  --warn:#fbbf24;
+  --bad:#fb7185;
+  --shadow:0 22px 54px rgba(0,0,0,.38);
+  --soft:0 8px 22px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(circle at top left,color-mix(in srgb,var(--accent) 18%,transparent),transparent 34%),
+    radial-gradient(circle at top right,color-mix(in srgb,var(--accent2) 14%,transparent),transparent 30%),
+    linear-gradient(135deg,var(--bg),color-mix(in srgb,var(--bg),var(--accent3) 8%));
+  color:var(--text);
+  line-height:1.62;
+}
+header{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:color-mix(in srgb,var(--card) 88%,transparent);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+}
+.nav{
+  max-width:1240px;
+  margin:auto;
+  padding:13px 20px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:space-between;
+}
+.brand{font-weight:900;letter-spacing:-.025em}
+.controls{display:flex;gap:10px;flex-wrap:wrap}
+button{
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--text);
+  padding:10px 14px;
+  border-radius:15px;
+  cursor:pointer;
+  font-weight:800;
+  box-shadow:var(--soft);
+  transition:.18s transform,.18s opacity;
+}
+button.primary{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:white;
+  border:none;
+}
+button:hover{transform:translateY(-1px)}
+main{max-width:1240px;margin:auto;padding:28px 20px 64px}
+.card{
+  background:color-mix(in srgb,var(--card) 96%,transparent);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:24px;
+  box-shadow:var(--shadow);
+}
+h1{
+  font-size:clamp(34px,5vw,60px);
+  line-height:1.02;
+  margin:10px 0 14px;
+  letter-spacing:-.05em;
+}
+h2{
+  font-size:clamp(25px,3.2vw,38px);
+  line-height:1.1;
+  margin:38px 0 16px;
+  letter-spacing:-.035em;
+}
+h3{font-size:21px;margin:6px 0 10px}
+p{font-size:17px}
+.lead{font-size:18px;color:var(--muted);max-width:88ch}
+.muted{color:var(--muted)}
+.tag{
+  display:inline-flex;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:6px 11px;
+  margin:4px 6px 4px 0;
+  background:color-mix(in srgb,var(--card),var(--accent) 5%);
+  font-size:13px;
+  font-weight:900;
+  color:var(--muted);
+}
+.notice{
+  border-left:5px solid var(--accent);
+  padding:15px 17px;
+  border-radius:18px;
+  background:color-mix(in srgb,var(--accent) 8%,var(--card));
+  margin:14px 0;
+}
+.good{border-left-color:var(--good)}
+.warn{border-left-color:var(--warn)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.simwrap{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 390px;
+  gap:18px;
+  margin-top:20px;
+}
+.canvas{min-height:560px;position:relative;overflow:hidden}
+.panel{display:grid;gap:12px}
+.box{
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:18px;
+  background:linear-gradient(180deg,var(--card),color-mix(in srgb,var(--card),var(--accent) 5%));
+  box-shadow:var(--soft);
+}
+.mini{
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  box-shadow:var(--soft);
+}
+.mini strong{display:block;font-size:34px;letter-spacing:-.04em;margin-bottom:5px;color:var(--accent)}
+.mini small{color:var(--muted);font-size:15px}
+.diagram{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:18px 0;
+}
+.node{
+  min-width:115px;
+  text-align:center;
+  padding:16px;
+  border-radius:24px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  box-shadow:var(--soft);
+  font-weight:950;
+}
+.node.hot{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:white;
+}
+.arrow{font-weight:950;color:var(--accent);font-size:30px}
+.latentGrid{
+  display:grid;
+  grid-template-columns:repeat(8,1fr);
+  gap:6px;
+}
+.cell{
+  aspect-ratio:1;
+  border-radius:8px;
+  border:1px solid var(--line);
+  background:var(--card2);
+  transition:.2s;
+}
+.cell.on{background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.bar{
+  height:24px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:color-mix(in srgb,var(--card),#000 8%);
+  overflow:hidden;
+}
+.fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));
+  transition:.35s;
+}
+.big{
+  font-size:clamp(30px,4vw,42px);
+  font-weight:950;
+  letter-spacing:-.04em;
+  margin:6px 0;
+}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 10px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  font-size:13px;
+  font-weight:900;
+  background:var(--card2);
+  color:var(--muted);
+}
+.table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:var(--card);
+  box-shadow:var(--soft);
+}
+.table th,.table td{
+  border-bottom:1px solid var(--line);
+  padding:13px;
+  text-align:left;
+  vertical-align:top;
+}
+.table th{
+  background:color-mix(in srgb,var(--accent) 11%,var(--card));
+  font-size:14px;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.table tr:last-child td{border-bottom:none}
+pre{
+  background:color-mix(in srgb,var(--card),#000 7%);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:16px;
+  overflow:auto;
+}
+code{font-family:Consolas,Monaco,monospace}
+.footer{
+  margin-top:42px;
+  color:var(--muted);
+  font-size:14px;
+  text-align:center;
+}
+@media(max-width:930px){
+  .grid2,.grid3,.simwrap{grid-template-columns:1fr}
+  .canvas{min-height:auto}
+  .nav{align-items:flex-start;flex-direction:column}
+  .controls{width:100%}
+  .controls button{flex:1}
+  .diagram{justify-content:center}
+  .arrow{transform:rotate(90deg)}
+}
+@media print{
+  header,.controls,button{display:none!important}
+  body{background:white}
+  .card,.box,.table,.mini{box-shadow:none}
+  main{max-width:100%;padding:0}
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="nav">
+    <div class="brand">Autoencoder · Entrada fija y z fijo</div>
+    <div class="controls">
+      <button id="themeBtn">🌙 Tema oscuro</button>
+      <button class="primary" id="runSim" type="button">▶ Animar activación</button>
+      <button onclick="window.print()">🖨️ Imprimir</button>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="card">
+  <span class="tag">Simulación fija</span>
+  <span class="tag">Entrada = 784</span>
+  <span class="tag">z = 32</span>
+  <span class="tag">Compresión = 24.5x</span>
+
+  <h1>Autoencoder con entrada fija y espacio latente fijo</h1>
+
+  <p class="lead">
+    Esta versión está pensada para mostrar en clase sin controles problemáticos. La dimensión de entrada queda fija en
+    <strong>784</strong> y la dimensión latente queda fija en <strong>32</strong>. Así se puede explicar con claridad
+    la arquitectura, el bottleneck y la relación de compresión.
+  </p>
+
+  <div class="notice good">
+    <strong>Idea central:</strong> el autoencoder toma un dato de 784 dimensiones, lo comprime mediante el encoder
+    en un vector latente de 32 dimensiones y luego el decoder intenta reconstruir la entrada original.
+  </div>
+
+  <div class="simwrap">
+    <div class="card canvas">
+      <div class="diagram">
+        <div class="node">Entrada fija<br><span>784</span></div>
+        <div class="arrow">→</div>
+        <div class="node">Encoder</div>
+        <div class="arrow">→</div>
+        <div class="node hot">z fijo<br><span>32</span></div>
+        <div class="arrow">→</div>
+        <div class="node">Decoder</div>
+        <div class="arrow">→</div>
+        <div class="node">Reconstrucción</div>
+      </div>
+
+      <div class="grid3">
+        <div class="mini">
+          <strong>784</strong>
+          <small>Dimensión de entrada</small>
+        </div>
+        <div class="mini">
+          <strong>32</strong>
+          <small>Dimensión latente z</small>
+        </div>
+        <div class="mini">
+          <strong>24.5x</strong>
+          <small>Relación de compresión</small>
+        </div>
+      </div>
+
+      <div class="box" style="margin-top:16px">
+        <div class="badge">Activación latente simulada</div>
+        <p class="muted">
+          La grilla representa de forma didáctica las 32 dimensiones latentes. No son píxeles reales:
+          son componentes internas del vector comprimido <strong>z</strong>.
+        </p>
+        <div class="latentGrid" id="latentGrid"></div>
+      </div>
+
+      <div class="grid2" style="margin-top:16px">
+        <div class="box">
+          <div class="badge">Compresión</div>
+          <div class="bar"><div class="fill" id="compFill"></div></div>
+          <p class="big">24.5x</p>
+          <p class="muted">784 dividido por 32.</p>
+        </div>
+
+        <div class="box">
+          <div class="badge">Error esperado conceptual</div>
+          <div class="bar"><div class="fill" id="errFill"></div></div>
+          <p class="big">medio</p>
+          <p class="muted">Estimación didáctica: no es entrenamiento real.</p>
+        </div>
+      </div>
+
+      <p class="notice">
+        <strong>Bottleneck moderado:</strong> 32 dimensiones obligan al modelo a comprimir la entrada,
+        pero todavía le dejan capacidad para conservar rasgos esenciales.
+      </p>
+    </div>
+
+    <div class="panel">
+      <div class="card">
+        <h3>Valores fijos de la simulación</h3>
+        <table class="table">
+          <tr>
+            <th>Elemento</th>
+            <th>Valor</th>
+            <th>Interpretación</th>
+          </tr>
+          <tr>
+            <td>Entrada</td>
+            <td><strong>784</strong></td>
+            <td>Puede representar una imagen de 28 × 28 píxeles vectorizada.</td>
+          </tr>
+          <tr>
+            <td>Espacio latente z</td>
+            <td><strong>32</strong></td>
+            <td>Representación comprimida aprendida por el encoder.</td>
+          </tr>
+          <tr>
+            <td>Compresión</td>
+            <td><strong>24.5x</strong></td>
+            <td>El dato se resume en una representación 24.5 veces más pequeña.</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Lectura didáctica</h3>
+        <p>
+          El objetivo es mostrar que el autoencoder no conserva la entrada completa de manera literal.
+          La obliga a pasar por una representación más pequeña. Ese paso por <strong>z</strong> es el bottleneck.
+        </p>
+        <pre><code>Entrada: 784
+Latente z: 32
+
+Compresión = 784 / 32
+Compresión = 24.5x</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>Frase para explicar en clase</h3>
+        <p>
+          El encoder comprime la entrada de 784 dimensiones en un vector latente de 32 dimensiones.
+          El decoder reconstruye la entrada usando solo esa versión comprimida.
+          Si la reconstrucción es razonable, significa que el espacio latente capturó información relevante.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="card" style="margin-top:24px">
+  <h2>Interpretación conceptual</h2>
+
+  <div class="grid3">
+    <div class="box">
+      <h3>1. Entrada</h3>
+      <p>
+        La entrada tiene 784 dimensiones. En una imagen MNIST, esto equivale a 28 × 28 píxeles transformados en un vector.
+      </p>
+    </div>
+
+    <div class="box">
+      <h3>2. Encoder</h3>
+      <p>
+        El encoder aprende a reducir la información original a una representación más pequeña.
+        No debería copiar todo: debe seleccionar lo relevante.
+      </p>
+    </div>
+
+    <div class="box">
+      <h3>3. Espacio latente z</h3>
+      <p>
+        El vector z tiene 32 dimensiones. Es la memoria comprimida del autoencoder y funciona como representación interna del dato.
+      </p>
+    </div>
+  </div>
+
+  <div class="notice warn">
+    <strong>Aclaración:</strong> esta simulación es conceptual. La grilla y el error esperado no provienen de un entrenamiento real,
+    sino que sirven para explicar la arquitectura y el rol del bottleneck.
+  </div>
+</section>
+
+<div class="footer">
+  <strong>Material elaborado por el profesor Sergio Gevatschnaider</strong>
+</div>
+</main>
+
+<script>
+const INPUT_DIM = 784;
+const LATENT_DIM = 32;
+const COMPRESSION = INPUT_DIM / LATENT_DIM;
+
+const themeBtn = document.getElementById('themeBtn');
+if(themeBtn){
+  themeBtn.onclick = () => {
+    const h = document.documentElement;
+    const dark = h.getAttribute('data-theme') === 'dark';
+    h.setAttribute('data-theme', dark ? 'light' : 'dark');
+    themeBtn.textContent = dark ? '🌙 Tema oscuro' : '☀️ Tema claro';
+  };
+}
+
+const grid = document.getElementById('latentGrid');
+const compFill = document.getElementById('compFill');
+const errFill = document.getElementById('errFill');
+const runSim = document.getElementById('runSim');
+
+let frame = 0;
+let raf = null;
+let running = false;
+
+function draw(pulse=0){
+  grid.innerHTML = '';
+
+  for(let i=0; i<64; i++){
+    const c = document.createElement('div');
+    c.className = 'cell ' + (i < LATENT_DIM ? 'on' : '');
+
+    if(i < LATENT_DIM){
+      const wave = .20 * Math.sin(frame * .14 + i * .55);
+      c.style.opacity = Math.max(.30, .62 + .25 * Math.random() + wave + pulse * .18);
+      c.style.transform = `scale(${1 + pulse * .08 * Math.sin(frame * .12 + i)})`;
+    }else{
+      c.style.opacity = .20;
+    }
+
+    grid.appendChild(c);
+  }
+
+  compFill.style.width = Math.min(100, COMPRESSION / 40 * 100) + '%';
+  errFill.style.width = '42%';
+}
+
+function animate(){
+  if(!running) return;
+  frame++;
+  draw(.8);
+
+  if(frame < 240){
+    raf = requestAnimationFrame(animate);
+  }else{
+    running = false;
+    draw(0);
+  }
+}
+
+runSim.addEventListener('click',()=>{
+  if(raf) cancelAnimationFrame(raf);
+  running = true;
+  frame = 0;
+  animate();
+  document.getElementById('latentGrid').scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+draw(0);
+</script>
+</body>
+</html>
