@@ -3666,11 +3666,6 @@ Sin embargo, reducir el error de entrenamiento no es suficiente. Un modelo útil
 
 ---
 
-Incorporé el **Colab ejecutable** como recurso propio, además de la guía HTML. El notebook complementa la guía práctica porque trabaja con TensorFlow, MNIST, autoencoder básico, encoder, espacio latente, reshape, capas Dense/Flatten, visualizaciones y detección de anomalías; la guía HTML ya planteaba ese flujo práctico con autoencoder base, denoising y anomalías. 
-
-Copiá este código completo:
-
-````markdown
 # 🧠 Autoencoders · Recursos interactivos de estudio
 
 > Material organizado para estudiar **autoencoders**, **espacio latente**, **manifold**, **embeddings**, **arquitectura encoder-decoder**, **bottleneck**, **denoising**, **detección de anomalías**, **Variational Autoencoders** y práctica en **Google Colab** mediante teoría visual, simulaciones interactivas, notebook ejecutable y recursos didácticos para clase.
