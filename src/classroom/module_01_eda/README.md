@@ -3666,9 +3666,14 @@ Sin embargo, reducir el error de entrenamiento no es suficiente. Un modelo útil
 
 ---
 
+Incorporé el **Colab ejecutable** como recurso propio, además de la guía HTML. El notebook complementa la guía práctica porque trabaja con TensorFlow, MNIST, autoencoder básico, encoder, espacio latente, reshape, capas Dense/Flatten, visualizaciones y detección de anomalías; la guía HTML ya planteaba ese flujo práctico con autoencoder base, denoising y anomalías. 
+
+Copiá este código completo:
+
+````markdown
 # 🧠 Autoencoders · Recursos interactivos de estudio
 
-> Material organizado para estudiar **autoencoders**, **espacio latente**, **manifold**, **embeddings**, **arquitectura encoder-decoder**, **bottleneck**, **denoising**, **detección de anomalías**, **Variational Autoencoders** y práctica en **Google Colab** mediante teoría visual, simulaciones interactivas y recursos didácticos para clase.
+> Material organizado para estudiar **autoencoders**, **espacio latente**, **manifold**, **embeddings**, **arquitectura encoder-decoder**, **bottleneck**, **denoising**, **detección de anomalías**, **Variational Autoencoders** y práctica en **Google Colab** mediante teoría visual, simulaciones interactivas, notebook ejecutable y recursos didácticos para clase.
 
 ---
 
@@ -3701,9 +3706,11 @@ La finalidad es que el estudiante pueda comprender que un autoencoder no es una 
         ↓
 8. Variational Autoencoder interactivo
         ↓
-9. Guía práctica en Colab
+9. Guía práctica en HTML
         ↓
-10. Simulación fija 784 → z=32
+10. Notebook ejecutable en Google Colab
+        ↓
+11. Simulación fija 784 → z=32
 ```
 
 ---
@@ -3716,7 +3723,7 @@ La finalidad es que el estudiante pueda comprender que un autoencoder no es una 
       <th align="center">Orden</th>
       <th align="left">Recurso</th>
       <th align="left">Propósito didáctico</th>
-      <th align="center">Abrir HTML</th>
+      <th align="center">Abrir recurso</th>
     </tr>
   </thead>
   <tbody>
@@ -3730,6 +3737,7 @@ La finalidad es que el estudiante pueda comprender que un autoencoder no es una 
         </a>
       </td>
     </tr>
+
     <tr>
       <td align="center"><strong>1.1</strong></td>
       <td><strong>Espacio latente, manifold y embeddings</strong></td>
@@ -3740,6 +3748,7 @@ La finalidad es que el estudiante pueda comprender que un autoencoder no es una 
         </a>
       </td>
     </tr>
+
     <tr>
       <td align="center"><strong>1.2</strong></td>
       <td><strong>Aplicaciones de los autoencoders</strong></td>
@@ -3750,6 +3759,7 @@ La finalidad es que el estudiante pueda comprender que un autoencoder no es una 
         </a>
       </td>
     </tr>
+
     <tr>
       <td align="center"><strong>1</strong></td>
       <td><strong>Teoría completa de autoencoders</strong></td>
@@ -3760,6 +3770,7 @@ La finalidad es que el estudiante pueda comprender que un autoencoder no es una 
         </a>
       </td>
     </tr>
+
     <tr>
       <td align="center"><strong>2</strong></td>
       <td><strong>Arquitectura y bottleneck</strong></td>
@@ -3770,6 +3781,7 @@ La finalidad es que el estudiante pueda comprender que un autoencoder no es una 
         </a>
       </td>
     </tr>
+
     <tr>
       <td align="center"><strong>3</strong></td>
       <td><strong>Espacio latente y manifold</strong></td>
@@ -3780,6 +3792,7 @@ La finalidad es que el estudiante pueda comprender que un autoencoder no es una 
         </a>
       </td>
     </tr>
+
     <tr>
       <td align="center"><strong>4</strong></td>
       <td><strong>Denoising autoencoder</strong></td>
@@ -3790,6 +3803,7 @@ La finalidad es que el estudiante pueda comprender que un autoencoder no es una 
         </a>
       </td>
     </tr>
+
     <tr>
       <td align="center"><strong>5</strong></td>
       <td><strong>Anomalías y error de reconstrucción</strong></td>
@@ -3800,6 +3814,7 @@ La finalidad es que el estudiante pueda comprender que un autoencoder no es una 
         </a>
       </td>
     </tr>
+
     <tr>
       <td align="center"><strong>6</strong></td>
       <td><strong>Variational Autoencoder interactivo</strong></td>
@@ -3810,16 +3825,29 @@ La finalidad es que el estudiante pueda comprender que un autoencoder no es una 
         </a>
       </td>
     </tr>
+
     <tr>
       <td align="center"><strong>7</strong></td>
-      <td><strong>Guía práctica en Colab</strong></td>
-      <td>Ordena el flujo práctico para implementar autoencoders en Google Colab.</td>
+      <td><strong>Guía práctica en HTML</strong></td>
+      <td>Ordena el flujo práctico para implementar autoencoders en Google Colab: preparación, autoencoder base, denoising, anomalías y preguntas de interpretación.</td>
       <td align="center">
         <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_guia_practica_colab_autoencoders.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Guía práctica en Colab">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Gu%C3%ADa%20Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Guía práctica en Colab">
         </a>
       </td>
     </tr>
+
+    <tr>
+      <td align="center"><strong>7.1</strong></td>
+      <td><strong>Notebook ejecutable en Google Colab</strong></td>
+      <td>Permite ejecutar la práctica completa con Python, TensorFlow, MNIST, autoencoder básico, visualizaciones, espacio latente y detección de anomalías.</td>
+      <td align="center">
+        <a href="https://colab.research.google.com/drive/1xhbUTI9ERdXGWIQJ7a9mnlnlx5bbqPDj?usp=sharing">
+          <img src="https://img.shields.io/badge/Abrir%20Colab-Notebook%20ejecutable-f9ab00?style=for-the-badge&logo=googlecolab&logoColor=white" alt="Abrir Notebook en Google Colab">
+        </a>
+      </td>
+    </tr>
+
     <tr>
       <td align="center"><strong>8</strong></td>
       <td><strong>Autoencoder fijo 784 → z=32</strong></td>
@@ -3893,7 +3921,13 @@ La finalidad es que el estudiante pueda comprender que un autoencoder no es una 
 
 <p align="center">
   <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_guia_practica_colab_autoencoders.html">
-    <img src="https://img.shields.io/badge/Abrir%20HTML-7.%20Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Guía práctica en Colab">
+    <img src="https://img.shields.io/badge/Abrir%20HTML-7.%20Gu%C3%ADa%20Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Guía práctica en Colab">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://colab.research.google.com/drive/1xhbUTI9ERdXGWIQJ7a9mnlnlx5bbqPDj?usp=sharing">
+    <img src="https://img.shields.io/badge/Abrir%20Colab-7.1.%20Notebook%20ejecutable-f9ab00?style=for-the-badge&logo=googlecolab&logoColor=white" alt="Abrir Notebook ejecutable en Google Colab">
   </a>
 </p>
 
@@ -4091,7 +4125,7 @@ Permite trabajar:
 
 ---
 
-### 7. Guía práctica en Colab
+### 7. Guía práctica en HTML
 
 Este recurso organiza el flujo para implementar un autoencoder en Python: datos, arquitectura, entrenamiento, reconstrucción y evaluación.
 
@@ -4107,22 +4141,54 @@ Permite trabajar:
 - validación;
 - visualización de reconstrucciones;
 - análisis del error;
-- comparación de modelos.
+- comparación de modelos;
+- preguntas de interpretación.
 
 **Idea clave:** la teoría se consolida cuando el estudiante puede pasar del concepto al código.
 
 ---
 
+### 7.1. Notebook ejecutable en Google Colab
+
+El notebook de Colab permite ejecutar la práctica completa en un entorno real de Python. Complementa los HTML porque no solo explica el concepto, sino que permite correr código, modificar parámetros, observar resultados y discutir las salidas obtenidas.
+
+El material incluye una introducción conceptual al autoencoder, explicación de TensorFlow, presentación de MNIST, construcción de un autoencoder sobre imágenes 28 × 28, uso de capas Dense, reshape, Flatten, encoder, espacio latente, visualizaciones de arquitectura, reducción a espacio latente de dos dimensiones y un ejemplo de detección de anomalías con datos sintéticos.
+
+Permite trabajar:
+
+- uso de TensorFlow;
+- carga de MNIST;
+- normalización de imágenes;
+- reshape de 28 × 28 a 784;
+- construcción de un autoencoder básico;
+- entrenamiento con `Model`, `Input` y `Dense`;
+- representación latente;
+- visualización de reconstrucciones;
+- explicación de encoder y decoder;
+- reducción a espacio latente de dos dimensiones;
+- visualización de redes como grafos;
+- detección de anomalías con error de reconstrucción;
+- matriz de confusión y reporte de clasificación;
+- discusión sobre compresión aprendida.
+
+**Idea clave:** el notebook convierte el bloque conceptual en una práctica ejecutable, permitiendo que el estudiante vea cómo una arquitectura teórica se transforma en entrenamiento, reconstrucción, visualización y análisis.
+
+<a href="https://colab.research.google.com/drive/1xhbUTI9ERdXGWIQJ7a9mnlnlx5bbqPDj?usp=sharing">
+  <img src="https://img.shields.io/badge/Abrir%20Colab-Notebook%20ejecutable-f9ab00?style=for-the-badge&logo=googlecolab&logoColor=white" alt="Abrir Notebook ejecutable en Google Colab">
+</a>
+
+---
+
 ### 8. Simulación fija 784 → z=32
 
-Esta simulación presenta una entrada fija de 784 dimensiones, como una imagen tipo 28 x 28, y un espacio latente de 32 dimensiones.
+Esta simulación presenta una entrada fija de 784 dimensiones, como una imagen tipo 28 × 28, y un espacio latente de 32 dimensiones.
 
 Es útil para clase porque evita que demasiados controles distraigan del concepto principal. El foco está en mostrar la relación entre una entrada de alta dimensión, una compresión fuerte y una reconstrucción aproximada.
 
 Permite trabajar:
 
 - entrada 784;
-- imagen 28 x 28;
+- imagen 28 × 28;
 - vector latente z=32;
 - compresión;
 - reconstrucción;
@@ -4177,6 +4243,16 @@ Autoencoders
 │   ├── Sparse autoencoder
 │   ├── Convolutional autoencoder
 │   └── Variational autoencoder
+│
+├── Práctica en Colab
+│   ├── TensorFlow
+│   ├── MNIST
+│   ├── Dense layers
+│   ├── Flatten y reshape
+│   ├── Entrenamiento
+│   ├── Reconstrucciones
+│   ├── Espacio latente 2D
+│   └── Anomalías
 │
 └── Aplicaciones
     ├── Compresión
@@ -4315,13 +4391,35 @@ Este recurso permite introducir la diferencia entre representar una entrada como
 
 ---
 
-### Para cerrar con práctica
+### Para cerrar con práctica ejecutable
 
-Usar la guía de Colab.
+Usar primero la guía práctica HTML y luego el notebook de Colab.
 
 <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_guia_practica_colab_autoencoders.html">
-  <img src="https://img.shields.io/badge/Abrir%20HTML-Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Colab">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Gu%C3%ADa%20Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir guía Colab">
 </a>
+
+<a href="https://colab.research.google.com/drive/1xhbUTI9ERdXGWIQJ7a9mnlnlx5bbqPDj?usp=sharing">
+  <img src="https://img.shields.io/badge/Abrir%20Colab-Notebook%20ejecutable-f9ab00?style=for-the-badge&logo=googlecolab&logoColor=white" alt="Abrir Notebook en Google Colab">
+</a>
+
+Flujo sugerido:
+
+```text
+Leer la guía HTML
+        ↓
+Abrir el notebook
+        ↓
+Ejecutar TensorFlow y MNIST
+        ↓
+Entrenar autoencoder
+        ↓
+Visualizar reconstrucciones
+        ↓
+Interpretar espacio latente
+        ↓
+Analizar anomalías
+```
 
 ---
 
@@ -4477,6 +4575,51 @@ Esto permite generar nuevas muestras desde el espacio latente.
 
 ---
 
+## 🧪 Notebook Colab: qué se trabaja en la práctica
+
+El notebook ejecutable permite transformar la explicación conceptual en una experiencia práctica. Está pensado para que el estudiante vea cómo se implementa un autoencoder con código real y cómo se interpretan sus resultados.
+
+### Contenidos principales del notebook
+
+| Bloque | Qué se trabaja | Valor didáctico |
+| :--- | :--- | :--- |
+| Introducción a autoencoders | Reconstrucción, compresión y representación | Conecta intuición con arquitectura |
+| TensorFlow | Librerías, modelos y capas | Prepara el entorno técnico |
+| MNIST | Imágenes de dígitos 28 × 28 | Usa un dataset clásico y visual |
+| Reshape | Transformar imágenes 28 × 28 en vectores 784 | Explica la entrada al modelo denso |
+| Encoder | Reducción de dimensión | Muestra cómo se produce el código latente |
+| Dense layer | Capas totalmente conectadas | Explica el bloque básico del modelo |
+| Flatten | Aplanamiento de matrices | Conecta imagen y vector |
+| Autoencoder MNIST | Entrenamiento y reconstrucción | Permite observar aprendizaje real |
+| Espacio latente 2D | Visualización de representaciones | Muestra agrupamiento y separación |
+| Visualización con grafos | Red neuronal como estructura conectada | Relaciona arquitectura con grafos |
+| Anomalías | Error de reconstrucción, matriz de confusión y reporte | Conecta autoencoders con detección aplicada |
+| Compresión aprendida | Encoder como compresor y decoder como reconstructor | Integra teoría y práctica |
+
+### Objetivo práctico del notebook
+
+```text
+Cargar datos
+        ↓
+Normalizar
+        ↓
+Reformatear
+        ↓
+Definir encoder y decoder
+        ↓
+Entrenar el autoencoder
+        ↓
+Reconstruir imágenes
+        ↓
+Interpretar espacio latente
+        ↓
+Evaluar anomalías
+```
+
+**Idea clave:** el notebook no solo permite ejecutar código; permite discutir qué está aprendiendo el modelo, cómo se comporta el espacio latente y por qué el error de reconstrucción puede transformarse en una señal analítica.
+
+---
+
 ## ✅ Preguntas orientadoras para estudiantes
 
 1. ¿Qué aprende realmente un autoencoder?
@@ -4494,6 +4637,11 @@ Esto permite generar nuevas muestras desde el espacio latente.
 13. ¿Cómo se interpreta un vector latente?
 14. ¿Por qué la reconstrucción perfecta no siempre es el objetivo más importante?
 15. ¿Cómo se puede usar un autoencoder para reducción de dimensionalidad?
+16. ¿Qué significa transformar una imagen 28 × 28 en un vector de 784 dimensiones?
+17. ¿Por qué es importante normalizar los datos antes de entrenar?
+18. ¿Qué se puede observar al proyectar el espacio latente en dos dimensiones?
+19. ¿Cómo se define un umbral de anomalía usando error de reconstrucción?
+20. ¿Qué limitaciones tiene usar autoencoders para detectar anomalías?
 
 ---
 
@@ -4503,6 +4651,10 @@ Un autoencoder puede entenderse como una red que aprende una representación com
 
 La potencia del modelo no está solo en reconstruir, sino en aprender representaciones útiles. Por eso los autoencoders son relevantes para reducción de dimensionalidad, limpieza de ruido, detección de anomalías, embeddings y modelos generativos como los Variational Autoencoders.
 
+El bloque se completa con el notebook de Google Colab, donde el estudiante puede ejecutar código real, entrenar un modelo, visualizar reconstrucciones, explorar el espacio latente y aplicar el error de reconstrucción a un problema de anomalías.
+
 ---
 
 **Material elaborado por el profesor Sergio Gevatschnaider**
+````
+
