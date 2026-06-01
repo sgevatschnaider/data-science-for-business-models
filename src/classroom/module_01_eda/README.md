@@ -520,7 +520,7 @@ Usar después:
 
 La explicación puede seguir este flujo:
 
-```text
+
 Elegir K
         ↓
 Inicializar centroides
@@ -605,7 +605,7 @@ El algoritmo sigue una lógica iterativa:
 
 Cada punto se asigna al cluster cuyo centroide esté más cerca.
 
-```text
+
 Asignar xᵢ al cluster Cⱼ si:
 
 d(xᵢ, μⱼ) ≤ d(xᵢ, μₖ) para todo k
@@ -961,7 +961,7 @@ El glosario permite que el estudiante conecte términos técnicos con intuicione
 
 ---
 
-## 🧠 Mapa conceptual del bloque
+##  Mapa conceptual del bloque
 
 ```text
 Clustering
@@ -1078,7 +1078,7 @@ Dentro del laboratorio principal, trabajar:
 
 La explicación puede seguir este flujo:
 
-```text
+
 Calcular distancias
         ↓
 Unir observaciones o grupos más parecidos
@@ -1186,7 +1186,7 @@ El glosario sirve como material de consulta y repaso conceptual.
 
 ---
 
-## 🧠 Síntesis conceptual
+##  Síntesis conceptual
 
 ### Clustering
 
@@ -1330,9 +1330,9 @@ El glosario permite estudiar los conceptos como una red de ideas, no como defini
 
 ---
 
-## 🧠 Mapa conceptual del bloque
+## Mapa conceptual del bloque
 
-```text
+
 Parcial Ciencia de Datos
 │
 ├── 1. Conceptos fundamentales
@@ -1419,7 +1419,6 @@ Corregir y ampliar la respuesta
 
 Usar el siguiente recorrido:
 
-```text
 1. Revisar conceptos débiles
 2. Leer preguntas clave
 3. Practicar respuestas cortas
@@ -1469,7 +1468,7 @@ Usar el siguiente recorrido:
 
 ---
 
-## 🧑‍🏫 Uso sugerido para una clase
+##  Uso sugerido para una clase
 
 | Momento de la clase | Recurso sugerido | Actividad |
 | :--- | :--- | :--- |
@@ -1483,13 +1482,13 @@ Usar el siguiente recorrido:
 
 ---
 
-## 🧠 Estrategia de estudio recomendada
+## Estrategia de estudio recomendada
 
 ### Paso 1 · Lectura del glosario
 
 Leer primero las definiciones generales para construir una base conceptual.
 
-```text
+
 Concepto
         ↓
 Definición
@@ -1505,7 +1504,7 @@ Relación con otros conceptos
 
 Responder las preguntas sin mirar el glosario. Luego revisar si la respuesta fue clara, completa y técnicamente correcta.
 
-```text
+
 Pregunta
         ↓
 Respuesta propia
@@ -1534,7 +1533,7 @@ Relacionar cada pregunta con uno o más términos del glosario.
 
 ---
 
-## 📌 Tabla de links directos
+##  Tabla de links directos
 
 | Archivo | Abrir en HTML | Ver código en GitHub |
 | :--- | :---: | :---: |
@@ -1543,13 +1542,13 @@ Relacionar cada pregunta con uno o más términos del glosario.
 
 ---
 
-## 🧠 Frase síntesis
+##  Frase síntesis
 
 > El glosario permite comprender los conceptos; el banco de preguntas permite comprobar si realmente podemos explicarlos.
 
 ---
 
-## ⚠️ Nota sobre los archivos
+## Nota sobre los archivos
 
 Los archivos incluidos en este bloque son:
 
@@ -1559,7 +1558,7 @@ Glosario_parcial_ciencia_datos.html
 ```
 Tomé el modelo que pasaste y lo adapté al bloque de **Clustering Jerárquico**, dejando los botones directos a **HTML renderizado**, **código en GitHub** y **Google Colab**, con una estructura más parecida al ejemplo que compartiste. 
 
-````markdown
+
 # Clustering Jerárquico · Recursos Interactivos para Clase
 
 > Material elaborado por el profesor Sergio Gevatschnaider
@@ -2863,13 +2862,13 @@ El recorrido propuesto integra teoría, simulación, conexión con neuronas arti
 
 ---
 
-# 🧠 Redes Neuronales · Recursos interactivos de estudio
+#  Redes Neuronales · Recursos interactivos de estudio
 
 > Material organizado para estudiar **redes neuronales artificiales**, **perceptrón**, **funciones de activación**, **descenso por gradiente**, **forward propagation**, **backpropagation**, **regularización** y **actividad integradora** mediante teoría visual, simulaciones interactivas y recursos didácticos para clase.
 
 ---
 
-## 🎯 Objetivo general del bloque
+##  Objetivo general del bloque
 
 Este conjunto de recursos tiene como objetivo comprender las **redes neuronales artificiales** desde una perspectiva conceptual, visual y práctica.
 
@@ -2879,7 +2878,7 @@ La finalidad es que el estudiante pueda comprender que una red neuronal no es un
 
 ---
 
-## 🧭 Secuencia didáctica sugerida
+## Secuencia didáctica sugerida
 
 ```text
 1. Teoría completa de redes neuronales
