@@ -2897,116 +2897,23 @@ La finalidad es que el estudiante pueda comprender que una red neuronal no es un
 7. Regularización y generalización
         ↓
 8. Actividad integrada
-```
-
----
 
 ## 📚 Recursos interactivos
 
-<table>
-  <thead>
-    <tr>
-      <th align="center">Orden</th>
-      <th align="left">Recurso</th>
-      <th align="left">Propósito didáctico</th>
-      <th align="center">Abrir HTML</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td align="center"><strong>0</strong></td>
-      <td><strong>Índice de la clase</strong></td>
-      <td>Presentar la estructura general del bloque, ordenar los recursos y facilitar el acceso a cada HTML desde un punto central.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/00_indice_clase_redes_neuronales.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-%C3%8Dndice-1f4e79?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir índice">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center"><strong>1</strong></td>
-      <td><strong>Teoría completa de redes neuronales</strong></td>
-      <td>Introducir el marco conceptual del tema: neurona artificial, pesos, sesgo, activaciones, capas, entrenamiento, error y aprendizaje.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_teoria_completa_redes_neuronales.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Teor%C3%ADa%20completa-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir teoría completa">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center"><strong>2</strong></td>
-      <td><strong>Perceptrón y fronteras de decisión</strong></td>
-      <td>Visualizar cómo un perceptrón construye fronteras lineales para resolver problemas lógicos como AND, OR, NAND y NOR, y por qué XOR requiere mayor complejidad.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/02_simulacion_perceptron_fronteras.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Perceptr%C3%B3n-7c3aed?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir perceptrón">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center"><strong>3</strong></td>
-      <td><strong>Funciones de activación</strong></td>
-      <td>Comparar identidad, escalón, sigmoide, tangente hiperbólica, ReLU y variantes, observando forma, derivada, saturación y uso práctico.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/03_simulacion_activaciones.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Activaciones-15803d?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir activaciones">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center"><strong>4</strong></td>
-      <td><strong>Descenso por gradiente</strong></td>
-      <td>Mostrar cómo un modelo reduce el error moviéndose en la dirección opuesta al gradiente, y cómo el learning rate afecta la convergencia.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/04_simulacion_descenso_gradiente.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Gradiente-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir descenso por gradiente">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center"><strong>5</strong></td>
-      <td><strong>Forward y backpropagation paso a paso</strong></td>
-      <td>Explicar el flujo de cálculo de una red pequeña: entradas, pesos, activaciones, predicción, error, gradientes y actualización de parámetros.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_forward_backprop_paso_a_paso.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Backprop%20paso%20a%20paso-dc2626?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir backprop paso a paso">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center"><strong>6</strong></td>
-      <td><strong>Forward y backpropagation con teoría dinámica</strong></td>
-      <td>Reforzar la comprensión conceptual del aprendizaje de una red neuronal mediante explicaciones dinámicas, métricas y visualización del proceso de ajuste.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_forward_backprop_teoria_dinamica.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Backprop%20din%C3%A1mico-9333ea?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir backprop dinámico">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center"><strong>7</strong></td>
-      <td><strong>Regularización en redes neuronales</strong></td>
-      <td>Comprender el sobreajuste y estudiar técnicas para mejorar la generalización, como penalización L2, dropout, early stopping y control de complejidad.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/06_regularizacion_teoria_practica_interactiva.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Regularizaci%C3%B3n-0891b2?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir regularización">
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td align="center"><strong>8</strong></td>
-      <td><strong>Actividad integrada</strong></td>
-      <td>Integrar los conceptos del bloque mediante preguntas, ejercicios guiados, interpretación de resultados y consignas para discusión en clase.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_actividad_integrada_redes_neuronales.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Actividad%20integrada-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir actividad integrada">
-        </a>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
----
+| Orden | Recurso | Propósito didáctico | Abrir recurso |
+| :---: | :--- | :--- | :---: |
+| **0** | **Índice de la clase** | Organiza el bloque completo y permite navegar todos los HTML desde un punto central. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-%C3%8Dndice-1f4e79?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/00_indice_clase_autoencoders.html) |
+| **1.1** | **Espacio latente, manifold y embeddings** | Desarrolla los conceptos de representación interna, manifold, embeddings y reducción semántica de dimensionalidad. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Teor%C3%ADa%20latente-2563eb?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_1_espacio_latente_manifold_embeddings_teoria.html) |
+| **1.2** | **Aplicaciones de los autoencoders** | Presenta usos concretos: compresión, denoising, anomalías, embeddings, representación y modelos generativos. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Aplicaciones-0f766e?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_2_aplicaciones_autoencoders.html) |
+| **1** | **Teoría completa de autoencoders** | Explica arquitectura encoder-decoder, bottleneck, reconstrucción, pérdida, entrenamiento y usos principales. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Teor%C3%ADa%20completa-2563eb?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_teoria_completa_autoencoders.html) |
+| **2** | **Arquitectura y bottleneck** | Simula la compresión desde la entrada hacia el espacio latente y la reconstrucción posterior. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Bottleneck-7c3aed?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/02_simulacion_arquitectura_bottleneck.html) |
+| **3** | **Espacio latente y manifold** | Permite mover coordenadas latentes y observar cómo cambia una representación reconstruida. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Manifold-0891b2?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/03_simulacion_espacio_latente_manifold.html) |
+| **4** | **Denoising autoencoder** | Muestra cómo un autoencoder aprende a recuperar una señal limpia desde una entrada con ruido. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Denoising-15803d?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/04_simulacion_denoising_autoencoder.html) |
+| **5** | **Anomalías y error de reconstrucción** | Explica la detección de anomalías mediante umbrales de error de reconstrucción. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Anomal%C3%ADas-dc2626?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_anomalias_error_reconstruccion.html) |
+| **6** | **Variational Autoencoder interactivo** | Introduce la lógica probabilística del VAE: media, varianza, muestreo y regularización latente. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-VAE-9333ea?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/06_variational_autoencoder_interactivo.html) |
+| **7** | **Guía práctica en HTML** | Ordena el flujo práctico para implementar autoencoders en Google Colab. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Gu%C3%ADa%20Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_guia_practica_colab_autoencoders.html) |
+| **7.1** | **Notebook ejecutable en Google Colab** | Permite ejecutar la práctica completa con Python, TensorFlow, MNIST, autoencoder básico, visualizaciones, espacio latente y detección de anomalías. | [![Abrir Colab](https://img.shields.io/badge/Abrir%20Colab-Notebook%20ejecutable-f9ab00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/drive/1xhbUTI9ERdXGWIQJ7a9mnlnlx5bbqPDj?usp=sharing) |
+| **8** | **Autoencoder fijo 784 → z=32** | Versión fija para clase: entrada 784, espacio latente 32 y visualización estable de compresión. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Fijo%20784%20z32-0f766e?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/08_Simulacion_autoencoder_fija_entrada_784_z32.html) |
 
 ## 🔗 Acceso directo a los recursos
 
@@ -3666,13 +3573,13 @@ Sin embargo, reducir el error de entrenamiento no es suficiente. Un modelo útil
 
 ---
 
-# 🧠 Autoencoders · Recursos interactivos de estudio
+# Autoencoders · Recursos interactivos de estudio
 
 > Material organizado para estudiar **autoencoders**, **espacio latente**, **manifold**, **embeddings**, **arquitectura encoder-decoder**, **bottleneck**, **denoising**, **detección de anomalías**, **Variational Autoencoders** y práctica en **Google Colab** mediante teoría visual, simulaciones interactivas, notebook ejecutable y recursos didácticos para clase.
 
 ---
 
-## 🎯 Objetivo general del bloque
+## Objetivo general del bloque
 
 Este conjunto de recursos tiene como objetivo comprender los **autoencoders** desde una perspectiva conceptual, visual y práctica.
 
@@ -3682,259 +3589,80 @@ La finalidad es que el estudiante pueda comprender que un autoencoder no es una 
 
 ---
 
-## 🧭 Secuencia didáctica sugerida
+## Secuencia didáctica sugerida
 
-```text
-1. Espacio latente, manifold y embeddings
-        ↓
-2. Aplicaciones de los autoencoders
-        ↓
-3. Teoría completa de autoencoders
-        ↓
-4. Arquitectura encoder-decoder y bottleneck
-        ↓
-5. Espacio latente y manifold interactivo
-        ↓
-6. Denoising autoencoder
-        ↓
-7. Anomalías y error de reconstrucción
-        ↓
-8. Variational Autoencoder interactivo
-        ↓
-9. Guía práctica en HTML
-        ↓
-10. Notebook ejecutable en Google Colab
-        ↓
-11. Simulación fija 784 → z=32
-```
+1. **Espacio latente, manifold y embeddings**  
+   ↓  
+2. **Aplicaciones de los autoencoders**  
+   ↓  
+3. **Teoría completa de autoencoders**  
+   ↓  
+4. **Arquitectura encoder-decoder y bottleneck**  
+   ↓  
+5. **Espacio latente y manifold interactivo**  
+   ↓  
+6. **Denoising autoencoder**  
+   ↓  
+7. **Anomalías y error de reconstrucción**  
+   ↓  
+8. **Variational Autoencoder interactivo**  
+   ↓  
+9. **Guía práctica en HTML**  
+   ↓  
+10. **Notebook ejecutable en Google Colab**  
+   ↓  
+11. **Simulación fija 784 → z=32**
 
 ---
 
-## 📚 Recursos interactivos
+## Recursos interactivos
 
-<table>
-  <thead>
-    <tr>
-      <th align="center">Orden</th>
-      <th align="left">Recurso</th>
-      <th align="left">Propósito didáctico</th>
-      <th align="center">Abrir recurso</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td align="center"><strong>0</strong></td>
-      <td><strong>Índice de la clase</strong></td>
-      <td>Organiza el bloque completo y permite navegar todos los HTML desde un punto central.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/00_indice_clase_autoencoders.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-%C3%8Dndice-1f4e79?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Índice de la clase">
-        </a>
-      </td>
-    </tr>
-
-    <tr>
-      <td align="center"><strong>1.1</strong></td>
-      <td><strong>Espacio latente, manifold y embeddings</strong></td>
-      <td>Desarrolla los conceptos de representación interna, manifold, embeddings y reducción semántica de dimensionalidad.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_1_espacio_latente_manifold_embeddings_teoria.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Teor%C3%ADa%20latente-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Espacio latente, manifold y embeddings">
-        </a>
-      </td>
-    </tr>
-
-    <tr>
-      <td align="center"><strong>1.2</strong></td>
-      <td><strong>Aplicaciones de los autoencoders</strong></td>
-      <td>Presenta usos concretos: compresión, denoising, anomalías, embeddings, representación y modelos generativos.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_2_aplicaciones_autoencoders.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Aplicaciones-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Aplicaciones de los autoencoders">
-        </a>
-      </td>
-    </tr>
-
-    <tr>
-      <td align="center"><strong>1</strong></td>
-      <td><strong>Teoría completa de autoencoders</strong></td>
-      <td>Explica arquitectura encoder-decoder, bottleneck, reconstrucción, pérdida, entrenamiento y usos principales.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_teoria_completa_autoencoders.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Teor%C3%ADa%20completa-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Teoría completa de autoencoders">
-        </a>
-      </td>
-    </tr>
-
-    <tr>
-      <td align="center"><strong>2</strong></td>
-      <td><strong>Arquitectura y bottleneck</strong></td>
-      <td>Simula la compresión desde la entrada hacia el espacio latente y la reconstrucción posterior.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/02_simulacion_arquitectura_bottleneck.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Bottleneck-7c3aed?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Arquitectura y bottleneck">
-        </a>
-      </td>
-    </tr>
-
-    <tr>
-      <td align="center"><strong>3</strong></td>
-      <td><strong>Espacio latente y manifold</strong></td>
-      <td>Permite mover coordenadas latentes y observar cómo cambia una representación reconstruida.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/03_simulacion_espacio_latente_manifold.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Manifold-0891b2?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Espacio latente y manifold">
-        </a>
-      </td>
-    </tr>
-
-    <tr>
-      <td align="center"><strong>4</strong></td>
-      <td><strong>Denoising autoencoder</strong></td>
-      <td>Muestra cómo un autoencoder aprende a recuperar una señal limpia desde una entrada con ruido.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/04_simulacion_denoising_autoencoder.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Denoising-15803d?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Denoising autoencoder">
-        </a>
-      </td>
-    </tr>
-
-    <tr>
-      <td align="center"><strong>5</strong></td>
-      <td><strong>Anomalías y error de reconstrucción</strong></td>
-      <td>Explica la detección de anomalías mediante umbrales de error de reconstrucción.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_anomalias_error_reconstruccion.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Anomal%C3%ADas-dc2626?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Anomalías y error de reconstrucción">
-        </a>
-      </td>
-    </tr>
-
-    <tr>
-      <td align="center"><strong>6</strong></td>
-      <td><strong>Variational Autoencoder interactivo</strong></td>
-      <td>Introduce la lógica probabilística del VAE: media, varianza, muestreo y regularización latente.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/06_variational_autoencoder_interactivo.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-VAE-9333ea?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Variational Autoencoder interactivo">
-        </a>
-      </td>
-    </tr>
-
-    <tr>
-      <td align="center"><strong>7</strong></td>
-      <td><strong>Guía práctica en HTML</strong></td>
-      <td>Ordena el flujo práctico para implementar autoencoders en Google Colab: preparación, autoencoder base, denoising, anomalías y preguntas de interpretación.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_guia_practica_colab_autoencoders.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Gu%C3%ADa%20Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Guía práctica en Colab">
-        </a>
-      </td>
-    </tr>
-
-    <tr>
-      <td align="center"><strong>7.1</strong></td>
-      <td><strong>Notebook ejecutable en Google Colab</strong></td>
-      <td>Permite ejecutar la práctica completa con Python, TensorFlow, MNIST, autoencoder básico, visualizaciones, espacio latente y detección de anomalías.</td>
-      <td align="center">
-        <a href="https://colab.research.google.com/drive/1xhbUTI9ERdXGWIQJ7a9mnlnlx5bbqPDj?usp=sharing">
-          <img src="https://img.shields.io/badge/Abrir%20Colab-Notebook%20ejecutable-f9ab00?style=for-the-badge&logo=googlecolab&logoColor=white" alt="Abrir Notebook en Google Colab">
-        </a>
-      </td>
-    </tr>
-
-    <tr>
-      <td align="center"><strong>8</strong></td>
-      <td><strong>Autoencoder fijo 784 → z=32</strong></td>
-      <td>Versión fija para clase: entrada 784, espacio latente 32 y visualización estable de compresión.</td>
-      <td align="center">
-        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/08_Simulacion_autoencoder_fija_entrada_784_z32.html">
-          <img src="https://img.shields.io/badge/Abrir%20HTML-Fijo%20784%20z32-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Autoencoder fijo 784 → z=32">
-        </a>
-      </td>
-    </tr>
-  </tbody>
-</table>
+| Orden | Recurso | Propósito didáctico | Abrir recurso |
+| :---: | :--- | :--- | :---: |
+| **0** | **Índice de la clase** | Organiza el bloque completo y permite navegar todos los HTML desde un punto central. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-%C3%8Dndice-1f4e79?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/00_indice_clase_autoencoders.html) |
+| **1.1** | **Espacio latente, manifold y embeddings** | Desarrolla los conceptos de representación interna, manifold, embeddings y reducción semántica de dimensionalidad. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Teor%C3%ADa%20latente-2563eb?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_1_espacio_latente_manifold_embeddings_teoria.html) |
+| **1.2** | **Aplicaciones de los autoencoders** | Presenta usos concretos: compresión, denoising, anomalías, embeddings, representación y modelos generativos. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Aplicaciones-0f766e?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_2_aplicaciones_autoencoders.html) |
+| **1** | **Teoría completa de autoencoders** | Explica arquitectura encoder-decoder, bottleneck, reconstrucción, pérdida, entrenamiento y usos principales. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Teor%C3%ADa%20completa-2563eb?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_teoria_completa_autoencoders.html) |
+| **2** | **Arquitectura y bottleneck** | Simula la compresión desde la entrada hacia el espacio latente y la reconstrucción posterior. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Bottleneck-7c3aed?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/02_simulacion_arquitectura_bottleneck.html) |
+| **3** | **Espacio latente y manifold** | Permite mover coordenadas latentes y observar cómo cambia una representación reconstruida. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Manifold-0891b2?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/03_simulacion_espacio_latente_manifold.html) |
+| **4** | **Denoising autoencoder** | Muestra cómo un autoencoder aprende a recuperar una señal limpia desde una entrada con ruido. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Denoising-15803d?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/04_simulacion_denoising_autoencoder.html) |
+| **5** | **Anomalías y error de reconstrucción** | Explica la detección de anomalías mediante umbrales de error de reconstrucción. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Anomal%C3%ADas-dc2626?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_anomalias_error_reconstruccion.html) |
+| **6** | **Variational Autoencoder interactivo** | Introduce la lógica probabilística del VAE: media, varianza, muestreo y regularización latente. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-VAE-9333ea?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/06_variational_autoencoder_interactivo.html) |
+| **7** | **Guía práctica en HTML** | Ordena el flujo práctico para implementar autoencoders en Google Colab. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Gu%C3%ADa%20Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_guia_practica_colab_autoencoders.html) |
+| **7.1** | **Notebook ejecutable en Google Colab** | Permite ejecutar la práctica completa con Python, TensorFlow, MNIST, autoencoder básico, visualizaciones, espacio latente y detección de anomalías. | [![Abrir Colab](https://img.shields.io/badge/Abrir%20Colab-Notebook%20ejecutable-f9ab00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/drive/1xhbUTI9ERdXGWIQJ7a9mnlnlx5bbqPDj?usp=sharing) |
+| **8** | **Autoencoder fijo 784 → z=32** | Versión fija para clase: entrada 784, espacio latente 32 y visualización estable de compresión. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Fijo%20784%20z32-0f766e?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/08_Simulacion_autoencoder_fija_entrada_784_z32.html) |
 
 ---
 
-## 🔗 Acceso directo a los recursos
+## Acceso directo a los recursos
 
-<p align="center">
-  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/00_indice_clase_autoencoders.html">
-    <img src="https://img.shields.io/badge/Abrir%20HTML-0.%20%C3%8Dndice-1f4e79?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Índice de la clase">
-  </a>
-</p>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-0.%20%C3%8Dndice-1f4e79?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/00_indice_clase_autoencoders.html)
 
-<p align="center">
-  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_1_espacio_latente_manifold_embeddings_teoria.html">
-    <img src="https://img.shields.io/badge/Abrir%20HTML-1.1.%20Teor%C3%ADa%20latente-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Espacio latente, manifold y embeddings">
-  </a>
-</p>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-1.1.%20Teor%C3%ADa%20latente-2563eb?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_1_espacio_latente_manifold_embeddings_teoria.html)
 
-<p align="center">
-  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_2_aplicaciones_autoencoders.html">
-    <img src="https://img.shields.io/badge/Abrir%20HTML-1.2.%20Aplicaciones-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Aplicaciones de los autoencoders">
-  </a>
-</p>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-1.2.%20Aplicaciones-0f766e?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_2_aplicaciones_autoencoders.html)
 
-<p align="center">
-  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_teoria_completa_autoencoders.html">
-    <img src="https://img.shields.io/badge/Abrir%20HTML-1.%20Teor%C3%ADa%20completa-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Teoría completa de autoencoders">
-  </a>
-</p>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-1.%20Teor%C3%ADa%20completa-2563eb?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_teoria_completa_autoencoders.html)
 
-<p align="center">
-  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/02_simulacion_arquitectura_bottleneck.html">
-    <img src="https://img.shields.io/badge/Abrir%20HTML-2.%20Bottleneck-7c3aed?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Arquitectura y bottleneck">
-  </a>
-</p>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-2.%20Bottleneck-7c3aed?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/02_simulacion_arquitectura_bottleneck.html)
 
-<p align="center">
-  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/03_simulacion_espacio_latente_manifold.html">
-    <img src="https://img.shields.io/badge/Abrir%20HTML-3.%20Manifold-0891b2?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Espacio latente y manifold">
-  </a>
-</p>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-3.%20Manifold-0891b2?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/03_simulacion_espacio_latente_manifold.html)
 
-<p align="center">
-  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/04_simulacion_denoising_autoencoder.html">
-    <img src="https://img.shields.io/badge/Abrir%20HTML-4.%20Denoising-15803d?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Denoising autoencoder">
-  </a>
-</p>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-4.%20Denoising-15803d?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/04_simulacion_denoising_autoencoder.html)
 
-<p align="center">
-  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_anomalias_error_reconstruccion.html">
-    <img src="https://img.shields.io/badge/Abrir%20HTML-5.%20Anomal%C3%ADas-dc2626?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Anomalías y error de reconstrucción">
-  </a>
-</p>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-5.%20Anomal%C3%ADas-dc2626?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_anomalias_error_reconstruccion.html)
 
-<p align="center">
-  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/06_variational_autoencoder_interactivo.html">
-    <img src="https://img.shields.io/badge/Abrir%20HTML-6.%20VAE-9333ea?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Variational Autoencoder interactivo">
-  </a>
-</p>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-6.%20VAE-9333ea?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/06_variational_autoencoder_interactivo.html)
 
-<p align="center">
-  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_guia_practica_colab_autoencoders.html">
-    <img src="https://img.shields.io/badge/Abrir%20HTML-7.%20Gu%C3%ADa%20Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Guía práctica en Colab">
-  </a>
-</p>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-7.%20Gu%C3%ADa%20Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_guia_practica_colab_autoencoders.html)
 
-<p align="center">
-  <a href="https://colab.research.google.com/drive/1xhbUTI9ERdXGWIQJ7a9mnlnlx5bbqPDj?usp=sharing">
-    <img src="https://img.shields.io/badge/Abrir%20Colab-7.1.%20Notebook%20ejecutable-f9ab00?style=for-the-badge&logo=googlecolab&logoColor=white" alt="Abrir Notebook ejecutable en Google Colab">
-  </a>
-</p>
+[![Abrir Colab](https://img.shields.io/badge/Abrir%20Colab-7.1.%20Notebook%20ejecutable-f9ab00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/drive/1xhbUTI9ERdXGWIQJ7a9mnlnlx5bbqPDj?usp=sharing)
 
-<p align="center">
-  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/08_Simulacion_autoencoder_fija_entrada_784_z32.html">
-    <img src="https://img.shields.io/badge/Abrir%20HTML-8.%20Fijo%20784%20z32-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Autoencoder fijo 784 → z=32">
-  </a>
-</p>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-8.%20Fijo%20784%20z32-0f766e?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/08_Simulacion_autoencoder_fija_entrada_784_z32.html)
 
 ---
 
-## 🧩 Resumen didáctico de cada recurso
+## Resumen didáctico de cada recurso
 
 ### 0. Índice de la clase
 
@@ -4168,9 +3896,7 @@ Permite trabajar:
 
 **Idea clave:** el notebook convierte el bloque conceptual en una práctica ejecutable, permitiendo que el estudiante vea cómo una arquitectura teórica se transforma en entrenamiento, reconstrucción, visualización y análisis.
 
-<a href="https://colab.research.google.com/drive/1xhbUTI9ERdXGWIQJ7a9mnlnlx5bbqPDj?usp=sharing">
-  <img src="https://img.shields.io/badge/Abrir%20Colab-Notebook%20ejecutable-f9ab00?style=for-the-badge&logo=googlecolab&logoColor=white" alt="Abrir Notebook ejecutable en Google Colab">
-</a>
+[![Abrir Colab](https://img.shields.io/badge/Abrir%20Colab-Notebook%20ejecutable-f9ab00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/drive/1xhbUTI9ERdXGWIQJ7a9mnlnlx5bbqPDj?usp=sharing)
 
 ---
 
@@ -4195,80 +3921,76 @@ Permite trabajar:
 
 ---
 
-## 🗺️ Mapa conceptual del módulo
+## Mapa conceptual del módulo
 
-```text
 Autoencoders
-│
-├── Entrada
-│   ├── Imagen
-│   ├── Señal
-│   ├── Texto vectorizado
-│   └── Datos tabulares
-│
-├── Encoder
-│   ├── Compresión
-│   ├── Extracción de características
-│   └── Proyección latente
-│
-├── Bottleneck
-│   ├── Reducción de dimensionalidad
-│   ├── Restricción informacional
-│   └── Representación comprimida
-│
-├── Espacio latente
-│   ├── Manifold
-│   ├── Embeddings
-│   ├── Vecindad semántica
-│   └── Interpolación
-│
-├── Decoder
-│   ├── Reconstrucción
-│   ├── Recuperación aproximada
-│   └── Generación
-│
-├── Función de pérdida
-│   ├── Error de reconstrucción
-│   ├── MSE
-│   ├── BCE
-│   └── Regularización
-│
-├── Variantes
-│   ├── Denoising autoencoder
-│   ├── Sparse autoencoder
-│   ├── Convolutional autoencoder
-│   └── Variational autoencoder
-│
-├── Práctica en Colab
-│   ├── TensorFlow
-│   ├── MNIST
-│   ├── Dense layers
-│   ├── Flatten y reshape
-│   ├── Entrenamiento
-│   ├── Reconstrucciones
-│   ├── Espacio latente 2D
-│   └── Anomalías
-│
-└── Aplicaciones
-    ├── Compresión
-    ├── Reducción de dimensionalidad
-    ├── Detección de anomalías
-    ├── Limpieza de ruido
-    ├── Representaciones latentes
-    └── Generación de datos
-```
+
+- Entrada
+  - Imagen
+  - Señal
+  - Texto vectorizado
+  - Datos tabulares
+
+- Encoder
+  - Compresión
+  - Extracción de características
+  - Proyección latente
+
+- Bottleneck
+  - Reducción de dimensionalidad
+  - Restricción informacional
+  - Representación comprimida
+
+- Espacio latente
+  - Manifold
+  - Embeddings
+  - Vecindad semántica
+  - Interpolación
+
+- Decoder
+  - Reconstrucción
+  - Recuperación aproximada
+  - Generación
+
+- Función de pérdida
+  - Error de reconstrucción
+  - MSE
+  - BCE
+  - Regularización
+
+- Variantes
+  - Denoising autoencoder
+  - Sparse autoencoder
+  - Convolutional autoencoder
+  - Variational autoencoder
+
+- Práctica en Colab
+  - TensorFlow
+  - MNIST
+  - Dense layers
+  - Flatten y reshape
+  - Entrenamiento
+  - Reconstrucciones
+  - Espacio latente 2D
+  - Anomalías
+
+- Aplicaciones
+  - Compresión
+  - Reducción de dimensionalidad
+  - Detección de anomalías
+  - Limpieza de ruido
+  - Representaciones latentes
+  - Generación de datos
 
 ---
 
-## 📖 Guía rápida de uso
+## Guía rápida de uso
 
 ### Para comenzar desde cero
 
 Usar primero el recurso de teoría completa.
 
-<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_teoria_completa_autoencoders.html">
-  <img src="https://img.shields.io/badge/Abrir%20HTML-Teor%C3%ADa%20completa-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir teoría completa">
-</a>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Teor%C3%ADa%20completa-2563eb?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_teoria_completa_autoencoders.html)
 
 Este recurso permite presentar la intuición general: un autoencoder recibe datos, los comprime, los reconstruye y aprende a partir del error de reconstrucción.
 
@@ -4278,25 +4000,16 @@ Este recurso permite presentar la intuición general: un autoencoder recibe dato
 
 Usar el recurso teórico específico.
 
-<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_1_espacio_latente_manifold_embeddings_teoria.html">
-  <img src="https://img.shields.io/badge/Abrir%20HTML-Espacio%20latente-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir espacio latente">
-</a>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Espacio%20latente-2563eb?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_1_espacio_latente_manifold_embeddings_teoria.html)
 
 Flujo sugerido:
 
-```text
-Datos de alta dimensión
-        ↓
-Encoder
-        ↓
-Representación latente
-        ↓
-Manifold
-        ↓
-Vecindad semántica
-        ↓
-Reconstrucción o uso posterior
-```
+1. Datos de alta dimensión.
+2. Encoder.
+3. Representación latente.
+4. Manifold.
+5. Vecindad semántica.
+6. Reconstrucción o uso posterior.
 
 ---
 
@@ -4304,9 +4017,7 @@ Reconstrucción o uso posterior
 
 Usar el recurso de aplicaciones.
 
-<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_2_aplicaciones_autoencoders.html">
-  <img src="https://img.shields.io/badge/Abrir%20HTML-Aplicaciones-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir aplicaciones">
-</a>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Aplicaciones-0f766e?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_2_aplicaciones_autoencoders.html)
 
 Este recurso permite conectar la arquitectura con usos reales en ciencia de datos, visión por computadora, anomalías, reducción de dimensionalidad y generación.
 
@@ -4316,25 +4027,16 @@ Este recurso permite conectar la arquitectura con usos reales en ciencia de dato
 
 Usar el recurso de arquitectura y bottleneck.
 
-<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/02_simulacion_arquitectura_bottleneck.html">
-  <img src="https://img.shields.io/badge/Abrir%20HTML-Bottleneck-7c3aed?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir bottleneck">
-</a>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Bottleneck-7c3aed?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/02_simulacion_arquitectura_bottleneck.html)
 
 Flujo sugerido:
 
-```text
-Entrada
-        ↓
-Encoder
-        ↓
-Bottleneck
-        ↓
-Decoder
-        ↓
-Reconstrucción
-        ↓
-Error de reconstrucción
-```
+1. Entrada.
+2. Encoder.
+3. Bottleneck.
+4. Decoder.
+5. Reconstrucción.
+6. Error de reconstrucción.
 
 ---
 
@@ -4342,9 +4044,7 @@ Error de reconstrucción
 
 Usar el recurso de denoising autoencoder.
 
-<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/04_simulacion_denoising_autoencoder.html">
-  <img src="https://img.shields.io/badge/Abrir%20HTML-Denoising-15803d?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir denoising">
-</a>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Denoising-15803d?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/04_simulacion_denoising_autoencoder.html)
 
 Este recurso permite mostrar que el modelo aprende estructura subyacente y no solo copia la entrada.
 
@@ -4354,23 +4054,15 @@ Este recurso permite mostrar que el modelo aprende estructura subyacente y no so
 
 Usar el recurso de anomalías y error de reconstrucción.
 
-<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_anomalias_error_reconstruccion.html">
-  <img src="https://img.shields.io/badge/Abrir%20HTML-Anomal%C3%ADas-dc2626?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir anomalías">
-</a>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Anomal%C3%ADas-dc2626?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_anomalias_error_reconstruccion.html)
 
 Flujo sugerido:
 
-```text
-Entrenar con datos normales
-        ↓
-Reconstruir observaciones nuevas
-        ↓
-Medir error de reconstrucción
-        ↓
-Comparar contra umbral
-        ↓
-Clasificar como normal o anómalo
-```
+1. Entrenar con datos normales.
+2. Reconstruir observaciones nuevas.
+3. Medir error de reconstrucción.
+4. Comparar contra umbral.
+5. Clasificar como normal o anómalo.
 
 ---
 
@@ -4378,9 +4070,7 @@ Clasificar como normal o anómalo
 
 Usar el recurso de Variational Autoencoder.
 
-<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/06_variational_autoencoder_interactivo.html">
-  <img src="https://img.shields.io/badge/Abrir%20HTML-VAE-9333ea?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir VAE">
-</a>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-VAE-9333ea?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/06_variational_autoencoder_interactivo.html)
 
 Este recurso permite introducir la diferencia entre representar una entrada como punto fijo y representarla como distribución latente.
 
@@ -4390,51 +4080,31 @@ Este recurso permite introducir la diferencia entre representar una entrada como
 
 Usar primero la guía práctica HTML y luego el notebook de Colab.
 
-<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_guia_practica_colab_autoencoders.html">
-  <img src="https://img.shields.io/badge/Abrir%20HTML-Gu%C3%ADa%20Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir guía Colab">
-</a>
+[![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Gu%C3%ADa%20Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_guia_practica_colab_autoencoders.html)
 
-<a href="https://colab.research.google.com/drive/1xhbUTI9ERdXGWIQJ7a9mnlnlx5bbqPDj?usp=sharing">
-  <img src="https://img.shields.io/badge/Abrir%20Colab-Notebook%20ejecutable-f9ab00?style=for-the-badge&logo=googlecolab&logoColor=white" alt="Abrir Notebook en Google Colab">
-</a>
+[![Abrir Colab](https://img.shields.io/badge/Abrir%20Colab-Notebook%20ejecutable-f9ab00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/drive/1xhbUTI9ERdXGWIQJ7a9mnlnlx5bbqPDj?usp=sharing)
 
 Flujo sugerido:
 
-```text
-Leer la guía HTML
-        ↓
-Abrir el notebook
-        ↓
-Ejecutar TensorFlow y MNIST
-        ↓
-Entrenar autoencoder
-        ↓
-Visualizar reconstrucciones
-        ↓
-Interpretar espacio latente
-        ↓
-Analizar anomalías
-```
+1. Leer la guía HTML.
+2. Abrir el notebook.
+3. Ejecutar TensorFlow y MNIST.
+4. Entrenar autoencoder.
+5. Visualizar reconstrucciones.
+6. Interpretar espacio latente.
+7. Analizar anomalías.
 
 ---
 
-## 🧠 Desarrollo conceptual del tema
+## Desarrollo conceptual del tema
 
 ### Qué es un autoencoder
 
 Un autoencoder es una red neuronal entrenada para reconstruir su propia entrada. Aunque parezca una tarea trivial, su valor aparece cuando se obliga al modelo a pasar por una representación interna comprimida o estructurada.
 
-```text
-Entrada original
-        ↓
-Encoder
-        ↓
-Espacio latente
-        ↓
-Decoder
-        ↓
-Reconstrucción
-```
+El flujo general es:
+
+Entrada original → Encoder → Espacio latente → Decoder → Reconstrucción
 
 El objetivo no es copiar mecánicamente, sino aprender una transformación que conserve la información más relevante.
 
@@ -4444,13 +4114,13 @@ El objetivo no es copiar mecánicamente, sino aprender una transformación que c
 
 El encoder es la parte de la red que transforma la entrada original en una representación más compacta.
 
-```text
-x → encoder(x) → z
-```
+En forma simplificada:
+
+`x → encoder(x) → z`
 
 Donde:
 
-- `x` es la entrada original;
+- `x` es la entrada original.
 - `z` es la representación latente.
 
 ---
@@ -4461,9 +4131,9 @@ El bottleneck es el cuello de botella de la arquitectura. Es la zona donde la in
 
 Si el bottleneck es muy amplio, el modelo puede copiar. Si es muy estrecho, puede perder demasiada información.
 
-```text
+Ejemplo:
+
 Entrada 784 dimensiones → Bottleneck 32 dimensiones
-```
 
 ---
 
@@ -4471,19 +4141,15 @@ Entrada 784 dimensiones → Bottleneck 32 dimensiones
 
 El decoder toma el vector latente y trata de reconstruir la entrada original.
 
-```text
-z → decoder(z) → x reconstruida
-```
+En forma simplificada:
+
+`z → decoder(z) → x reconstruida`
 
 ---
 
 ### Qué es el error de reconstrucción
 
 El error de reconstrucción mide la diferencia entre la entrada original y la reconstrucción generada por el modelo.
-
-```text
-Error = diferencia entre x y x̂
-```
 
 Una reconstrucción buena tiene bajo error. Una reconstrucción mala tiene alto error.
 
@@ -4494,10 +4160,6 @@ Una reconstrucción buena tiene bajo error. Una reconstrucción mala tiene alto 
 El espacio latente es el espacio donde viven las representaciones comprimidas aprendidas por el encoder.
 
 En lugar de trabajar con todos los datos originales, el modelo trabaja con una versión más compacta y organizada.
-
-```text
-Datos originales → Representación latente → Reconstrucción o análisis
-```
 
 ---
 
@@ -4521,13 +4183,9 @@ En autoencoders, el vector latente puede funcionar como embedding porque resume 
 
 Un denoising autoencoder se entrena con entradas ruidosas, pero intenta reconstruir versiones limpias.
 
-```text
-Entrada con ruido
-        ↓
-Autoencoder
-        ↓
-Reconstrucción limpia
-```
+Flujo:
+
+Entrada con ruido → Autoencoder → Reconstrucción limpia
 
 Esto obliga al modelo a aprender patrones estructurales y no simplemente a copiar el ruido.
 
@@ -4539,10 +4197,10 @@ Si un autoencoder fue entrenado con datos normales, aprende a reconstruir bien e
 
 Cuando recibe una observación anómala, puede reconstruirla mal. Esa diferencia se mide con el error de reconstrucción.
 
-```text
-Error bajo → observación normal
-Error alto → posible anomalía
-```
+Interpretación:
+
+- Error bajo → observación normal.
+- Error alto → posible anomalía.
 
 ---
 
@@ -4552,25 +4210,15 @@ Un Variational Autoencoder, o VAE, es una variante probabilística del autoencod
 
 En lugar de codificar una entrada como un único punto latente, la codifica como una distribución.
 
-```text
-Entrada
-        ↓
-Encoder
-        ↓
-Media y varianza
-        ↓
-Muestreo de z
-        ↓
-Decoder
-        ↓
-Reconstrucción o generación
-```
+Flujo:
+
+Entrada → Encoder → Media y varianza → Muestreo de z → Decoder → Reconstrucción o generación
 
 Esto permite generar nuevas muestras desde el espacio latente.
 
 ---
 
-## 🧪 Notebook Colab: qué se trabaja en la práctica
+## Notebook Colab: qué se trabaja en la práctica
 
 El notebook ejecutable permite transformar la explicación conceptual en una experiencia práctica. Está pensado para que el estudiante vea cómo se implementa un autoencoder con código real y cómo se interpretan sus resultados.
 
@@ -4593,29 +4241,66 @@ El notebook ejecutable permite transformar la explicación conceptual en una exp
 
 ### Objetivo práctico del notebook
 
-```text
-Cargar datos
-        ↓
-Normalizar
-        ↓
-Reformatear
-        ↓
-Definir encoder y decoder
-        ↓
-Entrenar el autoencoder
-        ↓
-Reconstruir imágenes
-        ↓
-Interpretar espacio latente
-        ↓
-Evaluar anomalías
-```
+1. Cargar datos.
+2. Normalizar.
+3. Reformatear.
+4. Definir encoder y decoder.
+5. Entrenar el autoencoder.
+6. Reconstruir imágenes.
+7. Interpretar espacio latente.
+8. Evaluar anomalías.
 
 **Idea clave:** el notebook no solo permite ejecutar código; permite discutir qué está aprendiendo el modelo, cómo se comporta el espacio latente y por qué el error de reconstrucción puede transformarse en una señal analítica.
 
 ---
 
-## ✅ Preguntas orientadoras para estudiantes
+## Relación entre redes neuronales y autoencoders
+
+Los autoencoders son una aplicación específica de las redes neuronales. Primero se puede enseñar la red neuronal como arquitectura general; después se muestra que un autoencoder usa esa misma lógica, pero con un objetivo particular: aprender una representación interna y reconstruir la entrada.
+
+Una red neuronal general aprende una función del tipo:
+
+`x → y`
+
+Por ejemplo:
+
+- Imagen → clase.
+- Datos de cliente → probabilidad de churn.
+- Variables económicas → predicción.
+
+En cambio, un autoencoder aprende una función del tipo:
+
+`x → z → x reconstruida`
+
+Es decir:
+
+- Dato original → representación latente → reconstrucción del dato original.
+
+La red neuronal aporta el mecanismo general:
+
+- neuronas artificiales;
+- pesos;
+- sesgos;
+- activaciones;
+- capas;
+- función de pérdida;
+- forward propagation;
+- backpropagation;
+- optimización por gradiente.
+
+El autoencoder reorganiza ese mecanismo en una arquitectura específica:
+
+- encoder;
+- bottleneck;
+- espacio latente;
+- decoder;
+- error de reconstrucción.
+
+**Idea clave:** las redes neuronales enseñan el mecanismo general del aprendizaje profundo; los autoencoders muestran cómo ese mecanismo puede usarse para aprender representaciones internas, comprimir información, reconstruir datos y descubrir estructura latente.
+
+---
+
+## Preguntas orientadoras para estudiantes
 
 1. ¿Qué aprende realmente un autoencoder?
 2. ¿Por qué el bottleneck es importante?
@@ -4640,7 +4325,7 @@ Evaluar anomalías
 
 ---
 
-## 🧾 Síntesis final
+## Síntesis final
 
 Un autoencoder puede entenderse como una red que aprende una representación comprimida de los datos. El encoder transforma la entrada en un espacio latente, el bottleneck obliga a sintetizar información y el decoder intenta reconstruir la entrada original.
 
@@ -4651,5 +4336,3 @@ El bloque se completa con el notebook de Google Colab, donde el estudiante puede
 ---
 
 **Material elaborado por el profesor Sergio Gevatschnaider**
-````
-
