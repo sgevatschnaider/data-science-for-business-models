@@ -3666,7 +3666,843 @@ Sin embargo, reducir el error de entrenamiento no es suficiente. Un modelo útil
 
 ---
 
-## 👨‍🏫 Autor
+# 🧠 Autoencoders · Recursos interactivos de estudio
 
-Material elaborado por el profesor **Sergio Gevatschnaider** para el estudio de Machine Learning, Ciencia de Datos y Redes Neuronales.
+> Material organizado para estudiar **autoencoders**, **espacio latente**, **manifold**, **embeddings**, **arquitectura encoder-decoder**, **bottleneck**, **denoising**, **detección de anomalías**, **Variational Autoencoders** y práctica en **Google Colab** mediante teoría visual, simulaciones interactivas y recursos didácticos para clase.
 
+---
+
+## 🎯 Objetivo general del bloque
+
+Este conjunto de recursos tiene como objetivo comprender los **autoencoders** desde una perspectiva conceptual, visual y práctica.
+
+El bloque parte de la idea de una red que aprende a reconstruir su propia entrada, pero avanza hacia una interpretación más profunda: el modelo aprende una representación interna comprimida que puede servir para reducir dimensionalidad, extraer patrones, limpiar ruido, detectar anomalías y construir espacios latentes útiles para generación.
+
+La finalidad es que el estudiante pueda comprender que un autoencoder no es una copia mecánica de la entrada, sino un sistema entrenable que transforma datos mediante encoder, bottleneck, espacio latente, decoder y función de reconstrucción.
+
+---
+
+## 🧭 Secuencia didáctica sugerida
+
+```text
+1. Espacio latente, manifold y embeddings
+        ↓
+2. Aplicaciones de los autoencoders
+        ↓
+3. Teoría completa de autoencoders
+        ↓
+4. Arquitectura encoder-decoder y bottleneck
+        ↓
+5. Espacio latente y manifold interactivo
+        ↓
+6. Denoising autoencoder
+        ↓
+7. Anomalías y error de reconstrucción
+        ↓
+8. Variational Autoencoder interactivo
+        ↓
+9. Guía práctica en Colab
+        ↓
+10. Simulación fija 784 → z=32
+```
+
+---
+
+## 📚 Recursos interactivos
+
+<table>
+  <thead>
+    <tr>
+      <th align="center">Orden</th>
+      <th align="left">Recurso</th>
+      <th align="left">Propósito didáctico</th>
+      <th align="center">Abrir HTML</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center"><strong>0</strong></td>
+      <td><strong>Índice de la clase</strong></td>
+      <td>Organiza el bloque completo y permite navegar todos los HTML desde un punto central.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/00_indice_clase_autoencoders.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-%C3%8Dndice-1f4e79?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Índice de la clase">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>1.1</strong></td>
+      <td><strong>Espacio latente, manifold y embeddings</strong></td>
+      <td>Desarrolla los conceptos de representación interna, manifold, embeddings y reducción semántica de dimensionalidad.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_1_espacio_latente_manifold_embeddings_teoria.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Teor%C3%ADa%20latente-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Espacio latente, manifold y embeddings">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>1.2</strong></td>
+      <td><strong>Aplicaciones de los autoencoders</strong></td>
+      <td>Presenta usos concretos: compresión, denoising, anomalías, embeddings, representación y modelos generativos.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_2_aplicaciones_autoencoders.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Aplicaciones-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Aplicaciones de los autoencoders">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>1</strong></td>
+      <td><strong>Teoría completa de autoencoders</strong></td>
+      <td>Explica arquitectura encoder-decoder, bottleneck, reconstrucción, pérdida, entrenamiento y usos principales.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_teoria_completa_autoencoders.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Teor%C3%ADa%20completa-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Teoría completa de autoencoders">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>2</strong></td>
+      <td><strong>Arquitectura y bottleneck</strong></td>
+      <td>Simula la compresión desde la entrada hacia el espacio latente y la reconstrucción posterior.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/02_simulacion_arquitectura_bottleneck.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Bottleneck-7c3aed?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Arquitectura y bottleneck">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>3</strong></td>
+      <td><strong>Espacio latente y manifold</strong></td>
+      <td>Permite mover coordenadas latentes y observar cómo cambia una representación reconstruida.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/03_simulacion_espacio_latente_manifold.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Manifold-0891b2?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Espacio latente y manifold">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>4</strong></td>
+      <td><strong>Denoising autoencoder</strong></td>
+      <td>Muestra cómo un autoencoder aprende a recuperar una señal limpia desde una entrada con ruido.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/04_simulacion_denoising_autoencoder.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Denoising-15803d?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Denoising autoencoder">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>5</strong></td>
+      <td><strong>Anomalías y error de reconstrucción</strong></td>
+      <td>Explica la detección de anomalías mediante umbrales de error de reconstrucción.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_anomalias_error_reconstruccion.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Anomal%C3%ADas-dc2626?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Anomalías y error de reconstrucción">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>6</strong></td>
+      <td><strong>Variational Autoencoder interactivo</strong></td>
+      <td>Introduce la lógica probabilística del VAE: media, varianza, muestreo y regularización latente.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/06_variational_autoencoder_interactivo.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-VAE-9333ea?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Variational Autoencoder interactivo">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>7</strong></td>
+      <td><strong>Guía práctica en Colab</strong></td>
+      <td>Ordena el flujo práctico para implementar autoencoders en Google Colab.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_guia_practica_colab_autoencoders.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Guía práctica en Colab">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center"><strong>8</strong></td>
+      <td><strong>Autoencoder fijo 784 → z=32</strong></td>
+      <td>Versión fija para clase: entrada 784, espacio latente 32 y visualización estable de compresión.</td>
+      <td align="center">
+        <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/08_Simulacion_autoencoder_fija_entrada_784_z32.html">
+          <img src="https://img.shields.io/badge/Abrir%20HTML-Fijo%20784%20z32-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Autoencoder fijo 784 → z=32">
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+---
+
+## 🔗 Acceso directo a los recursos
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/00_indice_clase_autoencoders.html">
+    <img src="https://img.shields.io/badge/Abrir%20HTML-0.%20%C3%8Dndice-1f4e79?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Índice de la clase">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_1_espacio_latente_manifold_embeddings_teoria.html">
+    <img src="https://img.shields.io/badge/Abrir%20HTML-1.1.%20Teor%C3%ADa%20latente-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Espacio latente, manifold y embeddings">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_2_aplicaciones_autoencoders.html">
+    <img src="https://img.shields.io/badge/Abrir%20HTML-1.2.%20Aplicaciones-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Aplicaciones de los autoencoders">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_teoria_completa_autoencoders.html">
+    <img src="https://img.shields.io/badge/Abrir%20HTML-1.%20Teor%C3%ADa%20completa-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Teoría completa de autoencoders">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/02_simulacion_arquitectura_bottleneck.html">
+    <img src="https://img.shields.io/badge/Abrir%20HTML-2.%20Bottleneck-7c3aed?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Arquitectura y bottleneck">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/03_simulacion_espacio_latente_manifold.html">
+    <img src="https://img.shields.io/badge/Abrir%20HTML-3.%20Manifold-0891b2?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Espacio latente y manifold">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/04_simulacion_denoising_autoencoder.html">
+    <img src="https://img.shields.io/badge/Abrir%20HTML-4.%20Denoising-15803d?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Denoising autoencoder">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_anomalias_error_reconstruccion.html">
+    <img src="https://img.shields.io/badge/Abrir%20HTML-5.%20Anomal%C3%ADas-dc2626?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Anomalías y error de reconstrucción">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/06_variational_autoencoder_interactivo.html">
+    <img src="https://img.shields.io/badge/Abrir%20HTML-6.%20VAE-9333ea?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Variational Autoencoder interactivo">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_guia_practica_colab_autoencoders.html">
+    <img src="https://img.shields.io/badge/Abrir%20HTML-7.%20Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Guía práctica en Colab">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/08_Simulacion_autoencoder_fija_entrada_784_z32.html">
+    <img src="https://img.shields.io/badge/Abrir%20HTML-8.%20Fijo%20784%20z32-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Autoencoder fijo 784 → z=32">
+  </a>
+</p>
+
+---
+
+## 🧩 Resumen didáctico de cada recurso
+
+### 0. Índice de la clase
+
+El índice funciona como la puerta de entrada al bloque completo. Permite ordenar los materiales, acceder rápidamente a cada HTML y presentar una secuencia clara para estudiar autoencoders.
+
+Su utilidad principal es transformar varios archivos separados en una experiencia de aprendizaje organizada. Desde este recurso, el estudiante puede iniciar la clase, recorrer las simulaciones y volver al punto central cuando lo necesite.
+
+**Idea clave:** el índice convierte varios archivos separados en un recorrido didáctico navegable.
+
+---
+
+### 1.1. Espacio latente, manifold y embeddings
+
+Este recurso presenta los conceptos de representación interna. Permite comprender que el autoencoder no trabaja solamente con datos originales, sino con coordenadas latentes que condensan patrones relevantes.
+
+El espacio latente puede pensarse como una zona de representación donde datos similares tienden a quedar cerca. La noción de manifold ayuda a explicar por qué muchos datos de alta dimensión, como imágenes o señales, pueden estar organizados sobre estructuras de menor dimensión.
+
+Permite trabajar:
+
+- espacio latente;
+- manifold;
+- embeddings;
+- representación interna;
+- reducción de dimensionalidad;
+- vecindad semántica;
+- interpolación;
+- geometría de datos.
+
+**Idea clave:** el espacio latente es una representación comprimida donde la cercanía puede tener significado semántico o estructural.
+
+---
+
+### 1.2. Aplicaciones de los autoencoders
+
+Este recurso conecta la arquitectura con problemas reales. Permite mostrar que los autoencoders no son solamente una curiosidad académica, sino una familia de modelos con aplicaciones prácticas en ciencia de datos, inteligencia artificial, visión por computadora, análisis de señales, detección de anomalías y modelos generativos.
+
+Permite trabajar:
+
+- compresión;
+- reducción de dimensionalidad;
+- limpieza de ruido;
+- detección de anomalías;
+- embeddings;
+- recuperación de información;
+- representación de imágenes;
+- generación de datos;
+- preentrenamiento;
+- visualización de datos.
+
+**Idea clave:** los autoencoders son útiles porque aprenden representaciones, no solo porque reconstruyen entradas.
+
+---
+
+### 1. Teoría completa de autoencoders
+
+Este recurso introduce la arquitectura encoder-decoder, el bottleneck, la reconstrucción, la función de pérdida y el aprendizaje por optimización.
+
+El estudiante puede comprender que el modelo recibe una entrada, la comprime en una representación latente y luego intenta reconstruirla. Si la reconstrucción mejora durante el entrenamiento, significa que el modelo está aprendiendo patrones relevantes de los datos.
+
+Permite trabajar:
+
+- encoder;
+- decoder;
+- bottleneck;
+- reconstrucción;
+- función de pérdida;
+- error de reconstrucción;
+- entrenamiento;
+- aprendizaje no supervisado;
+- reducción de dimensionalidad;
+- generalización.
+
+**Idea clave:** un autoencoder aprende a reconstruir bien al mismo tiempo que reduce la información a una representación interna útil.
+
+---
+
+### 2. Arquitectura y bottleneck
+
+Este recurso permite visualizar cómo una entrada de alta dimensión se comprime en un cuello de botella y luego se reconstruye.
+
+El bottleneck es central porque obliga al modelo a sintetizar información. Si el espacio latente es demasiado grande, el modelo puede copiar; si es demasiado pequeño, puede perder información relevante. Por eso, la arquitectura define una tensión entre compresión y fidelidad de reconstrucción.
+
+Permite trabajar:
+
+- entrada de alta dimensión;
+- capas del encoder;
+- compresión progresiva;
+- bottleneck;
+- vector latente;
+- decoder;
+- reconstrucción;
+- pérdida de información;
+- capacidad del modelo.
+
+**Idea clave:** el bottleneck obliga al modelo a conservar lo importante y descartar redundancia.
+
+---
+
+### 3. Espacio latente y manifold
+
+Este recurso muestra cómo cambiar coordenadas latentes modifica la reconstrucción. Sirve para explicar interpolación, continuidad y estructura geométrica.
+
+La simulación permite observar que una modificación en el espacio latente no equivale a cambiar un píxel aislado, sino a modificar una representación aprendida. Esto ayuda a comprender por qué los espacios latentes son importantes para generación, búsqueda de similitud y representación semántica.
+
+Permite trabajar:
+
+- coordenadas latentes;
+- interpolación;
+- continuidad;
+- manifold;
+- reconstrucción;
+- vecindad;
+- representación semántica;
+- geometría de datos.
+
+**Idea clave:** moverse en el espacio latente no modifica píxeles aislados, modifica una representación aprendida.
+
+---
+
+### 4. Denoising autoencoder
+
+Este recurso explica cómo entrenar con entradas ruidosas y salidas limpias permite aprender patrones robustos.
+
+El modelo no debe copiar el ruido, sino recuperar la estructura subyacente. Por eso, el denoising autoencoder es útil para explicar la diferencia entre memorizar datos y aprender regularidades.
+
+Permite trabajar:
+
+- ruido;
+- señal limpia;
+- entrada corrupta;
+- reconstrucción limpia;
+- robustez;
+- patrones relevantes;
+- generalización;
+- aprendizaje de estructura.
+
+**Idea clave:** el modelo aprende estructura, no simplemente copia ruido.
+
+---
+
+### 5. Anomalías y error de reconstrucción
+
+Este recurso permite estudiar cómo un modelo entrenado con patrones normales puede detectar casos raros por alto error de reconstrucción.
+
+La idea central es que un autoencoder reconstruye bien aquello que se parece a lo que vio durante el entrenamiento. Cuando aparece una observación diferente, extraña o atípica, la reconstrucción suele ser peor y el error aumenta.
+
+Permite trabajar:
+
+- normalidad;
+- anomalía;
+- error de reconstrucción;
+- umbral;
+- detección;
+- falsos positivos;
+- falsos negativos;
+- monitoreo;
+- scoring de anomalía.
+
+**Idea clave:** una anomalía suele reconstruirse peor porque no pertenece al patrón aprendido.
+
+---
+
+### 6. Variational Autoencoder interactivo
+
+Este recurso introduce la lógica probabilística del VAE mediante media, varianza, muestreo y regularización del espacio latente.
+
+A diferencia de un autoencoder clásico, el VAE no codifica cada entrada como un punto fijo, sino como una distribución. Esto permite generar nuevas muestras y construir un espacio latente más regular.
+
+Permite trabajar:
+
+- encoder probabilístico;
+- media;
+- varianza;
+- desviación estándar;
+- muestreo;
+- truco de reparametrización;
+- pérdida de reconstrucción;
+- divergencia KL;
+- generación;
+- regularización latente.
+
+**Idea clave:** un VAE aprende una distribución latente desde la cual se pueden generar nuevas muestras.
+
+---
+
+### 7. Guía práctica en Colab
+
+Este recurso organiza el flujo para implementar un autoencoder en Python: datos, arquitectura, entrenamiento, reconstrucción y evaluación.
+
+Es especialmente útil para pasar de la explicación conceptual a una práctica reproducible. Puede utilizarse como puente entre la clase teórica y el trabajo con código en Google Colab.
+
+Permite trabajar:
+
+- carga de datos;
+- preprocesamiento;
+- definición del encoder;
+- definición del decoder;
+- entrenamiento;
+- validación;
+- visualización de reconstrucciones;
+- análisis del error;
+- comparación de modelos.
+
+**Idea clave:** la teoría se consolida cuando el estudiante puede pasar del concepto al código.
+
+---
+
+### 8. Simulación fija 784 → z=32
+
+Esta simulación presenta una entrada fija de 784 dimensiones, como una imagen tipo 28 x 28, y un espacio latente de 32 dimensiones.
+
+Es útil para clase porque evita que demasiados controles distraigan del concepto principal. El foco está en mostrar la relación entre una entrada de alta dimensión, una compresión fuerte y una reconstrucción aproximada.
+
+Permite trabajar:
+
+- entrada 784;
+- imagen 28 x 28;
+- vector latente z=32;
+- compresión;
+- reconstrucción;
+- pérdida informacional;
+- representación compacta;
+- explicación visual estable.
+
+**Idea clave:** una imagen de 784 dimensiones puede comprimirse en un vector latente mucho menor y luego reconstruirse aproximadamente.
+
+---
+
+## 🗺️ Mapa conceptual del módulo
+
+```text
+Autoencoders
+│
+├── Entrada
+│   ├── Imagen
+│   ├── Señal
+│   ├── Texto vectorizado
+│   └── Datos tabulares
+│
+├── Encoder
+│   ├── Compresión
+│   ├── Extracción de características
+│   └── Proyección latente
+│
+├── Bottleneck
+│   ├── Reducción de dimensionalidad
+│   ├── Restricción informacional
+│   └── Representación comprimida
+│
+├── Espacio latente
+│   ├── Manifold
+│   ├── Embeddings
+│   ├── Vecindad semántica
+│   └── Interpolación
+│
+├── Decoder
+│   ├── Reconstrucción
+│   ├── Recuperación aproximada
+│   └── Generación
+│
+├── Función de pérdida
+│   ├── Error de reconstrucción
+│   ├── MSE
+│   ├── BCE
+│   └── Regularización
+│
+├── Variantes
+│   ├── Denoising autoencoder
+│   ├── Sparse autoencoder
+│   ├── Convolutional autoencoder
+│   └── Variational autoencoder
+│
+└── Aplicaciones
+    ├── Compresión
+    ├── Reducción de dimensionalidad
+    ├── Detección de anomalías
+    ├── Limpieza de ruido
+    ├── Representaciones latentes
+    └── Generación de datos
+```
+
+---
+
+## 📖 Guía rápida de uso
+
+### Para comenzar desde cero
+
+Usar primero el recurso de teoría completa.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_teoria_completa_autoencoders.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Teor%C3%ADa%20completa-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir teoría completa">
+</a>
+
+Este recurso permite presentar la intuición general: un autoencoder recibe datos, los comprime, los reconstruye y aprende a partir del error de reconstrucción.
+
+---
+
+### Para explicar espacio latente, manifold y embeddings
+
+Usar el recurso teórico específico.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_1_espacio_latente_manifold_embeddings_teoria.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Espacio%20latente-2563eb?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir espacio latente">
+</a>
+
+Flujo sugerido:
+
+```text
+Datos de alta dimensión
+        ↓
+Encoder
+        ↓
+Representación latente
+        ↓
+Manifold
+        ↓
+Vecindad semántica
+        ↓
+Reconstrucción o uso posterior
+```
+
+---
+
+### Para explicar aplicaciones concretas
+
+Usar el recurso de aplicaciones.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/01_2_aplicaciones_autoencoders.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Aplicaciones-0f766e?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir aplicaciones">
+</a>
+
+Este recurso permite conectar la arquitectura con usos reales en ciencia de datos, visión por computadora, anomalías, reducción de dimensionalidad y generación.
+
+---
+
+### Para explicar arquitectura y compresión
+
+Usar el recurso de arquitectura y bottleneck.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/02_simulacion_arquitectura_bottleneck.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Bottleneck-7c3aed?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir bottleneck">
+</a>
+
+Flujo sugerido:
+
+```text
+Entrada
+        ↓
+Encoder
+        ↓
+Bottleneck
+        ↓
+Decoder
+        ↓
+Reconstrucción
+        ↓
+Error de reconstrucción
+```
+
+---
+
+### Para explicar limpieza de ruido
+
+Usar el recurso de denoising autoencoder.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/04_simulacion_denoising_autoencoder.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Denoising-15803d?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir denoising">
+</a>
+
+Este recurso permite mostrar que el modelo aprende estructura subyacente y no solo copia la entrada.
+
+---
+
+### Para explicar detección de anomalías
+
+Usar el recurso de anomalías y error de reconstrucción.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/05_simulacion_anomalias_error_reconstruccion.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Anomal%C3%ADas-dc2626?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir anomalías">
+</a>
+
+Flujo sugerido:
+
+```text
+Entrenar con datos normales
+        ↓
+Reconstruir observaciones nuevas
+        ↓
+Medir error de reconstrucción
+        ↓
+Comparar contra umbral
+        ↓
+Clasificar como normal o anómalo
+```
+
+---
+
+### Para explicar VAE y generación
+
+Usar el recurso de Variational Autoencoder.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/06_variational_autoencoder_interactivo.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-VAE-9333ea?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir VAE">
+</a>
+
+Este recurso permite introducir la diferencia entre representar una entrada como punto fijo y representarla como distribución latente.
+
+---
+
+### Para cerrar con práctica
+
+Usar la guía de Colab.
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_guia_practica_colab_autoencoders.html">
+  <img src="https://img.shields.io/badge/Abrir%20HTML-Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white" alt="Abrir Colab">
+</a>
+
+---
+
+## 🧠 Desarrollo conceptual del tema
+
+### Qué es un autoencoder
+
+Un autoencoder es una red neuronal entrenada para reconstruir su propia entrada. Aunque parezca una tarea trivial, su valor aparece cuando se obliga al modelo a pasar por una representación interna comprimida o estructurada.
+
+```text
+Entrada original
+        ↓
+Encoder
+        ↓
+Espacio latente
+        ↓
+Decoder
+        ↓
+Reconstrucción
+```
+
+El objetivo no es copiar mecánicamente, sino aprender una transformación que conserve la información más relevante.
+
+---
+
+### Qué es el encoder
+
+El encoder es la parte de la red que transforma la entrada original en una representación más compacta.
+
+```text
+x → encoder(x) → z
+```
+
+Donde:
+
+- `x` es la entrada original;
+- `z` es la representación latente.
+
+---
+
+### Qué es el bottleneck
+
+El bottleneck es el cuello de botella de la arquitectura. Es la zona donde la información queda comprimida.
+
+Si el bottleneck es muy amplio, el modelo puede copiar. Si es muy estrecho, puede perder demasiada información.
+
+```text
+Entrada 784 dimensiones → Bottleneck 32 dimensiones
+```
+
+---
+
+### Qué es el decoder
+
+El decoder toma el vector latente y trata de reconstruir la entrada original.
+
+```text
+z → decoder(z) → x reconstruida
+```
+
+---
+
+### Qué es el error de reconstrucción
+
+El error de reconstrucción mide la diferencia entre la entrada original y la reconstrucción generada por el modelo.
+
+```text
+Error = diferencia entre x y x̂
+```
+
+Una reconstrucción buena tiene bajo error. Una reconstrucción mala tiene alto error.
+
+---
+
+### Qué es el espacio latente
+
+El espacio latente es el espacio donde viven las representaciones comprimidas aprendidas por el encoder.
+
+En lugar de trabajar con todos los datos originales, el modelo trabaja con una versión más compacta y organizada.
+
+```text
+Datos originales → Representación latente → Reconstrucción o análisis
+```
+
+---
+
+### Qué es un manifold
+
+Un manifold puede entenderse como una estructura de menor dimensión dentro de un espacio de mayor dimensión.
+
+Por ejemplo, aunque una imagen tenga miles de píxeles, las variaciones significativas pueden depender de menos factores: forma, orientación, intensidad, textura o clase.
+
+---
+
+### Qué es un embedding
+
+Un embedding es una representación vectorial de un objeto.
+
+En autoencoders, el vector latente puede funcionar como embedding porque resume información relevante de la entrada en pocas dimensiones.
+
+---
+
+### Qué es un denoising autoencoder
+
+Un denoising autoencoder se entrena con entradas ruidosas, pero intenta reconstruir versiones limpias.
+
+```text
+Entrada con ruido
+        ↓
+Autoencoder
+        ↓
+Reconstrucción limpia
+```
+
+Esto obliga al modelo a aprender patrones estructurales y no simplemente a copiar el ruido.
+
+---
+
+### Qué es la detección de anomalías con autoencoders
+
+Si un autoencoder fue entrenado con datos normales, aprende a reconstruir bien ese tipo de datos.
+
+Cuando recibe una observación anómala, puede reconstruirla mal. Esa diferencia se mide con el error de reconstrucción.
+
+```text
+Error bajo → observación normal
+Error alto → posible anomalía
+```
+
+---
+
+### Qué es un Variational Autoencoder
+
+Un Variational Autoencoder, o VAE, es una variante probabilística del autoencoder.
+
+En lugar de codificar una entrada como un único punto latente, la codifica como una distribución.
+
+```text
+Entrada
+        ↓
+Encoder
+        ↓
+Media y varianza
+        ↓
+Muestreo de z
+        ↓
+Decoder
+        ↓
+Reconstrucción o generación
+```
+
+Esto permite generar nuevas muestras desde el espacio latente.
+
+---
+
+## ✅ Preguntas orientadoras para estudiantes
+
+1. ¿Qué aprende realmente un autoencoder?
+2. ¿Por qué el bottleneck es importante?
+3. ¿Qué diferencia hay entre copiar la entrada y reconstruirla después de comprimirla?
+4. ¿Qué representa el espacio latente?
+5. ¿Cómo se relacionan espacio latente, manifold y embeddings?
+6. ¿Por qué un denoising autoencoder puede limpiar ruido?
+7. ¿Cómo se usa el error de reconstrucción para detectar anomalías?
+8. ¿Qué cambia cuando pasamos de un autoencoder clásico a un VAE?
+9. ¿Por qué el VAE introduce una dimensión probabilística?
+10. ¿Qué aplicaciones prácticas justifican estudiar autoencoders?
+11. ¿Qué ocurre si el espacio latente es demasiado grande?
+12. ¿Qué ocurre si el espacio latente es demasiado pequeño?
+13. ¿Cómo se interpreta un vector latente?
+14. ¿Por qué la reconstrucción perfecta no siempre es el objetivo más importante?
+15. ¿Cómo se puede usar un autoencoder para reducción de dimensionalidad?
+
+---
+
+## 🧾 Síntesis final
+
+Un autoencoder puede entenderse como una red que aprende una representación comprimida de los datos. El encoder transforma la entrada en un espacio latente, el bottleneck obliga a sintetizar información y el decoder intenta reconstruir la entrada original.
+
+La potencia del modelo no está solo en reconstruir, sino en aprender representaciones útiles. Por eso los autoencoders son relevantes para reducción de dimensionalidad, limpieza de ruido, detección de anomalías, embeddings y modelos generativos como los Variational Autoencoders.
+
+---
+
+**Material elaborado por el profesor Sergio Gevatschnaider**
