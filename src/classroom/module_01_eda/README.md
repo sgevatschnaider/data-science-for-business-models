@@ -532,9 +532,7 @@ Recalcular centroides
 Repetir
         ↓
 Obtener clusters finales
-```
 
----
 
 ### Para consolidar vocabulario
 
@@ -591,15 +589,12 @@ Por eso, K-Means puede entenderse como un algoritmo que busca formar `K` grupos 
 
 El algoritmo sigue una lógica iterativa:
 
-```text
+
 1. Elegir la cantidad de clusters K.
 2. Ubicar centroides iniciales.
 3. Asignar cada punto al centroide más cercano.
 4. Recalcular cada centroide como promedio de los puntos asignados.
 5. Repetir los pasos 3 y 4 hasta que los centroides dejen de cambiar de manera significativa.
-```
-
----
 
 ### Fórmula de asignación
 
@@ -609,7 +604,7 @@ Cada punto se asigna al cluster cuyo centroide esté más cerca.
 Asignar xᵢ al cluster Cⱼ si:
 
 d(xᵢ, μⱼ) ≤ d(xᵢ, μₖ) para todo k
-```
+
 
 Donde:
 
@@ -635,15 +630,14 @@ Donde:
 * `|Cⱼ|` es la cantidad de puntos dentro del cluster.
 * `Σ xᵢ` representa la suma de los puntos asignados.
 
----
+
 
 ### Función objetivo e inercia
 
 K-Means busca minimizar la suma de las distancias cuadradas entre cada punto y el centroide de su cluster.
 
-```text
+
 Inercia = Σ Σ ||xᵢ - μⱼ||²
-```
 
 La inercia mide la compactación interna de los clusters.
 
@@ -663,7 +657,7 @@ La idea consiste en probar varios valores de `K` y observar cómo disminuye la i
 
 Ese punto se conoce como **codo**.
 
-```text
+
 K aumenta
         ↓
 La inercia baja
@@ -673,17 +667,15 @@ La mejora empieza a ser menor
 Aparece el codo
         ↓
 Se elige un K razonable
-```
 
----
 
 ### Silhouette score
 
 El silhouette score mide qué tan bien ubicado está un punto dentro de su cluster en comparación con los clusters vecinos.
 
-```text
+
 s(i) = (b(i) - a(i)) / max(a(i), b(i))
-```
+
 
 Donde:
 
@@ -963,7 +955,7 @@ El glosario permite que el estudiante conecte términos técnicos con intuicione
 
 ##  Mapa conceptual del bloque
 
-```text
+
 Clustering
 │
 ├── 1. Aprendizaje automático
@@ -1019,11 +1011,9 @@ Clustering
     ├── Visualización
     ├── Validación
     └── Decisión práctica
-```
 
----
 
-## 🔎 Guía rápida de lectura
+##  Guía rápida de lectura
 
 ### Para comenzar desde cero
 
@@ -1049,7 +1039,7 @@ Dentro del laboratorio principal, trabajar especialmente:
 
 La explicación puede seguir este flujo:
 
-```text
+
 Elegir K
         ↓
 Inicializar centroides
@@ -1061,7 +1051,7 @@ Recalcular centroides
 Repetir
         ↓
 Obtener clusters finales
-```
+
 
 ---
 
@@ -1090,9 +1080,7 @@ Repetir fusiones
 Construir dendrograma
         ↓
 Cortar el árbol para definir clusters
-```
 
----
 
 ### Para repasar y evaluar
 
@@ -1106,7 +1094,7 @@ El glosario sirve como material de consulta y repaso conceptual.
 
 ---
 
-## 🧩 Comparación entre K-Means y Clustering Jerárquico
+##  Comparación entre K-Means y Clustering Jerárquico
 
 | Criterio | K-Means | Clustering jerárquico |
 | :--- | :--- | :--- |
@@ -1124,7 +1112,7 @@ El glosario sirve como material de consulta y repaso conceptual.
 
 ---
 
-## 🧪 Preguntas guía para trabajar en clase
+##  Preguntas guía para trabajar en clase
 
 1. ¿Qué significa que el clustering sea una técnica de aprendizaje no supervisado?
 2. ¿Cuál es la diferencia entre clasificación y clustering?
@@ -1149,7 +1137,7 @@ El glosario sirve como material de consulta y repaso conceptual.
 
 ---
 
-## 🧑‍🏫 Uso sugerido para una clase
+##  Uso sugerido para una clase
 
 | Momento de la clase | Recurso sugerido | Actividad |
 | :--- | :--- | :--- |
@@ -1163,7 +1151,7 @@ El glosario sirve como material de consulta y repaso conceptual.
 
 ---
 
-## 🧩 Relación entre los recursos
+##  Relación entre los recursos
 
 | Concepto | Recurso principal | Recurso complementario |
 | :--- | :--- | :--- |
@@ -1224,7 +1212,7 @@ El escalado evita que una variable domine artificialmente el cálculo de distanc
 
 ---
 
-## 📌 Tabla de links directos
+##  Tabla de links directos
 
 | Archivo | Abrir en HTML | Ver código en GitHub |
 | :--- | :---: | :---: |
@@ -1234,13 +1222,13 @@ El escalado evita que una variable domine artificialmente el cálculo de distanc
 
 ---
 
-# 📘 Parcial Ciencia de Datos · Banco de Preguntas y Glosario Interactivo
+#  Parcial Ciencia de Datos · Banco de Preguntas y Glosario Interactivo
 
 > Material organizado para estudiar, repasar y consolidar los conceptos principales de Ciencia de Datos mediante un **banco de preguntas** y un **glosario interactivo**.
 
 ---
 
-## 🎯 Objetivo general del bloque
+##  Objetivo general del bloque
 
 Este bloque reúne dos recursos centrales para preparar el parcial de Ciencia de Datos:
 
@@ -1261,7 +1249,7 @@ La finalidad es que el estudiante no solo memorice términos, sino que pueda:
 
 ## 🧭 Secuencia didáctica sugerida
 
-```text
+
 1. Revisar el glosario
         ↓
 2. Identificar conceptos centrales
@@ -1273,11 +1261,9 @@ La finalidad es que el estudiante no solo memorice términos, sino que pueda:
 5. Reforzar conceptos débiles
         ↓
 6. Repasar antes del parcial
-```
 
----
 
-## 📚 Recursos interactivos
+##  Recursos interactivos
 
 | Orden | Recurso | Propósito didáctico | Acceso |
 | :---: | :--- | :--- | :---: |
@@ -1380,11 +1366,9 @@ Parcial Ciencia de Datos
     ├── Respuestas desarrolladas
     ├── Comparación de conceptos
     └── Repaso final
-```
 
----
 
-## 🔎 Guía rápida de uso
+##  Guía rápida de uso
 
 ### Para estudiar desde cero
 
@@ -1401,7 +1385,7 @@ Primero conviene revisar los términos principales y luego practicar las pregunt
 
 La secuencia recomendada es:
 
-```text
+
 Leer definición
         ↓
 Explicar con tus palabras
@@ -1411,9 +1395,7 @@ Resolver una pregunta relacionada
 Comparar con el glosario
         ↓
 Corregir y ampliar la respuesta
-```
 
----
 
 ### Para repasar el día anterior
 
@@ -1425,11 +1407,9 @@ Usar el siguiente recorrido:
 4. Repasar diferencias entre modelos
 5. Revisar métricas de evaluación
 6. Cerrar con el mapa conceptual
-```
 
----
 
-## 🧩 Relación entre los recursos
+##  Relación entre los recursos
 
 | Necesidad de estudio | Recurso recomendado | Uso sugerido |
 | :--- | :--- | :--- |
@@ -1443,7 +1423,7 @@ Usar el siguiente recorrido:
 
 ---
 
-## 🧪 Preguntas guía para trabajar en clase
+##  Preguntas guía para trabajar en clase
 
 1. ¿Qué diferencia hay entre datos, información y conocimiento?
 2. ¿Qué es un dataset?
@@ -1480,7 +1460,7 @@ Usar el siguiente recorrido:
 | Estudio autónomo | Glosario | Repasar definiciones antes del examen. |
 | Preparación final | Banco de preguntas | Simular respuestas de parcial. |
 
----
+
 
 ## Estrategia de estudio recomendada
 
@@ -1496,9 +1476,7 @@ Definición
 Ejemplo
         ↓
 Relación con otros conceptos
-```
 
----
 
 ### Paso 2 · Resolución del banco de preguntas
 
@@ -1514,9 +1492,7 @@ Comparación con el material
 Corrección
         ↓
 Versión final
-```
 
----
 
 ### Paso 3 · Repaso cruzado
 
@@ -1552,10 +1528,9 @@ Relacionar cada pregunta con uno o más términos del glosario.
 
 Los archivos incluidos en este bloque son:
 
-```text
 Banco_preguntas_parcial_ciencia_datos.html
 Glosario_parcial_ciencia_datos.html
-```
+
 Tomé el modelo que pasaste y lo adapté al bloque de **Clustering Jerárquico**, dejando los botones directos a **HTML renderizado**, **código en GitHub** y **Google Colab**, con una estructura más parecida al ejemplo que compartiste. 
 
 
@@ -1799,7 +1774,7 @@ Colab permite pasar de la intuición visual a la implementación práctica.
 
 ## Mapa conceptual del módulo
 
-```text
+
 Clustering Jerárquico
 │
 ├── 1. Aprendizaje no supervisado
@@ -1852,9 +1827,6 @@ Clustering Jerárquico
     ├── K fijo vs corte posterior
     ├── Plano de clusters vs dendrograma
     └── Escalabilidad e interpretación
-```
-
----
 
 ## Guía rápida de lectura
 
@@ -1876,7 +1848,7 @@ Usar después:
 
 La explicación puede seguir este flujo:
 
-```text
+
 Cada punto es un cluster
         ↓
 Calcular distancias
@@ -1890,9 +1862,7 @@ Construir el dendrograma
 Cortar el árbol
         ↓
 Obtener clusters finales
-```
 
----
 
 ### Para repasar y evaluar
 
@@ -1936,29 +1906,29 @@ En la versión aglomerativa, el algoritmo comienza con cada observación como un
 
 Se llama jerárquico porque permite ver distintos niveles de agrupamiento.
 
-```text
+
 Nivel bajo  → muchos grupos pequeños
 Nivel medio → grupos principales
 Nivel alto  → pocos grupos grandes
-```
+
 
 El dendrograma permite observar esos niveles y decidir cuál es el nivel más útil para el análisis.
 
----
+
 
 ### Qué es una fusión
 
 Una fusión es el momento en que el algoritmo une dos elementos.
 
-```text
+
 punto + punto
 punto + cluster
 cluster + cluster
-```
+
 
 Cada fusión crea un nuevo cluster y reduce en uno la cantidad total de clusters.
 
----
+
 
 ### Qué es la matriz linkage
 
@@ -1990,10 +1960,10 @@ y formaron un nuevo cluster con 2 observaciones.
 
 El dendrograma es el gráfico que representa visualmente la matriz linkage.
 
-```text
+
 Fusión baja  → grupos muy parecidos
 Fusión alta  → grupos más diferentes
-```
+
 
 El dendrograma permite observar qué observaciones se unen primero, qué subgrupos aparecen y qué grandes ramas se mantienen separadas hasta el final.
 
@@ -2165,7 +2135,7 @@ Su valor pedagógico está en que combina:
 * análisis crítico de limitaciones;
 * implementación práctica en Python.
 
-  ## 🎯 Objetivo general del bloque
+  ##  Objetivo general del bloque
 
 Este conjunto de recursos tiene como objetivo comprender la **regresión lineal** como uno de los modelos fundamentales del aprendizaje automático supervisado y, al mismo tiempo, utilizarla como base conceptual para introducir la estructura de una **neurona artificial**.
 
@@ -2175,9 +2145,9 @@ La finalidad es que el estudiante pueda comprender que la regresión lineal no e
 
 ---
 
-## 🧭 Secuencia didáctica sugerida
+##  Secuencia didáctica sugerida
 
-```text
+
 1. Índice general del paquete
         ↓
 2. Introducción a regresión lineal
@@ -2189,9 +2159,6 @@ La finalidad es que el estudiante pueda comprender que la regresión lineal no e
 5. Glosario completo de regresión lineal
         ↓
 6. Cuestionario interactivo de integración
-```
-
----
 
 ## 📚 Recursos interactivos
 
@@ -2328,9 +2295,9 @@ Este recurso introduce la regresión lineal como modelo supervisado orientado a 
 
 La idea central es comprender que el modelo intenta representar una relación entre variables mediante una función lineal. En el caso más simple, esa función se expresa como una recta:
 
-```text
+
 ŷ = wx + b
-```
+
 
 Donde:
 
@@ -2381,9 +2348,9 @@ z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b
 
 La diferencia central es que, en una neurona artificial, luego puede aplicarse una función de activación:
 
-```text
+
 a = f(z)
-```
+
 
 Esto permite pasar de un modelo puramente lineal a modelos capaces de representar relaciones no lineales cuando se combinan muchas neuronas y capas.
 
@@ -2460,9 +2427,9 @@ Permite trabajar:
 
 ---
 
-## 🗺️ Mapa conceptual del módulo
+##  Mapa conceptual del módulo
 
-```text
+
 Regresión lineal
 │
 ├── 1. Modelo lineal
@@ -2516,11 +2483,9 @@ Regresión lineal
     ├── Preguntas desarrolladas
     ├── Interpretación conceptual
     └── Aplicación en clase
-```
 
----
 
-## 📖 Guía rápida de uso
+##  Guía rápida de uso
 
 ### Para comenzar el recorrido
 
@@ -2544,7 +2509,7 @@ Usar el recurso introductorio de regresión lineal.
 
 Flujo sugerido:
 
-```text
+
 Variable de entrada
         ↓
 Peso
@@ -2554,9 +2519,7 @@ Sesgo
 Predicción
         ↓
 Comparación con el valor real
-```
 
----
 
 ### Para explicar entrenamiento y validación
 
@@ -2580,7 +2543,7 @@ Usar el recurso de regresión lineal y neurona artificial.
 
 Flujo sugerido:
 
-```text
+
 Regresión lineal
         ↓
 Combinación lineal
@@ -2590,9 +2553,7 @@ Entradas, pesos y sesgo
 Neurona artificial
         ↓
 Función de activación
-```
 
----
 
 ### Para repasar conceptos clave
 
@@ -2673,13 +2634,13 @@ Una predicción es el valor que genera el modelo a partir de una entrada.
 
 El modelo recibe `x`, aplica la ecuación aprendida y produce `ŷ`.
 
-```text
+
 Entrada x
         ↓
 Modelo lineal
         ↓
 Predicción ŷ
-```
+
 
 La predicción luego se compara con el valor real `y` para calcular el error.
 
@@ -2689,9 +2650,9 @@ La predicción luego se compara con el valor real `y` para calcular el error.
 
 El error mide la diferencia entre el valor real y el valor predicho.
 
-```text
+
 error = y - ŷ
-```
+
 
 Si el error es grande, el modelo está prediciendo mal. Si el error es pequeño, el modelo está más cerca del valor real.
 
@@ -2715,10 +2676,10 @@ El descenso por gradiente es un método de optimización que permite ajustar los
 
 La idea es modificar los pesos y el sesgo en la dirección que disminuye el error.
 
-```text
+
 w ← w - η · ∂L/∂w
 b ← b - η · ∂L/∂b
-```
+
 
 Donde:
 
@@ -2735,7 +2696,7 @@ Entrenar un modelo significa ajustar sus parámetros usando datos conocidos.
 
 En regresión lineal, el entrenamiento consiste en encontrar valores adecuados para `w` y `b` de modo que las predicciones se acerquen lo más posible a los valores reales.
 
-```text
+
 Datos
         ↓
 Predicción
@@ -2747,9 +2708,7 @@ Pérdida
 Actualización de parámetros
         ↓
 Nueva predicción
-```
 
----
 
 ### Qué es validación
 
@@ -2757,12 +2716,10 @@ La validación consiste en evaluar el modelo con datos que no fueron usados dire
 
 Esto permite analizar si el modelo aprendió una relación general o si simplemente se ajustó demasiado a los datos de entrenamiento.
 
-```text
+
 Datos de entrenamiento → ajustar el modelo
 Datos de validación    → evaluar generalización
-```
 
----
 
 ### Qué es overfitting
 
@@ -2880,7 +2837,7 @@ La finalidad es que el estudiante pueda comprender que una red neuronal no es un
 
 ## Secuencia didáctica sugerida
 
-```text
+
 1. Teoría completa de redes neuronales
         ↓
 2. Perceptrón y fronteras de decisión
@@ -2897,7 +2854,7 @@ La finalidad es que el estudiante pueda comprender que una red neuronal no es un
         ↓
 8. Actividad integrada
 
-## 📚 Recursos interactivos
+##  Recursos interactivos
 
 | Orden | Recurso | Propósito didáctico | Abrir recurso |
 | :---: | :--- | :--- | :---: |
@@ -2914,7 +2871,7 @@ La finalidad es que el estudiante pueda comprender que una red neuronal no es un
 | **7.1** | **Notebook ejecutable en Google Colab** | Permite ejecutar la práctica completa con Python, TensorFlow, MNIST, autoencoder básico, visualizaciones, espacio latente y detección de anomalías. | [![Abrir Colab](https://img.shields.io/badge/Abrir%20Colab-Notebook%20ejecutable-f9ab00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/drive/1xhbUTI9ERdXGWIQJ7a9mnlnlx5bbqPDj?usp=sharing) |
 | **8** | **Autoencoder fijo 784 → z=32** | Versión fija para clase: entrada 784, espacio latente 32 y visualización estable de compresión. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Fijo%20784%20z32-0f766e?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/08_Simulacion_autoencoder_fija_entrada_784_z32.html) |
 
-## 🔗 Acceso directo a los recursos
+##  Acceso directo a los recursos
 
 <p align="center">
   <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/00_indice_clase_redes_neuronales.html">
@@ -3166,7 +3123,7 @@ Permite trabajar:
 
 ## 🗺️ Mapa conceptual del módulo
 
-```text
+
 Redes Neuronales
 │
 ├── 1. Neurona artificial
@@ -3227,11 +3184,9 @@ Redes Neuronales
     ├── Comparación de métodos
     ├── Explicación conceptual
     └── Aplicación en clase
-```
 
----
 
-## 📖 Guía rápida de uso
+##  Guía rápida de uso
 
 ### Para comenzar desde cero
 
@@ -3255,7 +3210,7 @@ Usar el recurso de perceptrón y fronteras de decisión.
 
 Flujo sugerido:
 
-```text
+
 Entradas
         ↓
 Pesos y sesgo
@@ -3267,9 +3222,7 @@ Activación
 Clasificación
         ↓
 Frontera de decisión
-```
 
----
 
 ### Para explicar por qué una red necesita no linealidad
 
@@ -3293,7 +3246,7 @@ Usar el recurso de descenso por gradiente.
 
 Flujo sugerido:
 
-```text
+
 Predicción
         ↓
 Error
@@ -3305,9 +3258,7 @@ Gradiente
 Actualización
         ↓
 Nueva predicción
-```
 
----
 
 ### Para explicar el ciclo completo de entrenamiento
 
@@ -3347,7 +3298,7 @@ Usar la actividad integrada.
 
 ---
 
-## 🧠 Desarrollo conceptual del tema
+##  Desarrollo conceptual del tema
 
 ### Qué es una red neuronal artificial
 
@@ -3420,7 +3371,7 @@ El perceptrón es una de las formas más simples de red neuronal. Puede entender
 
 Recibe entradas, calcula una combinación lineal, aplica una función de activación y decide entre dos clases.
 
-```text
+
 Entrada
    ↓
 Suma ponderada
@@ -3428,9 +3379,7 @@ Suma ponderada
 Función de activación
    ↓
 Clase 0 o clase 1
-```
 
----
 
 ### Qué es una frontera de decisión
 
@@ -3493,7 +3442,7 @@ Donde:
 
 Forward propagation es el proceso mediante el cual la información avanza desde las entradas hasta la salida de la red.
 
-```text
+
 Entrada
    ↓
 Capa oculta
@@ -3503,7 +3452,7 @@ Activación
 Capa de salida
    ↓
 Predicción
-```
+
 
 Durante este proceso, la red calcula una predicción usando los pesos y sesgos actuales.
 
