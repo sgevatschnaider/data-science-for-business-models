@@ -2237,7 +2237,7 @@ La finalidad es que el estudiante pueda comprender que la regresión lineal no e
 
 ---
 
-## 🔗 Acceso directo a los recursos
+##  Acceso directo a los recursos
 
 <p align="center">
   <a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Regresion_lineal_indice.html">
@@ -2579,7 +2579,7 @@ Este recurso permite verificar comprensión conceptual y preparar al estudiante 
 
 ---
 
-## 🧠 Desarrollo conceptual del tema
+##  Desarrollo conceptual del tema
 
 ### Qué es la regresión lineal
 
@@ -3119,12 +3119,12 @@ Permite trabajar:
 
 **Idea clave:** el aprendizaje se consolida cuando el estudiante puede explicar el flujo completo de una red neuronal.
 
----
-
-## 🗺️ Mapa conceptual del módulo
 
 
-Redes Neuronales
+
+<h2>🗺️ Mapa conceptual del módulo</h2>
+
+<pre><code>Redes Neuronales
 │
 ├── 1. Neurona artificial
 │   ├── Entradas
@@ -3183,7 +3183,9 @@ Redes Neuronales
     ├── Diagnóstico de errores
     ├── Comparación de métodos
     ├── Explicación conceptual
-    └── Aplicación en clase
+    └── Aplicación en clase</code></pre>
+
+
 
 
 ##  Guía rápida de uso
