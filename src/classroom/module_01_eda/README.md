@@ -4283,6 +4283,360 @@ La potencia del modelo no está solo en reconstruir, sino en aprender representa
 
 El bloque se completa con el notebook de Google Colab, donde el estudiante puede ejecutar código real, entrenar un modelo, visualizar reconstrucciones, explorar el espacio latente y aplicar el error de reconstrucción a un problema de anomalías.
 
+
+## RNN y LSTM: Redes Recurrentes, Memoria y Secuencias
+
+<div align="center">
+
+<a href="https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/4030c5a783c2ebb69a35a8924fc49096aff00e22/src/classroom/module_01_eda/html/RNN_LSTM.html">
+  <img src="https://img.shields.io/badge/RNN%20y%20LSTM-Clase%20Interactiva-2563eb?style=for-the-badge&logo=tensorflow&logoColor=white" alt="RNN y LSTM Clase Interactiva">
+</a>
+
+<a href="https://github.com/sgevatschnaider/data-science-for-business-models/blob/4030c5a783c2ebb69a35a8924fc49096aff00e22/src/classroom/module_01_eda/html/RNN_LSTM.html">
+  <img src="https://img.shields.io/badge/Ver%20Archivo-GitHub-181717?style=for-the-badge&logo=github" alt="Ver archivo en GitHub">
+</a>
+
+</div>
+
+<br>
+
+### Redes Recurrentes, Memoria Temporal y Modelos Secuenciales
+
+Esta sección presenta un recurso interactivo completo para estudiar **redes neuronales recurrentes**, con especial foco en **RNN simples** y **LSTM**. El recorrido está diseñado para comprender por qué las secuencias requieren modelos capaces de conservar contexto, cómo se actualiza el estado oculto en una red recurrente y de qué manera las LSTM introducen mecanismos de memoria más estables mediante compuertas.
+
+El material combina teoría, visualizaciones, simulaciones interactivas y actividades de cierre. La clase parte del problema de los **datos secuenciales**, avanza hacia la formulación de la **RNN simple**, analiza el problema del **vanishing gradient**, introduce la arquitectura **LSTM** y finalmente compara estas redes con **GRU** y **Transformers**. Además, incluye una práctica sugerida en Colab, errores frecuentes, quiz de comprensión y checklist técnico.
+
+| Recurso | Acceso |
+|---|---|
+| **RNN y LSTM: índice completo, teoría y simulaciones interactivas** <br><br> <details><summary><strong>Resumen:</strong> <em>(haz clic para expandir/colapsar)</em></summary><p>Clase interactiva autocontenida sobre redes neuronales recurrentes y LSTM. El recurso reúne fundamentos de datos secuenciales, RNN simple, despliegue temporal, Backpropagation Through Time, vanishing gradient, exploding gradient, estado oculto, estado de celda, compuertas LSTM, comparación con GRU y Transformers, práctica guiada en Colab, errores frecuentes y evaluación mediante quiz. Incluye simulaciones para visualizar cómo una RNN procesa una secuencia paso a paso, cómo se pierde memoria en secuencias largas y cómo las compuertas LSTM regulan el flujo de información.</p></details> | [![Ver Lección Interactiva](https://img.shields.io/badge/Ver%20Lección-Interactiva-9cf?style=for-the-badge&logo=html5)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/4030c5a783c2ebb69a35a8924fc49096aff00e22/src/classroom/module_01_eda/html/RNN_LSTM.html) <br><br> [![Ver en GitHub](https://img.shields.io/badge/Ver%20Archivo-GitHub-181717?style=for-the-badge&logo=github)](https://github.com/sgevatschnaider/data-science-for-business-models/blob/4030c5a783c2ebb69a35a8924fc49096aff00e22/src/classroom/module_01_eda/html/RNN_LSTM.html) |
+
 ---
 
-**Material elaborado por el profesor Sergio Gevatschnaider**
+## Mapa general del recorrido
+
+| Etapa | Eje conceptual | Objetivo de aprendizaje |
+|---|---|---|
+| **1** | Datos secuenciales | Comprender por qué el orden temporal modifica el significado de los datos. |
+| **2** | Limitaciones de redes densas | Identificar por qué una red feedforward tradicional no conserva memoria explícita del pasado. |
+| **3** | RNN simple | Entender cómo una red recurrente combina la entrada actual con el estado oculto previo. |
+| **4** | Estado oculto | Interpretar `h_t` como una memoria comprimida y entrenable de la secuencia procesada. |
+| **5** | Despliegue temporal | Visualizar una RNN como una misma celda reutilizada a lo largo de varios pasos temporales. |
+| **6** | Backpropagation Through Time | Comprender cómo el error se propaga hacia atrás en una secuencia. |
+| **7** | Vanishing y exploding gradient | Analizar por qué las RNN simples tienen dificultades para aprender dependencias largas. |
+| **8** | LSTM | Introducir una arquitectura con memoria regulada mediante estado de celda y compuertas. |
+| **9** | Compuertas LSTM | Explicar forget gate, input gate y output gate como mecanismos de control de información. |
+| **10** | Comparación de arquitecturas | Comparar RNN, LSTM, GRU y Transformers según memoria, costo e interpretación. |
+| **11** | Práctica aplicada | Conectar la intuición visual con tensores, ventanas temporales y entrenamiento en Colab. |
+| **12** | Evaluación y cierre | Consolidar conceptos mediante quiz, errores frecuentes y checklist técnico. |
+
+---
+
+## Mapa conceptual del módulo
+
+<details>
+<summary><strong>Ver mapa conceptual completo</strong> <em>(haz clic para expandir/colapsar)</em></summary>
+
+<pre><code>RNN y LSTM
+│
+├── 1. Datos secuenciales
+│   ├── Orden temporal
+│   ├── Dependencia entre observaciones
+│   ├── Contexto acumulado
+│   ├── Series temporales
+│   ├── Texto
+│   ├── Señales
+│   └── Forecasting
+│
+├── 2. Problema de las redes densas
+│   ├── Entrada independiente
+│   ├── Ausencia de memoria explícita
+│   ├── Pérdida del orden
+│   ├── Dificultad con contexto largo
+│   └── Necesidad de modelos secuenciales
+│
+├── 3. RNN simple
+│   ├── Entrada actual x_t
+│   ├── Estado oculto anterior h_(t-1)
+│   ├── Nuevo estado oculto h_t
+│   ├── Pesos compartidos
+│   ├── Función de activación tanh
+│   └── Salida y_t
+│
+├── 4. Memoria recurrente
+│   ├── Memoria comprimida
+│   ├── Contexto acumulado
+│   ├── Representación entrenable
+│   ├── Actualización paso a paso
+│   └── Dependencia del historial
+│
+├── 5. Despliegue temporal
+│   ├── Celda recurrente repetida
+│   ├── Parámetros compartidos
+│   ├── Secuencia de estados
+│   ├── Lectura izquierda a derecha
+│   └── Relación entre tiempo y profundidad
+│
+├── 6. Backpropagation Through Time
+│   ├── Propagación del error
+│   ├── Gradientes temporales
+│   ├── Dependencias cortas
+│   ├── Dependencias largas
+│   └── Sensibilidad al número de pasos
+│
+├── 7. Problemas de gradiente
+│   ├── Vanishing gradient
+│   │   ├── Gradiente muy pequeño
+│   │   ├── Pérdida de señal lejana
+│   │   └── Dificultad para aprender contexto largo
+│   │
+│   └── Exploding gradient
+│       ├── Gradiente excesivo
+│       ├── Inestabilidad del entrenamiento
+│       └── Actualizaciones descontroladas
+│
+├── 8. LSTM
+│   ├── Memoria regulada
+│   ├── Estado oculto h_t
+│   ├── Estado de celda C_t
+│   ├── Información pasada
+│   ├── Información nueva
+│   └── Salida controlada
+│
+├── 9. Compuertas LSTM
+│   ├── Forget gate
+│   │   ├── Decide qué olvidar
+│   │   └── Conserva parte de C_(t-1)
+│   │
+│   ├── Input gate
+│   │   ├── Decide qué incorporar
+│   │   └── Regula la memoria candidata
+│   │
+│   └── Output gate
+│       ├── Decide qué mostrar
+│       └── Produce el estado oculto h_t
+│
+├── 10. Comparación de arquitecturas
+│   ├── RNN simple
+│   │   ├── Modelo introductorio
+│   │   └── Dificultad con dependencias largas
+│   │
+│   ├── LSTM
+│   │   ├── Mejor memoria temporal
+│   │   └── Mayor costo computacional
+│   │
+│   ├── GRU
+│   │   ├── Alternativa más compacta
+│   │   └── Menos parámetros que LSTM
+│   │
+│   └── Transformers
+│       ├── Atención
+│       ├── Paralelización
+│       └── Modelado de relaciones largas
+│
+├── 11. Práctica aplicada
+│   ├── Secuencia sintética
+│   ├── Ventanas temporales
+│   ├── Forma de tensores
+│   ├── Entrenamiento de RNN
+│   ├── Entrenamiento de LSTM
+│   └── Comparación de resultados
+│
+└── 12. Integración didáctica
+    ├── Simulación paso a paso
+    ├── Visualización de memoria
+    ├── Diagnóstico de errores
+    ├── Quiz de comprensión
+    ├── Checklist técnico
+    └── Aplicación en clase</code></pre>
+
+</details>
+
+---
+
+## Síntesis conceptual
+
+Una **red neuronal recurrente** permite procesar secuencias porque incorpora una forma de memoria. A diferencia de una red densa tradicional, que trata cada entrada como si fuera independiente, una RNN combina la observación actual con un estado oculto que resume información previa. Esta arquitectura resulta útil para tareas donde el orden importa, como texto, series temporales, señales, música, trayectorias o predicción de eventos futuros.
+
+Sin embargo, la RNN simple tiene una limitación importante: cuando la secuencia es larga, la señal de aprendizaje puede debilitarse durante la retropropagación. Este fenómeno, conocido como **vanishing gradient**, dificulta que el modelo aprenda relaciones entre elementos alejados en el tiempo. También puede aparecer el problema contrario, el **exploding gradient**, cuando las actualizaciones se vuelven inestables.
+
+La arquitectura **LSTM** fue diseñada para mitigar este problema mediante una memoria más controlada. En lugar de depender únicamente del estado oculto, introduce un **estado de celda** que funciona como una vía de memoria más estable. Las compuertas LSTM deciden qué información olvidar, qué información incorporar y qué parte de la memoria exponer como salida. Por eso, las LSTM son especialmente relevantes para comprender cómo los modelos secuenciales administran información pasada y presente.
+
+---
+
+## Simulaciones incluidas
+
+| Simulación | Concepto central | Qué permite observar |
+|---|---|---|
+| **RNN paso a paso** | Estado oculto y memoria acumulada | Cómo la red procesa una secuencia de izquierda a derecha y actualiza su memoria en cada paso. |
+| **Memoria y vanishing gradient** | Pérdida de señal en secuencias largas | Cómo la información inicial se debilita más rápido en una RNN simple que en una memoria regulada. |
+| **Compuertas LSTM** | Forget gate, input gate y output gate | Cómo las compuertas modifican el estado de celda y la salida del modelo. |
+
+---
+
+## Fórmulas principales
+
+### RNN simple
+
+<pre><code>h_t = tanh(W_xh · x_t + W_hh · h_(t-1) + b_h)
+
+y_t = W_hy · h_t + b_y</code></pre>
+
+| Elemento | Significado | Interpretación |
+|---|---|---|
+| `x_t` | Entrada en el tiempo `t` | Lo que el modelo observa en el paso actual. |
+| `h_(t-1)` | Estado oculto anterior | La memoria acumulada hasta el paso previo. |
+| `h_t` | Nuevo estado oculto | El nuevo resumen de la secuencia. |
+| `W_xh` | Pesos entrada-estado | Determinan cómo la entrada modifica la memoria. |
+| `W_hh` | Pesos recurrentes | Determinan cómo el pasado influye en el presente. |
+| `y_t` | Salida | Predicción o representación generada por la red. |
+
+### LSTM
+
+<pre><code>f_t = σ(W_f · [h_(t-1), x_t] + b_f)
+
+i_t = σ(W_i · [h_(t-1), x_t] + b_i)
+
+Ĉ_t = tanh(W_c · [h_(t-1), x_t] + b_c)
+
+C_t = f_t * C_(t-1) + i_t * Ĉ_t
+
+o_t = σ(W_o · [h_(t-1), x_t] + b_o)
+
+h_t = o_t * tanh(C_t)</code></pre>
+
+| Compuerta | Pregunta conceptual | Función |
+|---|---|---|
+| **Forget gate** | ¿Qué parte del pasado conviene conservar? | Controla cuánto del estado de celda anterior se mantiene. |
+| **Input gate** | ¿Qué nueva información debe incorporarse? | Regula cuánto de la memoria candidata entra al estado de celda. |
+| **Output gate** | ¿Qué parte de la memoria debe mostrarse? | Determina cuánto del estado de celda se transforma en salida. |
+
+---
+
+## Tipos de tareas secuenciales
+
+| Tipo de tarea | Descripción | Ejemplo |
+|---|---|---|
+| **One-to-one** | Una entrada produce una salida. | Clasificación tradicional. |
+| **Many-to-one** | Varias entradas secuenciales producen una salida final. | Clasificación de sentimiento de una frase. |
+| **One-to-many** | Una entrada inicial produce una secuencia. | Generación de texto o música. |
+| **Many-to-many** | Una secuencia produce otra secuencia. | Traducción automática o etiquetado secuencial. |
+| **Forecasting** | Una ventana pasada predice valores futuros. | Predicción de demanda, precios o señales. |
+
+---
+
+## Comparación entre RNN, LSTM, GRU y Transformers
+
+| Arquitectura | Fortaleza | Limitación | Uso típico |
+|---|---|---|---|
+| **RNN simple** | Introduce memoria temporal de manera clara y simple. | Tiene dificultades con dependencias largas. | Explicación introductoria y secuencias cortas. |
+| **LSTM** | Maneja mejor dependencias largas mediante memoria regulada. | Tiene más parámetros y mayor costo computacional. | Texto, series temporales, señales y predicción secuencial. |
+| **GRU** | Alternativa más compacta que LSTM. | Menos explícita conceptualmente para explicar memoria separada. | Aplicaciones donde se busca eficiencia con buen rendimiento. |
+| **Transformers** | Usan atención y permiten paralelización masiva. | Requieren más datos, cómputo y arquitectura más compleja. | NLP moderno, modelos generativos, embeddings y secuencias largas. |
+
+---
+
+## Errores frecuentes
+
+| Error frecuente | Corrección conceptual |
+|---|---|
+| Pensar que una RNN guarda literalmente todo el pasado. | Una RNN guarda una representación comprimida, no una copia completa de la secuencia. |
+| Creer que una LSTM elimina por completo el vanishing gradient. | La LSTM lo mitiga, pero no resuelve todos los problemas de entrenamiento. |
+| Usar LSTM sin preparar correctamente la forma de entrada. | La entrada debe organizarse como `(muestras, pasos_temporales, features)`. |
+| Comparar modelos solo por accuracy. | También hay que considerar longitud de dependencia, costo, estabilidad e interpretabilidad. |
+| Confundir estado oculto con estado de celda. | En LSTM, `h_t` es la salida/estado oculto y `C_t` es la memoria interna principal. |
+
+---
+
+## Actividad práctica sugerida
+
+Después de recorrer la teoría y las simulaciones, se recomienda realizar una práctica breve en Colab para conectar la intuición visual con tensores y entrenamiento real.
+
+| Paso | Actividad | Objetivo |
+|---|---|---|
+| **1** | Generar una serie temporal sintética | Crear datos con tendencia, ruido y estacionalidad. |
+| **2** | Construir ventanas temporales | Transformar la serie en pares `X/y`. |
+| **3** | Entrenar una RNN simple | Observar el comportamiento con dependencias cortas. |
+| **4** | Entrenar una LSTM | Comparar estabilidad y capacidad de memoria. |
+| **5** | Visualizar resultados | Analizar predicciones, error y comportamiento temporal. |
+
+Ejemplo de forma esperada de los tensores:
+
+<pre><code># X debe tener forma:
+# (muestras, pasos_temporales, features)
+
+X.shape  # ejemplo: (1000, 20, 1)
+
+# y debe contener el valor objetivo asociado a cada ventana
+
+y.shape  # ejemplo: (1000, 1)</code></pre>
+
+---
+
+## Preguntas de repaso
+
+<details>
+<summary><strong>Ver preguntas de comprensión</strong></summary>
+
+1. ¿Por qué una red densa tradicional no es suficiente para modelar muchas secuencias?
+
+2. ¿Qué representa el estado oculto `h_t` en una RNN?
+
+3. ¿Por qué el orden de los datos es importante en texto o series temporales?
+
+4. ¿Qué significa desplegar una RNN en el tiempo?
+
+5. ¿Qué es Backpropagation Through Time?
+
+6. ¿Por qué aparece el problema del vanishing gradient?
+
+7. ¿Qué diferencia existe entre el estado oculto y el estado de celda en una LSTM?
+
+8. ¿Qué función cumple la forget gate?
+
+9. ¿Qué función cumple la input gate?
+
+10. ¿Qué función cumple la output gate?
+
+11. ¿Por qué una LSTM puede manejar mejor dependencias largas que una RNN simple?
+
+12. ¿En qué casos conviene comparar RNN, LSTM, GRU y Transformers?
+
+</details>
+
+---
+
+## Uso recomendado en clase
+
+Este recurso puede utilizarse como una clase visual completa. Una secuencia didáctica posible es:
+
+1. Comenzar con la pregunta: **¿por qué el orden de los datos cambia el significado?**
+
+2. Mostrar ejemplos simples de texto y series temporales.
+
+3. Explicar la RNN simple como una red con memoria acumulada.
+
+4. Usar la simulación de RNN paso a paso para visualizar el estado oculto.
+
+5. Introducir el problema del vanishing gradient.
+
+6. Usar la simulación de memoria para mostrar cómo se pierde información en secuencias largas.
+
+7. Presentar la LSTM como una arquitectura con memoria regulada.
+
+8. Manipular las compuertas LSTM en la simulación interactiva.
+
+9. Comparar RNN, LSTM, GRU y Transformers.
+
+10. Cerrar con la práctica en Colab y el quiz de comprensión.
+
+---
+
+## Lectura integradora final
+
+Las RNN y LSTM son fundamentales para comprender la evolución del aprendizaje profundo aplicado a secuencias. Aunque los Transformers dominan muchas aplicaciones actuales, las redes recurrentes siguen siendo esenciales desde el punto de vista pedagógico porque permiten visualizar con claridad la relación entre **entrada actual**, **memoria previa**, **estado oculto**, **propagación temporal** y **aprendizaje de dependencias**.
+
+La RNN simple muestra la intuición básica: procesar una secuencia paso a paso y actualizar una memoria interna. La LSTM profundiza esa idea al incorporar mecanismos explícitos de control sobre la información. Por eso, estudiar RNN y LSTM no solo permite entender modelos secuenciales clásicos, sino también construir una base conceptual sólida para abordar arquitecturas modernas como GRU, mecanismos de atención y Transformers.
+
+
+
+
