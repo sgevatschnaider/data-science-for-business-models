@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Clase interactiva completa sobre RNN y LSTM: teoría, simulaciones, vanishing gradient, compuertas, práctica y evaluación." />
+  <title>RNN y LSTM · Índice completo y simulaciones</title>
+  <style>
+    :root{
+      --bg:#eef5ff;
+      --bg2:#f8fbff;
+      --card:#ffffff;
+      --card2:#f5f8ff;
+      --text:#122033;
+      --muted:#64748b;
+      --line:#d8e4f3;
+      --accent:#2563eb;
+      --accent2:#7c3aed;
+      --accent3:#06b6d4;
+      --good:#059669;
+      --warn:#d97706;
+      --bad:#dc2626;
+      --shadow:0 24px 70px rgba(15,23,42,.14);
+      --soft:0 10px 28px rgba(15,23,42,.08);
+      --radius:28px;
+      --mono:Consolas, Monaco, ui-monospace, SFMono-Regular, Menlo, monospace;
+      --sans:Inter, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    [data-theme="dark"]{
+      --bg:#07111f;
+      --bg2:#0b1527;
+      --card:#101c31;
+      --card2:#0d1729;
+      --text:#eef6ff;
+      --muted:#adc0d8;
+      --line:#263956;
+      --accent:#60a5fa;
+      --accent2:#a78bfa;
+      --accent3:#22d3ee;
+      --good:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --shadow:0 24px 70px rgba(0,0,0,.44);
+      --soft:0 10px 28px rgba(0,0,0,.26);
+    }
+    [data-theme="ocean"]{
+      --bg:#e8f7ff; --bg2:#f5fcff; --card:#ffffff; --card2:#eef8ff; --text:#0f2740; --muted:#53708a; --line:#cfe7f5;
+      --accent:#0284c7; --accent2:#0e7490; --accent3:#38bdf8; --good:#059669; --warn:#d97706; --bad:#dc2626;
+      --shadow:0 24px 70px rgba(2,132,199,.15); --soft:0 10px 28px rgba(2,132,199,.09);
+    }
+    [data-theme="violet"]{
+      --bg:#f5f0ff; --bg2:#fffaff; --card:#ffffff; --card2:#faf5ff; --text:#28183f; --muted:#756486; --line:#e5d5fb;
+      --accent:#7c3aed; --accent2:#c026d3; --accent3:#a78bfa; --good:#059669; --warn:#d97706; --bad:#dc2626;
+      --shadow:0 24px 70px rgba(124,58,237,.15); --soft:0 10px 28px rgba(124,58,237,.09);
+    }
+    [data-theme="forest"]{
+      --bg:#edfdf5; --bg2:#f8fff9; --card:#ffffff; --card2:#f0fdf4; --text:#102a20; --muted:#5d756a; --line:#ccebd9;
+      --accent:#059669; --accent2:#0f766e; --accent3:#34d399; --good:#047857; --warn:#b45309; --bad:#dc2626;
+      --shadow:0 24px 70px rgba(5,150,105,.15); --soft:0 10px 28px rgba(5,150,105,.09);
+    }
+    [data-theme="amber"]{
+      --bg:#fff7ed; --bg2:#fffdf7; --card:#ffffff; --card2:#fffbeb; --text:#332312; --muted:#7b6a55; --line:#f5ddb8;
+      --accent:#d97706; --accent2:#b45309; --accent3:#f59e0b; --good:#059669; --warn:#92400e; --bad:#dc2626;
+      --shadow:0 24px 70px rgba(217,119,6,.14); --soft:0 10px 28px rgba(217,119,6,.08);
+    }
+    [data-theme="contrast"]{
+      --bg:#050505; --bg2:#111111; --card:#161616; --card2:#0f0f0f; --text:#ffffff; --muted:#d4d4d4; --line:#4b5563;
+      --accent:#facc15; --accent2:#38bdf8; --accent3:#f472b6; --good:#86efac; --warn:#fde68a; --bad:#fca5a5;
+      --shadow:0 24px 70px rgba(0,0,0,.58); --soft:0 10px 28px rgba(0,0,0,.38);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:92px}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family:var(--sans);
+      line-height:1.62;
+      background:
+        radial-gradient(circle at 8% -10%, rgba(37,99,235,.22), transparent 34%),
+        radial-gradient(circle at 92% 2%, rgba(124,58,237,.17), transparent 30%),
+        radial-gradient(circle at 55% 20%, rgba(6,182,212,.10), transparent 42%),
+        linear-gradient(135deg,var(--bg),var(--bg2));
+      min-height:100vh;
+    }
+    a{color:var(--accent);font-weight:850;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .topbar{
+      position:sticky;top:0;z-index:100;
+      background:color-mix(in srgb,var(--card) 88%,transparent);
+      border-bottom:1px solid var(--line);
+      backdrop-filter:blur(18px);
+    }
+    .nav{
+      max-width:1320px;margin:auto;padding:12px 20px;
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+    }
+    .brand{display:flex;align-items:center;gap:10px;font-weight:950;letter-spacing:-.03em}
+    .brand-mark{
+      width:38px;height:38px;border-radius:14px;
+      display:grid;place-items:center;color:white;font-weight:950;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:var(--soft);
+    }
+    .controls{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+    .theme-picker{position:relative;display:inline-flex}
+    .theme-menu{
+      position:absolute;right:0;top:calc(100% + 8px);z-index:150;display:none;gap:8px;min-width:238px;
+      padding:10px;border:1px solid var(--line);border-radius:18px;background:var(--card);box-shadow:var(--shadow);
+    }
+    .theme-picker.open .theme-menu{display:grid}
+    .theme-option{justify-content:flex-start;width:100%;box-shadow:none;background:var(--card2);font-size:14px;padding:9px 10px}
+    .theme-option[aria-pressed="true"]{border-color:color-mix(in srgb,var(--accent) 65%,var(--line));background:color-mix(in srgb,var(--accent) 13%,var(--card));color:var(--text)}
+    .swatch{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);display:inline-block;flex:0 0 auto}
+    .swatch-light{background:linear-gradient(135deg,#ffffff,#2563eb)}.swatch-dark{background:linear-gradient(135deg,#07111f,#60a5fa)}.swatch-ocean{background:linear-gradient(135deg,#e8f7ff,#0284c7)}.swatch-violet{background:linear-gradient(135deg,#f5f0ff,#7c3aed)}.swatch-forest{background:linear-gradient(135deg,#edfdf5,#059669)}.swatch-amber{background:linear-gradient(135deg,#fff7ed,#d97706)}.swatch-contrast{background:linear-gradient(135deg,#050505,#facc15)}
+    
+    button,.btn{
+      appearance:none;border:1px solid var(--line);background:var(--card);color:var(--text);
+      padding:10px 14px;border-radius:15px;cursor:pointer;font-weight:850;box-shadow:var(--soft);
+      transition:.18s transform,.18s opacity,.18s border-color;
+      display:inline-flex;align-items:center;gap:8px;justify-content:center;
+    }
+    button:hover,.btn:hover{transform:translateY(-1px);text-decoration:none;border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+    button.primary,.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border-color:transparent}
+    button.ghost,.btn.ghost{background:color-mix(in srgb,var(--card) 75%,transparent)}
+    button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:3px}
+    main{max-width:1320px;margin:auto;padding:28px 20px 70px}
+    .hero{
+      display:grid;grid-template-columns:minmax(0,1.15fr) minmax(330px,.85fr);gap:22px;margin:18px 0 28px;align-items:stretch;
+    }
+    .card{
+      background:color-mix(in srgb,var(--card) 96%,transparent);
+      border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);
+    }
+    .card.soft{box-shadow:var(--soft)}
+    h1{font-size:clamp(36px,5vw,64px);line-height:1.02;margin:12px 0 16px;letter-spacing:-.055em}
+    h2{font-size:clamp(27px,3.2vw,42px);line-height:1.1;margin:48px 0 16px;letter-spacing:-.04em}
+    h3{font-size:22px;margin:8px 0 10px;letter-spacing:-.02em}
+    h4{font-size:18px;margin:8px 0 8px}
+    p{margin:10px 0}.lead{font-size:18px;color:var(--muted);max-width:82ch}.muted{color:var(--muted)}
+    .tags{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px}
+    .tag,.pill{
+      display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;
+      padding:6px 11px;background:color-mix(in srgb,var(--card),var(--accent) 5%);
+      color:var(--muted);font-size:13px;font-weight:900;
+    }
+    .pill.good{color:var(--good);background:color-mix(in srgb,var(--good) 9%,var(--card));border-color:color-mix(in srgb,var(--good) 30%,var(--line))}
+    .pill.warn{color:var(--warn);background:color-mix(in srgb,var(--warn) 9%,var(--card));border-color:color-mix(in srgb,var(--warn) 30%,var(--line))}
+    .notice{border-left:5px solid var(--accent);padding:15px 17px;border-radius:18px;background:color-mix(in srgb,var(--accent) 8%,var(--card));margin:16px 0}
+    .notice.good{border-left-color:var(--good)}.notice.warn{border-left-color:var(--warn)}.notice.bad{border-left-color:var(--bad)}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+    .mini{padding:17px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--soft)}
+    .mini strong{display:block;font-size:21px;letter-spacing:-.03em}.mini small{display:block;color:var(--muted);margin-top:3px}
+    .mini.clickable{cursor:pointer;transition:.2s transform,.2s border-color}.mini.clickable:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
+    .toc{display:grid;gap:10px;margin-top:14px}.toc a{display:flex;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:18px;background:var(--card2);color:var(--text)}.toc a span{color:var(--muted);font-size:13px;text-align:right}
+    .searchbox{width:100%;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:16px;padding:12px 14px;font:inherit;font-weight:750;margin:10px 0 4px}
+    .layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:22px;align-items:start}
+    .side{position:sticky;top:82px;max-height:calc(100vh - 100px);overflow:auto;padding:16px;border-radius:22px;background:color-mix(in srgb,var(--card) 78%,transparent);border:1px solid var(--line);box-shadow:var(--soft)}
+    .side a{display:block;color:var(--text);padding:9px 10px;border-radius:13px;font-size:14px}.side a:hover{background:color-mix(in srgb,var(--accent) 9%,var(--card));text-decoration:none}.side .group{font-size:12px;font-weight:950;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:12px 10px 4px}
+    .table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:var(--soft);margin:16px 0}.table th,.table td{border-bottom:1px solid var(--line);padding:13px;text-align:left;vertical-align:top}.table th{background:color-mix(in srgb,var(--accent) 11%,var(--card));font-size:14px;text-transform:uppercase;letter-spacing:.04em}.table tr:last-child td{border-bottom:none}
+    pre{background:color-mix(in srgb,var(--card),#000 7%);border:1px solid var(--line);border-radius:20px;padding:16px;overflow:auto;white-space:pre-wrap}code{font-family:var(--mono)}.formula{font-size:17px;line-height:1.7}.kbd{font-family:var(--mono);border:1px solid var(--line);border-bottom-width:3px;border-radius:8px;padding:1px 7px;background:var(--card2)}
+    .simwrap{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px;margin-top:18px}.panel{display:grid;gap:12px}.canvas{position:relative;overflow:hidden;min-height:560px}
+    .memoryBox{border:1px solid var(--line);border-radius:22px;padding:18px;background:linear-gradient(180deg,var(--card),color-mix(in srgb,var(--card),var(--accent) 5%));box-shadow:var(--soft)}
+    .bar{height:24px;border-radius:999px;border:1px solid var(--line);background:color-mix(in srgb,var(--card),#000 8%);overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));transition:.35s}.big{font-size:clamp(30px,4vw,42px);font-weight:950;letter-spacing:-.04em;margin:6px 0}.badge{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;border:1px solid var(--line);font-size:13px;font-weight:900;background:var(--card2);color:var(--muted)}
+    input[type=range]{width:100%;accent-color:var(--accent)}
+    .rnn-stage{display:grid;grid-template-rows:auto auto auto;gap:18px;padding:18px;border:1px dashed var(--line);border-radius:24px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 5%,transparent),transparent)}
+    .sequence-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:center}.node{min-height:74px;border-radius:22px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:950;box-shadow:var(--soft);border:2px solid var(--line);transition:.3s transform,.3s filter,.3s opacity;background:var(--card)}.node.hidden{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border-color:transparent}.node.output{background:linear-gradient(135deg,var(--good),var(--accent3));color:white;border-color:transparent}.node.active{transform:scale(1.08);filter:drop-shadow(0 0 14px color-mix(in srgb,var(--accent) 65%,transparent))}.node.done{opacity:.72}.arrow-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;color:var(--muted);text-align:center;font-weight:950}.chiprow{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid var(--line);border-radius:999px;padding:7px 10px;font-weight:850;background:var(--card2)}.chip.on{background:color-mix(in srgb,var(--accent) 14%,var(--card));border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}.chip.hot{background:color-mix(in srgb,var(--good) 13%,var(--card));border-color:color-mix(in srgb,var(--good) 45%,var(--line))}
+    .svgbox{width:100%;height:230px;border:1px solid var(--line);border-radius:22px;background:var(--card2);display:block;box-shadow:var(--soft)}
+    .gate-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.gate-card{padding:16px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--soft)}.gate-card h4{display:flex;align-items:center;justify-content:space-between;gap:10px}.gate-value{font-family:var(--mono);font-weight:950;color:var(--accent)}
+    .timeline{display:grid;gap:12px}.step{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:start;padding:15px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--soft)}.time{font-weight:950;color:var(--accent)}
+    .quiz-option{display:block;width:100%;text-align:left;margin:8px 0}.quiz-option.correct{border-color:color-mix(in srgb,var(--good) 60%,var(--line));background:color-mix(in srgb,var(--good) 12%,var(--card))}.quiz-option.wrong{border-color:color-mix(in srgb,var(--bad) 60%,var(--line));background:color-mix(in srgb,var(--bad) 10%,var(--card))}
+    .footer{margin-top:42px;color:var(--muted);font-size:14px;text-align:center}.hidden-el{display:none!important}
+    body.presentation .side, body.presentation .topbar .brand span.long{display:none} body.presentation main{max-width:1180px} body.presentation .card{box-shadow:var(--soft)} body.presentation h2{font-size:46px}
+    @media(max-width:1060px){.layout{grid-template-columns:1fr}.side{position:static;max-height:none}.hero,.simwrap{grid-template-columns:1fr}.canvas{min-height:auto}.sequence-row{grid-template-columns:repeat(5,minmax(72px,1fr));overflow:auto}.grid,.grid2,.grid4,.gate-grid{grid-template-columns:1fr}.nav{align-items:flex-start;flex-direction:column}.controls{width:100%}.controls button,.controls .btn,.controls .theme-picker{flex:1}.theme-picker>button{width:100%}.theme-menu{left:0;right:auto;min-width:100%}.step{grid-template-columns:1fr}}
+    @media print{.topbar,.side,.controls,button,.btn,.searchbox{display:none!important}body{background:white}.layout,.hero,.simwrap,.grid,.grid2,.grid4,.gate-grid{display:block}.card,.mini,.table{box-shadow:none;break-inside:avoid}main{max-width:100%;padding:0}a{text-decoration:none;color:inherit}h2{break-before:page}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="nav">
+      <div class="brand"><div class="brand-mark">NN</div><span class="long">RNN y LSTM · Clase interactiva</span></div>
+      <div class="controls">
+        <div class="theme-picker" id="themePicker">
+          <button id="themeBtn" type="button" aria-haspopup="true" aria-expanded="false">🎨 Tema: Claro</button>
+          <div class="theme-menu" id="themeMenu" role="menu" aria-label="Seleccionar tema visual">
+            <button type="button" class="theme-option" data-theme-choice="light" role="menuitemradio"><span class="swatch swatch-light"></span>Claro</button>
+            <button type="button" class="theme-option" data-theme-choice="dark" role="menuitemradio"><span class="swatch swatch-dark"></span>Oscuro</button>
+            <button type="button" class="theme-option" data-theme-choice="ocean" role="menuitemradio"><span class="swatch swatch-ocean"></span>Azul profundo</button>
+            <button type="button" class="theme-option" data-theme-choice="violet" role="menuitemradio"><span class="swatch swatch-violet"></span>Violeta</button>
+            <button type="button" class="theme-option" data-theme-choice="forest" role="menuitemradio"><span class="swatch swatch-forest"></span>Verde</button>
+            <button type="button" class="theme-option" data-theme-choice="amber" role="menuitemradio"><span class="swatch swatch-amber"></span>Ámbar</button>
+            <button type="button" class="theme-option" data-theme-choice="contrast" role="menuitemradio"><span class="swatch swatch-contrast"></span>Alto contraste</button>
+          </div>
+        </div>
+        <button id="presentBtn" type="button">🎬 Modo presentación</button>
+        <button onclick="window.print()" type="button">🖨️ Imprimir</button>
+        <a class="btn primary" href="#simulaciones">Ir a simulaciones</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="card">
+        <div class="tags"><span class="tag">Deep Learning</span><span class="tag">Series temporales</span><span class="tag">Texto</span><span class="tag">Memoria</span><span class="tag">LSTM</span></div>
+        <h1>RNN y LSTM: índice completo, teoría y simulaciones interactivas</h1>
+        <p class="lead">Este recurso reúne en una sola página el recorrido completo para una clase visual sobre redes neuronales recurrentes: fundamentos, datos secuenciales, RNN simple, despliegue temporal, vanishing gradient, LSTM, compuertas, comparación con GRU y Transformers, práctica guiada y evaluación.</p>
+        <div class="notice good"><strong>Uso recomendado:</strong> abrir este archivo en el navegador, proyectarlo en modo oscuro y recorrer primero la teoría. Luego usar las tres simulaciones para que la explicación no quede abstracta.</div>
+        <div class="grid4">
+          <div class="mini clickable" data-jump="#teoria"><strong>1</strong><small>Bloque teórico completo</small></div>
+          <div class="mini clickable" data-jump="#sim-rnn"><strong>3</strong><small>Simulaciones interactivas</small></div>
+          <div class="mini clickable" data-jump="#practica"><strong>Colab</strong><small>Actividad y código sugerido</small></div>
+          <div class="mini clickable" data-jump="#quiz"><strong>Quiz</strong><small>Chequeo rápido de comprensión</small></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Índice rápido</h3>
+        <input class="searchbox" id="tocSearch" placeholder="Buscar: LSTM, gradiente, estado oculto, compuertas..." />
+        <div class="toc" id="quickToc">
+          <a href="#objetivos">Objetivos <span>qué debe aprender el estudiante</span></a>
+          <a href="#teoria">Teoría completa <span>RNN, LSTM y gradientes</span></a>
+          <a href="#sim-rnn">Simulación 1 <span>RNN paso a paso</span></a>
+          <a href="#sim-gradient">Simulación 2 <span>memoria y vanishing gradient</span></a>
+          <a href="#sim-lstm">Simulación 3 <span>compuertas LSTM</span></a>
+          <a href="#comparacion">Comparación <span>RNN, LSTM, GRU, Transformers</span></a>
+          <a href="#practica">Práctica <span>actividad en Colab</span></a>
+          <a href="#quiz">Evaluación <span>preguntas de cierre</span></a>
+        </div>
+      </div>
+    </section>
+
+    <div class="layout">
+      <aside class="side" aria-label="Navegación lateral">
+        <div class="group">Ruta principal</div>
+        <a href="#inicio">Inicio</a>
+        <a href="#objetivos">Objetivos de clase</a>
+        <a href="#mapa">Mapa conceptual</a>
+        <a href="#teoria">Teoría RNN y LSTM</a>
+        <div class="group">Simulaciones</div>
+        <a href="#sim-rnn">1. RNN paso a paso</a>
+        <a href="#sim-gradient">2. Memoria y gradiente</a>
+        <a href="#sim-lstm">3. Compuertas LSTM</a>
+        <div class="group">Cierre</div>
+        <a href="#comparacion">Comparación de arquitecturas</a>
+        <a href="#practica">Actividad práctica</a>
+        <a href="#errores">Errores frecuentes</a>
+        <a href="#quiz">Quiz</a>
+        <a href="#checklist">Checklist técnico</a>
+      </aside>
+
+      <div class="content">
+        <section id="objetivos" class="card soft">
+          <h2>Objetivos de aprendizaje</h2>
+          <p>Al finalizar la clase, el estudiante debería poder explicar por qué las secuencias requieren modelos especiales, cómo una RNN construye un estado oculto, por qué el entrenamiento puede sufrir problemas de gradiente y de qué manera una LSTM regula la memoria mediante compuertas.</p>
+          <div class="grid">
+            <div class="mini"><strong>Comprender</strong><small>La diferencia entre datos independientes y datos secuenciales.</small></div>
+            <div class="mini"><strong>Visualizar</strong><small>Cómo se actualiza la memoria paso a paso dentro de una RNN.</small></div>
+            <div class="mini"><strong>Diagnosticar</strong><small>Cuándo aparecen vanishing gradient, exploding gradient y pérdida de contexto.</small></div>
+          </div>
+        </section>
+
+        <section id="mapa">
+          <h2>Mapa conceptual del módulo</h2>
+          <div class="card soft">
+            <div class="grid2">
+              <div>
+                <h3>De la secuencia al modelo</h3>
+                <pre class="formula"><code>Datos secuenciales
+  ├─ Orden temporal
+  ├─ Dependencia entre observaciones
+  ├─ Contexto acumulado
+  └─ Tareas posibles
+       ├─ many-to-one: clasificación final
+       ├─ one-to-many: generación
+       ├─ many-to-many: traducción / etiquetado
+       └─ forecasting: predicción futura</code></pre>
+              </div>
+              <div>
+                <h3>De la RNN a la LSTM</h3>
+                <pre class="formula"><code>RNN simple
+  ├─ Entrada actual x_t
+  ├─ Estado oculto h_(t-1)
+  ├─ Nuevo estado h_t
+  └─ Problema: gradiente frágil
+
+LSTM
+  ├─ Estado oculto h_t
+  ├─ Estado de celda C_t
+  ├─ Forget gate
+  ├─ Input gate
+  └─ Output gate</code></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="teoria">
+          <h2>1. Teoría completa: redes recurrentes y memoria temporal</h2>
+          <div class="card soft">
+            <h3>1.1. Por qué una red densa no alcanza</h3>
+            <p>Una red neuronal densa tradicional recibe una entrada y produce una salida sin memoria explícita del pasado. Esto puede funcionar cuando cada observación contiene toda la información necesaria, pero falla cuando el significado depende del orden. En una frase, una palabra puede modificar a otra que aparece muchos términos después; en una serie financiera, el presente puede depender de tendencia, estacionalidad, shocks y rezagos.</p>
+            <div class="notice"><strong>Idea central:</strong> cuando el orden de los datos cambia el significado, el modelo debe incorporar una representación de contexto.</div>
+
+            <h3>1.2. RNN simple</h3>
+            <p>Una RNN procesa la secuencia elemento por elemento. En cada paso temporal combina la entrada actual <span class="kbd">x_t</span> con el estado oculto anterior <span class="kbd">h_(t-1)</span>. El nuevo estado <span class="kbd">h_t</span> funciona como memoria comprimida de lo visto hasta ese momento.</p>
+            <pre class="formula"><code>h_t = tanh(W_xh · x_t + W_hh · h_(t-1) + b_h)
+y_t = W_hy · h_t + b_y</code></pre>
+            <table class="table">
+              <tr><th>Elemento</th><th>Función matemática</th><th>Lectura didáctica</th></tr>
+              <tr><td>x_t</td><td>Vector de entrada en el tiempo t</td><td>Lo que el modelo observa ahora.</td></tr>
+              <tr><td>h_(t-1)</td><td>Estado oculto previo</td><td>La memoria del pasado inmediato y acumulado.</td></tr>
+              <tr><td>h_t</td><td>Estado oculto actualizado</td><td>El resumen actual de la secuencia.</td></tr>
+              <tr><td>W_xh</td><td>Pesos de entrada</td><td>Cómo la entrada modifica la memoria.</td></tr>
+              <tr><td>W_hh</td><td>Pesos recurrentes</td><td>Cómo el pasado influye en el presente.</td></tr>
+            </table>
+
+            <h3>1.3. Despliegue temporal y BPTT</h3>
+            <p>La RNN puede imaginarse como una misma celda copiada a lo largo del tiempo. Aunque el diagrama muestre varias celdas, los parámetros son compartidos. El entrenamiento se realiza con <strong>Backpropagation Through Time</strong>, es decir, el error se propaga hacia atrás a través de los pasos temporales.</p>
+            <pre class="formula"><code>x_1 → h_1 → y_1
+x_2 → h_2 → y_2
+x_3 → h_3 → y_3
+x_4 → h_4 → y_4</code></pre>
+
+            <h3>1.4. Vanishing gradient y exploding gradient</h3>
+            <p>Al retropropagar el error por muchos pasos, el gradiente puede debilitarse o crecer en exceso. Si se debilita, las relaciones lejanas casi no reciben señal de aprendizaje; si crece demasiado, el entrenamiento se vuelve inestable.</p>
+            <div class="grid2">
+              <div class="notice bad"><strong>Vanishing gradient:</strong> el gradiente se vuelve muy pequeño y la red aprende mal dependencias largas.</div>
+              <div class="notice warn"><strong>Exploding gradient:</strong> el gradiente crece demasiado y puede generar actualizaciones descontroladas.</div>
+            </div>
+
+            <h3>1.5. LSTM: memoria regulada</h3>
+            <p>La LSTM incorpora una vía de memoria más estable, llamada estado de celda <span class="kbd">C_t</span>. A diferencia de una RNN simple, no depende solo de un estado oculto comprimido. Usa compuertas que deciden cuánto olvidar, cuánto guardar y cuánto exponer como salida.</p>
+            <pre class="formula"><code>f_t = σ(W_f · [h_(t-1), x_t] + b_f)   // forget gate
+i_t = σ(W_i · [h_(t-1), x_t] + b_i)   // input gate
+Ĉ_t = tanh(W_c · [h_(t-1), x_t] + b_c) // memoria candidata
+C_t = f_t * C_(t-1) + i_t * Ĉ_t       // nueva memoria
+o_t = σ(W_o · [h_(t-1), x_t] + b_o)   // output gate
+h_t = o_t * tanh(C_t)                 // salida / estado oculto</code></pre>
+            <div class="grid">
+              <div class="mini"><strong>Forget gate</strong><small>Decide qué parte de la memoria anterior se conserva o se borra.</small></div>
+              <div class="mini"><strong>Input gate</strong><small>Decide qué parte de la nueva información candidata se incorpora.</small></div>
+              <div class="mini"><strong>Output gate</strong><small>Decide qué parte del estado de celda se muestra como estado oculto.</small></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="simulaciones">
+          <h2>2. Simulaciones interactivas</h2>
+          <p class="lead">Estas simulaciones están integradas en la misma página. No necesitás cambiar de archivo: el índice lleva directamente a cada experiencia.</p>
+        </section>
+
+        <section id="sim-rnn" class="card soft">
+          <div class="tags"><span class="tag">Simulación 1</span><span class="tag">Estado oculto</span><span class="tag">Pesos compartidos</span></div>
+          <h2>Simulación 1 · RNN paso a paso</h2>
+          <p>La secuencia se procesa de izquierda a derecha. En cada paso, la red combina la palabra actual con la memoria anterior para construir un nuevo estado oculto.</p>
+          <div class="simwrap">
+            <div class="card canvas soft">
+              <div class="rnn-stage" aria-live="polite">
+                <div class="sequence-row" id="rnnTokens"></div>
+                <div class="arrow-row"><span>↓ entrada</span><span>↓ entrada</span><span>↓ entrada</span><span>↓ entrada</span><span>↓ entrada</span></div>
+                <div class="sequence-row" id="rnnHidden"></div>
+                <div class="arrow-row"><span>→ memoria</span><span>→ memoria</span><span>→ memoria</span><span>→ memoria</span><span>→ salida</span></div>
+                <div class="sequence-row" id="rnnOutput"></div>
+              </div>
+              <div class="memoryBox" style="margin-top:16px">
+                <div class="badge">Memoria acumulada</div>
+                <div class="chiprow" id="rnnTrail" style="margin-top:12px"></div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="card soft">
+                <h3>Controles</h3>
+                <div class="grid2">
+                  <button type="button" id="rnnPrev">◀ Anterior</button>
+                  <button type="button" id="rnnNext" class="primary">Siguiente ▶</button>
+                  <button type="button" id="rnnPlay">▶ Auto</button>
+                  <button type="button" id="rnnReset">↺ Reiniciar</button>
+                </div>
+                <div class="bar" style="margin-top:14px"><div class="fill" id="rnnProgress"></div></div>
+                <p class="big" id="rnnStepLabel">Paso 0 / 5</p>
+              </div>
+              <div class="card soft">
+                <h3>Lectura didáctica</h3>
+                <p id="rnnExplain">Presioná “Siguiente” para iniciar la lectura secuencial.</p>
+                <pre class="formula"><code>h_t = tanh(W_xh x_t + W_hh h_(t-1) + b_h)</code></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="sim-gradient" class="card soft">
+          <div class="tags"><span class="tag">Simulación 2</span><span class="tag">Dependencias largas</span><span class="tag">Vanishing gradient</span></div>
+          <h2>Simulación 2 · Memoria y vanishing gradient</h2>
+          <p>Compará cómo se debilita una señal inicial en una RNN simple y cómo una memoria regulada, como la de una LSTM, puede conservar mejor información relevante durante más pasos.</p>
+          <div class="simwrap">
+            <div class="card canvas soft">
+              <h3>Frase de ejemplo</h3>
+              <p><strong>“El libro</strong> que compré la semana pasada en una librería antigua de Buenos Aires <strong>era interesante</strong>.”</p>
+              <div class="notice"><strong>Dependencia larga:</strong> al final necesitamos recordar “El libro” para interpretar correctamente “era interesante”.</div>
+              <svg id="gradSvg" class="svgbox" role="img" aria-label="Curvas de conservación de memoria"></svg>
+              <div class="grid2" style="margin-top:16px">
+                <div class="memoryBox"><div class="badge">RNN simple</div><div class="bar"><div class="fill" id="gradRnnFill"></div></div><p class="big" id="gradRnnPct">100%</p></div>
+                <div class="memoryBox"><div class="badge">LSTM conceptual</div><div class="bar"><div class="fill" id="gradLstmFill"></div></div><p class="big" id="gradLstmPct">100%</p></div>
+              </div>
+              <p id="gradExplain" class="notice">Al comienzo, la referencia “El libro” está completamente disponible.</p>
+            </div>
+            <div class="panel">
+              <div class="card soft">
+                <h3>Controles</h3>
+                <label>Longitud de la secuencia: <strong id="gradLenLabel">12</strong></label>
+                <input type="range" min="4" max="30" value="12" id="gradLen" />
+                <label>Conservación RNN simple: <strong id="gradDecayLabel">0.72</strong></label>
+                <input type="range" min="45" max="95" value="72" id="gradDecay" />
+                <label>Conservación LSTM conceptual: <strong id="gradKeepLabel">0.94</strong></label>
+                <input type="range" min="70" max="99" value="94" id="gradKeep" />
+                <div class="grid2" style="margin-top:14px">
+                  <button type="button" id="gradPrev">◀</button>
+                  <button type="button" id="gradNext" class="primary">▶</button>
+                  <button type="button" id="gradPlay">▶ Auto</button>
+                  <button type="button" id="gradReset">↺</button>
+                </div>
+              </div>
+              <div class="card soft">
+                <h3>Indicadores</h3>
+                <div class="grid2">
+                  <div class="mini"><strong id="gradStepLabel">0 / 12</strong><small>Paso temporal</small></div>
+                  <div class="mini"><strong id="gradGapLabel">0.0 puntos</strong><small>Ventaja de conservación</small></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="sim-lstm" class="card soft">
+          <div class="tags"><span class="tag">Simulación 3</span><span class="tag">LSTM</span><span class="tag">Compuertas</span></div>
+          <h2>Simulación 3 · Compuertas LSTM</h2>
+          <p>Manipulá forget gate, input gate y output gate para observar cómo cambia el estado de celda y la salida. La simulación usa una fórmula simplificada para favorecer la intuición.</p>
+          <div class="simwrap">
+            <div class="card canvas soft">
+              <div class="grid2">
+                <div class="memoryBox"><div class="badge">Estado anterior Cₜ₋₁</div><div class="bar"><div class="fill" id="lstmOldFill"></div></div><p class="big" id="lstmOldPct">70%</p></div>
+                <div class="memoryBox"><div class="badge">Candidata Ĉₜ</div><div class="bar"><div class="fill" id="lstmCandFill"></div></div><p class="big" id="lstmCandPct">60%</p></div>
+              </div>
+              <div class="gate-grid" style="margin-top:16px">
+                <div class="gate-card"><h4>Forget <span class="gate-value" id="lstmFView">0.70</span></h4><p>Retiene una proporción del pasado.</p></div>
+                <div class="gate-card"><h4>Input <span class="gate-value" id="lstmIView">0.80</span></h4><p>Permite guardar nueva información.</p></div>
+                <div class="gate-card"><h4>Output <span class="gate-value" id="lstmOView">0.85</span></h4><p>Decide cuánto se expone como salida.</p></div>
+              </div>
+              <div class="grid2" style="margin-top:16px">
+                <div class="mini"><strong id="lstmKeptText">0%</strong><small>Pasado conservado</small></div>
+                <div class="mini"><strong id="lstmNewText">0%</strong><small>Nuevo contenido guardado</small></div>
+              </div>
+              <div class="memoryBox" style="margin-top:16px"><div class="badge">Nuevo estado de celda Cₜ</div><div class="bar"><div class="fill" id="lstmCellFill"></div></div><p class="big" id="lstmCellPct">0%</p></div>
+              <div class="memoryBox" style="margin-top:16px"><div class="badge">Salida / estado oculto hₜ</div><div class="bar"><div class="fill" id="lstmOutFill"></div></div><p class="big" id="lstmOutPct">0%</p></div>
+            </div>
+            <div class="panel">
+              <div class="card soft">
+                <h3>Controles de compuertas</h3>
+                <label>Forget gate: <strong id="lstmFLabel">0.70</strong></label><input type="range" min="0" max="100" value="70" id="lstmForget" />
+                <label>Input gate: <strong id="lstmILabel">0.80</strong></label><input type="range" min="0" max="100" value="80" id="lstmInput" />
+                <label>Output gate: <strong id="lstmOLabel">0.85</strong></label><input type="range" min="0" max="100" value="85" id="lstmOutput" />
+                <label>Memoria anterior: <strong id="lstmOldLabel">0.70</strong></label><input type="range" min="0" max="100" value="70" id="lstmOld" />
+                <label>Nueva candidata: <strong id="lstmCandLabel">0.60</strong></label><input type="range" min="0" max="100" value="60" id="lstmCandidate" />
+                <div class="grid2" style="margin-top:14px"><button type="button" id="lstmAuto">▶ Auto</button><button type="button" id="lstmPreset" class="primary">Escenario memoria larga</button></div>
+              </div>
+              <div class="card soft">
+                <h3>Cálculo didáctico</h3>
+                <pre class="formula"><code id="lstmFormula">C_t = f*C_(t-1) + i*Ĉ_t
+h_t = o*tanh(C_t)</code></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="comparacion">
+          <h2>3. Comparación de arquitecturas</h2>
+          <div class="card soft">
+            <table class="table">
+              <tr><th>Arquitectura</th><th>Fortaleza</th><th>Limitación</th><th>Uso típico</th></tr>
+              <tr><td>RNN simple</td><td>Introduce memoria temporal con una estructura relativamente simple.</td><td>Sufre con dependencias largas por vanishing gradient.</td><td>Secuencias cortas y explicación introductoria.</td></tr>
+              <tr><td>LSTM</td><td>Regula memoria con compuertas y estado de celda.</td><td>Más parámetros y mayor costo que una RNN simple.</td><td>Texto, series temporales, señales y secuencias con dependencias largas.</td></tr>
+              <tr><td>GRU</td><td>Alternativa más compacta que LSTM, con buen desempeño práctico.</td><td>Menos explícita conceptualmente que LSTM para explicar memoria separada.</td><td>Aplicaciones donde se busca eficiencia y buen rendimiento.</td></tr>
+              <tr><td>Transformers</td><td>Usan atención para modelar relaciones largas con alta paralelización.</td><td>Requieren más datos y cómputo; no siempre son la opción más simple.</td><td>Lenguaje natural, modelos generativos, embeddings y tareas modernas de secuencias.</td></tr>
+            </table>
+            <div class="notice"><strong>Mensaje estratégico:</strong> las RNN y LSTM siguen siendo muy útiles para comprender la noción de memoria secuencial. Aunque los Transformers dominen muchas tareas actuales, la lógica de estado, contexto y dependencia temporal se entiende con claridad a partir de RNN y LSTM.</div>
+          </div>
+        </section>
+
+        <section id="practica">
+          <h2>4. Actividad práctica sugerida en Colab</h2>
+          <div class="card soft">
+            <p>Después de recorrer las simulaciones, conviene pasar a una práctica simple. El objetivo no es entrenar un modelo enorme, sino conectar la intuición visual con tensores, capas recurrentes y forma de los datos.</p>
+            <div class="timeline">
+              <div class="step"><div class="time">Paso 1</div><div><strong>Construir una secuencia sintética.</strong><br>Generar una serie temporal simple con tendencia, ruido y estacionalidad.</div></div>
+              <div class="step"><div class="time">Paso 2</div><div><strong>Transformar la serie en ventanas.</strong><br>Convertir la serie en pares X/y, donde X contiene varios pasos anteriores y y contiene el siguiente valor.</div></div>
+              <div class="step"><div class="time">Paso 3</div><div><strong>Entrenar una RNN simple.</strong><br>Observar qué aprende y cómo se comporta cuando la dependencia es corta.</div></div>
+              <div class="step"><div class="time">Paso 4</div><div><strong>Comparar con LSTM.</strong><br>Repetir el ejercicio y discutir si la memoria regulada mejora la predicción.</div></div>
+            </div>
+            <h3>Código base para mostrar la forma de los tensores</h3>
+            <pre><code># X debe tener forma: (muestras, pasos_temporales, features)
+# Ejemplo: 1000 secuencias, 20 pasos hacia atrás, 1 variable por paso
+X.shape  # (1000, 20, 1)
+y.shape  # (1000, 1)</code></pre>
+          </div>
+        </section>
+
+        <section id="errores">
+          <h2>5. Errores frecuentes y cómo corregirlos</h2>
+          <div class="card soft">
+            <div class="grid2">
+              <div class="notice bad"><strong>Error:</strong> pensar que una RNN guarda literalmente todo el pasado.<br><strong>Corrección:</strong> guarda una representación comprimida y entrenable.</div>
+              <div class="notice bad"><strong>Error:</strong> creer que LSTM elimina por completo el vanishing gradient.<br><strong>Corrección:</strong> lo mitiga mediante una vía de memoria más estable, pero no resuelve todos los problemas.</div>
+              <div class="notice warn"><strong>Error:</strong> usar LSTM sin preparar correctamente la forma de entrada.<br><strong>Corrección:</strong> recordar la estructura: muestras, pasos temporales y variables.</div>
+              <div class="notice warn"><strong>Error:</strong> comparar modelos solo por exactitud final.<br><strong>Corrección:</strong> analizar longitud de dependencia, estabilidad, costo, interpretabilidad y objetivo de negocio.</div>
+            </div>
+          </div>
+        </section>
+
+        <section id="quiz" class="card soft">
+          <h2>6. Quiz de cierre</h2>
+          <p>Usá estas preguntas para verificar comprensión al final de la clase.</p>
+          <div id="quizBox"></div>
+          <div class="notice" id="quizFeedback">Seleccioná una respuesta en cada pregunta para ver la corrección.</div>
+        </section>
+
+        <section id="checklist">
+          <h2>7. Checklist técnico del archivo interactivo</h2>
+          <div class="card soft">
+            <div class="grid2">
+              <div class="mini"><strong>HTML único</strong><small>Índice, teoría, simulaciones y cierre en un solo archivo.</small></div>
+              <div class="mini"><strong>IDs únicos</strong><small>Las simulaciones usan prefijos separados para evitar conflictos de JavaScript.</small></div>
+              <div class="mini"><strong>Responsive</strong><small>La página se adapta a escritorio, tablet y móvil.</small></div>
+              <div class="mini"><strong>Presentación</strong><small>Incluye modo oscuro, modo presentación e impresión.</small></div>
+              <div class="mini"><strong>Interactividad</strong><small>RNN paso a paso, gradiente con gráfico SVG y LSTM con sliders.</small></div>
+              <div class="mini"><strong>Didáctica</strong><small>Incluye explicación, fórmulas, errores frecuentes y práctica.</small></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="footer">Clase interactiva RNN y LSTM · Archivo autocontenido HTML/CSS/JavaScript</div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    'use strict';
+    const $ = (id) => document.getElementById(id);
+    const root = document.documentElement;
+
+    function initTheme(){
+      const btn = $('themeBtn');
+      const picker = $('themePicker');
+      const options = Array.from(document.querySelectorAll('[data-theme-choice]'));
+      const names = {
+        light:'Claro',
+        dark:'Oscuro',
+        ocean:'Azul profundo',
+        violet:'Violeta',
+        forest:'Verde',
+        amber:'Ámbar',
+        contrast:'Alto contraste'
+      };
+      const stored = localStorage.getItem('rnn_lstm_theme') || 'light';
+      setTheme(names[stored] ? stored : 'light');
+
+      btn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const isOpen = !picker.classList.contains('open');
+        picker.classList.toggle('open', isOpen);
+        btn.setAttribute('aria-expanded', String(isOpen));
+      });
+
+      options.forEach(option => {
+        option.addEventListener('click', () => {
+          setTheme(option.dataset.themeChoice);
+          closeThemeMenu();
+        });
+      });
+
+      document.addEventListener('click', (event) => {
+        if(!picker.contains(event.target)) closeThemeMenu();
+      });
+      document.addEventListener('keydown', (event) => {
+        if(event.key === 'Escape') closeThemeMenu();
+      });
+
+      function closeThemeMenu(){
+        picker.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+      function setTheme(theme){
+        root.setAttribute('data-theme', theme);
+        localStorage.setItem('rnn_lstm_theme', theme);
+        btn.textContent = `🎨 Tema: ${names[theme]}`;
+        options.forEach(option => {
+          option.setAttribute('aria-pressed', String(option.dataset.themeChoice === theme));
+        });
+      }
+    }
+
+    function initPresentationMode(){
+      const btn = $('presentBtn');
+      btn.addEventListener('click', () => {
+        document.body.classList.toggle('presentation');
+        btn.textContent = document.body.classList.contains('presentation') ? '🧭 Modo normal' : '🎬 Modo presentación';
+      });
+    }
+
+    function initClickableCards(){
+      document.querySelectorAll('[data-jump]').forEach(card => {
+        card.addEventListener('click', () => {
+          document.querySelector(card.dataset.jump)?.scrollIntoView({behavior:'smooth', block:'start'});
+        });
+      });
+    }
+
+    function initTocSearch(){
+      const input = $('tocSearch');
+      const links = Array.from(document.querySelectorAll('#quickToc a'));
+      input.addEventListener('input', () => {
+        const q = input.value.trim().toLowerCase();
+        links.forEach(link => {
+          const visible = link.textContent.toLowerCase().includes(q);
+          link.classList.toggle('hidden-el', !visible);
+        });
+      });
+    }
+
+    function pct(value){
+      return Math.max(0, Math.min(100, value));
+    }
+
+    function initRnnSim(){
+      const words = ['El', 'precio', 'del', 'dólar', 'sube'];
+      const outputs = ['contexto', 'sujeto', 'relación', 'mercado', 'tendencia'];
+      const explanations = [
+        'La red recibe el primer token. La memoria empieza a formarse y todavía es muy local.',
+        'Ahora combina “precio” con lo que recuerda de “El”. La secuencia empieza a tener un objeto económico.',
+        'La palabra “del” aporta estructura gramatical más que contenido semántico, pero ayuda a conectar términos.',
+        '“dólar” cambia el contexto: aparece mercado, tipo de cambio y una posible lectura económica.',
+        '“sube” completa el sentido. La memoria acumulada permite interpretar una tendencia y no solo una palabra aislada.'
+      ];
+      let step = -1;
+      let timer = null;
+      const tokenBox = $('rnnTokens');
+      const hiddenBox = $('rnnHidden');
+      const outputBox = $('rnnOutput');
+      const trail = $('rnnTrail');
+
+      tokenBox.innerHTML = words.map((w,i)=>`<div class="node token" id="rnnTok${i}">${w}</div>`).join('');
+      hiddenBox.innerHTML = words.map((_,i)=>`<div class="node hidden" id="rnnHid${i}">h<sub>${i+1}</sub></div>`).join('');
+      outputBox.innerHTML = outputs.map((w,i)=>`<div class="node output" id="rnnOut${i}">${w}</div>`).join('');
+
+      function render(){
+        words.forEach((w,i)=>{
+          const active = i === step;
+          const done = i < step;
+          $('rnnTok'+i).classList.toggle('active', active);
+          $('rnnHid'+i).classList.toggle('active', active);
+          $('rnnOut'+i).classList.toggle('active', active);
+          $('rnnTok'+i).classList.toggle('done', done);
+          $('rnnHid'+i).classList.toggle('done', done);
+          $('rnnOut'+i).classList.toggle('done', done);
+        });
+        trail.innerHTML = words.map((w,i)=>`<span class="chip ${i<=step?'on':''}">${w}</span>`).join('');
+        const labelStep = Math.max(0, step + 1);
+        $('rnnStepLabel').textContent = `Paso ${labelStep} / ${words.length}`;
+        $('rnnProgress').style.width = `${pct((labelStep / words.length) * 100)}%`;
+        $('rnnExplain').textContent = step < 0 ? 'Presioná “Siguiente” para iniciar la lectura secuencial.' : explanations[step];
+      }
+      function next(){ step = Math.min(words.length - 1, step + 1); render(); }
+      function prev(){ step = Math.max(-1, step - 1); render(); }
+      function reset(){ step = -1; stop(); render(); }
+      function stop(){ if(timer){ clearInterval(timer); timer = null; $('rnnPlay').textContent = '▶ Auto'; } }
+      function play(){
+        if(timer){ stop(); return; }
+        $('rnnPlay').textContent = '⏸ Pausar';
+        timer = setInterval(()=>{
+          if(step >= words.length - 1){ reset(); return; }
+          next();
+        }, 1200);
+      }
+      $('rnnNext').addEventListener('click', next);
+      $('rnnPrev').addEventListener('click', prev);
+      $('rnnReset').addEventListener('click', reset);
+      $('rnnPlay').addEventListener('click', play);
+      render();
+    }
+
+    function initGradientSim(){
+      let t = 0;
+      let timer = null;
+      const len = $('gradLen');
+      const decay = $('gradDecay');
+      const keep = $('gradKeep');
+
+      function drawSvg(maxT, rnnDecay, lstmKeep){
+        const svg = $('gradSvg');
+        const width = 760;
+        const height = 230;
+        const pad = 28;
+        const points = (factor) => Array.from({length:maxT+1}, (_,i)=>{
+          const x = pad + (i/maxT)*(width-pad*2);
+          const y = height - pad - (Math.pow(factor,i))*(height-pad*2);
+          return `${x.toFixed(1)},${y.toFixed(1)}`;
+        }).join(' ');
+        const markerX = pad + (t/maxT)*(width-pad*2);
+        svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        svg.innerHTML = `
+          <line x1="${pad}" y1="${height-pad}" x2="${width-pad}" y2="${height-pad}" stroke="var(--line)" stroke-width="2" />
+          <line x1="${pad}" y1="${pad}" x2="${pad}" y2="${height-pad}" stroke="var(--line)" stroke-width="2" />
+          <polyline points="${points(rnnDecay)}" fill="none" stroke="var(--bad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+          <polyline points="${points(lstmKeep)}" fill="none" stroke="var(--good)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+          <line x1="${markerX}" y1="${pad}" x2="${markerX}" y2="${height-pad}" stroke="var(--accent)" stroke-width="3" stroke-dasharray="7 7" />
+          <text x="${pad+6}" y="24" fill="var(--good)" font-weight="900">LSTM conceptual</text>
+          <text x="${pad+6}" y="48" fill="var(--bad)" font-weight="900">RNN simple</text>
+          <text x="${width-pad-128}" y="${height-8}" fill="var(--muted)" font-weight="800">pasos temporales</text>`;
+      }
+
+      function render(){
+        const maxT = Number(len.value);
+        const d = Number(decay.value) / 100;
+        const k = Number(keep.value) / 100;
+        t = Math.min(t, maxT);
+        const rnn = pct(100 * Math.pow(d, t));
+        const lstm = pct(100 * Math.pow(k, t));
+        $('gradLenLabel').textContent = maxT;
+        $('gradDecayLabel').textContent = d.toFixed(2);
+        $('gradKeepLabel').textContent = k.toFixed(2);
+        $('gradRnnFill').style.width = rnn + '%';
+        $('gradLstmFill').style.width = lstm + '%';
+        $('gradRnnPct').textContent = rnn.toFixed(1) + '%';
+        $('gradLstmPct').textContent = lstm.toFixed(1) + '%';
+        $('gradStepLabel').textContent = `${t} / ${maxT}`;
+        $('gradGapLabel').textContent = `${(lstm-rnn).toFixed(1)} puntos`;
+        if(t === 0) $('gradExplain').textContent = 'Al comienzo, la referencia “El libro” está completamente disponible.';
+        else if(rnn < 15) $('gradExplain').textContent = 'La RNN simple ya casi no conserva la señal inicial. Este es el efecto didáctico del vanishing gradient.';
+        else $('gradExplain').textContent = 'A medida que avanzan los pasos, la memoria de la RNN simple cae más rápido que la memoria regulada.';
+        drawSvg(maxT, d, k);
+      }
+      function next(){ t = Math.min(Number(len.value), t + 1); render(); }
+      function prev(){ t = Math.max(0, t - 1); render(); }
+      function reset(){ t = 0; stop(); render(); }
+      function stop(){ if(timer){ clearInterval(timer); timer = null; $('gradPlay').textContent = '▶ Auto'; } }
+      function play(){
+        if(timer){ stop(); return; }
+        $('gradPlay').textContent = '⏸ Pausar';
+        timer = setInterval(()=>{
+          if(t >= Number(len.value)){ reset(); return; }
+          next();
+        }, 700);
+      }
+      [len,decay,keep].forEach(el => el.addEventListener('input', render));
+      $('gradNext').addEventListener('click', next);
+      $('gradPrev').addEventListener('click', prev);
+      $('gradReset').addEventListener('click', reset);
+      $('gradPlay').addEventListener('click', play);
+      render();
+    }
+
+    function initLstmSim(){
+      let timer = null;
+      let direction = 1;
+      const ids = ['lstmForget','lstmInput','lstmOutput','lstmOld','lstmCandidate'];
+      function val(id){ return Number($(id).value) / 100; }
+      function render(){
+        const f = val('lstmForget');
+        const i = val('lstmInput');
+        const o = val('lstmOutput');
+        const old = val('lstmOld');
+        const cand = val('lstmCandidate');
+        const kept = f * old;
+        const newInfo = i * cand;
+        const cell = Math.min(1, kept + newInfo);
+        const out = o * Math.tanh(cell);
+        $('lstmFLabel').textContent = f.toFixed(2); $('lstmILabel').textContent = i.toFixed(2); $('lstmOLabel').textContent = o.toFixed(2);
+        $('lstmOldLabel').textContent = old.toFixed(2); $('lstmCandLabel').textContent = cand.toFixed(2);
+        $('lstmFView').textContent = f.toFixed(2); $('lstmIView').textContent = i.toFixed(2); $('lstmOView').textContent = o.toFixed(2);
+        $('lstmOldFill').style.width = (old*100)+'%'; $('lstmCandFill').style.width = (cand*100)+'%';
+        $('lstmOldPct').textContent = (old*100).toFixed(0)+'%'; $('lstmCandPct').textContent = (cand*100).toFixed(0)+'%';
+        $('lstmKeptText').textContent = (kept*100).toFixed(1)+'%'; $('lstmNewText').textContent = (newInfo*100).toFixed(1)+'%';
+        $('lstmCellFill').style.width = (cell*100)+'%'; $('lstmCellPct').textContent = (cell*100).toFixed(1)+'%';
+        $('lstmOutFill').style.width = (out*100)+'%'; $('lstmOutPct').textContent = (out*100).toFixed(1)+'%';
+        $('lstmFormula').textContent = `C_t = (${f.toFixed(2)} × ${old.toFixed(2)}) + (${i.toFixed(2)} × ${cand.toFixed(2)}) = ${cell.toFixed(3)}\nh_t = ${o.toFixed(2)} × tanh(${cell.toFixed(3)}) = ${out.toFixed(3)}`;
+      }
+      function stop(){ if(timer){ clearInterval(timer); timer = null; $('lstmAuto').textContent = '▶ Auto'; } }
+      function auto(){
+        if(timer){ stop(); return; }
+        $('lstmAuto').textContent = '⏸ Pausar';
+        timer = setInterval(()=>{
+          const slider = $('lstmForget');
+          let v = Number(slider.value) + direction * 3;
+          if(v >= 100 || v <= 0){ direction *= -1; v = Math.max(0, Math.min(100, v)); }
+          slider.value = v;
+          render();
+        }, 120);
+      }
+      function preset(){
+        $('lstmForget').value = 95; $('lstmInput').value = 35; $('lstmOutput').value = 80; $('lstmOld').value = 85; $('lstmCandidate').value = 30;
+        render();
+      }
+      ids.forEach(id => $(id).addEventListener('input', render));
+      $('lstmAuto').addEventListener('click', auto);
+      $('lstmPreset').addEventListener('click', preset);
+      render();
+    }
+
+    function initQuiz(){
+      const questions = [
+        {q:'¿Qué representa el estado oculto h_t en una RNN?', options:['Una copia literal de todos los datos anteriores','Una representación comprimida del contexto procesado','La tasa de aprendizaje del optimizador'], answer:1},
+        {q:'¿Qué problema aparece cuando el gradiente se vuelve muy pequeño en secuencias largas?', options:['Vanishing gradient','Overfitting por batch size','Regularización L2 excesiva'], answer:0},
+        {q:'¿Qué compuerta LSTM decide cuánto pasado conservar?', options:['Input gate','Output gate','Forget gate'], answer:2},
+        {q:'¿Cuál es la forma típica de entrada para una RNN/LSTM en deep learning?', options:['(features, clases)','(muestras, pasos temporales, features)','(filas, columnas, canales, profundidad)'], answer:1}
+      ];
+      const box = $('quizBox');
+      box.innerHTML = questions.map((item, qi) => `
+        <div class="mini" style="margin-bottom:14px">
+          <strong>${qi+1}. ${item.q}</strong>
+          <div>${item.options.map((op, oi)=>`<button type="button" class="quiz-option" data-q="${qi}" data-o="${oi}">${op}</button>`).join('')}</div>
+        </div>`).join('');
+      box.addEventListener('click', (ev) => {
+        const btn = ev.target.closest('.quiz-option');
+        if(!btn) return;
+        const qi = Number(btn.dataset.q);
+        const oi = Number(btn.dataset.o);
+        document.querySelectorAll(`.quiz-option[data-q="${qi}"]`).forEach(b => b.classList.remove('correct','wrong'));
+        if(oi === questions[qi].answer){
+          btn.classList.add('correct');
+          $('quizFeedback').textContent = 'Correcto. Esa respuesta refleja la interpretación conceptual adecuada.';
+        } else {
+          btn.classList.add('wrong');
+          document.querySelector(`.quiz-option[data-q="${qi}"][data-o="${questions[qi].answer}"]`).classList.add('correct');
+          $('quizFeedback').textContent = 'Revisá la opción marcada en verde: es la respuesta correcta.';
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+      initPresentationMode();
+      initClickableCards();
+      initTocSearch();
+      initRnnSim();
+      initGradientSim();
+      initLstmSim();
+      initQuiz();
+    });
+  </script>
+</body>
+</html>
