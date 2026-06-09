@@ -4638,5 +4638,380 @@ Las RNN y LSTM son fundamentales para comprender la evolución del aprendizaje p
 La RNN simple muestra la intuición básica: procesar una secuencia paso a paso y actualizar una memoria interna. La LSTM profundiza esa idea al incorporar mecanismos explícitos de control sobre la información. Por eso, estudiar RNN y LSTM no solo permite entender modelos secuenciales clásicos, sino también construir una base conceptual sólida para abordar arquitecturas modernas como GRU, mecanismos de atención y Transformers.
 
 
+### Redes Neuronales Convolucionales, Visión Computacional y Representaciones Jerárquicas
 
+Esta sección presenta un recurso interactivo completo para estudiar **redes neuronales convolucionales**, con especial foco en **visión computacional**, **convolución**, **filtros**, **padding**, **stride**, **canales RGB**, **pooling**, **arquitecturas CNN profundas** y **neural style transfer**. El recorrido está diseñado para comprender por qué las imágenes requieren modelos capaces de explotar estructura espacial, cómo un filtro recorre una matriz de píxeles y de qué manera las CNN construyen representaciones jerárquicas desde bordes simples hasta patrones visuales más complejos.
+
+El material combina teoría, visualizaciones, simulaciones dinámicas y una guía práctica de trabajo. La clase parte del problema de representar una imagen como matriz, avanza hacia la operación de **convolución**, analiza el papel de los **filtros detectores de bordes**, introduce los efectos de **padding** y **stride**, explica la convolución sobre imágenes **RGB multicanal**, incorpora el mecanismo de **max pooling**, desarrolla la arquitectura general de una CNN y culmina con una aplicación avanzada: **neural style transfer**. Además, incluye una guía sugerida para Colab orientada a conectar la intuición visual con implementación práctica.
+
+| Recurso | Acceso |
+|---|---|
+| **CNN: índice completo, teoría y simulaciones interactivas** <br><br> <details><summary><strong>Resumen:</strong> <em>(haz clic para expandir/colapsar)</em></summary><p>Clase interactiva autocontenida sobre redes neuronales convolucionales. El recurso reúne fundamentos de imágenes como matrices, convolución 2D, filtros 3×3, mapas de características, detección de bordes, padding, stride, canales RGB, convolución multicanal, max pooling, arquitectura CNN profunda, capas convolucionales, capas totalmente conectadas y neural style transfer. Incluye simulaciones para visualizar el cálculo de una convolución 6×6 con filtro 3×3, la detección de bordes verticales y horizontales, el impacto del padding y el stride en el tamaño de salida, la lógica de una convolución RGB, la reducción espacial mediante max pooling y el flujo general de una CNN desde la imagen de entrada hasta la clasificación o representación final.</p></details> | [![Ver Lección Interactiva](https://img.shields.io/badge/Ver%20Lección-Interactiva-9cf?style=for-the-badge&logo=html5)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/f87afe2290b3ca428d0910ea45a613ba36ac97e4/src/classroom/module_01_eda/html/CNN.html) <br><br> [![Ver en GitHub](https://img.shields.io/badge/Ver%20Archivo-GitHub-181717?style=for-the-badge&logo=github)](https://github.com/sgevatschnaider/data-science-for-business-models/blob/f87afe2290b3ca428d0910ea45a613ba36ac97e4/src/classroom/module_01_eda/html/CNN.html) |
+
+---
+
+## Mapa general del recorrido
+
+| Etapa | Eje conceptual | Objetivo de aprendizaje |
+|---|---|---|
+| **1** | Imagen como matriz | Comprender que una imagen digital puede representarse como una matriz de valores numéricos. |
+| **2** | Limitaciones de redes densas | Identificar por qué una red totalmente conectada pierde eficiencia al trabajar con píxeles individuales. |
+| **3** | Convolución 2D | Entender cómo un filtro recorre una imagen y produce un mapa de características. |
+| **4** | Filtros y kernels | Interpretar los filtros como detectores de patrones locales, bordes, texturas o transiciones. |
+| **5** | Mapas de características | Comprender que la salida de una convolución resume dónde aparece cierto patrón visual. |
+| **6** | Padding | Analizar cómo el agregado de bordes artificiales permite conservar información espacial. |
+| **7** | Stride | Estudiar cómo el salto del filtro modifica el tamaño de salida y el costo computacional. |
+| **8** | Canales RGB | Comprender que una imagen real suele tener varios canales y que el filtro debe cubrir toda su profundidad. |
+| **9** | Max pooling | Explicar cómo se reduce la dimensión espacial conservando la activación más relevante de cada región. |
+| **10** | Arquitectura CNN profunda | Visualizar cómo se combinan capas convolucionales, activaciones, pooling, flatten y capas densas. |
+| **11** | Neural style transfer | Conectar las CNN con la extracción de contenido y estilo a partir de representaciones profundas. |
+| **12** | Práctica aplicada | Vincular la intuición visual con implementación, entrenamiento y evaluación en Colab. |
+
+---
+
+## Mapa conceptual del módulo
+
+<details>
+<summary><strong>Ver mapa conceptual completo</strong> <em>(haz clic para expandir/colapsar)</em></summary>
+
+<pre><code>CNN
+│
+├── 1. Imagen digital
+│   ├── Píxeles
+│   ├── Matriz numérica
+│   ├── Intensidad
+│   ├── Ancho
+│   ├── Alto
+│   ├── Canal único
+│   └── Canales RGB
+│
+├── 2. Problema de las redes densas
+│   ├── Demasiados parámetros
+│   ├── Pérdida de estructura espacial
+│   ├── Ausencia de localidad
+│   ├── Sensibilidad a desplazamientos
+│   └── Necesidad de extracción visual eficiente
+│
+├── 3. Convolución
+│   ├── Imagen de entrada
+│   ├── Filtro o kernel
+│   ├── Ventana local
+│   ├── Producto elemento a elemento
+│   ├── Suma ponderada
+│   ├── Sesgo
+│   └── Mapa de características
+│
+├── 4. Filtros visuales
+│   ├── Detector de bordes verticales
+│   ├── Detector de bordes horizontales
+│   ├── Detector de texturas
+│   ├── Detector de esquinas
+│   └── Patrones aprendidos durante el entrenamiento
+│
+├── 5. Parámetros espaciales
+│   ├── Padding
+│   │   ├── Conserva bordes
+│   │   ├── Aumenta artificialmente la matriz
+│   │   └── Puede preservar tamaño de salida
+│   │
+│   └── Stride
+│       ├── Define el salto del filtro
+│       ├── Reduce resolución si aumenta
+│       └── Disminuye costo computacional
+│
+├── 6. Convolución multicanal
+│   ├── Canal rojo
+│   ├── Canal verde
+│   ├── Canal azul
+│   ├── Filtro con profundidad completa
+│   ├── Suma sobre canales
+│   └── Un mapa 2D por filtro
+│
+├── 7. Activación
+│   ├── ReLU
+│   ├── No linealidad
+│   ├── Conservación de valores positivos
+│   └── Anulación de valores negativos
+│
+├── 8. Pooling
+│   ├── Max pooling
+│   ├── Average pooling
+│   ├── Reducción espacial
+│   ├── Resumen local
+│   └── Invariancia parcial a desplazamientos
+│
+├── 9. Arquitectura CNN
+│   ├── Capa convolucional
+│   ├── Función de activación
+│   ├── Capa de pooling
+│   ├── Bloques repetidos
+│   ├── Flatten
+│   ├── Capas densas
+│   └── Salida de clasificación o regresión
+│
+├── 10. Representaciones jerárquicas
+│   ├── Primeras capas
+│   │   ├── Bordes
+│   │   ├── Líneas
+│   │   └── Contrastes simples
+│   │
+│   ├── Capas intermedias
+│   │   ├── Texturas
+│   │   ├── Formas
+│   │   └── Partes de objetos
+│   │
+│   └── Capas profundas
+│       ├── Objetos
+│       ├── Escenas
+│       └── Conceptos visuales complejos
+│
+├── 11. Neural style transfer
+│   ├── Imagen de contenido
+│   ├── Imagen de estilo
+│   ├── Representaciones profundas
+│   ├── Pérdida de contenido
+│   ├── Pérdida de estilo
+│   └── Imagen generada
+│
+└── 12. Integración didáctica
+    ├── Simulación de convolución
+    ├── Visualización de filtros
+    ├── Análisis de tamaño de salida
+    ├── Simulación RGB
+    ├── Simulación de pooling
+    ├── Arquitectura completa
+    ├── Práctica en Colab
+    └── Evaluación conceptual</code></pre>
+
+</details>
+
+---
+
+## Síntesis conceptual
+
+Una **red neuronal convolucional** es una arquitectura de aprendizaje profundo diseñada para procesar datos con estructura espacial, especialmente imágenes. A diferencia de una red densa tradicional, que conecta todos los píxeles con todas las neuronas y tiende a perder la organización espacial de la imagen, una CNN trabaja con **regiones locales**. Esto significa que observa pequeñas ventanas de la imagen, aplica filtros compartidos y construye mapas que indican dónde aparecen ciertos patrones.
+
+La operación central de una CNN es la **convolución**. Un filtro, también llamado **kernel**, se desplaza sobre la imagen y calcula productos elemento a elemento entre sus valores y los valores de la región observada. Luego suma esos productos y genera un valor en la salida. Cuando este procedimiento se repite en toda la imagen, se obtiene un **mapa de características**. Ese mapa no es una copia de la imagen original, sino una representación que resalta un tipo particular de patrón, como bordes, líneas, texturas o formas.
+
+A medida que la red se profundiza, las primeras capas suelen detectar patrones simples, mientras que las capas intermedias y profundas combinan esos patrones para representar estructuras más abstractas. Esta es una de las razones por las cuales las CNN son tan importantes para tareas de visión computacional como clasificación de imágenes, detección de objetos, segmentación, reconocimiento facial, análisis médico por imágenes, inspección industrial y procesamiento visual avanzado.
+
+---
+
+## Simulaciones incluidas
+
+| Simulación | Concepto central | Qué permite observar |
+|---|---|---|
+| **Convolución 6×6 con filtro 3×3** | Operación de convolución | Cómo un filtro recorre una matriz, calcula productos locales y genera una salida 4×4. |
+| **Filtros de bordes** | Detección de patrones visuales | Cómo distintos kernels resaltan bordes verticales u horizontales según la transición de intensidad. |
+| **Padding y stride** | Control del tamaño de salida | Cómo el relleno y el salto del filtro modifican la resolución del mapa de características. |
+| **Convolución RGB multicanal** | Profundidad de entrada | Cómo un filtro 3×3×3 procesa simultáneamente canales rojo, verde y azul. |
+| **Max pooling** | Reducción espacial | Cómo se resume una región local conservando la activación máxima. |
+| **Arquitectura CNN profunda** | Flujo completo del modelo | Cómo se encadenan convolución, activación, pooling, flatten y capas densas. |
+| **Neural style transfer** | Representaciones profundas reutilizables | Cómo una CNN puede separar contenido y estilo en distintas capas de representación. |
+
+---
+
+## Fórmulas principales
+
+### Convolución 2D
+
+<pre><code>S(i, j) = (I * K)(i, j) = Σ_m Σ_n I(i + m, j + n) · K(m, n)</code></pre>
+
+| Elemento | Significado | Interpretación |
+|---|---|---|
+| `I` | Imagen o matriz de entrada | Contiene los valores de píxeles o activaciones previas. |
+| `K` | Filtro o kernel | Matriz pequeña de pesos que detecta un patrón local. |
+| `S(i, j)` | Valor del mapa de salida | Resultado de aplicar el filtro en la posición `(i, j)`. |
+| `m, n` | Índices internos del filtro | Recorren las posiciones dentro del kernel. |
+
+### Tamaño de salida con padding y stride
+
+<pre><code>O = floor((N + 2P - F) / S) + 1</code></pre>
+
+| Elemento | Significado | Interpretación |
+|---|---|---|
+| `O` | Tamaño de salida | Dimensión espacial resultante después de la convolución. |
+| `N` | Tamaño de entrada | Alto o ancho de la imagen original. |
+| `P` | Padding | Cantidad de relleno agregado en los bordes. |
+| `F` | Tamaño del filtro | Alto o ancho del kernel. |
+| `S` | Stride | Salto con el que se desplaza el filtro. |
+
+### Convolución multicanal
+
+<pre><code>S(i, j) = Σ_c Σ_m Σ_n I_c(i + m, j + n) · K_c(m, n)</code></pre>
+
+| Elemento | Significado | Interpretación |
+|---|---|---|
+| `c` | Canal | En imágenes RGB puede representar rojo, verde o azul. |
+| `I_c` | Entrada del canal `c` | Matriz correspondiente a un canal de la imagen. |
+| `K_c` | Filtro aplicado al canal `c` | Parte del kernel asociada a ese canal. |
+| `S(i, j)` | Salida 2D | Un filtro multicanal produce un único mapa de características. |
+
+### Max pooling
+
+<pre><code>Y(i, j) = max(X_region)</code></pre>
+
+| Elemento | Significado | Interpretación |
+|---|---|---|
+| `X_region` | Región local de entrada | Ventana, por ejemplo 2×2, sobre el mapa de características. |
+| `Y(i, j)` | Salida del pooling | Valor máximo de esa región local. |
+| `max` | Operación de selección | Conserva la activación más fuerte del área analizada. |
+
+---
+
+## Componentes principales de una CNN
+
+| Componente | Función | Interpretación didáctica |
+|---|---|---|
+| **Entrada** | Recibe la imagen como matriz o tensor. | Puede ser una imagen en escala de grises o una imagen RGB con varios canales. |
+| **Filtro o kernel** | Recorre regiones locales de la imagen. | Funciona como detector de patrones visuales. |
+| **Capa convolucional** | Produce mapas de características. | Extrae información relevante sin destruir la estructura espacial. |
+| **Función ReLU** | Introduce no linealidad. | Permite que la red aprenda relaciones más complejas. |
+| **Pooling** | Reduce dimensiones espaciales. | Resume información local y disminuye costo computacional. |
+| **Flatten** | Convierte mapas en vector. | Prepara la salida convolucional para capas densas. |
+| **Capa densa** | Integra características aprendidas. | Combina la información visual para clasificar o predecir. |
+| **Softmax o salida final** | Produce probabilidades o valores finales. | Permite interpretar la decisión del modelo. |
+
+---
+
+## Comparación entre red densa y CNN
+
+| Aspecto | Red densa tradicional | Red neuronal convolucional |
+|---|---|---|
+| **Tratamiento de la imagen** | Convierte la imagen en un vector plano. | Conserva la estructura espacial de alto, ancho y canales. |
+| **Cantidad de parámetros** | Puede crecer de manera excesiva con imágenes grandes. | Reduce parámetros mediante filtros compartidos. |
+| **Localidad espacial** | No incorpora de forma natural la idea de regiones vecinas. | Aprende patrones locales mediante ventanas. |
+| **Detección de patrones** | Aprende relaciones globales sin estructura visual explícita. | Aprende bordes, texturas, formas y objetos de manera jerárquica. |
+| **Eficiencia** | Menos eficiente para imágenes. | Más eficiente y adecuada para visión computacional. |
+| **Uso típico** | Datos tabulares o vectores ya procesados. | Imágenes, video, señales espaciales y mapas. |
+
+---
+
+## Comparación entre CNN, RNN y Transformers
+
+| Arquitectura | Fortaleza | Limitación | Uso típico |
+|---|---|---|---|
+| **CNN** | Extrae patrones espaciales locales de manera eficiente. | Puede requerir muchas capas para capturar relaciones globales amplias. | Imágenes, visión computacional, mapas, señales espaciales. |
+| **RNN/LSTM** | Procesa dependencias temporales paso a paso. | Tiene dificultad para paralelizar y puede sufrir problemas de memoria larga. | Series temporales, texto secuencial, señales temporales. |
+| **Transformers** | Modelan relaciones globales mediante atención. | Suelen requerir más datos y cómputo. | NLP, visión moderna, modelos generativos, embeddings multimodales. |
+
+---
+
+## Errores frecuentes
+
+| Error frecuente | Corrección conceptual |
+|---|---|
+| Pensar que una CNN mira toda la imagen de una sola vez. | Una CNN comienza observando regiones locales y luego combina patrones en capas más profundas. |
+| Creer que los filtros siempre son diseñados manualmente. | En una CNN entrenada, los filtros se aprenden automáticamente a partir de los datos. |
+| Confundir filtro con mapa de características. | El filtro es el conjunto de pesos que se aplica; el mapa de características es la salida producida. |
+| Olvidar la profundidad en imágenes RGB. | Un filtro sobre RGB debe tener profundidad 3 y sumar la información de los tres canales. |
+| Interpretar el pooling como una simple pérdida de información. | El pooling reduce resolución, pero conserva señales relevantes y ayuda a controlar costo computacional. |
+| Usar padding y stride sin calcular la salida. | Siempre conviene verificar la dimensión resultante para evitar errores de arquitectura. |
+| Pensar que las CNN solo sirven para clasificación. | También se usan en detección, segmentación, transferencia de estilo, análisis médico, video y extracción de embeddings. |
+
+---
+
+## Actividad práctica sugerida
+
+Después de recorrer la teoría y las simulaciones, se recomienda realizar una práctica en Colab para conectar la intuición visual con código y entrenamiento real.
+
+| Paso | Actividad | Objetivo |
+|---|---|---|
+| **1** | Cargar un conjunto simple de imágenes | Trabajar con datos visuales reales o sintéticos. |
+| **2** | Inspeccionar la forma de los tensores | Comprender dimensiones como `(muestras, alto, ancho, canales)`. |
+| **3** | Aplicar filtros manuales | Visualizar bordes, contraste y mapas de características. |
+| **4** | Construir una CNN simple | Integrar capas `Conv2D`, `ReLU`, `MaxPooling2D`, `Flatten` y `Dense`. |
+| **5** | Entrenar y evaluar el modelo | Observar accuracy, pérdida y comportamiento general. |
+| **6** | Visualizar activaciones intermedias | Interpretar qué aprenden las primeras capas. |
+| **7** | Comparar variantes | Modificar filtros, padding, stride, pooling y profundidad. |
+
+Ejemplo de forma esperada de los tensores:
+
+<pre><code># X debe tener forma:
+# (muestras, alto, ancho, canales)
+
+X.shape  # ejemplo: (60000, 28, 28, 1)
+
+# y contiene la etiqueta o valor objetivo asociado a cada imagen
+
+y.shape  # ejemplo: (60000,)</code></pre>
+
+---
+
+## Preguntas de repaso
+
+<details>
+<summary><strong>Ver preguntas de comprensión</strong></summary>
+
+1. ¿Por qué una red densa tradicional no es la arquitectura más eficiente para procesar imágenes?
+
+2. ¿Qué representa una imagen digital desde el punto de vista matricial?
+
+3. ¿Qué es un filtro o kernel en una CNN?
+
+4. ¿Cómo se calcula una convolución 2D?
+
+5. ¿Qué representa un mapa de características?
+
+6. ¿Por qué un filtro puede detectar bordes verticales u horizontales?
+
+7. ¿Qué efecto tiene el padding sobre el tamaño de salida?
+
+8. ¿Qué efecto tiene el stride sobre la resolución del mapa resultante?
+
+9. ¿Por qué una imagen RGB requiere filtros con profundidad igual al número de canales?
+
+10. ¿Qué función cumple el max pooling?
+
+11. ¿Por qué las CNN aprenden representaciones jerárquicas?
+
+12. ¿Qué diferencia existe entre una capa convolucional y una capa densa?
+
+13. ¿Qué significa hacer flatten en una CNN?
+
+14. ¿Por qué neural style transfer puede interpretarse como una aplicación de representaciones profundas?
+
+15. ¿Qué errores pueden aparecer si no se calculan correctamente las dimensiones de salida?
+
+</details>
+
+---
+
+## Uso recomendado en clase
+
+Este recurso puede utilizarse como una clase visual completa. Una secuencia didáctica posible es:
+
+1. Comenzar con la pregunta: **¿por qué una imagen no debería tratarse simplemente como una fila de números?**
+
+2. Mostrar una imagen como matriz de píxeles y explicar la diferencia entre escala de grises y RGB.
+
+3. Presentar la limitación de una red densa frente a imágenes de alta dimensión.
+
+4. Explicar la convolución como una operación local entre una ventana de la imagen y un filtro.
+
+5. Usar la simulación de convolución 6×6 con filtro 3×3 para visualizar el cálculo paso a paso.
+
+6. Introducir filtros de bordes para mostrar cómo se detectan transiciones visuales.
+
+7. Presentar padding y stride para comprender el control del tamaño de salida.
+
+8. Explicar la convolución RGB multicanal para conectar matrices simples con imágenes reales.
+
+9. Introducir max pooling como mecanismo de reducción espacial y resumen local.
+
+10. Mostrar la arquitectura CNN completa desde la entrada hasta la salida.
+
+11. Cerrar con neural style transfer como ejemplo avanzado de reutilización de representaciones profundas.
+
+12. Finalizar con la práctica en Colab y las preguntas de comprensión.
+
+---
+
+## Lectura integradora final
+
+Las redes neuronales convolucionales son fundamentales para comprender la evolución del aprendizaje profundo aplicado a imágenes. Su importancia no se limita a la clasificación visual, porque su verdadero aporte consiste en aprender representaciones espaciales de manera progresiva. Una CNN no necesita memorizar cada píxel de forma aislada; aprende a reconocer patrones locales, combina esos patrones en estructuras intermedias y finalmente produce representaciones más abstractas que permiten interpretar objetos, escenas o estilos visuales.
+
+La convolución muestra la intuición básica: aplicar filtros compartidos sobre regiones locales para detectar información relevante. El padding y el stride permiten controlar la resolución de la salida, mientras que el pooling resume información y reduce el costo computacional. La arquitectura completa combina estos elementos en bloques sucesivos que transforman una imagen inicial en una representación útil para clasificación, predicción o transferencia visual.
+
+Aunque los Transformers visuales y los modelos multimodales han ganado protagonismo en la inteligencia artificial actual, las CNN siguen siendo esenciales desde el punto de vista pedagógico y práctico. Estudiarlas permite entender con claridad cómo una red aprende desde patrones simples hasta conceptos visuales complejos, y ofrece una base sólida para abordar arquitecturas modernas de visión computacional, modelos generativos y sistemas de inteligencia artificial multimodal.
 
