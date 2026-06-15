@@ -4649,7 +4649,7 @@ El material combina teoría, visualizaciones, simulaciones dinámicas y una guí
 | Recurso | Acceso |
 |---|---|
 | **CNN: índice completo, teoría y simulaciones interactivas** <br><br> <details><summary><strong>Resumen:</strong> <em>(haz clic para expandir)</em></summary><p>Clase interactiva autocontenida sobre redes neuronales convolucionales. El recurso reúne fundamentos de imágenes como matrices, convolución 2D, filtros 3×3, mapas de características, detección de bordes, padding, stride, canales RGB, convolución multicanal, max pooling, arquitectura CNN profunda, capas convolucionales, capas totalmente conectadas y neural style transfer. Incluye simulaciones para visualizar el cálculo de una convolución 6×6 con filtro 3×3, la detección de bordes verticales y horizontales, el impacto del padding y el stride en el tamaño de salida, la lógica de una convolución RGB, la reducción espacial mediante max pooling y el flujo general de una CNN desde la imagen de entrada hasta la clasificación o representación final.</p></details> | [![Ver HTML](https://img.shields.io/badge/Ver%20HTML-CNN%20Interactivo-blue?style=for-the-badge&logo=google-chrome)](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sgevatschnaider/data-science-for-business-models/e3b2d88045de9fd7b02b7cdc6da9670ed366528d/src/classroom/module_01_eda/html/CCN-pagina_%C3%BAnica.html) |
-```
+
 
 ## Mapa general del recorrido
 
@@ -5015,4 +5015,370 @@ Las redes neuronales convolucionales son fundamentales para comprender la evoluc
 La convolución muestra la intuición básica: aplicar filtros compartidos sobre regiones locales para detectar información relevante. El padding y el stride permiten controlar la resolución de la salida, mientras que el pooling resume información y reduce el costo computacional. La arquitectura completa combina estos elementos en bloques sucesivos que transforman una imagen inicial en una representación útil para clasificación, predicción o transferencia visual.
 
 Aunque los Transformers visuales y los modelos multimodales han ganado protagonismo en la inteligencia artificial actual, las CNN siguen siendo esenciales desde el punto de vista pedagógico y práctico. Estudiarlas permite entender con claridad cómo una red aprende desde patrones simples hasta conceptos visuales complejos, y ofrece una base sólida para abordar arquitecturas modernas de visión computacional, modelos generativos y sistemas de inteligencia artificial multimodal.
+
+### Transformers, Atención, NLP y Modelos Generativos
+
+Esta sección presenta un recurso interactivo completo para estudiar **arquitecturas Transformer**, con especial foco en **procesamiento del lenguaje natural**, **tokenización**, **embeddings**, **codificación posicional**, **self-attention**, **Q/K/V**, **multi-head attention**, **encoder**, **decoder**, **máscara causal**, **cross-attention** y **generación de texto**. El recorrido está diseñado para comprender por qué los Transformers reemplazaron gran parte de las arquitecturas secuenciales clásicas en NLP, cómo modelan relaciones globales entre tokens y de qué manera producen representaciones contextuales útiles para clasificación, traducción, resumen, búsqueda semántica y modelos generativos.
+
+El material combina teoría, visualizaciones, simulaciones dinámicas y una guía práctica de trabajo. La clase parte del problema de representar una frase como secuencia de tokens, avanza hacia la construcción de embeddings, analiza el papel de la posición, explica el mecanismo de atención mediante Query, Key y Value, desarrolla la lógica de self-attention y multi-head attention, diferencia encoder, decoder y encoder-decoder, e incorpora una simulación de generación autoregresiva con máscara causal. Además, incluye una lectura crítica sobre la interpretación de los pesos de atención y su uso pedagógico.
+
+
+| Recurso | Acceso |
+|---|---|
+| **Transformer: página única, teoría y simulaciones interactivas** <br><br> <details><summary><strong>Resumen:</strong> <em>(haz clic para expandir)</em></summary><p>Clase interactiva autocontenida sobre Transformers aplicada a NLP. El recurso reúne fundamentos de tokenización, embeddings, posición, Query, Key, Value, producto Q·K, softmax, matriz de atención, suma ponderada de Values, multi-head attention, encoder, decoder, máscara causal, cross-attention, distribución final sobre vocabulario y lectura crítica de la atención. Incluye simulaciones visuales para observar cómo una frase se transforma en tokens, cómo cada token atiende a otros elementos del contexto, cómo cambian los pesos según distintas cabezas de atención y cómo un decoder genera texto paso a paso sin mirar tokens futuros.</p></details> | [![Ver HTML](https://img.shields.io/badge/Ver%20HTML-Transformer%20Interactivo-blue?style=for-the-badge&logo=google-chrome)](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sgevatschnaider/data-science-for-business-models/a3e43fd64c5ff057c3654476bc97cc4d0fbf935e/src/classroom/module_01_eda/html/Transformer_pagina_%C3%BAnica.html) |
+
+---
+
+## Mapa general del recorrido
+
+| Etapa | Eje conceptual | Objetivo de aprendizaje |
+|---|---|---|
+| **1** | Texto como secuencia | Comprender que una frase debe transformarse en unidades procesables por el modelo. |
+| **2** | Tokenización | Identificar cómo el texto se divide en tokens o subpalabras. |
+| **3** | Embeddings | Entender cómo cada token se representa como un vector numérico. |
+| **4** | Codificación posicional | Comprender por qué el modelo necesita información de orden. |
+| **5** | Query, Key y Value | Explicar las tres proyecciones centrales del mecanismo de atención. |
+| **6** | Self-attention | Visualizar cómo cada token mira a otros tokens de la misma secuencia. |
+| **7** | Softmax y pesos de atención | Comprender cómo los puntajes se convierten en una distribución de importancia. |
+| **8** | Multi-head attention | Analizar cómo varias cabezas capturan relaciones diferentes en paralelo. |
+| **9** | Encoder | Comprender cómo se construyen representaciones contextuales de entrada. |
+| **10** | Decoder y máscara causal | Explicar cómo se genera texto paso a paso sin mirar el futuro. |
+| **11** | Cross-attention | Conectar entradas y salidas en tareas como traducción o resumen. |
+| **12** | Generación de texto | Comprender cómo el modelo produce una distribución sobre el vocabulario. |
+| **13** | Interpretación crítica | Evaluar qué puede y qué no puede explicar una matriz de atención. |
+
+---
+
+## Mapa conceptual del módulo
+
+<details>
+<summary><strong>Ver mapa conceptual completo</strong> <em>(haz clic para expandir/colapsar)</em></summary>
+
+<pre><code>Transformer
+│
+├── 1. Texto de entrada
+│   ├── Frase
+│   ├── Secuencia
+│   ├── Tokens
+│   ├── Subpalabras
+│   └── IDs numéricos
+│
+├── 2. Tokenización
+│   ├── Separación en unidades
+│   ├── Vocabulario
+│   ├── Tokens frecuentes
+│   ├── Tokens raros
+│   └── Subword tokenization
+│
+├── 3. Embeddings
+│   ├── Vector denso
+│   ├── Representación semántica inicial
+│   ├── Dimensión latente
+│   ├── Similitud vectorial
+│   └── Ambigüedad contextual
+│
+├── 4. Posición
+│   ├── Orden de los tokens
+│   ├── Positional encoding
+│   ├── Posiciones aprendidas
+│   └── Diferencia entre contenido y orden
+│
+├── 5. Self-attention
+│   ├── Query
+│   ├── Key
+│   ├── Value
+│   ├── Producto Q·K
+│   ├── Escalado por raíz de dimensión
+│   ├── Softmax
+│   └── Suma ponderada de Values
+│
+├── 6. Matriz de atención
+│   ├── Filas como tokens que preguntan
+│   ├── Columnas como tokens observados
+│   ├── Pesos normalizados
+│   ├── Relaciones semánticas
+│   ├── Relaciones sintácticas
+│   └── Relaciones locales o globales
+│
+├── 7. Multi-head attention
+│   ├── Cabezas paralelas
+│   ├── Patrones semánticos
+│   ├── Patrones gramaticales
+│   ├── Patrones de largo alcance
+│   └── Concatenación de salidas
+│
+├── 8. Encoder
+│   ├── Self-attention completa
+│   ├── Residual connection
+│   ├── Layer normalization
+│   ├── Feed-forward network
+│   └── Representación contextual de entrada
+│
+├── 9. Decoder
+│   ├── Self-attention enmascarada
+│   ├── Máscara causal
+│   ├── Generación autoregresiva
+│   ├── Predicción del siguiente token
+│   └── Distribución sobre vocabulario
+│
+├── 10. Cross-attention
+│   ├── Query del decoder
+│   ├── Key del encoder
+│   ├── Value del encoder
+│   ├── Traducción
+│   ├── Resumen
+│   └── Generación condicionada
+│
+└── 11. Aplicaciones
+    ├── Clasificación de texto
+    ├── Traducción automática
+    ├── Resumen
+    ├── Pregunta-respuesta
+    ├── Chatbots
+    ├── Embeddings semánticos
+    ├── Búsqueda vectorial
+    └── Modelos generativos</code></pre>
+
+</details>
+
+---
+
+## Síntesis conceptual
+
+Un **Transformer** es una arquitectura de aprendizaje profundo diseñada para procesar secuencias mediante mecanismos de atención. A diferencia de las redes recurrentes tradicionales, que procesan los elementos paso a paso, un Transformer puede analizar múltiples tokens en paralelo y calcular relaciones entre todos ellos. Esta característica lo volvió especialmente importante en NLP, donde el significado de una palabra depende fuertemente del contexto.
+
+La operación central del Transformer es la **self-attention**. Cada token genera tres representaciones: Query, Key y Value. La Query de un token se compara con las Keys de los demás tokens para calcular puntajes de compatibilidad. Luego, esos puntajes se normalizan mediante softmax y se usan para combinar los Values. El resultado es un vector contextual: una representación del token enriquecida por la información relevante de la secuencia.
+
+La potencia del Transformer surge de repetir este mecanismo en múltiples cabezas y capas. Algunas cabezas pueden capturar relaciones gramaticales, otras relaciones semánticas, otras dependencias locales y otras conexiones de largo alcance. En conjunto, estas operaciones permiten construir representaciones profundas del lenguaje que sirven para tareas de comprensión, generación y transformación de texto.
+
+---
+
+## Simulaciones incluidas
+
+| Simulación | Concepto central | Qué permite observar |
+|---|---|---|
+| **Tokenización contextual** | Texto a tokens | Cómo una frase se transforma en unidades procesables por el modelo. |
+| **Embeddings y ambigüedad** | Representación vectorial | Cómo una palabra como “banco” cambia de sentido según el contexto. |
+| **Codificación posicional** | Orden de la secuencia | Por qué el Transformer necesita información de posición además del contenido. |
+| **Query, Key y Value** | Proyecciones aprendidas | Cómo cada token pregunta, se identifica y aporta información. |
+| **Self-attention** | Atención dentro de la misma frase | Cómo un token asigna pesos a otros tokens de la secuencia. |
+| **Matriz de atención** | Pesos normalizados | Cómo leer filas, columnas y relaciones entre tokens. |
+| **Multi-head attention** | Cabezas paralelas | Cómo distintas cabezas capturan patrones semánticos, sintácticos o locales. |
+| **Encoder** | Representación contextual | Cómo se combinan atención, residual, normalización y red feed-forward. |
+| **Decoder causal** | Generación autoregresiva | Cómo la máscara causal impide mirar tokens futuros. |
+| **Cross-attention** | Entrada-salida | Cómo el decoder consulta representaciones del encoder. |
+| **Generación final** | Distribución sobre vocabulario | Cómo el modelo predice el siguiente token mediante softmax y temperatura. |
+
+---
+
+## Fórmulas principales
+
+### Producto de atención escalado
+
+<pre><code>score(i, j) = (Q_i · K_j) / √d_k</code></pre>
+
+| Elemento | Significado | Interpretación |
+|---|---|---|
+| `Q_i` | Query del token `i` | Representa qué está buscando ese token. |
+| `K_j` | Key del token `j` | Representa qué información ofrece ese token. |
+| `d_k` | Dimensión de las Keys | Se usa para estabilizar los puntajes. |
+| `score(i, j)` | Compatibilidad | Mide cuánto debería atender el token `i` al token `j`. |
+
+### Softmax de atención
+
+<pre><code>α(i, j) = softmax(score(i, j))</code></pre>
+
+| Elemento | Significado | Interpretación |
+|---|---|---|
+| `α(i, j)` | Peso de atención | Importancia relativa del token `j` para el token `i`. |
+| `softmax` | Normalización | Convierte puntajes en valores positivos que suman 1. |
+
+### Suma ponderada de Values
+
+<pre><code>context_i = Σ_j α(i, j) · V_j</code></pre>
+
+| Elemento | Significado | Interpretación |
+|---|---|---|
+| `V_j` | Value del token `j` | Información transferida si recibe peso. |
+| `α(i, j)` | Peso asignado | Determina cuánto se incorpora de cada token. |
+| `context_i` | Vector contextual | Nueva representación del token `i`. |
+
+### Multi-head attention
+
+<pre><code>MultiHead(Q, K, V) = Concat(head_1, ..., head_h)W_O</code></pre>
+
+| Elemento | Significado | Interpretación |
+|---|---|---|
+| `head_h` | Cabeza de atención | Una lectura paralela de la secuencia. |
+| `Concat` | Concatenación | Une la información capturada por distintas cabezas. |
+| `W_O` | Matriz de salida | Proyecta la concatenación al espacio final del modelo. |
+
+### Máscara causal
+
+<pre><code>masked_score(i, j) = -∞ si j > i</code></pre>
+
+| Elemento | Significado | Interpretación |
+|---|---|---|
+| `i` | Posición actual | Token que está generando o procesando el decoder. |
+| `j > i` | Posición futura | Token que todavía no debería estar disponible. |
+| `-∞` | Bloqueo antes del softmax | Impide que el modelo atienda al futuro. |
+
+---
+
+## Componentes principales de un Transformer
+
+| Componente | Función | Interpretación didáctica |
+|---|---|---|
+| **Tokenizador** | Divide el texto en tokens o subpalabras. | Convierte lenguaje humano en unidades procesables. |
+| **Embedding** | Asigna un vector a cada token. | Representa significado inicial en un espacio numérico. |
+| **Codificación posicional** | Agrega información de orden. | Permite distinguir secuencias con los mismos tokens en distinto orden. |
+| **Query** | Representa lo que un token busca. | Formula la “pregunta” del token activo. |
+| **Key** | Representa lo que un token ofrece. | Permite ser comparado con otras Queries. |
+| **Value** | Contiene la información transferible. | Es lo que se combina para formar el vector contextual. |
+| **Self-attention** | Relaciona tokens dentro de una misma secuencia. | Permite que cada palabra se interprete según su contexto. |
+| **Multi-head attention** | Ejecuta varias atenciones en paralelo. | Captura relaciones distintas simultáneamente. |
+| **Feed-forward network** | Transforma cada posición individualmente. | Agrega capacidad no lineal al bloque. |
+| **Layer normalization** | Estabiliza activaciones internas. | Facilita el entrenamiento profundo. |
+| **Residual connection** | Conserva información previa. | Evita degradación al apilar muchas capas. |
+| **Softmax final** | Produce probabilidades sobre vocabulario. | Permite elegir o muestrear el siguiente token. |
+
+---
+
+## Comparación entre RNN, CNN y Transformer
+
+| Arquitectura | Fortaleza | Limitación | Uso típico |
+|---|---|---|---|
+| **RNN/LSTM** | Procesa secuencias paso a paso y conserva memoria temporal. | Difícil de paralelizar y limitada en dependencias largas. | Series temporales, texto secuencial clásico, señales ordenadas. |
+| **CNN** | Extrae patrones locales de manera eficiente. | Requiere muchas capas para capturar relaciones globales amplias. | Imágenes, visión computacional, señales espaciales. |
+| **Transformer** | Modela relaciones globales mediante atención paralelizable. | Puede requerir gran cantidad de datos y cómputo. | NLP, modelos generativos, embeddings, visión moderna y sistemas multimodales. |
+
+---
+
+## Errores frecuentes
+
+| Error frecuente | Corrección conceptual |
+|---|---|
+| Pensar que el Transformer lee palabra por palabra como una RNN. | El Transformer puede procesar tokens en paralelo y calcular relaciones globales mediante atención. |
+| Confundir token con palabra. | Un token puede ser una palabra, parte de una palabra, un signo o una unidad especial. |
+| Creer que el embedding ya resuelve todo el significado. | El embedding inicial es estático; la atención lo vuelve contextual. |
+| Olvidar la posición. | Sin información posicional, el modelo no distingue correctamente el orden de la secuencia. |
+| Interpretar Q, K y V como etiquetas humanas. | Son proyecciones aprendidas matemáticamente durante el entrenamiento. |
+| Pensar que atención equivale siempre a explicación causal. | La atención ayuda a interpretar, pero no es una prueba definitiva de causalidad semántica. |
+| Confundir encoder con decoder. | El encoder comprende una entrada completa; el decoder genera paso a paso con máscara causal. |
+| Creer que softmax “elige” directamente una palabra. | Softmax produce una distribución; luego una estrategia de decodificación selecciona o muestrea. |
+
+---
+
+## Actividad práctica sugerida
+
+Después de recorrer la teoría y las simulaciones, se recomienda realizar una práctica en Colab para conectar la intuición visual con implementación real.
+
+| Paso | Actividad | Objetivo |
+|---|---|---|
+| **1** | Tokenizar frases simples | Observar cómo el texto se divide en tokens. |
+| **2** | Inspeccionar IDs y vocabulario | Entender la traducción entre texto y números. |
+| **3** | Obtener embeddings | Visualizar representaciones vectoriales. |
+| **4** | Calcular atención manual simplificada | Comprender Q, K, V, producto escalar y softmax. |
+| **5** | Comparar cabezas de atención | Observar patrones distintos entre tokens. |
+| **6** | Usar un modelo Transformer preentrenado | Conectar la intuición con modelos reales. |
+| **7** | Analizar predicción de siguiente token | Explorar temperatura, top-k y top-p. |
+| **8** | Evaluar errores | Observar ambigüedad, contexto insuficiente y sesgos del modelo. |
+
+Ejemplo de forma esperada de tensores:
+
+<pre><code># tokens puede tener forma:
+# (batch_size, sequence_length)
+
+input_ids.shape  # ejemplo: (1, 12)
+
+# embeddings puede tener forma:
+# (batch_size, sequence_length, hidden_size)
+
+embeddings.shape  # ejemplo: (1, 12, 768)
+
+# una matriz de atención puede tener forma:
+# (batch_size, heads, sequence_length, sequence_length)
+
+attention.shape  # ejemplo: (1, 12, 12, 12)</code></pre>
+
+---
+
+## Preguntas de repaso
+
+<details>
+<summary><strong>Ver preguntas de comprensión</strong></summary>
+
+1. ¿Por qué los Transformers fueron tan importantes para el desarrollo moderno del NLP?
+
+2. ¿Qué diferencia existe entre palabra y token?
+
+3. ¿Qué es un embedding y por qué no alcanza por sí solo para resolver el contexto?
+
+4. ¿Por qué el Transformer necesita codificación posicional?
+
+5. ¿Qué representan Query, Key y Value?
+
+6. ¿Cómo se calcula el puntaje de atención entre dos tokens?
+
+7. ¿Qué función cumple softmax dentro de la atención?
+
+8. ¿Qué representa una fila de la matriz de atención?
+
+9. ¿Por qué multi-head attention es más expresiva que una sola cabeza?
+
+10. ¿Qué diferencia hay entre encoder y decoder?
+
+11. ¿Para qué sirve la máscara causal?
+
+12. ¿Qué es cross-attention?
+
+13. ¿Cómo se genera el siguiente token?
+
+14. ¿Qué efecto tiene la temperatura en la generación?
+
+15. ¿Por qué no conviene interpretar la atención como una explicación perfecta del modelo?
+
+</details>
+
+---
+
+## Uso recomendado en clase
+
+Este recurso puede utilizarse como una clase visual completa. Una secuencia didáctica posible es:
+
+1. Comenzar con la pregunta: **¿cómo puede una red neuronal entender el significado de una palabra según su contexto?**
+
+2. Mostrar una frase ambigua, por ejemplo: **“El banco aprobó el crédito para la empresa”**.
+
+3. Explicar que el texto primero se transforma en tokens.
+
+4. Presentar embeddings como vectores iniciales.
+
+5. Introducir la necesidad de codificación posicional para preservar el orden.
+
+6. Explicar Query, Key y Value como tres proyecciones aprendidas.
+
+7. Usar la simulación de self-attention para mostrar cómo un token mira a otros tokens.
+
+8. Analizar la matriz de atención y sus pesos normalizados.
+
+9. Cambiar entre cabezas para observar patrones semánticos, sintácticos, locales y causales.
+
+10. Diferenciar encoder, decoder y encoder-decoder.
+
+11. Mostrar la máscara causal para explicar generación autoregresiva.
+
+12. Cerrar con la distribución final sobre vocabulario y la lectura crítica de la atención.
+
+---
+
+## Lectura integradora final
+
+Los Transformers son fundamentales para comprender la inteligencia artificial moderna aplicada al lenguaje. Su aporte principal no consiste simplemente en procesar texto, sino en construir representaciones contextuales mediante atención. Cada token deja de interpretarse como una unidad aislada y pasa a definirse por sus relaciones con los demás elementos de la secuencia.
+
+La self-attention permite que el modelo calcule qué partes del contexto son relevantes para cada posición. El mecanismo Q/K/V traduce esta intuición en operaciones matemáticas: comparar, normalizar y combinar información. La multi-head attention amplía esta capacidad al permitir múltiples lecturas simultáneas de la misma frase. Por eso una cabeza puede capturar relaciones gramaticales, otra relaciones semánticas y otra dependencias locales o causales.
+
+Los encoders son especialmente útiles para comprender entradas completas, los decoders para generar texto paso a paso y las arquitecturas encoder-decoder para transformar una secuencia en otra. Esta flexibilidad explica por qué los Transformers se utilizan en traducción automática, resumen, búsqueda semántica, clasificación, chatbots, modelos generativos y sistemas multimodales.
+
+Aunque las matrices de atención son muy valiosas para enseñar y explorar el comportamiento del modelo, deben interpretarse con cuidado. Un peso alto indica influencia en la combinación de representaciones, pero no siempre equivale a una explicación humana completa. Por eso el estudio de Transformers debe combinar simulación visual, análisis matemático, evaluación empírica y lectura crítica.
 
