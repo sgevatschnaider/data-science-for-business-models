@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light" data-palette="aurora">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Transformer Lab · Página única interactiva</title>
+<style>
+:root{
+  --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --bg-1:#f5f7ff;
+  --bg-2:#ecfeff;
+  --bg-3:#f8fafc;
+  --text:#102033;
+  --muted:#64748b;
+  --line:#d8e3f2;
+  --card:#ffffff;
+  --card-2:#f7fbff;
+  --glass:rgba(255,255,255,.80);
+  --accent:#2563eb;
+  --accent-2:#7c3aed;
+  --accent-3:#06b6d4;
+  --good:#10b981;
+  --warn:#f59e0b;
+  --danger:#e11d48;
+  --shadow:0 24px 70px rgba(15,23,42,.14);
+  --shadow-soft:0 14px 36px rgba(15,23,42,.10);
+  --r-xl:30px;
+  --r-lg:22px;
+  --r-md:16px;
+  --r-sm:12px;
+}
+html[data-theme="dark"]{
+  --bg-1:#06111f;
+  --bg-2:#0b1729;
+  --bg-3:#111827;
+  --text:#eef6ff;
+  --muted:#a7b8ce;
+  --line:#263952;
+  --card:#101c2f;
+  --card-2:#0b1627;
+  --glass:rgba(15,23,42,.80);
+}
+html[data-palette="aurora"]{--accent:#2563eb;--accent-2:#7c3aed;--accent-3:#06b6d4;--good:#10b981;--warn:#f59e0b;--danger:#e11d48;}
+html[data-palette="salmon"]{--accent:#e76f73;--accent-2:#b75d69;--accent-3:#6d9dc5;--good:#2a9d8f;--warn:#f4a261;--danger:#d62828;}
+html[data-palette="bosque"]{--accent:#047857;--accent-2:#65a30d;--accent-3:#0891b2;--good:#16a34a;--warn:#d97706;--danger:#be123c;}
+html[data-palette="carbono"]{--accent:#334155;--accent-2:#0f766e;--accent-3:#7c2d12;--good:#15803d;--warn:#ca8a04;--danger:#be123c;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:var(--font);
+  color:var(--text);
+  background:
+    radial-gradient(circle at 8% 5%, color-mix(in srgb,var(--accent) 24%,transparent), transparent 30%),
+    radial-gradient(circle at 95% 8%, color-mix(in srgb,var(--accent-2) 20%,transparent), transparent 32%),
+    radial-gradient(circle at 48% 105%, color-mix(in srgb,var(--accent-3) 18%,transparent), transparent 38%),
+    linear-gradient(135deg,var(--bg-1),var(--bg-2) 48%,var(--bg-3));
+  line-height:1.55;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.36;
+  background-image:
+    linear-gradient(color-mix(in srgb,var(--line) 52%,transparent) 1px, transparent 1px),
+    linear-gradient(90deg,color-mix(in srgb,var(--line) 52%,transparent) 1px, transparent 1px);
+  background-size:42px 42px;
+  mask-image:radial-gradient(circle at center, black, transparent 78%);
+}
+button,select,input{font:inherit}
+button{border:0;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{
+  outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);
+  outline-offset:3px;
+}
+main{
+  width:min(1420px,100%);
+  margin:auto;
+  padding:28px 18px 72px;
+  position:relative;
+}
+.panel{
+  background:var(--glass);
+  border:1px solid var(--line);
+  border-radius:var(--r-xl);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(18px);
+}
+.hero{
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr);
+  gap:18px;
+  margin-bottom:18px;
+}
+.hero-copy{
+  padding:34px;
+  position:relative;
+  overflow:hidden;
+}
+.hero-copy::after{
+  content:"";
+  position:absolute;
+  width:320px;
+  height:320px;
+  right:-120px;
+  bottom:-150px;
+  border-radius:999px;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 20%,transparent),color-mix(in srgb,var(--accent-2) 20%,transparent));
+  opacity:.80;
+}
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  padding:9px 13px;
+  border-radius:999px;
+  background:color-mix(in srgb,var(--accent) 12%,var(--card));
+  border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));
+  color:var(--accent);
+  font-size:12px;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+  font-weight:950;
+}
+h1{
+  position:relative;
+  z-index:1;
+  margin:18px 0 13px;
+  max-width:980px;
+  font-size:clamp(38px,5.3vw,78px);
+  line-height:.96;
+  letter-spacing:-.066em;
+}
+.lead{
+  position:relative;
+  z-index:1;
+  margin:0;
+  max-width:84ch;
+  font-size:18px;
+  color:var(--muted);
+}
+.hero-actions{
+  position:relative;
+  z-index:1;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:24px;
+}
+.hero-side{
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:13px;
+}
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.stat{
+  background:var(--card-2);
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:16px;
+  min-height:106px;
+}
+.stat strong{
+  display:block;
+  font-size:28px;
+  line-height:1;
+  letter-spacing:-.045em;
+  color:var(--accent);
+}
+.stat span{
+  display:block;
+  margin-top:9px;
+  color:var(--muted);
+  font-size:13px;
+}
+.callout{
+  padding:16px;
+  border:1px solid color-mix(in srgb,var(--accent-3) 34%,var(--line));
+  border-radius:22px;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--accent-3) 10%,var(--card)),var(--card-2));
+  color:var(--muted);
+  font-size:14px;
+}
+.toolbar{
+  position:sticky;
+  top:8px;
+  z-index:50;
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:12px;
+  align-items:center;
+  padding:12px;
+  margin:0 0 18px;
+}
+.nav{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  padding-bottom:2px;
+  scrollbar-width:thin;
+}
+.nav a{
+  white-space:nowrap;
+  text-decoration:none;
+  color:var(--text);
+  background:var(--card-2);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:9px 12px;
+  font-weight:900;
+  font-size:13px;
+  transition:.18s transform,.18s background,.18s color;
+}
+.nav a:hover,.nav a.active{
+  transform:translateY(-1px);
+  color:#fff;
+  border-color:transparent;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+}
+.tool-actions{
+  display:flex;
+  gap:8px;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-height:41px;
+  padding:9px 13px;
+  border-radius:15px;
+  color:#fff;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  font-weight:950;
+  box-shadow:0 12px 26px color-mix(in srgb,var(--accent) 26%,transparent);
+  transition:.18s transform,.18s filter,.18s box-shadow;
+  text-decoration:none;
+}
+.btn:hover{transform:translateY(-1px);filter:saturate(1.08)}
+.btn.secondary{
+  color:var(--text);
+  background:var(--card-2);
+  border:1px solid var(--line);
+  box-shadow:none;
+}
+.btn.good{background:linear-gradient(135deg,var(--good),var(--accent-3))}
+.btn.warn{background:linear-gradient(135deg,var(--warn),var(--danger))}
+.btn.pill{border-radius:999px;min-height:36px;padding:8px 11px;font-size:13px}
+.section{
+  display:grid;
+  grid-template-columns:minmax(0,.90fr) minmax(440px,1.10fr);
+  gap:18px;
+  margin-bottom:18px;
+  scroll-margin-top:112px;
+}
+.lesson{
+  padding:27px;
+  min-height:580px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  overflow:hidden;
+  position:relative;
+}
+.lesson::before{
+  content:"";
+  position:absolute;
+  width:230px;
+  height:230px;
+  left:-95px;
+  top:-100px;
+  border-radius:999px;
+  background:color-mix(in srgb,var(--accent) 10%,transparent);
+}
+.lesson-inner{position:relative;z-index:1}
+.lesson-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:16px;
+}
+.kicker{
+  color:var(--accent);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.10em;
+  font-weight:950;
+}
+.index{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:900;
+  background:var(--card-2);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:7px 10px;
+  white-space:nowrap;
+}
+.lesson h2{
+  margin:0 0 14px;
+  font-size:clamp(28px,3vw,44px);
+  line-height:1.03;
+  letter-spacing:-.045em;
+}
+.lesson p{
+  margin:0 0 13px;
+  color:var(--muted);
+  font-size:17px;
+}
+.lesson ul{margin:13px 0 0;padding-left:20px;color:var(--muted)}
+.lesson li{margin:7px 0}
+.formula{
+  margin:16px 0;
+  padding:15px 16px;
+  border-radius:18px;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 11%,var(--card)),color-mix(in srgb,var(--accent-2) 9%,var(--card)));
+  border:1px solid color-mix(in srgb,var(--accent) 24%,var(--line));
+  font-family:var(--mono);
+  color:var(--text);
+  overflow:auto;
+  white-space:pre-wrap;
+  font-size:14px;
+}
+.note{
+  position:relative;
+  z-index:1;
+  margin-top:18px;
+  border-left:5px solid var(--accent);
+  padding:14px 16px;
+  border-radius:18px;
+  background:var(--card-2);
+  color:var(--muted);
+  font-size:15px;
+}
+.sim{
+  padding:22px;
+  min-height:580px;
+  overflow:hidden;
+}
+.sim h3{
+  margin:0 0 6px;
+  font-size:24px;
+  line-height:1.08;
+  letter-spacing:-.035em;
+}
+.sim p{
+  margin:0 0 14px;
+  color:var(--muted);
+  font-size:14px;
+}
+.sim-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+.seed{
+  white-space:nowrap;
+  font-family:var(--mono);
+  color:var(--muted);
+  background:var(--card-2);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:7px 9px;
+  font-size:12px;
+}
+
+.sim-controls{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:9px;
+  margin:0 0 14px;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:color-mix(in srgb,var(--card-2) 78%,transparent);
+}
+.sim-controls .btn{
+  min-height:36px;
+  padding:8px 11px;
+  border-radius:999px;
+  font-size:13px;
+}
+.sim-status{
+  display:inline-flex;
+  align-items:center;
+  min-height:30px;
+  padding:6px 9px;
+  border-radius:999px;
+  color:var(--muted);
+  background:var(--card);
+  border:1px solid var(--line);
+  font-size:12px;
+  font-weight:900;
+}
+.head-card.active,.risk.active,.cross-col.active{
+  border-color:color-mix(in srgb,var(--accent) 46%,var(--line));
+  background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 12%,var(--card)),var(--card-2));
+  box-shadow:var(--shadow-soft);
+}
+.matrix tr.focus-row td{background:color-mix(in srgb,var(--accent) 8%,var(--card));}
+.matrix tr.focus-row td:first-child{color:var(--accent);}
+.mask-grid span.row-active{outline:2px solid color-mix(in srgb,var(--accent) 70%,transparent);transform:scale(1.04);}
+.field-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:13px;
+}
+.field{
+  background:var(--card-2);
+  border:1px solid var(--line);
+  border-radius:17px;
+  padding:10px;
+}
+.field label{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:950;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  margin-bottom:7px;
+}
+select,input[type="range"]{
+  width:100%;
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--text);
+  border-radius:12px;
+  min-height:38px;
+  padding:8px 10px;
+}
+input[type="range"]{padding:0;accent-color:var(--accent)}
+.chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:12px 0 0;
+}
+.chip{
+  position:relative;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:10px 12px;
+  font-weight:950;
+  box-shadow:var(--shadow-soft);
+}
+.chip small{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:2px;
+  font-weight:850;
+}
+.chip.active{
+  color:#fff;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  border-color:transparent;
+}
+.split-chip{
+  background:color-mix(in srgb,var(--accent) 9%,var(--card));
+  border-style:dashed;
+}
+.grid-2{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.grid-3{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+.card{
+  border:1px solid var(--line);
+  background:var(--card-2);
+  border-radius:20px;
+  padding:15px;
+}
+.card strong{display:block;margin-bottom:6px;color:var(--text)}
+.card span,.card p{color:var(--muted);font-size:14px;margin:0}
+.card.accent{
+  border-color:color-mix(in srgb,var(--accent) 32%,var(--line));
+  background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 10%,var(--card)),var(--card-2));
+}
+.vector-plane{
+  position:relative;
+  min-height:260px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  overflow:hidden;
+  background:
+    linear-gradient(90deg,transparent 49.7%,color-mix(in srgb,var(--line) 70%,transparent) 50%,transparent 50.3%),
+    linear-gradient(0deg,transparent 49.7%,color-mix(in srgb,var(--line) 70%,transparent) 50%,transparent 50.3%),
+    radial-gradient(circle at 25% 25%, color-mix(in srgb,var(--accent) 10%,transparent), transparent 35%),
+    radial-gradient(circle at 75% 70%, color-mix(in srgb,var(--accent-2) 10%,transparent), transparent 35%),
+    var(--card-2);
+}
+.point{
+  position:absolute;
+  transform:translate(-50%,-50%);
+  border-radius:999px;
+  padding:8px 10px;
+  font-size:12px;
+  font-weight:950;
+  color:#fff;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  box-shadow:var(--shadow-soft);
+}
+.point.muted{
+  color:var(--text);
+  background:var(--card);
+  border:1px solid var(--line);
+}
+.arrow-row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin:14px 0;
+}
+.arrow-token{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:9px 11px;
+  font-weight:950;
+}
+.arrow{
+  color:var(--accent);
+  font-weight:950;
+}
+.pos-bars{
+  display:flex;
+  align-items:end;
+  gap:7px;
+  min-height:125px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:var(--card-2);
+  padding:14px;
+}
+.pos-bars i{
+  flex:1;
+  min-width:18px;
+  border-radius:11px 11px 5px 5px;
+  background:linear-gradient(180deg,var(--accent),var(--accent-2));
+  opacity:.82;
+}
+.qkv-lanes{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.lane{
+  min-height:240px;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:var(--card-2);
+  padding:14px;
+}
+.lane h4{margin:0 0 10px;font-size:16px}
+.lane .mini{
+  display:block;
+  margin:8px 0;
+  padding:9px 10px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--muted);
+  font-size:13px;
+}
+.attention-board{
+  position:relative;
+  min-height:220px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:
+    radial-gradient(circle at 20% 20%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 34%),
+    radial-gradient(circle at 82% 18%,color-mix(in srgb,var(--accent-2) 10%,transparent),transparent 34%),
+    var(--card-2);
+  overflow:hidden;
+  padding:18px;
+}
+.link-layer{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+}
+.token-rail{
+  position:relative;
+  z-index:2;
+  min-height:170px;
+  display:flex;
+  flex-wrap:wrap;
+  align-content:center;
+  justify-content:center;
+  gap:10px;
+}
+.token-btn{
+  min-width:78px;
+  padding:10px 12px;
+  border-radius:18px;
+  background:var(--card);
+  border:1px solid var(--line);
+  color:var(--text);
+  box-shadow:var(--shadow-soft);
+  font-weight:950;
+  text-align:center;
+  transition:.22s transform,.22s background,.22s border-color;
+}
+.token-btn small{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:2px;
+}
+.token-btn.active{
+  transform:translateY(-6px) scale(1.045);
+  color:#fff;
+  border-color:transparent;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+}
+.token-btn.key{
+  border-color:color-mix(in srgb,var(--accent-2) 45%,var(--line));
+  background:color-mix(in srgb,var(--accent-2) 7%,var(--card));
+}
+.path-line{
+  fill:none;
+  stroke:var(--accent);
+  stroke-linecap:round;
+  stroke-dasharray:6 10;
+  animation:dash 1.5s linear infinite;
+}
+@keyframes dash{to{stroke-dashoffset:-32}}
+.matrix-wrap{
+  overflow:auto;
+  margin-top:12px;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:var(--card-2);
+  max-height:312px;
+}
+table.matrix{
+  border-collapse:separate;
+  border-spacing:0;
+  width:100%;
+  min-width:650px;
+  font-size:12px;
+}
+.matrix th,.matrix td{
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  padding:8px;
+  text-align:center;
+  white-space:nowrap;
+}
+.matrix th{
+  position:sticky;
+  top:0;
+  z-index:2;
+  background:var(--card);
+  color:var(--muted);
+  font-weight:950;
+}
+.matrix th:first-child{left:0;z-index:3}
+.matrix td:first-child{
+  position:sticky;
+  left:0;
+  z-index:1;
+  text-align:left;
+  background:var(--card);
+  color:var(--muted);
+  font-weight:950;
+}
+.cell{
+  position:relative;
+  min-width:58px;
+  border-radius:10px;
+  overflow:hidden;
+  background:var(--card);
+  font-variant-numeric:tabular-nums;
+}
+.cell::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  width:calc(var(--w) * 100%);
+  background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 28%,transparent),color-mix(in srgb,var(--accent-2) 52%,transparent));
+}
+.cell span{position:relative;z-index:1;font-weight:950}
+.cell.hot{outline:2px solid color-mix(in srgb,var(--accent) 48%,transparent)}
+.caption{
+  margin-top:13px;
+  padding:13px 14px;
+  border-radius:18px;
+  background:var(--card-2);
+  border:1px solid var(--line);
+  color:var(--muted);
+  font-size:14px;
+}
+.heads-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+.head-card{
+  border:1px solid var(--line);
+  background:var(--card-2);
+  border-radius:18px;
+  padding:12px;
+  min-height:140px;
+}
+.head-card h4{margin:0 0 7px;font-size:15px}
+.head-card p{margin:0 0 10px;font-size:13px;color:var(--muted)}
+.spark{
+  display:flex;
+  gap:3px;
+  align-items:end;
+  height:38px;
+}
+.spark i{
+  flex:1;
+  border-radius:6px 6px 2px 2px;
+  background:linear-gradient(180deg,var(--accent-3),var(--accent-2));
+  opacity:.82;
+}
+.pipeline{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:9px;
+  align-items:stretch;
+  margin:12px 0;
+}
+.pipe-step{
+  position:relative;
+  border:1px solid var(--line);
+  background:var(--card-2);
+  border-radius:18px;
+  padding:12px;
+  min-height:124px;
+}
+.pipe-step.on{
+  color:#fff;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  border-color:transparent;
+}
+.pipe-step strong{display:block;font-size:14px;margin-bottom:6px}
+.pipe-step span{display:block;font-size:12px;color:inherit;opacity:.78}
+.pipe-step:not(:last-child)::after{
+  content:"→";
+  position:absolute;
+  right:-14px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--accent);
+  font-weight:950;
+  z-index:3;
+}
+.mask-grid{
+  display:grid;
+  grid-template-columns:repeat(8,1fr);
+  gap:5px;
+  margin-top:12px;
+}
+.mask-grid span{
+  aspect-ratio:1/1;
+  border-radius:9px;
+  background:color-mix(in srgb,var(--good) 38%,var(--card));
+  border:1px solid var(--line);
+}
+.mask-grid span.off{
+  background:color-mix(in srgb,var(--danger) 24%,var(--card));
+  opacity:.66;
+}
+.cross-wrap{
+  display:grid;
+  grid-template-columns:1fr .32fr 1fr;
+  gap:10px;
+  align-items:center;
+}
+.cross-col{
+  border:1px solid var(--line);
+  background:var(--card-2);
+  border-radius:22px;
+  padding:14px;
+}
+.cross-col h4{margin:0 0 10px}
+.cross-arrow{
+  text-align:center;
+  color:var(--accent);
+  font-size:36px;
+  font-weight:950;
+}
+.vocab-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:11px;
+}
+.vocab-row{
+  display:grid;
+  grid-template-columns:120px 1fr 44px;
+  gap:8px;
+  align-items:center;
+  font-size:13px;
+}
+.vocab-bar{
+  height:13px;
+  border:1px solid var(--line);
+  background:var(--card);
+  border-radius:999px;
+  overflow:hidden;
+}
+.vocab-bar span{
+  display:block;
+  height:100%;
+  width:calc(var(--p) * 100%);
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
+}
+.risk-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.risk{
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:var(--card-2);
+  padding:15px;
+}
+.risk strong{display:block;margin-bottom:7px}
+.risk p{margin:0;color:var(--muted);font-size:14px}
+.footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  margin-top:20px;
+}
+.to-top{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:60;
+  width:46px;
+  height:46px;
+  border-radius:999px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#fff;
+  font-weight:950;
+  box-shadow:var(--shadow-soft);
+  display:grid;
+  place-items:center;
+  text-decoration:none;
+}
+@media (max-width:1120px){
+  .hero,.section{grid-template-columns:1fr}
+  .lesson,.sim{min-height:auto}
+  .toolbar{grid-template-columns:1fr;position:relative;top:auto}
+  .tool-actions{justify-content:flex-start}
+  .pipeline{grid-template-columns:1fr}
+  .pipe-step:not(:last-child)::after{display:none}
+}
+@media (max-width:720px){
+  main{padding:20px 12px 58px}
+  .hero-copy,.lesson,.sim{padding:19px}
+  .stat-grid,.field-grid,.grid-2,.grid-3,.heads-grid,.risk-list{grid-template-columns:1fr}
+  .cross-wrap{grid-template-columns:1fr}
+  .cross-arrow{transform:rotate(90deg)}
+  .qkv-lanes{grid-template-columns:1fr}
+  .vocab-row{grid-template-columns:92px 1fr 40px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+@media print{
+  body{background:#fff;color:#111}
+  body::before,.toolbar,.to-top,.link-layer{display:none}
+  main{max-width:none;padding:0}
+  .hero,.section{grid-template-columns:1fr}
+  .panel{box-shadow:none;border:1px solid #ccc;background:#fff}
+}
+</style>
+</head>
+<body>
+<main id="top">
+  <section class="hero" aria-label="Portada">
+    <div class="panel hero-copy">
+      <span class="eyebrow">Transformer Lab · una sola página</span>
+      <h1>Cómo un Transformer transforma texto en contexto</h1>
+      <p class="lead">
+        Material interactivo en HTML autocontenido para GitHub: no usa pestañas que dependan de rutas externas,
+        no carga librerías remotas y cada bloque didáctico tiene un ejemplo propio, adaptado al concepto que explica.
+      </p>
+      <div class="hero-actions">
+        <a class="btn" href="#tokenizacion">Comenzar recorrido</a>
+        <button class="btn secondary" id="themeBtn" type="button">Tema oscuro</button>
+        <button class="btn secondary" id="paletteBtn" type="button">Cambiar paleta</button>
+      </div>
+    </div>
+    <aside class="panel hero-side">
+      <div class="stat-grid">
+        <div class="stat"><strong>1 HTML</strong><span>todo el contenido vive en una única página</span></div>
+        <div class="stat"><strong>11</strong><span>secciones con navegación interna por botones</span></div>
+        <div class="stat"><strong>0</strong><span>dependencias externas para subir a GitHub</span></div>
+        <div class="stat"><strong>Q·K·V</strong><span>simulación visual de atención</span></div>
+      </div>
+      <div class="callout">
+        Idea guía: el Transformer no lee palabras sueltas; construye representaciones contextuales mediante atención,
+        posición, normalización, capas feed-forward y una salida probabilística.
+      </div>
+    </aside>
+  </section>
+
+  <section class="panel toolbar" aria-label="Navegación de la página">
+    <nav class="nav" id="nav">
+      <a href="#tokenizacion">Tokenización</a>
+      <a href="#embeddings">Embeddings</a>
+      <a href="#posicion">Posición</a>
+      <a href="#qkv">Q/K/V</a>
+      <a href="#self-attention">Self-attention</a>
+      <a href="#multihead">Multi-head</a>
+      <a href="#encoder">Encoder</a>
+      <a href="#decoder">Decoder</a>
+      <a href="#cross">Cross-attention</a>
+      <a href="#generacion">Generación</a>
+      <a href="#criterio">Lectura crítica</a>
+    </nav>
+    <div class="tool-actions">
+      <button class="btn secondary" id="motionBtn" type="button">Animación: sí</button>
+      <button class="btn warn" id="resetBtn" type="button">Reiniciar demo</button>
+    </div>
+  </section>
+
+  <section class="section" id="tokenizacion">
+    <article class="panel lesson">
+      <div class="lesson-inner">
+        <div class="lesson-top"><span class="kicker">Entrada textual</span><span class="index">01 / 11</span></div>
+        <h2>Tokenización: la frase se convierte en unidades computables</h2>
+        <p>
+          La tokenización toma texto humano y lo convierte en piezas que el modelo puede indexar. En clase se puede mostrar
+          con palabras completas, pero en modelos reales aparecen subpalabras: fragmentos que ayudan a manejar palabras nuevas,
+          nombres propios, tecnicismos y variaciones morfológicas.
+        </p>
+        <p>
+          El ejemplo se centra en servicios exportables porque permite ver cómo una frase de negocios se parte en unidades
+          que luego serán transformadas en vectores.
+        </p>
+        <div class="formula">"La economía digital transforma servicios exportables"
+→ ["La", "economía", "digital", "transforma", "servicios", "exportables"]</div>
+      </div>
+      <div class="note"><strong>Clave didáctica:</strong> tokenizar no significa comprender; significa preparar la frase para que una red neuronal pueda operar sobre ella.</div>
+    </article>
+    <aside class="panel sim">
+      <div class="sim-head">
+        <div><h3>Simulación de tokens</h3><p>Alterná entre palabra completa y subpalabra para ver dos niveles de segmentación.</p></div>
+        <span class="seed">caso: servicios</span>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="tokMode">Modo de segmentación</label>
+          <select id="tokMode">
+            <option value="word">Palabras completas</option>
+            <option value="sub">Subpalabras conceptuales</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="tokPhrase">Frase</label>
+          <select id="tokPhrase">
+            <option value="servicios">Economía digital</option>
+            <option value="salud">Diagnóstico médico</option>
+            <option value="datos">Analítica predictiva</option>
+          </select>
+        </div>
+      </div>
+      <div class="chips" id="tokenChips"></div>
+      <div class="caption" id="tokenCaption"></div>
+    </aside>
+  </section>
+
+  <section class="section" id="embeddings">
+    <article class="panel lesson">
+      <div class="lesson-inner">
+        <div class="lesson-top"><span class="kicker">Representación inicial</span><span class="index">02 / 11</span></div>
+        <h2>Embeddings: cada token pasa a ser un vector denso</h2>
+        <p>
+          Un embedding representa un token como una lista de números aprendida durante entrenamiento. Palabras con usos
+          parecidos tienden a ubicarse cerca en el espacio vectorial, pero el embedding inicial todavía no resuelve por sí
+          solo una ambigüedad contextual.
+        </p>
+        <p>
+          Por eso usamos dos ejemplos distintos con la palabra “banco”: uno financiero y otro geográfico. La palabra es la
+          misma, pero el contexto empuja la representación hacia zonas semánticas diferentes.
+        </p>
+        <div class="formula">x_i = Embedding(token_i)
+"banco" + "crédito" ≠ "banco" + "río"</div>
+      </div>
+      <div class="note"><strong>Clave didáctica:</strong> el embedding inicial es una base; la atención posterior lo vuelve contextual.</div>
+    </article>
+    <aside class="panel sim">
+      <div class="sim-head">
+        <div><h3>Mapa conceptual de embeddings</h3><p>Elegí el contexto de “banco” y observá cómo cambia su vecindario.</p></div>
+        <span class="seed">caso: ambigüedad</span>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="embedContext">Contexto</label>
+          <select id="embedContext">
+            <option value="fin">Finanzas: banco aprobó crédito</option>
+            <option value="rio">Geografía: banco del río</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Lectura</label>
+          <div class="chips"><span class="chip active" id="embedLabel">institución financiera</span></div>
+        </div>
+      </div>
+      <div class="vector-plane" id="vectorPlane"></div>
+      <div class="caption" id="embedCaption"></div>
+    </aside>
+  </section>
+
+  <section class="section" id="posicion">
+    <article class="panel lesson">
+      <div class="lesson-inner">
+        <div class="lesson-top"><span class="kicker">Orden de la secuencia</span><span class="index">03 / 11</span></div>
+        <h2>Codificación posicional: el orden también informa</h2>
+        <p>
+          El Transformer procesa tokens en paralelo. Para no perder el orden, suma o incorpora información posicional.
+          Sin esa señal, una bolsa de palabras tendría los mismos elementos aunque el sentido sintáctico cambiara.
+        </p>
+        <p>
+          El ejemplo muestra una frase de analítica: el orden “modelo predice ventas” es interpretable; reordenar los mismos
+          tokens puede romper la lectura.
+        </p>
+        <div class="formula">z_i = Embedding(token_i) + Posición_i</div>
+      </div>
+      <div class="note"><strong>Clave didáctica:</strong> el modelo necesita saber qué token viene primero, cuál modifica a cuál y qué estructura temporal sostiene la frase.</div>
+    </article>
+    <aside class="panel sim">
+      <div class="sim-head">
+        <div><h3>Orden y posición</h3><p>Compará una secuencia natural con una secuencia alterada.</p></div>
+        <span class="seed">caso: ventas</span>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="posMode">Secuencia</label>
+          <select id="posMode">
+            <option value="natural">Natural</option>
+            <option value="altered">Alterada</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Señal posicional</label>
+          <div class="pos-bars" id="posBars"></div>
+        </div>
+      </div>
+      <div class="arrow-row" id="posTokens"></div>
+      <div class="caption" id="posCaption"></div>
+    </aside>
+  </section>
+
+  <section class="section" id="qkv">
+    <article class="panel lesson">
+      <div class="lesson-inner">
+        <div class="lesson-top"><span class="kicker">Proyecciones aprendidas</span><span class="index">04 / 11</span></div>
+        <h2>Q, K y V: cada token se mira desde tres funciones</h2>
+        <p>
+          Self-attention no compara palabras directamente. Primero proyecta cada vector en tres espacios: Query, Key y Value.
+          La Query pregunta qué necesita el token activo; la Key ofrece una firma de cada token; el Value aporta contenido que
+          será combinado si recibe peso.
+        </p>
+        <p>
+          El ejemplo médico separa claramente agente, acción, objeto e instrumento: “La médica revisó la imagen con IA”.
+        </p>
+        <div class="formula">Q = XW_Q     K = XW_K     V = XW_V</div>
+      </div>
+      <div class="note"><strong>Clave didáctica:</strong> Q, K y V no son etiquetas manuales; son transformaciones aprendidas por la red.</div>
+    </article>
+    <aside class="panel sim">
+      <div class="sim-head">
+        <div><h3>Laboratorio Q/K/V</h3><p>Activá un token y observá qué pregunta, cómo se identifica y qué contenido puede aportar.</p></div>
+        <span class="seed">caso: imagen médica</span>
+      </div>
+      <div class="chips" id="qkvTokens"></div>
+      <div class="qkv-lanes">
+        <div class="lane"><h4>Query</h4><div id="queryLane"></div></div>
+        <div class="lane"><h4>Keys relevantes</h4><div id="keyLane"></div></div>
+        <div class="lane"><h4>Values combinables</h4><div id="valueLane"></div></div>
+      </div>
+      <div class="caption" id="qkvCaption"></div>
+    </aside>
+  </section>
+
+  <section class="section" id="self-attention">
+    <article class="panel lesson">
+      <div class="lesson-inner">
+        <div class="lesson-top"><span class="kicker">Matriz de atención</span><span class="index">05 / 11</span></div>
+        <h2>Self-attention: cada token decide a qué otros tokens mirar</h2>
+        <p>
+          La Query del token activo se compara con las Keys de todos los tokens. Los puntajes se normalizan con softmax y
+          se usan para mezclar Values. Así, el vector final del token queda enriquecido por el contexto relevante.
+        </p>
+        <p>
+          Acá usamos una frase financiera porque “banco” solo se interpreta correctamente si atiende a “aprobó”, “crédito”
+          y “empresa”.
+        </p>
+        <div class="formula">Attention(Q,K,V) = softmax((QKᵀ) / √d_k) V</div>
+      </div>
+      <div class="note"><strong>Clave didáctica:</strong> la fila activa de la matriz responde: “¿qué necesita mirar este token para entenderse en esta oración?”.</div>
+    </article>
+    <aside class="panel sim">
+      <div class="sim-head">
+        <div><h3>Self-attention visual</h3><p>Elegí token y cabeza. Las líneas y la matriz cambian en vivo.</p></div>
+        <span class="seed" id="attSeed">seed: 2026</span>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="attPhrase">Frase</label>
+          <select id="attPhrase">
+            <option value="finance">Finanzas: banco y crédito</option>
+            <option value="analytics">Datos: modelo predictivo</option>
+            <option value="medical">Salud: imagen e IA</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="attHead">Cabeza</label>
+          <select id="attHead">
+            <option value="semantic">Semántica</option>
+            <option value="syntax">Sintáctica</option>
+            <option value="local">Localidad</option>
+            <option value="causal">Causal</option>
+          </select>
+        </div>
+      </div>
+      <div class="attention-board" id="attBoard">
+        <svg class="link-layer" id="attLinks" aria-hidden="true"></svg>
+        <div class="token-rail" id="attTokens"></div>
+      </div>
+      <div class="matrix-wrap"><table class="matrix" id="attMatrix"></table></div>
+      <div class="caption" id="attCaption"></div>
+    </aside>
+  </section>
+
+  <section class="section" id="multihead">
+    <article class="panel lesson">
+      <div class="lesson-inner">
+        <div class="lesson-top"><span class="kicker">Lecturas paralelas</span><span class="index">06 / 11</span></div>
+        <h2>Multi-head attention: varias formas de leer la misma frase</h2>
+        <p>
+          Una sola matriz de atención sería limitada. Con múltiples cabezas, el modelo puede distribuir funciones:
+          una cabeza mira relaciones semánticas, otra sintaxis, otra proximidad local y otra restricciones causales.
+        </p>
+        <p>
+          El ejemplo didáctico usa una frase de política pública: cada cabeza ilumina una relación distinta.
+        </p>
+        <div class="formula">MultiHead(Q,K,V) = Concat(head₁, ..., headₕ)W_O</div>
+      </div>
+      <div class="note"><strong>Clave didáctica:</strong> las cabezas no son interpretables de forma perfecta, pero ayudan a mostrar que el modelo aprende patrones complementarios.</div>
+    </article>
+    <aside class="panel sim">
+      <div class="sim-head">
+        <div><h3>Cuatro cabezas, cuatro lecturas</h3><p>La misma frase produce patrones de atención distintos.</p></div>
+        <span class="seed">caso: política pública</span>
+      </div>
+      <div class="chips">
+        <span class="chip">El</span><span class="chip">ministerio</span><span class="chip">publicó</span><span class="chip">datos</span><span class="chip">sobre</span><span class="chip">empleo</span>
+      </div>
+      <div class="heads-grid" id="headsGrid"></div>
+      <div class="caption">Cada tarjeta resume una cabeza conceptual. En un modelo real, estas funciones emergen por entrenamiento y pueden repartirse entre capas.</div>
+    </aside>
+  </section>
+
+  <section class="section" id="encoder">
+    <article class="panel lesson">
+      <div class="lesson-inner">
+        <div class="lesson-top"><span class="kicker">Comprensión contextual</span><span class="index">07 / 11</span></div>
+        <h2>Encoder: construir una representación rica de la entrada</h2>
+        <p>
+          El encoder combina self-attention, conexión residual, normalización y una red feed-forward. Su objetivo principal
+          es producir representaciones contextuales útiles para clasificación, búsqueda semántica, extracción de entidades
+          o recuperación de información.
+        </p>
+        <p>
+          El ejemplo usa atención al cliente: el encoder debe entender intención, entidad y urgencia.
+        </p>
+        <div class="formula">Y = LayerNorm(X + SelfAttention(X))
+Z = LayerNorm(Y + FFN(Y))</div>
+      </div>
+      <div class="note"><strong>Clave didáctica:</strong> el encoder no genera necesariamente texto; primero comprende y estructura la entrada.</div>
+    </article>
+    <aside class="panel sim">
+      <div class="sim-head">
+        <div><h3>Pipeline del encoder</h3><p>Avanzá por las etapas del bloque y mirá qué aporta cada una.</p></div>
+        <span class="seed">caso: soporte</span>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="encoderStep">Etapa</label>
+          <input id="encoderStep" type="range" min="0" max="4" value="0" step="1" />
+        </div>
+        <div class="field">
+          <label>Entrada</label>
+          <div class="chips"><span class="chip">cliente</span><span class="chip">reporta</span><span class="chip">error</span><span class="chip">urgente</span></div>
+        </div>
+      </div>
+      <div class="pipeline" id="encoderPipeline"></div>
+      <div class="caption" id="encoderCaption"></div>
+    </aside>
+  </section>
+
+  <section class="section" id="decoder">
+    <article class="panel lesson">
+      <div class="lesson-inner">
+        <div class="lesson-top"><span class="kicker">Generación autoregresiva</span><span class="index">08 / 11</span></div>
+        <h2>Decoder: generar mirando solo el pasado disponible</h2>
+        <p>
+          En generación, el modelo predice el siguiente token paso a paso. Para evitar que “vea el futuro” durante entrenamiento,
+          se usa una máscara causal: cada posición solo puede atender a posiciones anteriores o a sí misma.
+        </p>
+        <p>
+          El ejemplo se adapta a redacción: “La IA genera un informe...” y el modelo debe continuar sin acceder a tokens futuros.
+        </p>
+        <div class="formula">masked_score(i,j) = -∞ si j &gt; i</div>
+      </div>
+      <div class="note"><strong>Clave didáctica:</strong> la máscara causal explica por qué los modelos generativos producen texto de izquierda a derecha.</div>
+    </article>
+    <aside class="panel sim">
+      <div class="sim-head">
+        <div><h3>Máscara causal</h3><p>Las celdas verdes son visibles; las rojas quedan bloqueadas.</p></div>
+        <span class="seed">caso: informe</span>
+      </div>
+      <div class="chips"><span class="chip">La</span><span class="chip">IA</span><span class="chip">genera</span><span class="chip">un</span><span class="chip">informe</span><span class="chip">claro</span><span class="chip">sobre</span><span class="chip">riesgos</span></div>
+      <div class="mask-grid" id="causalMask"></div>
+      <div class="caption">En la fila 5, por ejemplo, el token puede mirar hasta “informe”, pero no puede mirar “claro”, “sobre” ni “riesgos”.</div>
+    </aside>
+  </section>
+
+  <section class="section" id="cross">
+    <article class="panel lesson">
+      <div class="lesson-inner">
+        <div class="lesson-top"><span class="kicker">Entrada condicionante</span><span class="index">09 / 11</span></div>
+        <h2>Cross-attention: el decoder consulta la salida del encoder</h2>
+        <p>
+          En tareas encoder-decoder, como traducción o resumen, el decoder no solo mira lo que ya generó. También consulta
+          la representación de la entrada codificada por el encoder. Allí las Queries vienen del decoder y las Keys/Values
+          vienen del encoder.
+        </p>
+        <p>
+          El ejemplo traduce una frase técnica breve: “The model predicts sales” hacia “El modelo predice ventas”.
+        </p>
+        <div class="formula">CrossAttention(Q_decoder, K_encoder, V_encoder)</div>
+      </div>
+      <div class="note"><strong>Clave didáctica:</strong> cross-attention permite que una salida se mantenga alineada con una entrada original.</div>
+    </article>
+    <aside class="panel sim">
+      <div class="sim-head">
+        <div><h3>Alineación encoder-decoder</h3><p>Observá cómo cada token generado consulta tokens de la entrada.</p></div>
+        <span class="seed">caso: traducción</span>
+      </div>
+      <div class="cross-wrap">
+        <div class="cross-col"><h4>Encoder</h4><div class="chips"><span class="chip">The</span><span class="chip">model</span><span class="chip">predicts</span><span class="chip">sales</span></div></div>
+        <div class="cross-arrow">⇄</div>
+        <div class="cross-col"><h4>Decoder</h4><div class="chips"><span class="chip active">El</span><span class="chip active">modelo</span><span class="chip">predice</span><span class="chip">ventas</span></div></div>
+      </div>
+      <div class="matrix-wrap"><table class="matrix" id="crossMatrix"></table></div>
+      <div class="caption">La salida “modelo” se alinea principalmente con “model”; “ventas” se alinea con “sales”.</div>
+    </aside>
+  </section>
+
+  <section class="section" id="generacion">
+    <article class="panel lesson">
+      <div class="lesson-inner">
+        <div class="lesson-top"><span class="kicker">Distribución final</span><span class="index">10 / 11</span></div>
+        <h2>Generación: el próximo token sale de una distribución</h2>
+        <p>
+          El Transformer no escribe una palabra directamente. Proyecta el vector final al tamaño del vocabulario y produce
+          una distribución de probabilidades. Después, una estrategia de decodificación elige o muestrea el próximo token.
+        </p>
+        <p>
+          El ejemplo médico usa una continuación posible después de “El diagnóstico sugiere...”.
+        </p>
+        <div class="formula">p(token_siguiente) = softmax((Wh + b) / T)</div>
+      </div>
+      <div class="note"><strong>Clave didáctica:</strong> la temperatura baja concentra la salida; la temperatura alta aumenta diversidad y riesgo.</div>
+    </article>
+    <aside class="panel sim">
+      <div class="sim-head">
+        <div><h3>Probabilidades del siguiente token</h3><p>Modificá la temperatura y observá cómo se reparte la probabilidad.</p></div>
+        <span class="seed">caso: diagnóstico</span>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="tempRange">Temperatura</label>
+          <input id="tempRange" type="range" min="0.3" max="1.8" value="0.8" step="0.1" />
+        </div>
+        <div class="field">
+          <label>Prompt</label>
+          <div class="chips"><span class="chip">El</span><span class="chip">diagnóstico</span><span class="chip">sugiere</span></div>
+        </div>
+      </div>
+      <div class="vocab-list" id="vocabList"></div>
+      <div class="caption" id="tempCaption"></div>
+    </aside>
+  </section>
+
+  <section class="section" id="criterio">
+    <article class="panel lesson">
+      <div class="lesson-inner">
+        <div class="lesson-top"><span class="kicker">Uso responsable</span><span class="index">11 / 11</span></div>
+        <h2>Lectura crítica: atención no equivale a explicación total</h2>
+        <p>
+          Las visualizaciones de atención son muy útiles para enseñar, pero no deben venderse como explicación perfecta del
+          razonamiento del modelo. Un peso alto indica influencia en la combinación de Values; no demuestra por sí solo
+          intención, causalidad o comprensión humana.
+        </p>
+        <p>
+          Para evaluar un Transformer conviene mirar ejemplos, errores, sesgos, datos de entrenamiento, métricas de tarea,
+          pruebas fuera de distribución y comportamiento ante instrucciones ambiguas.
+        </p>
+        <div class="formula">visualización + evaluación + análisis de errores + criterios de dominio</div>
+      </div>
+      <div class="note"><strong>Clave didáctica:</strong> la matriz de atención es una pista interpretativa, no una auditoría completa del modelo.</div>
+    </article>
+    <aside class="panel sim">
+      <div class="sim-head">
+        <div><h3>Checklist de interpretación</h3><p>Usá estos criterios para cerrar la clase con mirada técnica y responsable.</p></div>
+        <span class="seed">cierre</span>
+      </div>
+      <div class="risk-list">
+        <div class="risk"><strong>Ambigüedad</strong><p>Una misma palabra puede tener sentidos distintos según el contexto.</p></div>
+        <div class="risk"><strong>Alucinación</strong><p>Una salida probable no siempre es verdadera o verificable.</p></div>
+        <div class="risk"><strong>Sesgo</strong><p>Los patrones aprendidos reflejan datos, incentivos y distribución de entrenamiento.</p></div>
+        <div class="risk"><strong>Contexto</strong><p>El modelo trabaja dentro de una ventana limitada y puede perder información distante.</p></div>
+        <div class="risk"><strong>Evaluación</strong><p>La calidad debe medirse con tareas, ejemplos y criterios de dominio.</p></div>
+        <div class="risk"><strong>Interpretabilidad</strong><p>Atención ayuda a visualizar, pero no agota el comportamiento interno.</p></div>
+      </div>
+      <div class="caption">Cierre sugerido: “Un Transformer es poderoso porque calcula relaciones contextuales; usarlo bien exige comprender tanto su mecánica como sus límites”.</div>
+    </aside>
+  </section>
+
+  <p class="footer">Material elaborado por el profesor Sergio Gevatschnaider</p>
+</main>
+<a class="to-top" href="#top" aria-label="Volver arriba">↑</a>
+
+<script>
+(function(){
+  'use strict';
+
+  const $ = (sel, root=document) => root.querySelector(sel);
+  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+  const state = {
+    paletteIndex:0,
+    motion:true,
+    attPhrase:'finance',
+    attHead:'semantic',
+    attActive:1,
+    attSeed:2026,
+    qkvActive:4,
+    encoderStep:0,
+    decoderStep:4,
+    crossStep:0,
+    multiHeadStep:0,
+    critStep:0,
+    temp:0.8,
+    autoHandles:{}
+  };
+
+  const tokenExamples = {
+    servicios:{
+      caption:'La frase de negocios se separa en unidades que luego tendrán IDs y embeddings.',
+      word:['La','economía','digital','transforma','servicios','exportables'],
+      sub:['La','economía','digital','transforma','servicio','##s','export','##ables']
+    },
+    salud:{
+      caption:'El caso médico muestra que términos técnicos pueden conservarse como palabra o dividirse en subpiezas.',
+      word:['La','imagen','médica','apoya','el','diagnóstico'],
+      sub:['La','imagen','médica','apoya','el','diagnóstico']
+    },
+    datos:{
+      caption:'En analítica, palabras frecuentes y tecnicismos pueden mezclarse con subpalabras.',
+      word:['El','modelo','predice','ventas','mensuales'],
+      sub:['El','modelo','predice','venta','##s','mensual','##es']
+    }
+  };
+
+  const embedPoints = {
+    fin:[
+      {label:'banco',x:30,y:34,main:true},
+      {label:'crédito',x:22,y:22},
+      {label:'préstamo',x:38,y:20},
+      {label:'empresa',x:25,y:48},
+      {label:'tasa',x:44,y:38},
+      {label:'río',x:76,y:67,muted:true},
+      {label:'arena',x:84,y:78,muted:true}
+    ],
+    rio:[
+      {label:'banco',x:76,y:67,main:true},
+      {label:'río',x:86,y:70},
+      {label:'arena',x:78,y:82},
+      {label:'orilla',x:68,y:75},
+      {label:'agua',x:84,y:55},
+      {label:'crédito',x:24,y:24,muted:true},
+      {label:'empresa',x:32,y:44,muted:true}
+    ]
+  };
+
+  const posData = {
+    natural:{
+      tokens:['El','modelo','predice','ventas','mensuales'],
+      bars:[24,48,72,96,120],
+      caption:'El orden natural permite identificar sujeto, acción y objeto de predicción.'
+    },
+    altered:{
+      tokens:['Ventas','modelo','el','mensuales','predice'],
+      bars:[120,48,24,96,72],
+      caption:'Los mismos tokens en otro orden pierden estructura sintáctica y cambian la lectura.'
+    }
+  };
+
+  const qkvData = {
+    tokens:['La','médica','revisó','la','imagen','con','IA'],
+    roles:['artículo','agente clínico','acción','artículo','objeto visual','instrumento','tecnología'],
+    query:{
+      1:'¿Qué acción realiza el agente?',
+      2:'¿Quién revisa y qué objeto revisa?',
+      4:'¿Qué la revisa y con qué instrumento?',
+      6:'¿A qué objeto tecnológico asiste?'
+    },
+    keys:{
+      1:['revisó: acción asociada','imagen: objeto revisado','IA: instrumento posible'],
+      2:['médica: agente','imagen: objeto','IA: soporte técnico'],
+      4:['revisó: acción','médica: agente','IA: instrumento'],
+      6:['imagen: objeto asistido','revisó: acción','médica: usuario clínico']
+    },
+    values:{
+      1:['rol profesional','contexto clínico','capacidad de revisión'],
+      2:['evento principal','relación agente-objeto','acción sobre imagen'],
+      4:['contenido visual','evidencia diagnóstica','posible análisis asistido'],
+      6:['herramienta tecnológica','soporte de análisis','instrumento de revisión']
+    }
+  };
+
+  const phrases = {
+    finance:{
+      tokens:['El','banco','aprobó','el','crédito','para','la','empresa'],
+      roles:['artículo','entidad ambigua','verbo','artículo','objeto financiero','preposición','artículo','destinatario'],
+      story:'“banco” queda inclinado hacia institución financiera por su relación con “aprobó”, “crédito” y “empresa”.',
+      edges:{
+        semantic:[[1,2,.34],[1,4,.46],[1,7,.26],[2,1,.30],[2,4,.44],[4,1,.42],[4,2,.38],[4,7,.31],[5,7,.31],[7,4,.44],[7,5,.28]],
+        syntax:[[1,2,.24],[2,1,.30],[2,4,.48],[4,3,.18],[5,4,.26],[5,7,.34],[7,6,.20]]
+      }
+    },
+    analytics:{
+      tokens:['El','modelo','predijo','ventas','con','datos','históricos'],
+      roles:['artículo','algoritmo','verbo','variable objetivo','medio','evidencia','tiempo'],
+      story:'“modelo” se interpreta como modelo estadístico porque atiende a “predijo”, “ventas”, “datos” e “históricos”.',
+      edges:{
+        semantic:[[1,2,.42],[1,3,.31],[1,5,.39],[1,6,.24],[2,1,.40],[2,3,.44],[2,5,.30],[3,2,.34],[3,5,.30],[5,1,.36],[5,6,.42],[6,5,.45]],
+        syntax:[[1,2,.30],[2,1,.33],[2,3,.48],[4,5,.42],[5,6,.28]]
+      }
+    },
+    medical:{
+      tokens:['La','médica','revisó','la','imagen','con','IA'],
+      roles:['artículo','agente','verbo','artículo','objeto visual','instrumento','tecnología'],
+      story:'“imagen” se vincula con “médica”, “revisó” e “IA”, mostrando soporte diagnóstico asistido por tecnología.',
+      edges:{
+        semantic:[[1,2,.36],[1,4,.25],[1,6,.24],[2,1,.36],[2,4,.46],[4,2,.34],[4,6,.42],[5,6,.42],[6,4,.48],[6,5,.30]],
+        syntax:[[1,2,.33],[2,1,.32],[2,4,.48],[4,3,.18],[5,6,.38]]
+      }
+    }
+  };
+
+  function prng(seed){
+    let x = seed % 2147483647;
+    if(x <= 0) x += 2147483646;
+    return function(){
+      x = x * 16807 % 2147483647;
+      return (x - 1) / 2147483646;
+    };
+  }
+
+  function normalize(row){
+    const total = row.reduce((a,b)=>a+b,0) || 1;
+    return row.map(v=>v/total);
+  }
+
+  function percent(v){return Math.round(v*100);}
+
+  function softmax(values,temp){
+    const t = Math.max(.25,temp);
+    const max = Math.max(...values);
+    const exps = values.map(v => Math.exp((v-max)/t));
+    const sum = exps.reduce((a,b)=>a+b,0) || 1;
+    return exps.map(v=>v/sum);
+  }
+
+
+  const simControlLabels = {
+    'tokenizacion':'Tokens',
+    'embeddings':'Embeddings',
+    'posicion':'Posición',
+    'qkv':'Q/K/V',
+    'self-attention':'Self-attention',
+    'multihead':'Multi-head',
+    'encoder':'Encoder',
+    'decoder':'Decoder',
+    'cross':'Cross-attention',
+    'generacion':'Generación',
+    'criterio':'Lectura crítica'
+  };
+
+  function installSimulationControls(){
+    $$('.section').forEach(section=>{
+      const sim = $('.sim', section);
+      const head = $('.sim-head', sim || section);
+      if(!sim || !head || $('.sim-controls', sim)) return;
+      const id = section.id;
+      const label = simControlLabels[id] || id;
+      const controls = document.createElement('div');
+      controls.className = 'sim-controls';
+      controls.setAttribute('aria-label', `Controles de simulación ${label}`);
+      controls.innerHTML = `
+        <button class="btn secondary sim-step" type="button" data-step-sim="${id}">Paso a paso</button>
+        <button class="btn secondary sim-auto" type="button" data-auto-sim="${id}" aria-pressed="false">Simulación automática: no</button>
+        <span class="sim-status" data-status-sim="${id}">Modo manual · ${label}</span>
+      `;
+      head.insertAdjacentElement('afterend', controls);
+    });
+    $$('[data-step-sim]').forEach(btn=>btn.addEventListener('click',()=>stepSimulation(btn.dataset.stepSim)));
+    $$('[data-auto-sim]').forEach(btn=>btn.addEventListener('click',()=>toggleSimulationAuto(btn.dataset.autoSim)));
+  }
+
+  function setStatus(simId, text){
+    const status = $(`[data-status-sim="${simId}"]`);
+    if(status) status.textContent = text;
+  }
+
+  function setAutoButton(simId, on){
+    const btn = $(`[data-auto-sim="${simId}"]`);
+    if(!btn) return;
+    btn.textContent = on ? 'Simulación automática: sí' : 'Simulación automática: no';
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.classList.toggle('good', on);
+    btn.classList.toggle('secondary', !on);
+  }
+
+  function stopSimulationAuto(simId){
+    if(state.autoHandles[simId]){
+      clearInterval(state.autoHandles[simId]);
+      delete state.autoHandles[simId];
+    }
+    setAutoButton(simId,false);
+  }
+
+  function stopAllSimulationAutos(){
+    Object.keys(state.autoHandles).forEach(stopSimulationAuto);
+  }
+
+  function toggleSimulationAuto(simId){
+    if(state.autoHandles[simId]){
+      stopSimulationAuto(simId);
+      setStatus(simId, `Modo manual · ${simControlLabels[simId] || simId}`);
+      return;
+    }
+    stepSimulation(simId);
+    state.autoHandles[simId] = setInterval(()=>stepSimulation(simId), 1350);
+    setAutoButton(simId,true);
+    setStatus(simId, `Automática activa · ${simControlLabels[simId] || simId}`);
+  }
+
+  function cycleSelect(selector){
+    const el = $(selector);
+    if(!el) return null;
+    el.selectedIndex = (el.selectedIndex + 1) % el.options.length;
+    return el.value;
+  }
+
+  function stepSimulation(simId){
+    switch(simId){
+      case 'tokenizacion':{
+        const mode = $('#tokMode');
+        if(mode.value === 'word'){
+          mode.value = 'sub';
+        }else{
+          mode.value = 'word';
+          cycleSelect('#tokPhrase');
+        }
+        renderTokenization();
+        setStatus(simId, `Paso: ${mode.value === 'word' ? 'palabras completas' : 'subpalabras'} · ${$('#tokPhrase').selectedOptions[0].text}`);
+        break;
+      }
+      case 'embeddings':{
+        cycleSelect('#embedContext');
+        renderEmbeddings();
+        setStatus(simId, `Paso: ${$('#embedContext').selectedOptions[0].text}`);
+        break;
+      }
+      case 'posicion':{
+        cycleSelect('#posMode');
+        renderPosition();
+        setStatus(simId, `Paso: secuencia ${$('#posMode').selectedOptions[0].text.toLowerCase()}`);
+        break;
+      }
+      case 'qkv':{
+        state.qkvActive = (state.qkvActive + 1) % qkvData.tokens.length;
+        renderQKV();
+        setStatus(simId, `Paso: token activo “${qkvData.tokens[state.qkvActive]}”`);
+        break;
+      }
+      case 'self-attention':{
+        const phrase = phrases[state.attPhrase];
+        state.attActive = (state.attActive + 1) % phrase.tokens.length;
+        if(state.attActive === 0) cycleSelect('#attHead');
+        renderAttention();
+        setStatus(simId, `Paso: “${phrases[state.attPhrase].tokens[state.attActive]}” · cabeza ${$('#attHead').selectedOptions[0].text}`);
+        break;
+      }
+      case 'multihead':{
+        state.multiHeadStep = (state.multiHeadStep + 1) % 4;
+        renderHeads();
+        const active = $('.head-card.active h4');
+        setStatus(simId, `Paso: ${active ? active.textContent : 'cabeza activa'}`);
+        break;
+      }
+      case 'encoder':{
+        state.encoderStep = (state.encoderStep + 1) % 5;
+        $('#encoderStep').value = String(state.encoderStep);
+        renderEncoder();
+        const steps = ['Tokens','Embeddings','Atención','Add & Norm','FFN'];
+        setStatus(simId, `Paso: ${steps[state.encoderStep]}`);
+        break;
+      }
+      case 'decoder':{
+        state.decoderStep = (state.decoderStep + 1) % 8;
+        renderCausalMask();
+        setStatus(simId, `Paso: fila ${state.decoderStep + 1}, futuro bloqueado`);
+        break;
+      }
+      case 'cross':{
+        state.crossStep = (state.crossStep + 1) % 4;
+        renderCrossMatrix();
+        const decoder = ['El','modelo','predice','ventas'][state.crossStep];
+        setStatus(simId, `Paso: decoder “${decoder}” consulta al encoder`);
+        break;
+      }
+      case 'generacion':{
+        const temp = $('#tempRange');
+        let next = Number(temp.value) + 0.3;
+        if(next > 1.8) next = 0.3;
+        temp.value = next.toFixed(1);
+        renderVocab();
+        setStatus(simId, `Paso: temperatura ${Number(temp.value).toFixed(1)}`);
+        break;
+      }
+      case 'criterio':{
+        state.critStep = (state.critStep + 1) % 6;
+        renderRisks();
+        const active = $('#criterio .risk.active strong');
+        setStatus(simId, `Paso: criterio ${active ? active.textContent : 'activo'}`);
+        break;
+      }
+    }
+  }
+
+  function renderTokenization(){
+    const ex = tokenExamples[$('#tokPhrase').value];
+    const mode = $('#tokMode').value;
+    const tokens = ex[mode];
+    $('#tokenChips').innerHTML = tokens.map((t,i)=>`<span class="chip ${mode==='sub' && t.includes('##') ? 'split-chip' : ''}">${t}<small>ID conceptual ${1000+i*37}</small></span>`).join('');
+    $('#tokenCaption').innerHTML = `<strong>${mode==='word'?'Palabras completas':'Subpalabras conceptuales'}:</strong> ${ex.caption}`;
+  }
+
+  function renderEmbeddings(){
+    const ctx = $('#embedContext').value;
+    const points = embedPoints[ctx];
+    $('#embedLabel').textContent = ctx === 'fin' ? 'institución financiera' : 'margen del río';
+    $('#vectorPlane').innerHTML = points.map(p=>`<span class="point ${p.muted?'muted':''}" style="left:${p.x}%;top:${p.y}%">${p.label}</span>`).join('');
+    $('#embedCaption').innerHTML = ctx === 'fin'
+      ? '<strong>Contexto financiero:</strong> “banco” se aproxima a crédito, préstamo, tasa y empresa.'
+      : '<strong>Contexto geográfico:</strong> “banco” se aproxima a río, arena, orilla y agua.';
+  }
+
+  function renderPosition(){
+    const d = posData[$('#posMode').value];
+    $('#posTokens').innerHTML = d.tokens.map((t,i)=>`<span class="arrow-token">${i+1}. ${t}</span>${i<d.tokens.length-1?'<span class="arrow">→</span>':''}`).join('');
+    $('#posBars').innerHTML = d.bars.map(h=>`<i style="height:${h}px"></i>`).join('');
+    $('#posCaption').innerHTML = `<strong>Lectura:</strong> ${d.caption}`;
+  }
+
+  function renderQKV(){
+    const tokens = qkvData.tokens;
+    $('#qkvTokens').innerHTML = tokens.map((t,i)=>`<button class="chip ${i===state.qkvActive?'active':''}" type="button" data-qkv="${i}">${t}<small>${qkvData.roles[i]}</small></button>`).join('');
+    $$('[data-qkv]').forEach(btn=>btn.addEventListener('click',()=>{
+      state.qkvActive = Number(btn.dataset.qkv);
+      renderQKV();
+    }));
+    const active = state.qkvActive;
+    const query = qkvData.query[active] || '¿Qué relación contextual necesita este token?';
+    const keys = qkvData.keys[active] || ['token vecino','verbo principal','objeto relevante'];
+    const values = qkvData.values[active] || ['información contextual','rasgo sintáctico','rasgo semántico'];
+    $('#queryLane').innerHTML = `<span class="mini">${query}</span><span class="mini">Token activo: <strong>${tokens[active]}</strong></span>`;
+    $('#keyLane').innerHTML = keys.map(k=>`<span class="mini">${k}</span>`).join('');
+    $('#valueLane').innerHTML = values.map(v=>`<span class="mini">${v}</span>`).join('');
+    $('#qkvCaption').innerHTML = `<strong>${tokens[active]}</strong> genera una Query; los demás tokens ofrecen Keys y Values para formar un vector contextual.`;
+  }
+
+  function addEdge(matrix,a,b,w){
+    if(matrix[a] && typeof matrix[a][b] === 'number') matrix[a][b]+=w;
+  }
+
+  function buildWeights(){
+    const phrase = phrases[state.attPhrase];
+    const n = phrase.tokens.length;
+    const head = state.attHead;
+    const rnd = prng(state.attSeed + n*113 + head.length*911);
+    const m = Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>{
+      const distance = Math.abs(i-j);
+      let v = .025 + Math.max(0,.10-distance*.018);
+      if(i===j) v += .16;
+      if(head==='local') v += Math.max(0,.34-distance*.08);
+      if(head==='syntax' && distance<=2) v += .055;
+      if(head==='causal' && j>i) v = 0;
+      if(head==='causal' && j<=i) v += Math.max(0,.22-(i-j)*.05);
+      v += (rnd()-.5)*.025;
+      return Math.max(head==='causal' && j>i ? 0 : .005, v);
+    }));
+    const semantic = phrase.edges.semantic || [];
+    const syntax = phrase.edges.syntax || [];
+    const chosen = head==='syntax' ? syntax : semantic;
+    chosen.forEach(([a,b,w])=>{
+      const boost = head==='local' ? w*.25 : head==='causal' ? w*.52 : w;
+      if(!(head==='causal' && b>a)) addEdge(m,a,b,boost);
+    });
+    if(head==='semantic') syntax.forEach(([a,b,w])=>addEdge(m,a,b,w*.25));
+    if(head==='syntax') semantic.forEach(([a,b,w])=>addEdge(m,a,b,w*.18));
+    return m.map(normalize);
+  }
+
+  function topKeys(row,count=4){
+    return row.map((w,i)=>({w,i})).sort((a,b)=>b.w-a.w).slice(0,count);
+  }
+
+  function renderAttention(){
+    state.attPhrase = $('#attPhrase').value;
+    state.attHead = $('#attHead').value;
+    const phrase = phrases[state.attPhrase];
+    if(state.attActive >= phrase.tokens.length) state.attActive = phrase.tokens.length-1;
+    const weights = buildWeights();
+    const row = weights[state.attActive];
+    const top = topKeys(row,5).map(x=>x.i);
+    $('#attTokens').innerHTML = phrase.tokens.map((t,i)=>{
+      const cls = i===state.attActive ? 'active' : top.includes(i) ? 'key' : '';
+      return `<button class="token-btn ${cls}" type="button" data-att="${i}">${t}<small>${phrase.roles[i]}</small></button>`;
+    }).join('');
+    $$('[data-att]').forEach(btn=>btn.addEventListener('click',()=>{
+      state.attActive = Number(btn.dataset.att);
+      renderAttention();
+    }));
+    renderAttentionMatrix(weights,phrase);
+    renderAttentionCaption(weights,phrase);
+    requestAnimationFrame(()=>renderAttentionLinks(weights));
+  }
+
+  function renderAttentionMatrix(weights,phrase){
+    let html = '<thead><tr><th>Query \\ Key</th>';
+    phrase.tokens.forEach(t=>html += `<th>${t}</th>`);
+    html += '</tr></thead><tbody>';
+    weights.forEach((row,i)=>{
+      html += `<tr><td>${phrase.tokens[i]}</td>`;
+      row.forEach((w,j)=>{
+        const hot = i===state.attActive && topKeys(weights[state.attActive],4).some(x=>x.i===j);
+        const blocked = state.attHead === 'causal' && j > i;
+        html += `<td><div class="cell ${hot?'hot':''}" style="--w:${blocked?0:w.toFixed(3)}"><span>${blocked?'—':percent(w)+'%'}</span></div></td>`;
+      });
+      html += '</tr>';
+    });
+    html += '</tbody>';
+    $('#attMatrix').innerHTML = html;
+  }
+
+  function renderAttentionCaption(weights,phrase){
+    const topText = topKeys(weights[state.attActive],4)
+      .filter(x=>!(state.attHead==='causal' && x.i>state.attActive))
+      .map(x=>`<strong>${phrase.tokens[x.i]}</strong> (${percent(x.w)}%)`).join(', ');
+    $('#attCaption').innerHTML = `<strong>Token activo:</strong> ${phrase.tokens[state.attActive]}. Pesos principales: ${topText}. ${phrase.story}`;
+  }
+
+  function renderAttentionLinks(weights){
+    const board = $('#attBoard');
+    const svg = $('#attLinks');
+    const buttons = $$('.token-btn', board);
+    const activeBtn = buttons[state.attActive];
+    const rect = board.getBoundingClientRect();
+    svg.setAttribute('viewBox',`0 0 ${Math.max(1,rect.width)} ${Math.max(1,rect.height)}`);
+    svg.innerHTML = '';
+    if(!activeBtn) return;
+    const aRect = activeBtn.getBoundingClientRect();
+    const x1 = aRect.left - rect.left + aRect.width/2;
+    const y1 = aRect.top - rect.top + aRect.height/2;
+    topKeys(weights[state.attActive],6).forEach(({i,w})=>{
+      if(i===state.attActive || !buttons[i] || w<=.02) return;
+      const bRect = buttons[i].getBoundingClientRect();
+      const x2 = bRect.left - rect.left + bRect.width/2;
+      const y2 = bRect.top - rect.top + bRect.height/2;
+      const dx = Math.abs(x2-x1);
+      const curve = Math.max(28,Math.min(96,dx*.30));
+      const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('d',`M ${x1} ${y1} C ${x1} ${y1-curve}, ${x2} ${y2-curve}, ${x2} ${y2}`);
+      path.setAttribute('class','path-line');
+      path.setAttribute('stroke-width',String(1.6+w*10));
+      path.setAttribute('opacity',String(Math.min(.92,.24+w*2.6)));
+      svg.appendChild(path);
+    });
+  }
+
+  function renderHeads(){
+    const data = [
+      {title:'Cabeza semántica',text:'Conecta ministerio, datos y empleo.',vals:[20,54,38,82,32,76]},
+      {title:'Cabeza sintáctica',text:'Sujeto, verbo y objeto quedan priorizados.',vals:[18,72,85,68,30,44]},
+      {title:'Cabeza local',text:'Refuerza vecinos próximos en la oración.',vals:[45,80,76,72,60,40]},
+      {title:'Cabeza causal',text:'Solo mira tokens previos o presentes.',vals:[86,70,52,36,20,12]}
+    ];
+    $('#headsGrid').innerHTML = data.map((h,i)=>`<div class="head-card ${i===state.multiHeadStep?'active':''}"><h4>${h.title}</h4><p>${h.text}</p><div class="spark">${h.vals.map(v=>`<i style="height:${v/2}px"></i>`).join('')}</div></div>`).join('');
+    const active = data[state.multiHeadStep];
+    const cap = $('#multihead .caption');
+    if(cap) cap.innerHTML = `<strong>Cabeza activa:</strong> ${active.title}. ${active.text} Usá “Paso a paso” o “Simulación automática” para recorrerlas.`;
+  }
+
+  function renderEncoder(){
+    const steps = [
+      {t:'Tokens',d:'Entrada segmentada'},
+      {t:'Embeddings',d:'Vectores iniciales'},
+      {t:'Atención',d:'Contexto entre tokens'},
+      {t:'Add & Norm',d:'Residual y escala estable'},
+      {t:'FFN',d:'Transformación no lineal'}
+    ];
+    state.encoderStep = Number($('#encoderStep').value);
+    $('#encoderPipeline').innerHTML = steps.map((s,i)=>`<div class="pipe-step ${i<=state.encoderStep?'on':''}"><strong>${s.t}</strong><span>${s.d}</span></div>`).join('');
+    const captions = [
+      'La frase se divide en unidades manipulables.',
+      'Cada unidad se convierte en un vector numérico.',
+      'Los tokens intercambian información por atención.',
+      'La conexión residual conserva señal previa y la normalización estabiliza.',
+      'La red feed-forward refina cada posición de forma no lineal.'
+    ];
+    $('#encoderCaption').innerHTML = `<strong>Etapa activa:</strong> ${steps[state.encoderStep].t}. ${captions[state.encoderStep]}`;
+  }
+
+  function renderCausalMask(){
+    const n = 8;
+    const words = ['La','IA','genera','un','informe','claro','sobre','riesgos'];
+    let cells = '';
+    for(let r=0;r<n;r++){
+      for(let c=0;c<n;c++){
+        const classes = [];
+        if(c>r) classes.push('off');
+        if(r===state.decoderStep) classes.push('row-active');
+        cells += `<span class="${classes.join(' ')}" title="${c>r?'bloqueado':'visible'}"></span>`;
+      }
+    }
+    $('#causalMask').innerHTML = cells;
+    $$('#decoder .chips .chip').forEach((chip,i)=>chip.classList.toggle('active', i<=state.decoderStep));
+    const cap = $('#decoder .caption');
+    if(cap) cap.innerHTML = `En la fila ${state.decoderStep + 1}, el token <strong>${words[state.decoderStep]}</strong> puede mirar hasta su propia posición, pero no puede mirar los tokens futuros.`;
+  }
+
+  function renderCrossMatrix(){
+    const rows = ['El','modelo','predice','ventas'];
+    const cols = ['The','model','predicts','sales'];
+    const vals = [
+      [.78,.12,.06,.04],
+      [.08,.82,.06,.04],
+      [.05,.10,.78,.07],
+      [.04,.06,.08,.82]
+    ];
+    let html = '<thead><tr><th>Decoder \ Encoder</th>';
+    cols.forEach(c=>html += `<th>${c}</th>`);
+    html += '</tr></thead><tbody>';
+    rows.forEach((r,i)=>{
+      html += `<tr class="${i===state.crossStep?'focus-row':''}"><td>${r}</td>`;
+      cols.forEach((c,j)=>html += `<td><div class="cell ${vals[i][j]>.7?'hot':''}" style="--w:${vals[i][j]}"><span>${percent(vals[i][j])}%</span></div></td>`);
+      html += '</tr>';
+    });
+    html += '</tbody>';
+    $('#crossMatrix').innerHTML = html;
+    const decoderChips = $$('#cross .cross-col:last-child .chip');
+    decoderChips.forEach((chip,i)=>chip.classList.toggle('active', i<=state.crossStep));
+    const cap = $('#cross .caption');
+    if(cap) cap.innerHTML = `La salida <strong>${rows[state.crossStep]}</strong> se alinea principalmente con <strong>${cols[state.crossStep]}</strong>. Paso ${state.crossStep + 1} de 4.`;
+  }
+
+  function renderRisks(){
+    const risks = $$('#criterio .risk');
+    risks.forEach((risk,i)=>risk.classList.toggle('active', i===state.critStep));
+    const active = risks[state.critStep];
+    const cap = $('#criterio .caption');
+    if(active && cap){
+      const title = $('strong', active)?.textContent || 'criterio';
+      const text = $('p', active)?.textContent || '';
+      cap.innerHTML = `<strong>Criterio activo:</strong> ${title}. ${text} Recorrelos con “Paso a paso” o dejá correr la simulación automática.`;
+    }
+  }
+
+  function renderVocab(){
+    state.temp = Number($('#tempRange').value);
+    const words = ['control','seguimiento','tratamiento','evaluación','riesgo','consulta'];
+    const base = [2.8,2.35,2.05,1.72,1.46,1.22];
+    const probs = softmax(base,state.temp);
+    $('#vocabList').innerHTML = words.map((w,i)=>`<div class="vocab-row"><strong>${w}</strong><span class="vocab-bar"><span style="--p:${probs[i].toFixed(3)}"></span></span><span>${percent(probs[i])}%</span></div>`).join('');
+    $('#tempCaption').innerHTML = state.temp < .7
+      ? '<strong>Temperatura baja:</strong> la distribución se concentra en pocas opciones.'
+      : state.temp > 1.2
+        ? '<strong>Temperatura alta:</strong> aumenta diversidad, pero también incertidumbre.'
+        : '<strong>Temperatura media:</strong> combina coherencia y variedad.';
+  }
+
+  function setTheme(){
+    const root = document.documentElement;
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme',next);
+    $('#themeBtn').textContent = next === 'dark' ? 'Tema claro' : 'Tema oscuro';
+    try{localStorage.setItem('tl-theme',next);}catch(e){}
+    requestAnimationFrame(()=>renderAttention());
+  }
+
+  function cyclePalette(){
+    const palettes = ['aurora','salmon','bosque','carbono'];
+    state.paletteIndex = (state.paletteIndex + 1) % palettes.length;
+    document.documentElement.setAttribute('data-palette',palettes[state.paletteIndex]);
+    try{localStorage.setItem('tl-palette',palettes[state.paletteIndex]);}catch(e){}
+    requestAnimationFrame(()=>renderAttention());
+  }
+
+  function resetDemo(){
+    stopAllSimulationAutos();
+    state.attSeed = Math.floor(Date.now()%1000000);
+    $('#attSeed').textContent = `seed: ${state.attSeed}`;
+    state.attActive = 1;
+    state.qkvActive = 4;
+    state.encoderStep = 0;
+    state.decoderStep = 4;
+    state.crossStep = 0;
+    state.multiHeadStep = 0;
+    state.critStep = 0;
+    $('#encoderStep').value = 0;
+    $('#tempRange').value = .8;
+    renderAll();
+    $$('.sim-status').forEach(status=>{
+      const id = status.dataset.statusSim;
+      status.textContent = `Modo manual · ${simControlLabels[id] || id}`;
+    });
+  }
+
+  function observeNav(){
+    const links = $$('#nav a');
+    const map = Object.fromEntries(links.map(a=>[a.getAttribute('href').slice(1),a]));
+    const observer = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          links.forEach(a=>a.classList.remove('active'));
+          const a = map[entry.target.id];
+          if(a) a.classList.add('active');
+        }
+      });
+    },{rootMargin:'-35% 0px -55% 0px',threshold:.05});
+    $$('.section').forEach(sec=>observer.observe(sec));
+  }
+
+  function initPreferences(){
+    try{
+      const theme = localStorage.getItem('tl-theme');
+      const palette = localStorage.getItem('tl-palette');
+      if(theme) document.documentElement.setAttribute('data-theme',theme);
+      if(palette) document.documentElement.setAttribute('data-palette',palette);
+      const palettes = ['aurora','salmon','bosque','carbono'];
+      state.paletteIndex = Math.max(0,palettes.indexOf(palette || 'aurora'));
+    }catch(e){}
+    $('#themeBtn').textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? 'Tema claro' : 'Tema oscuro';
+  }
+
+  function bind(){
+    installSimulationControls();
+    $('#themeBtn').addEventListener('click',setTheme);
+    $('#paletteBtn').addEventListener('click',cyclePalette);
+    $('#resetBtn').addEventListener('click',resetDemo);
+    $('#motionBtn').addEventListener('click',()=>{
+      state.motion = !state.motion;
+      $('#motionBtn').textContent = state.motion ? 'Animación: sí' : 'Animación: no';
+      document.body.style.setProperty('--motion', state.motion ? '1' : '0');
+      $$('.path-line').forEach(p=>p.style.animation = state.motion ? '' : 'none');
+    });
+    $('#tokMode').addEventListener('change',renderTokenization);
+    $('#tokPhrase').addEventListener('change',renderTokenization);
+    $('#embedContext').addEventListener('change',renderEmbeddings);
+    $('#posMode').addEventListener('change',renderPosition);
+    $('#attPhrase').addEventListener('change',()=>{
+      state.attActive = state.attPhrase === 'finance' ? 1 : 2;
+      renderAttention();
+    });
+    $('#attHead').addEventListener('change',renderAttention);
+    $('#encoderStep').addEventListener('input',renderEncoder);
+    $('#tempRange').addEventListener('input',renderVocab);
+    window.addEventListener('resize',()=>requestAnimationFrame(renderAttention));
+    document.addEventListener('keydown',(e)=>{
+      if(e.key.toLowerCase()==='t') setTheme();
+      if(e.key.toLowerCase()==='p') cyclePalette();
+    });
+  }
+
+  function renderAll(){
+    renderTokenization();
+    renderEmbeddings();
+    renderPosition();
+    renderQKV();
+    renderAttention();
+    renderHeads();
+    renderEncoder();
+    renderCausalMask();
+    renderCrossMatrix();
+    renderVocab();
+    renderRisks();
+  }
+
+  initPreferences();
+  bind();
+  observeNav();
+  renderAll();
+})();
+</script>
+</body>
+</html>
