@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clase CNN · Página única interactiva</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;--card:#ffffff;--card2:#f8fbff;--text:#142033;--muted:#64748b;--line:#d9e4f2;
+      --accent:#2563eb;--accent2:#7c3aed;--accent3:#06b6d4;--good:#059669;--warn:#d97706;--bad:#dc2626;
+      --shadow:0 22px 54px rgba(23,37,84,.14);--soft:0 8px 22px rgba(15,23,42,.08);--radius:28px;
+      --mono:Consolas,Monaco,"SFMono-Regular",monospace;
+    }
+    [data-theme="dark"]{
+      --bg:#07111f;--card:#111c31;--card2:#0d1729;--text:#eef6ff;--muted:#afbdd2;--line:#263956;
+      --accent:#60a5fa;--accent2:#a78bfa;--accent3:#22d3ee;--good:#34d399;--warn:#fbbf24;--bad:#fb7185;
+      --shadow:0 22px 54px rgba(0,0,0,.38);--soft:0 8px 22px rgba(0,0,0,.25)
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:92px}body{margin:0;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at top left,color-mix(in srgb,var(--accent) 18%,transparent),transparent 34%),radial-gradient(circle at top right,color-mix(in srgb,var(--accent2) 14%,transparent),transparent 30%),linear-gradient(135deg,var(--bg),color-mix(in srgb,var(--bg),var(--accent3) 8%));color:var(--text);line-height:1.62}a{color:var(--accent);font-weight:850;text-decoration:none}a:hover{text-decoration:underline}
+    header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+    .nav{max-width:1280px;margin:auto;padding:12px 20px;display:flex;gap:14px;align-items:center;justify-content:space-between}.brand{font-weight:950;letter-spacing:-.025em;white-space:nowrap}.controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.controls a,.controls button{font-size:13px}
+    button,.btn{border:1px solid var(--line);background:var(--card);color:var(--text);padding:10px 13px;border-radius:15px;cursor:pointer;font-weight:850;box-shadow:var(--soft);transition:.18s transform,.18s opacity,.18s background}.btn{display:inline-flex;align-items:center;gap:8px}.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border:none}button:hover,.btn:hover{transform:translateY(-1px);text-decoration:none}button:disabled{opacity:.55;cursor:not-allowed}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:3px}
+    main{max-width:1280px;margin:auto;padding:28px 20px 64px}.card{background:color-mix(in srgb,var(--card) 96%,transparent);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}.hero{display:grid;grid-template-columns:minmax(0,1.06fr) minmax(320px,.94fr);gap:22px;align-items:stretch;margin:18px 0 28px}.hero .card{min-height:100%}
+    h1{font-size:clamp(34px,5vw,62px);line-height:1.02;margin:10px 0 14px;letter-spacing:-.055em}h2{font-size:clamp(25px,3.2vw,40px);line-height:1.08;margin:44px 0 16px;letter-spacing:-.04em}h3{font-size:21px;margin:6px 0 10px}h4{margin:8px 0 8px;font-size:16px}.lead{font-size:18px;color:var(--muted);max-width:88ch}.muted{color:var(--muted)}.tag{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:6px 11px;margin:4px 6px 4px 0;background:color-mix(in srgb,var(--card),var(--accent) 5%);font-size:13px;font-weight:900;color:var(--muted)}.notice{border-left:5px solid var(--accent);padding:15px 17px;border-radius:18px;background:color-mix(in srgb,var(--accent) 8%,var(--card));margin:14px 0}.good{border-left-color:var(--good)}.warn{border-left-color:var(--warn)}.bad{border-left-color:var(--bad)}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.mini{padding:16px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--soft)}.mini strong{display:block;font-size:20px;letter-spacing:-.02em}.mini small{color:var(--muted)}
+    .toc{display:grid;gap:10px}.toc a{display:flex;justify-content:space-between;gap:10px;padding:12px 14px;border:1px solid var(--line);border-radius:18px;background:var(--card2);color:var(--text)}.toc span{color:var(--muted);font-size:13px}.toc a:hover{background:color-mix(in srgb,var(--accent) 9%,var(--card));text-decoration:none}
+    .table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:var(--soft)}.table th,.table td{border-bottom:1px solid var(--line);padding:13px;text-align:left;vertical-align:top}.table th{background:color-mix(in srgb,var(--accent) 11%,var(--card));font-size:14px;text-transform:uppercase;letter-spacing:.04em}.table tr:last-child td{border-bottom:none}.table td:first-child{font-weight:850}pre{background:color-mix(in srgb,var(--card),#000 7%);border:1px solid var(--line);border-radius:20px;padding:16px;overflow:auto;white-space:pre-wrap}code{font-family:var(--mono)}
+    .sectionHead{display:flex;align-items:end;justify-content:space-between;gap:14px;flex-wrap:wrap}.sectionHead .btn{margin-bottom:12px}.simwrap{display:grid;grid-template-columns:minmax(0,1fr) 365px;gap:18px;margin-top:18px}.canvasBox{position:relative;min-height:560px;border:1px dashed var(--line);border-radius:26px;background:linear-gradient(180deg,color-mix(in srgb,var(--card),var(--accent) 4%),var(--card2));overflow:hidden;box-shadow:var(--soft);padding:18px}.panel{display:grid;gap:12px;align-content:start}.box{border:1px solid var(--line);border-radius:22px;padding:18px;background:linear-gradient(180deg,var(--card),color-mix(in srgb,var(--card),var(--accent) 5%));box-shadow:var(--soft)}
+    .bar{height:22px;border-radius:999px;border:1px solid var(--line);background:color-mix(in srgb,var(--card),#000 8%);overflow:hidden}.fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));transition:.22s}.big{font-size:clamp(30px,4vw,42px);font-weight:950;letter-spacing:-.04em;margin:6px 0}.badge{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;border:1px solid var(--line);font-size:13px;font-weight:900;background:var(--card2);color:var(--muted)}input[type=range]{width:100%;accent-color:var(--accent)}select{width:100%;padding:10px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);font-weight:800}.formrow{display:grid;gap:7px}.formrow label{font-weight:850;font-size:14px;color:var(--muted)}.buttonrow{display:flex;gap:8px;flex-wrap:wrap}.buttonrow button{flex:1;min-width:120px}.kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px}.kpi .mini strong{font-size:24px}.kbd{font-family:var(--mono);border:1px solid var(--line);border-radius:8px;padding:2px 6px;background:var(--card2)}
+    .matrixWrap{display:flex;gap:18px;align-items:flex-start;justify-content:center;flex-wrap:wrap}.matrixBlock{min-width:190px}.matrixTitle{font-weight:950;text-align:center;margin-bottom:8px;color:var(--muted)}.matrix{display:grid;gap:5px;justify-content:center}.cellnum{min-width:36px;min-height:34px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:850;background:var(--card2);font-family:var(--mono);font-size:13px;position:relative}.cellnum.hot{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}.cellnum.focus{outline:3px solid var(--warn);outline-offset:1px}.cellnum.out{outline:3px solid var(--good);outline-offset:1px}.cellnum.pad{opacity:.55;background:repeating-linear-gradient(45deg,var(--card2),var(--card2) 7px,color-mix(in srgb,var(--muted) 18%,var(--card)) 7px,color-mix(in srgb,var(--muted) 18%,var(--card)) 14px)}.cellnum.max{background:linear-gradient(135deg,var(--good),var(--accent3));color:white}.formula{font-family:var(--mono);font-size:13px;background:var(--card2);border:1px solid var(--line);border-radius:18px;padding:12px;overflow:auto}.canvasPair{display:grid;grid-template-columns:1fr 1fr;gap:12px}.canvasPane{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--card);box-shadow:var(--soft)}.canvasPane h4{padding:10px 12px;margin:0;border-bottom:1px solid var(--line);background:var(--card2)}canvas{width:100%;height:300px;display:block}.wideCanvas{height:500px}.diagram{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:18px 0}.node{min-width:120px;text-align:center;padding:16px;border-radius:24px;border:1px solid var(--line);background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--soft);font-weight:950}.node.hot{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}.arrow{font-weight:950;color:var(--accent);font-size:30px}.timeline{display:grid;gap:12px}.step{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:start;padding:15px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--soft)}.time{font-weight:950;color:var(--accent)}.pillbar{display:flex;gap:8px;flex-wrap:wrap}.pillbar a{border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--card);color:var(--text);font-size:13px}.pillbar a:hover{background:color-mix(in srgb,var(--accent) 9%,var(--card));text-decoration:none}.stickyHelp{position:fixed;right:20px;bottom:20px;z-index:60}.footer{margin-top:42px;color:var(--muted);font-size:14px;text-align:center;border-top:1px solid var(--line);padding-top:22px}
+    @media(max-width:980px){.hero,.grid,.grid2,.grid4,.simwrap,.canvasPair{grid-template-columns:1fr}.nav{align-items:flex-start;flex-direction:column}.controls{width:100%;justify-content:flex-start}.controls button,.controls a{flex:1}.step{grid-template-columns:1fr}.canvasBox{min-height:500px}.wideCanvas{height:420px}.arrow{transform:rotate(90deg)}}
+    @media(max-width:620px){main{padding-left:14px;padding-right:14px}.card,.box{padding:18px}.controls a:nth-of-type(n+4){display:none}.kpi{grid-template-columns:1fr}.cellnum{min-width:31px;min-height:31px;font-size:12px}.matrixBlock{min-width:150px}.stickyHelp{display:none}}
+    @media print{header,.controls,button,.btn,.stickyHelp,.pillbar{display:none!important}body{background:white}.card,.mini,.table,.box{box-shadow:none}main{max-width:100%;padding:0}.footer{page-break-before:avoid}.simwrap{grid-template-columns:1fr}.canvasBox{min-height:auto}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <div class="brand">Clase interactiva · Redes Neuronales Convolucionales</div>
+    <div class="controls" aria-label="Navegación principal">
+      <button id="themeBtn" type="button">🌙 Tema oscuro</button>
+      <a class="btn" href="#teoria">Teoría</a>
+      <a class="btn" href="#conv">Convolución</a>
+      <a class="btn" href="#bordes">Bordes</a>
+      <a class="btn" href="#padding">Padding</a>
+      <a class="btn" href="#rgb">RGB</a>
+      <a class="btn" href="#pooling">Pooling</a>
+      <a class="btn" href="#arquitectura">Arquitectura</a>
+      <button onclick="window.print()" type="button">🖨️ Imprimir</button>
+    </div>
+  </div>
+</header>
+<main id="inicio">
+  <section class="hero">
+    <div class="card">
+      <span class="tag">Deep Learning</span><span class="tag">Visión computacional</span><span class="tag">CNN</span><span class="tag">Página única</span>
+      <h1>Redes Neuronales Convolucionales</h1>
+      <p class="lead">Material didáctico en una sola página para explicar CNNs desde la intuición visual hasta las operaciones centrales: convolución, filtros, padding, stride, canales RGB, pooling, arquitectura profunda y transferencia de estilo.</p>
+      <div class="notice good"><strong>Diseñado para GitHub Pages:</strong> no depende de archivos HTML separados, librerías externas ni rutas frágiles. Los botones llevan a secciones internas de esta misma página.</div>
+      <div class="grid4">
+        <div class="mini"><strong>1</strong><small>HTML autónomo</small></div>
+        <div class="mini"><strong>7</strong><small>simulaciones integradas</small></div>
+        <div class="mini"><strong>0</strong><small>dependencias externas</small></div>
+        <div class="mini"><strong>Responsive</strong><small>apto móvil y clase</small></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Ruta pedagógica sugerida</h3>
+      <div class="toc">
+        <a href="#teoria">1. Teoría completa <span>Imagen · filtros · capas</span></a>
+        <a href="#conv">2. Convolución 6×6 con filtro 3×3 <span>Cálculo paso a paso</span></a>
+        <a href="#bordes">3. Filtros de bordes <span>Vertical · horizontal · Sobel</span></a>
+        <a href="#padding">4. Padding y stride <span>Tamaño de salida</span></a>
+        <a href="#rgb">5. Convolución RGB multicanal <span>6×6×3 · mapas de activación</span></a>
+        <a href="#pooling">6. Max pooling <span>Reducción espacial</span></a>
+        <a href="#arquitectura">7. Arquitectura CNN profunda <span>CONV · POOL · FC</span></a>
+        <a href="#style">8. Neural style transfer <span>Contenido + estilo</span></a>
+        <a href="#guia">9. Guía práctica <span>Colab / Python</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="teoria">
+    <div class="sectionHead"><h2>1. Teoría completa: por qué las CNN son distintas</h2><a class="btn" href="#inicio">Volver arriba</a></div>
+    <p class="lead">Una imagen no es solamente una lista de números. Tiene estructura espacial: píxeles vecinos suelen pertenecer al mismo borde, textura, sombra u objeto. Una red densa tradicional pierde gran parte de esa geometría porque aplana la imagen demasiado pronto. Una CNN conserva la proximidad local y aprende filtros que se desplazan por toda la imagen.</p>
+    <div class="grid3 grid">
+      <div class="mini"><strong>Conectividad local</strong><small>Un filtro mira una región pequeña, por ejemplo 3×3, y no todos los píxeles al mismo tiempo.</small></div>
+      <div class="mini"><strong>Pesos compartidos</strong><small>El mismo filtro se aplica en muchas posiciones, reduciendo parámetros y detectando patrones en cualquier zona.</small></div>
+      <div class="mini"><strong>Jerarquía visual</strong><small>Las primeras capas detectan bordes; las capas medias, partes; las profundas, conceptos más abstractos.</small></div>
+    </div>
+    <div class="notice"><strong>Idea clave:</strong> una CNN no “mira” la imagen completa de una vez. Construye mapas de activación: cada mapa responde a cierto patrón visual aprendido.</div>
+    <table class="table" aria-label="Resumen de componentes CNN">
+      <tr><th>Componente</th><th>Qué hace</th><th>Intuición de clase</th></tr>
+      <tr><td>Filtro / kernel</td><td>Matriz pequeña de pesos que se desliza sobre la imagen.</td><td>Funciona como una lupa especializada: una detecta bordes, otra texturas, otra curvas.</td></tr>
+      <tr><td>Convolución</td><td>Multiplica región local por el filtro y suma el resultado.</td><td>Produce un mapa que indica dónde aparece el patrón buscado.</td></tr>
+      <tr><td>Padding</td><td>Agrega borde artificial, generalmente ceros.</td><td>Evita perder información de los bordes y permite controlar el tamaño de salida.</td></tr>
+      <tr><td>Stride</td><td>Define cuántos píxeles avanza el filtro en cada paso.</td><td>A mayor stride, menor resolución de salida.</td></tr>
+      <tr><td>Pooling</td><td>Resume regiones locales, por ejemplo tomando el máximo.</td><td>Reduce tamaño y conserva la activación más relevante.</td></tr>
+      <tr><td>Flatten + Dense</td><td>Convierte mapas en vector y decide la clase final.</td><td>Integra la evidencia visual aprendida por las capas convolucionales.</td></tr>
+    </table>
+  </section>
+
+  <section id="conv">
+    <div class="sectionHead"><h2>2. Simulación: convolución 6×6 con filtro 3×3</h2><a class="btn" href="#inicio">Volver arriba</a></div>
+    <div class="card simwrap">
+      <div class="canvasBox">
+        <p class="lead">Mueve el paso o ejecuta la animación. El bloque resaltado es la región 3×3 que observa el filtro; la celda resaltada en la salida es la activación generada.</p>
+        <div class="matrixWrap">
+          <div class="matrixBlock"><div class="matrixTitle">Imagen de entrada 6×6</div><div id="convInput" class="matrix"></div></div>
+          <div class="matrixBlock"><div class="matrixTitle">Filtro 3×3</div><div id="convKernel" class="matrix"></div></div>
+          <div class="matrixBlock"><div class="matrixTitle">Mapa de activación 4×4</div><div id="convOutput" class="matrix"></div></div>
+        </div>
+        <div class="formula" id="convFormula" style="margin-top:18px"></div>
+      </div>
+      <aside class="panel">
+        <div class="box">
+          <h3>Controles</h3>
+          <div class="formrow"><label for="convKernelSelect">Tipo de filtro</label><select id="convKernelSelect"><option value="edgeV">Borde vertical</option><option value="edgeH">Borde horizontal</option><option value="sharpen">Realce</option><option value="blur">Suavizado</option><option value="diag">Diagonal</option></select></div>
+          <div class="formrow"><label for="convStep">Paso de la ventana: <span id="convStepLabel">1</span>/16</label><input id="convStep" type="range" min="0" max="15" value="0" /></div>
+          <div class="buttonrow"><button id="convPrev" type="button">Anterior</button><button id="convPlay" class="primary" type="button">Animar</button><button id="convNext" type="button">Siguiente</button></div>
+        </div>
+        <div class="box"><h3>Lectura técnica</h3><p>En deep learning, muchas librerías implementan correlación cruzada: el filtro se aplica sin invertirlo. En clase suele llamarse convolución porque cumple el mismo rol operativo: extraer patrones locales.</p><div class="kpi"><div class="mini"><strong id="convPos">(0,0)</strong><small>posición superior izquierda</small></div><div class="mini"><strong id="convVal">0</strong><small>activación calculada</small></div></div></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="bordes">
+    <div class="sectionHead"><h2>3. Simulación: filtros de bordes</h2><a class="btn" href="#inicio">Volver arriba</a></div>
+    <div class="card simwrap">
+      <div class="canvasBox">
+        <p class="lead">Los bordes aparecen cuando hay cambios fuertes de intensidad. Un filtro vertical responde a transiciones izquierda-derecha; uno horizontal, a transiciones arriba-abajo.</p>
+        <div class="canvasPair">
+          <div class="canvasPane"><h4>Imagen sintética</h4><canvas id="edgeOriginal" width="520" height="320"></canvas></div>
+          <div class="canvasPane"><h4>Mapa filtrado</h4><canvas id="edgeFiltered" width="520" height="320"></canvas></div>
+        </div>
+      </div>
+      <aside class="panel">
+        <div class="box">
+          <h3>Controles</h3>
+          <div class="formrow"><label for="edgeFilterSelect">Filtro</label><select id="edgeFilterSelect"><option value="sobelV">Sobel vertical</option><option value="sobelH">Sobel horizontal</option><option value="laplace">Laplaciano</option><option value="emboss">Relieve</option></select></div>
+          <div class="formrow"><label for="edgeContrast">Intensidad: <span id="edgeContrastLabel">1.4</span></label><input id="edgeContrast" type="range" min="0.5" max="3" step="0.1" value="1.4" /></div>
+          <button id="edgeNoise" class="primary" type="button">Cambiar imagen base</button>
+        </div>
+        <div class="box"><h3>Lectura técnica</h3><p>La CNN aprende filtros similares al comienzo del entrenamiento, aunque no se los programe manualmente. La diferencia es que los pesos se ajustan para reducir el error de clasificación.</p><div id="edgeKernelView" class="matrix" style="margin-top:10px"></div></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="padding">
+    <div class="sectionHead"><h2>4. Simulación: padding, stride y tamaño de salida</h2><a class="btn" href="#inicio">Volver arriba</a></div>
+    <div class="card simwrap">
+      <div class="canvasBox">
+        <p class="lead">El tamaño de salida depende del tamaño de entrada, el kernel, el padding y el stride. El rectángulo muestra la ventana actual desplazándose sobre la imagen con borde agregado.</p>
+        <div class="canvasPane"><h4>Ventana sobre imagen con padding</h4><canvas id="padCanvas" width="900" height="540" class="wideCanvas"></canvas></div>
+      </div>
+      <aside class="panel">
+        <div class="box"><h3>Controles</h3>
+          <div class="formrow"><label for="padInput">Tamaño de entrada n: <span id="padInputLabel">7</span></label><input id="padInput" type="range" min="5" max="10" value="7" /></div>
+          <div class="formrow"><label for="padKernel">Kernel k: <span id="padKernelLabel">3</span></label><input id="padKernel" type="range" min="2" max="5" value="3" /></div>
+          <div class="formrow"><label for="padPadding">Padding p: <span id="padPaddingLabel">1</span></label><input id="padPadding" type="range" min="0" max="3" value="1" /></div>
+          <div class="formrow"><label for="padStride">Stride s: <span id="padStrideLabel">1</span></label><input id="padStride" type="range" min="1" max="3" value="1" /></div>
+          <div class="formrow"><label for="padStep">Paso: <span id="padStepLabel">1</span></label><input id="padStep" type="range" min="0" max="0" value="0" /></div>
+        </div>
+        <div class="box"><h3>Fórmula</h3><div id="padFormula" class="formula"></div><div class="kpi" style="margin-top:10px"><div class="mini"><strong id="padOut">0×0</strong><small>salida espacial</small></div><div class="mini"><strong id="padWindows">0</strong><small>ventanas evaluadas</small></div></div></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="rgb">
+    <div class="sectionHead"><h2>5. Simulación: convolución RGB multicanal</h2><a class="btn" href="#inicio">Volver arriba</a></div>
+    <div class="card simwrap">
+      <div class="canvasBox">
+        <p class="lead">En una imagen RGB el filtro no es 3×3, sino 3×3×3: tiene una matriz para rojo, otra para verde y otra para azul. La suma de los tres canales produce un único mapa 2D por filtro.</p>
+        <div class="canvasPane"><h4>Imagen RGB y ventana activa</h4><canvas id="rgbCanvas" width="900" height="500" class="wideCanvas"></canvas></div>
+        <div class="matrixWrap" style="margin-top:16px">
+          <div class="matrixBlock"><div class="matrixTitle">Salida del filtro</div><div id="rgbOutput" class="matrix"></div></div>
+        </div>
+      </div>
+      <aside class="panel">
+        <div class="box"><h3>Controles</h3>
+          <div class="formrow"><label for="rgbFilter">Filtro multicanal</label><select id="rgbFilter"><option value="luma">Luminancia</option><option value="red">Detector rojo</option><option value="greenEdge">Borde verde</option><option value="blueTexture">Textura azul</option></select></div>
+          <div class="formrow"><label for="rgbStep">Posición: <span id="rgbStepLabel">1</span></label><input id="rgbStep" type="range" min="0" max="8" value="0" /></div>
+          <div class="buttonrow"><button id="rgbPrev" type="button">Anterior</button><button id="rgbNext" class="primary" type="button">Siguiente</button></div>
+        </div>
+        <div class="box"><h3>Contribución por canal</h3><div id="rgbContrib" class="formula"></div><div class="kpi" style="margin-top:10px"><div class="mini"><strong id="rgbPos">(0,0)</strong><small>posición</small></div><div class="mini"><strong id="rgbVal">0</strong><small>activación total</small></div></div></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="pooling">
+    <div class="sectionHead"><h2>6. Simulación: max pooling</h2><a class="btn" href="#inicio">Volver arriba</a></div>
+    <div class="card simwrap">
+      <div class="canvasBox">
+        <p class="lead">Max pooling conserva la activación más fuerte de cada región. Esto reduce resolución, baja costo computacional y aporta cierta invariancia a desplazamientos pequeños.</p>
+        <div class="matrixWrap">
+          <div class="matrixBlock"><div class="matrixTitle">Mapa de activación</div><div id="poolInput" class="matrix"></div></div>
+          <div class="matrixBlock"><div class="matrixTitle">Salida pooling</div><div id="poolOutput" class="matrix"></div></div>
+        </div>
+      </div>
+      <aside class="panel">
+        <div class="box"><h3>Controles</h3>
+          <div class="formrow"><label for="poolSize">Tamaño de ventana: <span id="poolSizeLabel">2</span>×<span id="poolSizeLabel2">2</span></label><input id="poolSize" type="range" min="2" max="3" value="2" /></div>
+          <div class="formrow"><label for="poolStride">Stride: <span id="poolStrideLabel">2</span></label><input id="poolStride" type="range" min="1" max="3" value="2" /></div>
+          <div class="formrow"><label for="poolStep">Paso: <span id="poolStepLabel">1</span></label><input id="poolStep" type="range" min="0" max="0" value="0" /></div>
+          <div class="buttonrow"><button id="poolPrev" type="button">Anterior</button><button id="poolPlay" class="primary" type="button">Animar</button><button id="poolNext" type="button">Siguiente</button></div>
+        </div>
+        <div class="box"><h3>Lectura técnica</h3><div id="poolFormula" class="formula"></div><div class="kpi" style="margin-top:10px"><div class="mini"><strong id="poolMax">0</strong><small>máximo local</small></div><div class="mini"><strong id="poolShape">0×0</strong><small>salida</small></div></div></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="arquitectura">
+    <div class="sectionHead"><h2>7. Simulación: arquitectura CNN profunda</h2><a class="btn" href="#inicio">Volver arriba</a></div>
+    <div class="card simwrap">
+      <div class="canvasBox">
+        <p class="lead">A medida que la red avanza, suele disminuir el tamaño espacial y aumentar la cantidad de canales. La representación pasa de píxeles a rasgos visuales y luego a evidencia para clasificar.</p>
+        <div class="canvasPane"><h4>Flujo de capas</h4><canvas id="archCanvas" width="900" height="540" class="wideCanvas"></canvas></div>
+      </div>
+      <aside class="panel">
+        <div class="box"><h3>Controles</h3><div class="formrow"><label for="archStage">Etapa activa: <span id="archStageLabel">Entrada</span></label><input id="archStage" type="range" min="0" max="7" value="0" /></div><div class="buttonrow"><button id="archPrev" type="button">Anterior</button><button id="archNext" class="primary" type="button">Siguiente</button></div></div>
+        <div class="box"><h3>Lectura de la etapa</h3><div id="archInfo" class="formula"></div><div class="bar" aria-label="Progreso"><div id="archProgress" class="fill"></div></div></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="style">
+    <div class="sectionHead"><h2>8. Simulación: neural style transfer</h2><a class="btn" href="#inicio">Volver arriba</a></div>
+    <div class="card simwrap">
+      <div class="canvasBox">
+        <p class="lead">La transferencia de estilo usa activaciones profundas: una imagen aporta contenido, otra aporta textura. La optimización busca una imagen que conserve estructura semántica y adopte patrones visuales de estilo.</p>
+        <div class="canvasPane"><h4>Contenido + estilo</h4><canvas id="styleCanvas" width="900" height="540" class="wideCanvas"></canvas></div>
+      </div>
+      <aside class="panel">
+        <div class="box"><h3>Controles</h3>
+          <div class="formrow"><label for="contentWeight">Peso de contenido α: <span id="contentWeightLabel">0.60</span></label><input id="contentWeight" type="range" min="0" max="1" step="0.05" value="0.60" /></div>
+          <div class="formrow"><label for="styleWeight">Peso de estilo β: <span id="styleWeightLabel">0.70</span></label><input id="styleWeight" type="range" min="0" max="1" step="0.05" value="0.70" /></div>
+          <div class="formrow"><label for="styleIter">Iteraciones: <span id="styleIterLabel">45</span></label><input id="styleIter" type="range" min="0" max="100" value="45" /></div>
+          <button id="styleAnimate" class="primary" type="button">Animar optimización</button>
+        </div>
+        <div class="box"><h3>Función objetivo</h3><div class="formula">L_total = α · L_contenido + β · L_estilo + λ · L_suavidad</div><p>La simulación no entrena una CNN real: representa visualmente cómo cambia la imagen cuando domina contenido, estilo o equilibrio entre ambos.</p><div class="bar"><div id="styleLoss" class="fill"></div></div></div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="card" id="guia">
+    <div class="sectionHead"><h2>9. Guía práctica para clase o Colab</h2><a class="btn" href="#inicio">Volver arriba</a></div>
+    <p class="lead">Después de las simulaciones visuales, conviene llevar a los estudiantes a una implementación mínima. El objetivo no es memorizar código, sino reconocer las piezas: convolución, activación, pooling, flatten y capa densa.</p>
+    <div class="timeline">
+      <div class="step"><div class="time">Paso 1</div><div><strong>Cargar imágenes.</strong> Usar un dataset simple, por ejemplo dígitos, prendas o imágenes pequeñas. Normalizar píxeles a rango 0–1.</div></div>
+      <div class="step"><div class="time">Paso 2</div><div><strong>Definir arquitectura.</strong> Conv2D → ReLU → MaxPooling → Conv2D → ReLU → Flatten → Dense.</div></div>
+      <div class="step"><div class="time">Paso 3</div><div><strong>Entrenar y evaluar.</strong> Separar train/test, medir accuracy y revisar errores de clasificación.</div></div>
+      <div class="step"><div class="time">Paso 4</div><div><strong>Visualizar activaciones.</strong> Mostrar qué mapas se encienden ante bordes, curvas o texturas.</div></div>
+    </div>
+    <h3>Bloque de código base</h3>
+    <pre><code>import tensorflow as tf
+from tensorflow.keras import layers, models
+
+model = models.Sequential([
+    layers.Conv2D(32, (3, 3), activation="relu", input_shape=(28, 28, 1)),
+    layers.MaxPooling2D((2, 2)),
+    layers.Conv2D(64, (3, 3), activation="relu"),
+    layers.MaxPooling2D((2, 2)),
+    layers.Flatten(),
+    layers.Dense(64, activation="relu"),
+    layers.Dense(10, activation="softmax")
+])
+
+model.compile(optimizer="adam",
+              loss="sparse_categorical_crossentropy",
+              metrics=["accuracy"])
+model.summary()</code></pre>
+    <div class="notice warn"><strong>Actividad sugerida:</strong> pedir a los estudiantes que cambien kernel, stride y número de filtros, y que expliquen cómo cambian las dimensiones internas de la red.</div>
+  </section>
+
+  <a class="btn primary stickyHelp" href="#inicio">↑ Arriba</a>
+  <div class="footer"><strong>Material elaborado por el profesor Sergio Gevatschnaider</strong></div>
+</main>
+<script>
+(function(){
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const clamp = (x,a,b)=>Math.max(a,Math.min(b,x));
+  const fmt = (x)=>Number.isInteger(x)?String(x):x.toFixed(2);
+  const css = getComputedStyle(document.documentElement);
+  function themeColor(name){return css.getPropertyValue(name).trim() || '#2563eb';}
+
+  function setupTheme(){
+    const btn=$('themeBtn');
+    btn.addEventListener('click',()=>{
+      const root=document.documentElement;
+      const dark=root.getAttribute('data-theme')==='dark';
+      root.setAttribute('data-theme',dark?'light':'dark');
+      btn.textContent=dark?'🌙 Tema oscuro':'☀️ Tema claro';
+      drawEdge();drawPadding();drawRGB();drawArchitecture();drawStyle();
+    });
+  }
+
+  function matrixHtml(el, data, options={}){
+    if(!el) return;
+    const rows=data.length, cols=data[0].length;
+    el.style.gridTemplateColumns=`repeat(${cols}, minmax(31px, 42px))`;
+    el.innerHTML='';
+    for(let r=0;r<rows;r++){
+      for(let c=0;c<cols;c++){
+        const d=document.createElement('div');
+        d.className='cellnum';
+        const v=data[r][c];
+        d.textContent=typeof v==='number'?fmt(v):v;
+        if(options.pad && options.pad(r,c,v)) d.classList.add('pad');
+        if(options.hot && options.hot(r,c,v)) d.classList.add('hot');
+        if(options.focus && options.focus(r,c,v)) d.classList.add('focus');
+        if(options.out && options.out(r,c,v)) d.classList.add('out');
+        if(options.max && options.max(r,c,v)) d.classList.add('max');
+        if(options.bg){d.style.background=options.bg(r,c,v);d.style.color=options.color?options.color(r,c,v):'';}
+        el.appendChild(d);
+      }
+    }
+  }
+
+  // 1. Convolución
+  const convInputData = [
+    [1,2,0,2,1,0],
+    [0,1,3,1,2,1],
+    [2,2,1,0,1,3],
+    [1,0,2,3,2,1],
+    [3,1,0,1,2,2],
+    [0,2,1,2,0,1]
+  ];
+  const kernels = {
+    edgeV:[[1,0,-1],[1,0,-1],[1,0,-1]],
+    edgeH:[[1,1,1],[0,0,0],[-1,-1,-1]],
+    sharpen:[[0,-1,0],[-1,5,-1],[0,-1,0]],
+    blur:[[1/9,1/9,1/9],[1/9,1/9,1/9],[1/9,1/9,1/9]],
+    diag:[[2,-1,-1],[-1,2,-1],[-1,-1,2]]
+  };
+  let convTimer=null;
+  function convOutput(kernel){
+    const out=[];
+    for(let r=0;r<4;r++){
+      const row=[];
+      for(let c=0;c<4;c++){
+        let s=0;
+        for(let i=0;i<3;i++) for(let j=0;j<3;j++) s+=convInputData[r+i][c+j]*kernel[i][j];
+        row.push(Math.round(s*100)/100);
+      }
+      out.push(row);
+    }
+    return out;
+  }
+  function updateConv(){
+    const step=+$('convStep').value;
+    const k=kernels[$('convKernelSelect').value];
+    const out=convOutput(k);
+    const r=Math.floor(step/4), c=step%4;
+    matrixHtml($('convInput'),convInputData,{focus:(i,j)=>i>=r&&i<r+3&&j>=c&&j<c+3});
+    matrixHtml($('convKernel'),k,{hot:(i,j,v)=>v!==0});
+    matrixHtml($('convOutput'),out,{out:(i,j)=>i===r&&j===c});
+    const terms=[]; let sum=0;
+    for(let i=0;i<3;i++) for(let j=0;j<3;j++){ const term=convInputData[r+i][c+j]*k[i][j]; sum+=term; terms.push(`${fmt(convInputData[r+i][c+j])}×${fmt(k[i][j])}`); }
+    $('convFormula').textContent=`Salida[${r},${c}] = ${terms.join(' + ')} = ${fmt(Math.round(sum*100)/100)}`;
+    $('convStepLabel').textContent=String(step+1);
+    $('convPos').textContent=`(${r},${c})`;
+    $('convVal').textContent=fmt(out[r][c]);
+  }
+  function setupConv(){
+    $('convKernelSelect').addEventListener('change',updateConv);$('convStep').addEventListener('input',updateConv);
+    $('convPrev').addEventListener('click',()=>{$('convStep').value=Math.max(0,+$('convStep').value-1);updateConv();});
+    $('convNext').addEventListener('click',()=>{$('convStep').value=Math.min(15,+$('convStep').value+1);updateConv();});
+    $('convPlay').addEventListener('click',()=>{
+      if(convTimer){clearInterval(convTimer);convTimer=null;$('convPlay').textContent='Animar';return;}
+      $('convPlay').textContent='Detener';
+      convTimer=setInterval(()=>{let v=(+$('convStep').value+1)%16;$('convStep').value=v;updateConv();},650);
+    });
+    updateConv();
+  }
+
+  // 2. Bordes
+  const edgeKernels={
+    sobelV:[[-1,0,1],[-2,0,2],[-1,0,1]],
+    sobelH:[[-1,-2,-1],[0,0,0],[1,2,1]],
+    laplace:[[0,-1,0],[-1,4,-1],[0,-1,0]],
+    emboss:[[-2,-1,0],[-1,1,1],[0,1,2]]
+  };
+  let edgeVariant=0;
+  function sourceGray(x,y,w,h){
+    const nx=x/w, ny=y/h;
+    let v=50+110*nx+50*Math.sin((ny*8+edgeVariant)*Math.PI);
+    const cx=w*(0.32+0.08*Math.sin(edgeVariant)), cy=h*0.45, rad=w*0.16;
+    if((x-cx)**2+(y-cy)**2<rad**2) v=215;
+    if(x>w*.56 && x<w*.82 && y>h*.18 && y<h*.68) v=35;
+    if(Math.abs(y-(h*.78 + 22*Math.sin(x*.045+edgeVariant)))<10) v=235;
+    return clamp(v,0,255);
+  }
+  function drawEdge(){
+    const co=$('edgeOriginal'), cf=$('edgeFiltered'); if(!co||!cf) return;
+    const w=co.width,h=co.height, ctx=co.getContext('2d'), fctx=cf.getContext('2d');
+    const img=ctx.createImageData(w,h); const gray=new Float32Array(w*h);
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){const v=sourceGray(x,y,w,h);gray[y*w+x]=v;const idx=(y*w+x)*4;img.data[idx]=img.data[idx+1]=img.data[idx+2]=v;img.data[idx+3]=255;}
+    ctx.putImageData(img,0,0);
+    ctx.strokeStyle='rgba(37,99,235,.85)';ctx.lineWidth=5;ctx.strokeRect(w*.56,h*.18,w*.26,h*.50);ctx.beginPath();ctx.arc(w*.32,h*.45,w*.16,0,Math.PI*2);ctx.stroke();
+    const k=edgeKernels[$('edgeFilterSelect').value]; const contrast=+$('edgeContrast').value; const out=fctx.createImageData(w,h);
+    for(let y=1;y<h-1;y++) for(let x=1;x<w-1;x++){let s=0;for(let i=-1;i<=1;i++) for(let j=-1;j<=1;j++) s+=gray[(y+i)*w+(x+j)]*k[i+1][j+1];let v=clamp(Math.abs(s)*contrast,0,255);const idx=(y*w+x)*4;out.data[idx]=v;out.data[idx+1]=v;out.data[idx+2]=v;out.data[idx+3]=255;}
+    fctx.putImageData(out,0,0);
+    $('edgeContrastLabel').textContent=String(contrast.toFixed(1));
+    matrixHtml($('edgeKernelView'),k,{hot:(r,c,v)=>v!==0});
+  }
+  function setupEdge(){
+    $('edgeFilterSelect').addEventListener('change',drawEdge);$('edgeContrast').addEventListener('input',drawEdge);$('edgeNoise').addEventListener('click',()=>{edgeVariant++;drawEdge();});drawEdge();
+  }
+
+  // 3. Padding / stride
+  function drawRoundedRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+  function drawPadding(){
+    const canvas=$('padCanvas'); if(!canvas) return; const ctx=canvas.getContext('2d'); const W=canvas.width,H=canvas.height; ctx.clearRect(0,0,W,H);
+    const n=+$('padInput').value,k=+$('padKernel').value,p=+$('padPadding').value,s=+$('padStride').value; const padded=n+2*p; const out=Math.floor((padded-k)/s)+1; const ok=out>0;
+    $('padInputLabel').textContent=n;$('padKernelLabel').textContent=k;$('padPaddingLabel').textContent=p;$('padStrideLabel').textContent=s;
+    const maxStep=ok?out*out-1:0; const stepEl=$('padStep'); stepEl.max=String(maxStep); if(+stepEl.value>maxStep) stepEl.value=maxStep; const step=+stepEl.value; $('padStepLabel').textContent=ok?`${step+1}/${maxStep+1}`:'0/0';
+    $('padOut').textContent=ok?`${out}×${out}`:'no válida'; $('padWindows').textContent=ok?String(out*out):'0';
+    $('padFormula').textContent=`out = floor((n + 2p - k) / s) + 1 = floor((${n} + 2×${p} - ${k}) / ${s}) + 1 = ${ok?out:'no válida'}`;
+    const cell=Math.min(54,Math.floor(Math.min((W-120)/padded,(H-140)/padded))); const gx=(W-cell*padded)/2, gy=70;
+    const bg=themeColor('--card'), line=themeColor('--line'), accent=themeColor('--accent'), warn=themeColor('--warn'), muted=themeColor('--muted'), text=themeColor('--text');
+    ctx.font='16px Segoe UI, Arial';ctx.fillStyle=text;ctx.fillText(`Imagen con padding: ${padded}×${padded}`,40,38);
+    if(!ok){ctx.fillStyle=themeColor('--bad');ctx.fillText('Configuración no válida: el kernel no entra en la imagen con padding.',40,70);return;}
+    const wr=Math.floor(step/out), wc=step%out; const startR=wr*s, startC=wc*s;
+    for(let r=0;r<padded;r++) for(let c=0;c<padded;c++){
+      const x=gx+c*cell,y=gy+r*cell; const isPad=r<p||c<p||r>=p+n||c>=p+n; const inWindow=r>=startR&&r<startR+k&&c>=startC&&c<startC+k;
+      ctx.fillStyle=isPad?'rgba(100,116,139,.18)':bg;ctx.strokeStyle=line;ctx.lineWidth=1;ctx.fillRect(x,y,cell,cell);ctx.strokeRect(x,y,cell,cell);
+      if(isPad){ctx.fillStyle=muted;ctx.fillText('0',x+cell/2-4,y+cell/2+5);} else {ctx.fillStyle=text;ctx.fillText(String(((r-p)+(c-p))%9+1),x+cell/2-5,y+cell/2+5);}
+      if(inWindow){ctx.fillStyle='rgba(217,119,6,.16)';ctx.fillRect(x,y,cell,cell);}
+    }
+    ctx.strokeStyle=warn;ctx.lineWidth=4;ctx.strokeRect(gx+startC*cell,gy+startR*cell,k*cell,k*cell);
+    ctx.fillStyle=accent;ctx.font='18px Segoe UI, Arial';ctx.fillText(`Ventana ${step+1}: fila ${wr}, columna ${wc}; avanza de ${s} en ${s}`,40,H-48);
+  }
+  function setupPadding(){['padInput','padKernel','padPadding','padStride','padStep'].forEach(id=>$(id).addEventListener('input',drawPadding));drawPadding();}
+
+  // 4. RGB multicanal
+  const rgbData=[];
+  for(let r=0;r<5;r++){const row=[];for(let c=0;c<5;c++){row.push({R:40+r*28+c*18,G:70+((r+c)%5)*30,B:210-r*22+c*5});}rgbData.push(row);}
+  const rgbFilters={
+    luma:{R:[[.08,.08,.08],[.08,.08,.08],[.08,.08,.08]],G:[[.12,.12,.12],[.12,.12,.12],[.12,.12,.12]],B:[[.04,.04,.04],[.04,.04,.04],[.04,.04,.04]]},
+    red:{R:[[0,1,0],[1,2,1],[0,1,0]],G:[[0,-.35,0],[-.35,-.7,-.35],[0,-.35,0]],B:[[0,-.2,0],[-.2,-.4,-.2],[0,-.2,0]]},
+    greenEdge:{R:[[0,0,0],[0,0,0],[0,0,0]],G:[[-1,0,1],[-2,0,2],[-1,0,1]],B:[[0,0,0],[0,0,0],[0,0,0]]},
+    blueTexture:{R:[[0,0,0],[0,0,0],[0,0,0]],G:[[0,-.2,0],[-.2,.8,-.2],[0,-.2,0]],B:[[-1,1,-1],[1,3,1],[-1,1,-1]]}
+  };
+  function rgbConv(filter){const out=[];for(let r=0;r<3;r++){const row=[];for(let c=0;c<3;c++){let s=0;for(let i=0;i<3;i++)for(let j=0;j<3;j++){const px=rgbData[r+i][c+j];s+=px.R*filter.R[i][j]+px.G*filter.G[i][j]+px.B*filter.B[i][j];}row.push(Math.round(s));}out.push(row);}return out;}
+  function drawRGB(){
+    const canvas=$('rgbCanvas'); if(!canvas) return; const ctx=canvas.getContext('2d'), W=canvas.width,H=canvas.height;ctx.clearRect(0,0,W,H);
+    const filter=rgbFilters[$('rgbFilter').value], out=rgbConv(filter), step=+$('rgbStep').value, rr=Math.floor(step/3), cc=step%3;
+    const cell=72,gx=90,gy=70; ctx.font='16px Segoe UI, Arial'; ctx.fillStyle=themeColor('--text'); ctx.fillText('Imagen RGB 5×5',gx,40);
+    for(let r=0;r<5;r++)for(let c=0;c<5;c++){const p=rgbData[r][c], x=gx+c*cell,y=gy+r*cell;ctx.fillStyle=`rgb(${p.R},${p.G},${p.B})`;ctx.fillRect(x,y,cell,cell);ctx.strokeStyle=themeColor('--line');ctx.lineWidth=2;ctx.strokeRect(x,y,cell,cell);ctx.fillStyle='rgba(255,255,255,.88)';ctx.font='12px Consolas';ctx.fillText(`${p.R},${p.G},${p.B}`,x+7,y+cell-10);} 
+    ctx.strokeStyle=themeColor('--warn');ctx.lineWidth=5;ctx.strokeRect(gx+cc*cell,gy+rr*cell,3*cell,3*cell);
+    ctx.fillStyle=themeColor('--text');ctx.font='18px Segoe UI, Arial';ctx.fillText('Cada canal se multiplica por su filtro y luego se suman las tres respuestas.',500,88);
+    ['R','G','B'].forEach((ch,idx)=>{ctx.fillStyle=ch==='R'?'rgba(239,68,68,.25)':ch==='G'?'rgba(34,197,94,.25)':'rgba(59,130,246,.25)';ctx.fillRect(525,125+idx*95,250,74);ctx.strokeStyle=themeColor('--line');ctx.strokeRect(525,125+idx*95,250,74);ctx.fillStyle=themeColor('--text');ctx.font='16px Segoe UI, Arial';ctx.fillText(`Filtro canal ${ch}`,545,152+idx*95);ctx.font='13px Consolas';ctx.fillText(JSON.stringify(filter[ch]),545,178+idx*95);});
+    matrixHtml($('rgbOutput'),out,{out:(r,c)=>r===rr&&c===cc});
+    let sums={R:0,G:0,B:0}; for(let i=0;i<3;i++)for(let j=0;j<3;j++){const px=rgbData[rr+i][cc+j];sums.R+=px.R*filter.R[i][j];sums.G+=px.G*filter.G[i][j];sums.B+=px.B*filter.B[i][j];}
+    $('rgbContrib').textContent=`R: ${fmt(sums.R)}\nG: ${fmt(sums.G)}\nB: ${fmt(sums.B)}\nTotal: ${fmt(sums.R+sums.G+sums.B)}`;
+    $('rgbStepLabel').textContent=`${step+1}/9`; $('rgbPos').textContent=`(${rr},${cc})`; $('rgbVal').textContent=fmt(out[rr][cc]);
+  }
+  function setupRGB(){$('rgbFilter').addEventListener('change',drawRGB);$('rgbStep').addEventListener('input',drawRGB);$('rgbPrev').addEventListener('click',()=>{$('rgbStep').value=Math.max(0,+$('rgbStep').value-1);drawRGB();});$('rgbNext').addEventListener('click',()=>{$('rgbStep').value=Math.min(8,+$('rgbStep').value+1);drawRGB();});drawRGB();}
+
+  // 5. Pooling
+  const poolData=[
+    [1,3,2,5,1,4],
+    [4,6,2,1,7,2],
+    [3,2,8,4,2,5],
+    [1,9,3,6,4,2],
+    [5,1,4,2,8,3],
+    [2,7,1,5,3,6]
+  ]; let poolTimer=null;
+  function poolCompute(size,stride){const out=[];const pos=[];for(let r=0;r+size<=6;r+=stride){const row=[];const prow=[];for(let c=0;c+size<=6;c+=stride){let m=-Infinity,mr=r,mc=c;for(let i=0;i<size;i++)for(let j=0;j<size;j++){const v=poolData[r+i][c+j];if(v>m){m=v;mr=r+i;mc=c+j;}}row.push(m);prow.push({r,c,mr,mc});}out.push(row);pos.push(prow);}return {out,pos};}
+  function updatePool(){
+    const size=+$('poolSize').value,stride=+$('poolStride').value; const {out,pos}=poolCompute(size,stride); const rows=out.length,cols=out[0]?.length||0; const maxStep=Math.max(0,rows*cols-1); const stepEl=$('poolStep'); stepEl.max=String(maxStep); if(+stepEl.value>maxStep) stepEl.value=maxStep; const step=+stepEl.value; const or=Math.floor(step/cols),oc=step%cols; const p=pos[or]?.[oc]||{r:0,c:0,mr:0,mc:0};
+    $('poolSizeLabel').textContent=size;$('poolSizeLabel2').textContent=size;$('poolStrideLabel').textContent=stride;$('poolStepLabel').textContent=`${step+1}/${maxStep+1}`;$('poolMax').textContent=String(out[or]?.[oc]??0);$('poolShape').textContent=`${rows}×${cols}`;
+    matrixHtml($('poolInput'),poolData,{focus:(r,c)=>r>=p.r&&r<p.r+size&&c>=p.c&&c<p.c+size,max:(r,c)=>r===p.mr&&c===p.mc});
+    matrixHtml($('poolOutput'),out,{out:(r,c)=>r===or&&c===oc});
+    $('poolFormula').textContent=`Ventana de entrada: filas ${p.r}-${p.r+size-1}, columnas ${p.c}-${p.c+size-1}.\nMax pooling = max(valores de la ventana) = ${out[or]?.[oc]??0}`;
+  }
+  function setupPool(){['poolSize','poolStride','poolStep'].forEach(id=>$(id).addEventListener('input',updatePool));$('poolPrev').addEventListener('click',()=>{$('poolStep').value=Math.max(0,+$('poolStep').value-1);updatePool();});$('poolNext').addEventListener('click',()=>{$('poolStep').value=Math.min(+$('poolStep').max,+$('poolStep').value+1);updatePool();});$('poolPlay').addEventListener('click',()=>{if(poolTimer){clearInterval(poolTimer);poolTimer=null;$('poolPlay').textContent='Animar';return;}$('poolPlay').textContent='Detener';poolTimer=setInterval(()=>{const max=+$('poolStep').max;let v=(+$('poolStep').value+1)%(max+1);$('poolStep').value=v;updatePool();},700);});updatePool();}
+
+  // 6. Arquitectura
+  const stages=[
+    {name:'Entrada',dim:'224×224×3',desc:'La red recibe una imagen RGB. La dimensión espacial todavía es alta y hay tres canales.'},
+    {name:'Conv 1 + ReLU',dim:'224×224×32',desc:'Los primeros filtros detectan bordes, cambios de color y texturas muy simples.'},
+    {name:'Max Pool 1',dim:'112×112×32',desc:'Se reduce la resolución espacial conservando activaciones fuertes.'},
+    {name:'Conv 2 + ReLU',dim:'112×112×64',desc:'Aparecen combinaciones de bordes: esquinas, curvas y patrones repetidos.'},
+    {name:'Max Pool 2',dim:'56×56×64',desc:'La red concentra la evidencia visual y baja el costo computacional.'},
+    {name:'Conv 3 + ReLU',dim:'56×56×128',desc:'Capas más profundas detectan partes de objetos y estructuras semánticas.'},
+    {name:'Flatten',dim:'Vector',desc:'Los mapas de activación se transforman en un vector para la decisión final.'},
+    {name:'Dense + Softmax',dim:'Clases',desc:'La red estima probabilidades: perro, gato, auto, célula, lesión u otra clase según el dataset.'}
+  ];
+  function drawArchitecture(){
+    const canvas=$('archCanvas'); if(!canvas) return; const ctx=canvas.getContext('2d'), W=canvas.width,H=canvas.height;ctx.clearRect(0,0,W,H);
+    const active=+$('archStage').value; $('archStageLabel').textContent=stages[active].name; $('archInfo').textContent=`${stages[active].name}\nDimensión: ${stages[active].dim}\n${stages[active].desc}`; $('archProgress').style.width=`${(active/(stages.length-1))*100}%`;
+    const accent=themeColor('--accent'), accent2=themeColor('--accent2'), line=themeColor('--line'), text=themeColor('--text'), card=themeColor('--card'), muted=themeColor('--muted');
+    const startX=45, startY=145, gap=14, boxW=92, boxH=118;
+    ctx.font='15px Segoe UI, Arial';ctx.fillStyle=text;ctx.fillText('La profundidad aumenta mientras la resolución espacial suele disminuir.',45,55);
+    stages.forEach((s,i)=>{const x=startX+i*(boxW+gap), y=startY+Math.min(i,5)*5; const hot=i===active; drawRoundedRect(ctx,x,y,boxW,boxH,18); const grad=ctx.createLinearGradient(x,y,x+boxW,y+boxH); grad.addColorStop(0,hot?accent:card);grad.addColorStop(1,hot?accent2:'rgba(100,116,139,.12)');ctx.fillStyle=grad;ctx.fill();ctx.strokeStyle=hot?accent2:line;ctx.lineWidth=hot?4:2;ctx.stroke();ctx.fillStyle=hot?'white':text;ctx.font='bold 13px Segoe UI, Arial';wrapText(ctx,s.name,x+10,y+26,boxW-20,16);ctx.font='12px Consolas';ctx.fillText(s.dim,x+10,y+boxH-18); if(i<stages.length-1){ctx.strokeStyle=muted;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x+boxW+2,y+boxH/2);ctx.lineTo(x+boxW+gap-2,y+boxH/2);ctx.stroke();ctx.beginPath();ctx.moveTo(x+boxW+gap-8,y+boxH/2-5);ctx.lineTo(x+boxW+gap-2,y+boxH/2);ctx.lineTo(x+boxW+gap-8,y+boxH/2+5);ctx.stroke();}});
+    // Feature-map metaphor
+    for(let i=0;i<=active;i++){const x=70+i*95, y=365, maps=Math.min(5,1+Math.floor(i/2)); for(let m=0;m<maps;m++){ctx.fillStyle=`rgba(37,99,235,${0.10+m*.06})`;ctx.fillRect(x+m*7,y-m*7,54,54);ctx.strokeStyle=line;ctx.strokeRect(x+m*7,y-m*7,54,54);} }
+  }
+  function wrapText(ctx,text,x,y,maxWidth,lineHeight){const words=text.split(' ');let line='';for(const w of words){const test=line+w+' ';if(ctx.measureText(test).width>maxWidth&&line){ctx.fillText(line,x,y);line=w+' ';y+=lineHeight;}else line=test;}ctx.fillText(line,x,y);}
+  function setupArchitecture(){$('archStage').addEventListener('input',drawArchitecture);$('archPrev').addEventListener('click',()=>{$('archStage').value=Math.max(0,+$('archStage').value-1);drawArchitecture();});$('archNext').addEventListener('click',()=>{$('archStage').value=Math.min(stages.length-1,+$('archStage').value+1);drawArchitecture();});drawArchitecture();}
+
+  // 7. Style transfer
+  let styleTimer=null;
+  function drawStyle(){
+    const canvas=$('styleCanvas'); if(!canvas) return; const ctx=canvas.getContext('2d'), W=canvas.width,H=canvas.height; const cw=+$('contentWeight').value, sw=+$('styleWeight').value, it=+$('styleIter').value;
+    $('contentWeightLabel').textContent=cw.toFixed(2);$('styleWeightLabel').textContent=sw.toFixed(2);$('styleIterLabel').textContent=String(it);$('styleLoss').style.width=`${100-it}%`;
+    ctx.clearRect(0,0,W,H); ctx.fillStyle=themeColor('--card');ctx.fillRect(0,0,W,H);
+    // Content: simple landscape / object
+    ctx.globalAlpha=.20+.70*cw; ctx.fillStyle='#bfe3ff';ctx.fillRect(0,0,W,H);ctx.fillStyle='#ffe0a6';ctx.beginPath();ctx.arc(690,115,54,0,Math.PI*2);ctx.fill();ctx.fillStyle='#4c7c59';ctx.beginPath();ctx.moveTo(0,380);ctx.bezierCurveTo(160,220,300,330,430,245);ctx.bezierCurveTo(560,160,680,300,900,210);ctx.lineTo(900,540);ctx.lineTo(0,540);ctx.closePath();ctx.fill();ctx.fillStyle='#344b6b';ctx.fillRect(310,230,165,165);ctx.fillStyle='#22314a';ctx.beginPath();ctx.moveTo(292,230);ctx.lineTo(393,152);ctx.lineTo(493,230);ctx.closePath();ctx.fill();ctx.globalAlpha=1;
+    // Style texture overlay
+    const density=6+Math.floor(it/7); ctx.save();ctx.globalAlpha=.12+.55*sw; for(let i=0;i<density*9;i++){const x=(i*73+it*11)%W, y=(i*41+it*5)%H;ctx.strokeStyle=i%3===0?'#7c3aed':i%3===1?'#06b6d4':'#f59e0b';ctx.lineWidth=2+(i%5);ctx.beginPath();ctx.arc(x,y,28+(i%7)*8,0,Math.PI*(1.2+(i%4)/3));ctx.stroke();} for(let i=0;i<density*4;i++){const x=(i*131+it*3)%W;ctx.strokeStyle=i%2?'#ef4444':'#2563eb';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x,0);ctx.bezierCurveTo((x+90)%W,140,(x+20)%W,280,(x+150)%W,H);ctx.stroke();} ctx.restore();
+    // Optimization label
+    ctx.fillStyle='rgba(20,32,51,.72)'; if(document.documentElement.getAttribute('data-theme')==='dark') ctx.fillStyle='rgba(238,246,255,.78)';ctx.font='bold 22px Segoe UI, Arial';ctx.fillText(`Iteración ${it}: equilibrio contenido/estilo`,36,48);ctx.font='16px Segoe UI, Arial';ctx.fillText(`α=${cw.toFixed(2)} · β=${sw.toFixed(2)}`,36,76);
+  }
+  function setupStyle(){['contentWeight','styleWeight','styleIter'].forEach(id=>$(id).addEventListener('input',drawStyle));$('styleAnimate').addEventListener('click',()=>{if(styleTimer){clearInterval(styleTimer);styleTimer=null;$('styleAnimate').textContent='Animar optimización';return;}$('styleAnimate').textContent='Detener';styleTimer=setInterval(()=>{let v=+$('styleIter').value+2;if(v>100)v=0;$('styleIter').value=v;drawStyle();},90);});drawStyle();}
+
+  function init(){setupTheme();setupConv();setupEdge();setupPadding();setupRGB();setupPool();setupArchitecture();setupStyle();}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();
+</script>
+</body>
+</html>
