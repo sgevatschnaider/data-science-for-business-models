@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light" data-palette="aurora">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autoencoders · Guía de preguntas y respuestas</title>
+<style>
+:root {
+  --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --mono: Consolas, "SFMono-Regular", Menlo, monospace;
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --card2:#f9fbff;
+  --text:#142033;
+  --muted:#64748b;
+  --line:#d9e4f2;
+  --accent:#2563eb;
+  --accent2:#7c3aed;
+  --accent3:#06b6d4;
+  --good:#059669;
+  --warn:#d97706;
+  --bad:#dc2626;
+  --shadow:0 22px 54px rgba(23,37,84,.14);
+  --soft:0 8px 22px rgba(15,23,42,.08);
+  --radius:28px;
+  --reading:1;
+}
+html[data-theme="dark"] {
+  --bg:#07111f;
+  --card:#111c31;
+  --card2:#0d1729;
+  --text:#eef6ff;
+  --muted:#afbdd2;
+  --line:#263956;
+  --shadow:0 22px 54px rgba(0,0,0,.38);
+  --soft:0 8px 22px rgba(0,0,0,.25);
+}
+html[data-palette="aurora"]{--accent:#2563eb;--accent2:#7c3aed;--accent3:#06b6d4;--good:#059669;--warn:#d97706;--bad:#dc2626;}
+html[data-palette="bosque"]{--accent:#047857;--accent2:#65a30d;--accent3:#0891b2;--good:#16a34a;--warn:#d97706;--bad:#be123c;}
+html[data-palette="uva"]{--accent:#7c3aed;--accent2:#db2777;--accent3:#06b6d4;--good:#10b981;--warn:#f59e0b;--bad:#e11d48;}
+html[data-palette="carbono"]{--accent:#334155;--accent2:#0f766e;--accent3:#7c2d12;--good:#15803d;--warn:#ca8a04;--bad:#be123c;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:var(--font);
+  background:
+    radial-gradient(circle at top left,color-mix(in srgb,var(--accent) 18%,transparent),transparent 34%),
+    radial-gradient(circle at top right,color-mix(in srgb,var(--accent2) 14%,transparent),transparent 30%),
+    linear-gradient(135deg,var(--bg),color-mix(in srgb,var(--bg),var(--accent3) 8%));
+  color:var(--text);
+  line-height:1.65;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.28;
+  background-image:
+    linear-gradient(color-mix(in srgb,var(--line) 58%,transparent) 1px,transparent 1px),
+    linear-gradient(90deg,color-mix(in srgb,var(--line) 58%,transparent) 1px,transparent 1px);
+  background-size:46px 46px;
+  mask-image:radial-gradient(circle at center,black,transparent 78%);
+}
+a{color:var(--accent);font-weight:850;text-decoration:none}
+a:hover{text-decoration:underline}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{
+  outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);
+  outline-offset:3px;
+}
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:color-mix(in srgb,var(--card) 86%,transparent);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+}
+.nav{
+  max-width:1280px;
+  margin:auto;
+  padding:13px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.brand{font-weight:950;letter-spacing:-.025em}
+.controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.btn,.chip,.toggle-answer{
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--text);
+  padding:10px 14px;
+  border-radius:15px;
+  cursor:pointer;
+  font-weight:900;
+  box-shadow:var(--soft);
+  transition:.18s transform,.18s filter,.18s background;
+}
+.btn:hover,.chip:hover,.toggle-answer:hover{transform:translateY(-1px)}
+.btn.primary,.toggle-answer.open{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:white;
+  border-color:transparent;
+}
+main{
+  max-width:1280px;
+  margin:auto;
+  padding:28px 20px 72px;
+  position:relative;
+}
+.hero{
+  display:grid;
+  grid-template-columns:minmax(0,1.18fr) minmax(330px,.82fr);
+  gap:22px;
+  margin:18px 0 22px;
+}
+.card,.qa-card,.study-panel{
+  background:color-mix(in srgb,var(--card) 96%,transparent);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:24px;
+  box-shadow:var(--shadow);
+}
+h1{
+  font-size:clamp(36px,5vw,64px);
+  line-height:1.02;
+  margin:10px 0 14px;
+  letter-spacing:-.055em;
+}
+h2{
+  font-size:clamp(22px,2.3vw,31px);
+  line-height:1.16;
+  margin:8px 0 0;
+  letter-spacing:-.032em;
+}
+h3{margin:8px 0 10px;font-size:21px}
+.lead{font-size:18px;color:var(--muted);max-width:85ch}
+.tag{
+  display:inline-flex;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:6px 11px;
+  margin:4px 6px 4px 0;
+  background:color-mix(in srgb,var(--card),var(--accent) 6%);
+  font-size:13px;
+  font-weight:950;
+  color:var(--muted);
+}
+.mini-tag{color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--card));}
+.notice{
+  border-left:5px solid var(--accent);
+  padding:15px 17px;
+  border-radius:18px;
+  background:color-mix(in srgb,var(--accent) 8%,var(--card));
+  margin:15px 0;
+  color:var(--muted);
+}
+.stats{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+.stat{
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:18px;
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  box-shadow:var(--soft);
+}
+.stat strong{display:block;font-size:30px;color:var(--accent);line-height:1}
+.stat span{display:block;margin-top:8px;color:var(--muted);font-size:13px}
+.toolbar{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:14px;
+  align-items:end;
+  margin:0 0 20px;
+}
+.searchbox{
+  display:grid;
+  grid-template-columns:1fr 220px;
+  gap:10px;
+}
+input[type="search"],select{
+  width:100%;
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--text);
+  border-radius:16px;
+  padding:12px 14px;
+  box-shadow:var(--soft);
+  min-height:46px;
+}
+.study-panel{
+  margin:0 0 20px;
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:16px;
+  align-items:center;
+}
+.progress-wrap{display:grid;gap:8px}
+.progress-label{display:flex;justify-content:space-between;color:var(--muted);font-weight:850;font-size:14px}
+.progress{
+  height:16px;
+  border-radius:999px;
+  background:color-mix(in srgb,var(--card),#000 8%);
+  border:1px solid var(--line);
+  overflow:hidden;
+}
+.progress span{
+  display:block;
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));
+  transition:.25s;
+}
+.mode{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  white-space:nowrap;
+  color:var(--muted);
+  font-weight:900;
+}
+.switch{
+  position:relative;
+  display:inline-block;
+  width:58px;
+  height:32px;
+}
+.switch input{display:none}
+.slider{
+  position:absolute;
+  inset:0;
+  background:var(--line);
+  border-radius:999px;
+  transition:.2s;
+}
+.slider::before{
+  content:"";
+  position:absolute;
+  width:26px;
+  height:26px;
+  left:3px;
+  top:3px;
+  border-radius:50%;
+  background:var(--card);
+  box-shadow:var(--soft);
+  transition:.2s;
+}
+.switch input:checked + .slider{background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.switch input:checked + .slider::before{transform:translateX(26px)}
+.filter-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin:0 0 20px;
+}
+.chip.active{
+  color:white;
+  border-color:transparent;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+}
+.qa-list{display:grid;gap:16px}
+.qa-card{scroll-margin-top:96px;}
+.qa-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+}
+.answer{
+  display:none;
+  margin-top:18px;
+  border-top:1px solid var(--line);
+  padding-top:18px;
+  font-size:calc(1rem * var(--reading));
+}
+.answer p{color:var(--muted);margin:0 0 14px}
+.qa-card.open .answer{display:block}
+.qa-card.done-card{
+  border-color:color-mix(in srgb,var(--good) 45%,var(--line));
+  background:linear-gradient(180deg,color-mix(in srgb,var(--good) 7%,var(--card)),var(--card));
+}
+.formula{
+  margin:15px 0;
+  padding:14px 16px;
+  border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));
+  border-radius:18px;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 9%,var(--card)),color-mix(in srgb,var(--accent2) 7%,var(--card)));
+  font-family:var(--mono);
+  color:var(--text);
+  overflow:auto;
+  white-space:pre-wrap;
+}
+.study-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:18px;
+  padding:13px;
+  border-radius:18px;
+  background:var(--card2);
+  border:1px solid var(--line);
+}
+.check{display:flex;align-items:center;gap:9px;font-weight:900;color:var(--muted)}
+.check input{width:18px;height:18px;accent-color:var(--good)}
+.range-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:240px;
+}
+input[type="range"]{width:150px;accent-color:var(--accent)}
+.hidden{display:none!important}
+.footer{
+  margin-top:42px;
+  color:var(--muted);
+  font-size:14px;
+  text-align:center;
+  border-top:1px solid var(--line);
+  padding-top:22px;
+}
+.to-top{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:60;
+  width:48px;
+  height:48px;
+  border-radius:999px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:white;
+  display:grid;
+  place-items:center;
+  font-weight:950;
+  text-decoration:none;
+  box-shadow:var(--soft);
+}
+.exam .answer{
+  display:none!important;
+}
+.exam .qa-card.open .answer{
+  display:block!important;
+}
+@media(max-width:930px){
+  .nav,.toolbar,.study-panel{grid-template-columns:1fr;align-items:stretch}
+  .nav{flex-direction:column;align-items:flex-start}
+  .hero,.searchbox{grid-template-columns:1fr}
+  .controls{justify-content:flex-start}
+  .qa-head{flex-direction:column}
+  .toggle-answer{width:100%}
+  .stats{grid-template-columns:1fr}
+}
+@media print{
+  .topbar,.toolbar,.study-panel,.filter-row,.to-top,.toggle-answer{display:none!important}
+  body{background:white}
+  main{max-width:100%;padding:0}
+  .card,.qa-card{box-shadow:none;break-inside:avoid}
+  .answer{display:block!important}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="nav">
+    <div class="brand">Guía de estudio · Autoencoders</div>
+    <div class="controls">
+      <button class="btn" id="themeBtn" type="button">🌙 Tema oscuro</button>
+      <button class="btn" id="paletteBtn" type="button">🎨 Cambiar paleta</button>
+      <button class="btn" onclick="window.print()" type="button">🖨️ Imprimir</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="card">
+      <span class="tag">Deep Learning</span>
+      <span class="tag">Representaciones latentes</span>
+      <span class="tag">Aprendizaje no supervisado</span>
+      <span class="tag">Guía de preguntas</span>
+      <h1>Autoencoders: 10 preguntas con respuestas desarrolladas</h1>
+      <p class="lead">Material de estudio en HTML autocontenido para repasar autoencoders desde la intuición hasta aplicaciones avanzadas: arquitectura, bottleneck, espacio latente, regularización, denoising, anomalías, VAE y evaluación.</p>
+      <div class="notice"><strong>Idea guía:</strong> un autoencoder aprende a reconstruir datos, pero su verdadero valor está en la representación interna que descubre durante ese proceso.</div>
+    </div>
+    <aside class="card">
+      <h3>Ruta conceptual</h3>
+      <div class="stats">
+        <div class="stat"><strong>10</strong><span>preguntas completamente desarrolladas</span></div>
+        <div class="stat"><strong>7</strong><span>categorías de repaso</span></div>
+        <div class="stat"><strong>z</strong><span>espacio latente como eje central</span></div>
+        <div class="stat"><strong>HTML</strong><span>sin dependencias externas</span></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="study-panel">
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Progreso de estudio</span><span id="progressText">0 / 10</span></div>
+      <div class="progress"><span id="progressBar"></span></div>
+    </div>
+    <div class="mode">
+      <span>Estudio</span>
+      <label class="switch" title="Cambiar entre modo estudio y modo examen">
+        <input id="examMode" type="checkbox">
+        <span class="slider"></span>
+      </label>
+      <span>Examen</span>
+    </div>
+  </section>
+
+  <section class="toolbar">
+    <div class="searchbox">
+      <input id="searchInput" type="search" placeholder="Buscar por concepto: bottleneck, VAE, anomalías, pérdida, espacio latente...">
+      <select id="catSelect" aria-label="Filtrar por categoría">
+        <option value="all">Todas las categorías</option>
+        <option value="Aplicaciones">Aplicaciones</option>
+<option value="Arquitectura">Arquitectura</option>
+<option value="Bottleneck">Bottleneck</option>
+<option value="Entrenamiento">Entrenamiento</option>
+<option value="Espacio latente">Espacio latente</option>
+<option value="Evaluación">Evaluación</option>
+<option value="Fundamentos">Fundamentos</option>
+<option value="Regularización">Regularización</option>
+<option value="VAE">VAE</option>
+<option value="Variantes">Variantes</option>
+      </select>
+    </div>
+    <div class="controls">
+      <button class="btn primary" id="openAll" type="button">Abrir todo</button>
+      <button class="btn" id="closeAll" type="button">Cerrar todo</button>
+      <div class="range-row">
+        <span class="tag">Texto</span>
+        <input id="fontRange" type="range" min="0.92" max="1.22" value="1" step="0.02">
+      </div>
+    </div>
+  </section>
+
+  <nav class="filter-row" aria-label="Filtros por categoría">
+    <button class="chip filter-chip active" data-filter="all" type="button">Todas</button>
+    <button class="chip filter-chip" data-filter="Aplicaciones" type="button">Aplicaciones</button>
+<button class="chip filter-chip" data-filter="Arquitectura" type="button">Arquitectura</button>
+<button class="chip filter-chip" data-filter="Bottleneck" type="button">Bottleneck</button>
+<button class="chip filter-chip" data-filter="Entrenamiento" type="button">Entrenamiento</button>
+<button class="chip filter-chip" data-filter="Espacio latente" type="button">Espacio latente</button>
+<button class="chip filter-chip" data-filter="Evaluación" type="button">Evaluación</button>
+<button class="chip filter-chip" data-filter="Fundamentos" type="button">Fundamentos</button>
+<button class="chip filter-chip" data-filter="Regularización" type="button">Regularización</button>
+<button class="chip filter-chip" data-filter="VAE" type="button">VAE</button>
+<button class="chip filter-chip" data-filter="Variantes" type="button">Variantes</button>
+  </nav>
+
+  <section class="qa-list" id="qaList">
+    
+    <article class="qa-card" data-cat="Fundamentos" data-index="1" data-text="1. ¿qué es un autoencoder y cuál es su objetivo principal? fundamentos &lt;p&gt;un &lt;strong&gt;autoencoder&lt;/strong&gt; es una red neuronal diseñada para aprender una representación interna de los datos a partir de una tarea aparentemente simple: reconstruir su propia entrada. a diferencia de un modelo supervisado clásico, no necesita una etiqueta externa como “perro”, “gato”, “cliente riesgoso” o “cliente solvente”. su señal de aprendizaje proviene de comparar la entrada original con la salida reconstruida.&lt;/p&gt;
+        &lt;p&gt;la arquitectura básica tiene tres partes. primero, el &lt;strong&gt;encoder&lt;/strong&gt; recibe el dato original y lo transforma en una representación más compacta o más estructurada. segundo, aparece el &lt;strong&gt;espacio latente&lt;/strong&gt;, que contiene el código interno aprendido. tercero, el &lt;strong&gt;decoder&lt;/strong&gt; toma ese código y trata de reconstruir el dato original. la red aprende ajustando sus pesos para minimizar el error entre entrada y reconstrucción.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;entrada x → encoder f(x) → código latente z → decoder g(z) → reconstrucción x̂&lt;/div&gt;
+        &lt;p&gt;el objetivo no es simplemente copiar la entrada. si el modelo pudiera copiar todo de forma mecánica, no aprendería una estructura útil. lo importante es que el autoencoder descubra regularidades: patrones comunes, relaciones entre variables, formas dominantes, estructuras latentes o componentes relevantes de los datos. por eso se suelen usar restricciones, como un cuello de botella pequeño, ruido, sparsity o regularización.&lt;/p&gt;
+        &lt;p&gt;en términos didácticos, un autoencoder puede entenderse como una máquina que aprende a “resumir” y luego “reconstruir”. si el resumen conserva lo importante, la reconstrucción será buena. si el dato contiene algo raro, corrupto o fuera del patrón aprendido, la reconstrucción puede empeorar; eso permite usarlo en detección de anomalías.&lt;/p&gt;
+        &lt;p&gt;&lt;strong&gt;ejemplo:&lt;/strong&gt; si entrenamos un autoencoder con miles de imágenes normales de dígitos escritos a mano, el modelo aprende la estructura típica de esos dígitos. luego, cuando recibe un dígito con ruido, una forma extraña o un patrón no visto, puede reconstruir peor esa entrada. esa diferencia entre original y reconstrucción se vuelve una señal informativa.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="tag mini-tag">Fundamentos</span>
+          <h2>1. ¿Qué es un autoencoder y cuál es su objetivo principal?</h2>
+        </div>
+        <button class="toggle-answer" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>Un <strong>autoencoder</strong> es una red neuronal diseñada para aprender una representación interna de los datos a partir de una tarea aparentemente simple: reconstruir su propia entrada. A diferencia de un modelo supervisado clásico, no necesita una etiqueta externa como “perro”, “gato”, “cliente riesgoso” o “cliente solvente”. Su señal de aprendizaje proviene de comparar la entrada original con la salida reconstruida.</p>
+        <p>La arquitectura básica tiene tres partes. Primero, el <strong>encoder</strong> recibe el dato original y lo transforma en una representación más compacta o más estructurada. Segundo, aparece el <strong>espacio latente</strong>, que contiene el código interno aprendido. Tercero, el <strong>decoder</strong> toma ese código y trata de reconstruir el dato original. La red aprende ajustando sus pesos para minimizar el error entre entrada y reconstrucción.</p>
+        <div class="formula">Entrada x → Encoder f(x) → Código latente z → Decoder g(z) → Reconstrucción x̂</div>
+        <p>El objetivo no es simplemente copiar la entrada. Si el modelo pudiera copiar todo de forma mecánica, no aprendería una estructura útil. Lo importante es que el autoencoder descubra regularidades: patrones comunes, relaciones entre variables, formas dominantes, estructuras latentes o componentes relevantes de los datos. Por eso se suelen usar restricciones, como un cuello de botella pequeño, ruido, sparsity o regularización.</p>
+        <p>En términos didácticos, un autoencoder puede entenderse como una máquina que aprende a “resumir” y luego “reconstruir”. Si el resumen conserva lo importante, la reconstrucción será buena. Si el dato contiene algo raro, corrupto o fuera del patrón aprendido, la reconstrucción puede empeorar; eso permite usarlo en detección de anomalías.</p>
+        <p><strong>Ejemplo:</strong> si entrenamos un autoencoder con miles de imágenes normales de dígitos escritos a mano, el modelo aprende la estructura típica de esos dígitos. Luego, cuando recibe un dígito con ruido, una forma extraña o un patrón no visto, puede reconstruir peor esa entrada. Esa diferencia entre original y reconstrucción se vuelve una señal informativa.</p>
+        <div class="study-row">
+          <label class="check">
+            <input type="checkbox" class="done">
+            <span>Marcar como estudiada</span>
+          </label>
+          <a class="next-link" href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" data-cat="Arquitectura" data-index="2" data-text="2. ¿cómo se estructura un autoencoder: encoder, espacio latente y decoder? arquitectura &lt;p&gt;la estructura de un autoencoder se organiza como una cadena de transformación. el &lt;strong&gt;encoder&lt;/strong&gt; toma el dato original y lo lleva hacia una representación interna. el &lt;strong&gt;espacio latente&lt;/strong&gt; concentra la información que el modelo decide conservar. el &lt;strong&gt;decoder&lt;/strong&gt; toma esa representación y genera una reconstrucción lo más parecida posible a la entrada.&lt;/p&gt;
+        &lt;p&gt;el encoder puede estar formado por capas densas, convolucionales, recurrentes o transformadores, según el tipo de dato. para imágenes, se usan con frecuencia capas convolucionales porque capturan patrones espaciales. para series temporales, pueden usarse capas recurrentes, convoluciones 1d o arquitecturas basadas en atención. para datos tabulares, suelen usarse redes densas.&lt;/p&gt;
+        &lt;p&gt;el espacio latente es el punto más importante del modelo. allí se expresa el dato en una forma comprimida, ordenada o regularizada. si el espacio latente tiene pocas dimensiones, obliga al modelo a seleccionar los rasgos más relevantes. si tiene demasiadas dimensiones, el modelo podría aprender una copia trivial, salvo que se apliquen otras restricciones.&lt;/p&gt;
+        &lt;p&gt;el decoder realiza el camino inverso. no “descomprime” en sentido exacto como un zip, sino que aprende una función aproximada para reconstruir. su tarea es convertir el código latente en una salida con la misma forma que la entrada. por ejemplo, si la entrada era una imagen de 28×28 píxeles, la salida debe tener también 28×28 píxeles.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;z = fθ(x)      x̂ = gφ(z)      pérdida = l(x, x̂)&lt;/div&gt;
+        &lt;p&gt;una forma clara de explicarlo en clase es pensar en una fotografía. el encoder detecta rasgos como bordes, curvas, intensidad, textura o forma general. el espacio latente guarda una versión condensada de esos rasgos. el decoder intenta reconstruir la imagen usando solo esa descripción interna. si la descripción fue buena, la salida será similar al original.&lt;/p&gt;
+        &lt;p&gt;&lt;strong&gt;idea central:&lt;/strong&gt; la potencia del autoencoder no está solo en reconstruir, sino en lo que aprende en el medio. ese “medio” es el espacio latente, y suele ser la parte más valiosa para análisis, visualización, clustering, detección de anomalías o reducción de dimensionalidad.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="tag mini-tag">Arquitectura</span>
+          <h2>2. ¿Cómo se estructura un autoencoder: encoder, espacio latente y decoder?</h2>
+        </div>
+        <button class="toggle-answer" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>La estructura de un autoencoder se organiza como una cadena de transformación. El <strong>encoder</strong> toma el dato original y lo lleva hacia una representación interna. El <strong>espacio latente</strong> concentra la información que el modelo decide conservar. El <strong>decoder</strong> toma esa representación y genera una reconstrucción lo más parecida posible a la entrada.</p>
+        <p>El encoder puede estar formado por capas densas, convolucionales, recurrentes o transformadores, según el tipo de dato. Para imágenes, se usan con frecuencia capas convolucionales porque capturan patrones espaciales. Para series temporales, pueden usarse capas recurrentes, convoluciones 1D o arquitecturas basadas en atención. Para datos tabulares, suelen usarse redes densas.</p>
+        <p>El espacio latente es el punto más importante del modelo. Allí se expresa el dato en una forma comprimida, ordenada o regularizada. Si el espacio latente tiene pocas dimensiones, obliga al modelo a seleccionar los rasgos más relevantes. Si tiene demasiadas dimensiones, el modelo podría aprender una copia trivial, salvo que se apliquen otras restricciones.</p>
+        <p>El decoder realiza el camino inverso. No “descomprime” en sentido exacto como un ZIP, sino que aprende una función aproximada para reconstruir. Su tarea es convertir el código latente en una salida con la misma forma que la entrada. Por ejemplo, si la entrada era una imagen de 28×28 píxeles, la salida debe tener también 28×28 píxeles.</p>
+        <div class="formula">z = fθ(x)      x̂ = gφ(z)      pérdida = L(x, x̂)</div>
+        <p>Una forma clara de explicarlo en clase es pensar en una fotografía. El encoder detecta rasgos como bordes, curvas, intensidad, textura o forma general. El espacio latente guarda una versión condensada de esos rasgos. El decoder intenta reconstruir la imagen usando solo esa descripción interna. Si la descripción fue buena, la salida será similar al original.</p>
+        <p><strong>Idea central:</strong> la potencia del autoencoder no está solo en reconstruir, sino en lo que aprende en el medio. Ese “medio” es el espacio latente, y suele ser la parte más valiosa para análisis, visualización, clustering, detección de anomalías o reducción de dimensionalidad.</p>
+        <div class="study-row">
+          <label class="check">
+            <input type="checkbox" class="done">
+            <span>Marcar como estudiada</span>
+          </label>
+          <a class="next-link" href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" data-cat="Bottleneck" data-index="3" data-text="3. ¿qué es el bottleneck o cuello de botella y por qué es importante? bottleneck &lt;p&gt;el &lt;strong&gt;bottleneck&lt;/strong&gt; o cuello de botella es una restricción de capacidad colocada entre el encoder y el decoder. normalmente aparece como una capa latente con menos dimensiones que la entrada. su función es impedir que el modelo copie todos los detalles sin aprender una estructura significativa.&lt;/p&gt;
+        &lt;p&gt;si la entrada tiene 784 valores, como una imagen mnist de 28×28 píxeles, y el espacio latente tiene solo 16 o 32 valores, el modelo está obligado a comprimir. para reconstruir bien, debe decidir qué información es esencial. esa presión de compresión es lo que puede producir representaciones útiles.&lt;/p&gt;
+        &lt;p&gt;sin bottleneck ni regularización, el autoencoder podría convertirse en una identidad: entrada igual a salida, pero sin aprendizaje profundo. esto sería problemático porque una red con demasiada capacidad puede memorizar o copiar, en lugar de descubrir patrones. el cuello de botella reduce esa posibilidad.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;dim(x) alta → dim(z) baja → reconstrucción aproximada&lt;/div&gt;
+        &lt;p&gt;el tamaño del bottleneck define un equilibrio. si es demasiado pequeño, el modelo pierde información importante y la reconstrucción será pobre. si es demasiado grande, el modelo puede copiar demasiado y la representación latente será menos útil. por eso elegir la dimensión latente es una decisión de modelado, no un detalle técnico menor.&lt;/p&gt;
+        &lt;p&gt;&lt;strong&gt;ejemplo:&lt;/strong&gt; para imágenes simples de dígitos, un espacio latente de pocas dimensiones puede capturar rasgos como inclinación, grosor, curvatura y posición. pero si usamos imágenes complejas, como rostros o radiografías, un bottleneck excesivamente pequeño puede destruir información relevante.&lt;/p&gt;
+        &lt;p&gt;además del bottleneck dimensional, existen otros cuellos de botella conceptuales: agregar ruido a la entrada, imponer sparsity, penalizar sensibilidad o usar restricciones probabilísticas como en los vae. todos buscan evitar la copia trivial y forzar al modelo a aprender estructura.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="tag mini-tag">Bottleneck</span>
+          <h2>3. ¿Qué es el bottleneck o cuello de botella y por qué es importante?</h2>
+        </div>
+        <button class="toggle-answer" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>El <strong>bottleneck</strong> o cuello de botella es una restricción de capacidad colocada entre el encoder y el decoder. Normalmente aparece como una capa latente con menos dimensiones que la entrada. Su función es impedir que el modelo copie todos los detalles sin aprender una estructura significativa.</p>
+        <p>Si la entrada tiene 784 valores, como una imagen MNIST de 28×28 píxeles, y el espacio latente tiene solo 16 o 32 valores, el modelo está obligado a comprimir. Para reconstruir bien, debe decidir qué información es esencial. Esa presión de compresión es lo que puede producir representaciones útiles.</p>
+        <p>Sin bottleneck ni regularización, el autoencoder podría convertirse en una identidad: entrada igual a salida, pero sin aprendizaje profundo. Esto sería problemático porque una red con demasiada capacidad puede memorizar o copiar, en lugar de descubrir patrones. El cuello de botella reduce esa posibilidad.</p>
+        <div class="formula">dim(x) alta → dim(z) baja → reconstrucción aproximada</div>
+        <p>El tamaño del bottleneck define un equilibrio. Si es demasiado pequeño, el modelo pierde información importante y la reconstrucción será pobre. Si es demasiado grande, el modelo puede copiar demasiado y la representación latente será menos útil. Por eso elegir la dimensión latente es una decisión de modelado, no un detalle técnico menor.</p>
+        <p><strong>Ejemplo:</strong> para imágenes simples de dígitos, un espacio latente de pocas dimensiones puede capturar rasgos como inclinación, grosor, curvatura y posición. Pero si usamos imágenes complejas, como rostros o radiografías, un bottleneck excesivamente pequeño puede destruir información relevante.</p>
+        <p>Además del bottleneck dimensional, existen otros cuellos de botella conceptuales: agregar ruido a la entrada, imponer sparsity, penalizar sensibilidad o usar restricciones probabilísticas como en los VAE. Todos buscan evitar la copia trivial y forzar al modelo a aprender estructura.</p>
+        <div class="study-row">
+          <label class="check">
+            <input type="checkbox" class="done">
+            <span>Marcar como estudiada</span>
+          </label>
+          <a class="next-link" href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" data-cat="Entrenamiento" data-index="4" data-text="4. ¿cómo se entrena un autoencoder y qué función de pérdida utiliza? entrenamiento &lt;p&gt;un autoencoder se entrena comparando la entrada original con la salida reconstruida. el proceso general es: se entrega una entrada &lt;strong&gt;x&lt;/strong&gt;, el encoder produce un código latente &lt;strong&gt;z&lt;/strong&gt;, el decoder produce una reconstrucción &lt;strong&gt;x̂&lt;/strong&gt;, y luego se calcula una pérdida que mide la diferencia entre &lt;strong&gt;x&lt;/strong&gt; y &lt;strong&gt;x̂&lt;/strong&gt;.&lt;/p&gt;
+        &lt;p&gt;la función de pérdida depende del tipo de dato. en datos continuos, como señales, intensidades normalizadas o variables numéricas, se usa con frecuencia el &lt;strong&gt;error cuadrático medio&lt;/strong&gt;. en imágenes binarias o valores interpretables como probabilidades, puede usarse &lt;strong&gt;binary cross-entropy&lt;/strong&gt;. en otros contextos se pueden usar pérdidas perceptuales, pérdidas robustas o combinaciones de criterios.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;mse = (1/n) σ(xᵢ - x̂ᵢ)²&lt;/div&gt;
+        &lt;p&gt;durante el entrenamiento, la red ajusta sus pesos mediante backpropagation. el error de reconstrucción se propaga desde la salida hacia las capas internas, modificando tanto el decoder como el encoder. con muchas iteraciones, el modelo aprende una forma de codificar información relevante para reconstruir.&lt;/p&gt;
+        &lt;p&gt;es importante separar dos ideas. una reconstrucción muy buena no siempre significa que el espacio latente sea útil. un modelo demasiado grande puede reconstruir bien porque copia. por eso, además de mirar la pérdida, conviene analizar la calidad de las representaciones latentes, el desempeño en tareas posteriores, la separación de clases o el comportamiento frente a datos nuevos.&lt;/p&gt;
+        &lt;p&gt;&lt;strong&gt;ejemplo:&lt;/strong&gt; si entrenamos un autoencoder con transacciones financieras normales, la pérdida baja cuando el modelo aprende patrones habituales. luego, una transacción atípica puede producir mayor error de reconstrucción. pero el umbral para considerar una anomalía debe calibrarse con datos de validación, no elegirse arbitrariamente.&lt;/p&gt;
+        &lt;p&gt;en la práctica, se controla el entrenamiento con curvas de pérdida, validación, early stopping y regularización. si la pérdida de entrenamiento baja mucho pero la de validación empeora, puede haber sobreajuste. si ambas pérdidas son altas, el modelo puede ser demasiado simple, el bottleneck demasiado estrecho o los datos estar mal normalizados.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="tag mini-tag">Entrenamiento</span>
+          <h2>4. ¿Cómo se entrena un autoencoder y qué función de pérdida utiliza?</h2>
+        </div>
+        <button class="toggle-answer" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>Un autoencoder se entrena comparando la entrada original con la salida reconstruida. El proceso general es: se entrega una entrada <strong>x</strong>, el encoder produce un código latente <strong>z</strong>, el decoder produce una reconstrucción <strong>x̂</strong>, y luego se calcula una pérdida que mide la diferencia entre <strong>x</strong> y <strong>x̂</strong>.</p>
+        <p>La función de pérdida depende del tipo de dato. En datos continuos, como señales, intensidades normalizadas o variables numéricas, se usa con frecuencia el <strong>error cuadrático medio</strong>. En imágenes binarias o valores interpretables como probabilidades, puede usarse <strong>binary cross-entropy</strong>. En otros contextos se pueden usar pérdidas perceptuales, pérdidas robustas o combinaciones de criterios.</p>
+        <div class="formula">MSE = (1/n) Σ(xᵢ - x̂ᵢ)²</div>
+        <p>Durante el entrenamiento, la red ajusta sus pesos mediante backpropagation. El error de reconstrucción se propaga desde la salida hacia las capas internas, modificando tanto el decoder como el encoder. Con muchas iteraciones, el modelo aprende una forma de codificar información relevante para reconstruir.</p>
+        <p>Es importante separar dos ideas. Una reconstrucción muy buena no siempre significa que el espacio latente sea útil. Un modelo demasiado grande puede reconstruir bien porque copia. Por eso, además de mirar la pérdida, conviene analizar la calidad de las representaciones latentes, el desempeño en tareas posteriores, la separación de clases o el comportamiento frente a datos nuevos.</p>
+        <p><strong>Ejemplo:</strong> si entrenamos un autoencoder con transacciones financieras normales, la pérdida baja cuando el modelo aprende patrones habituales. Luego, una transacción atípica puede producir mayor error de reconstrucción. Pero el umbral para considerar una anomalía debe calibrarse con datos de validación, no elegirse arbitrariamente.</p>
+        <p>En la práctica, se controla el entrenamiento con curvas de pérdida, validación, early stopping y regularización. Si la pérdida de entrenamiento baja mucho pero la de validación empeora, puede haber sobreajuste. Si ambas pérdidas son altas, el modelo puede ser demasiado simple, el bottleneck demasiado estrecho o los datos estar mal normalizados.</p>
+        <div class="study-row">
+          <label class="check">
+            <input type="checkbox" class="done">
+            <span>Marcar como estudiada</span>
+          </label>
+          <a class="next-link" href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" data-cat="Espacio latente" data-index="5" data-text="5. ¿qué es el espacio latente y cómo se interpreta en autoencoders? espacio latente &lt;p&gt;el &lt;strong&gt;espacio latente&lt;/strong&gt; es el espacio interno donde el autoencoder representa los datos después de pasar por el encoder. cada entrada se transforma en un vector latente. ese vector no es una etiqueta ni una explicación humana directa; es una codificación numérica aprendida por la red.&lt;/p&gt;
+        &lt;p&gt;la importancia del espacio latente está en que puede organizar los datos según similitudes profundas. entradas parecidas tienden a quedar cerca si el modelo aprendió una representación útil. en imágenes de dígitos, por ejemplo, los “1” podrían agruparse en una región, los “0” en otra y los “8” en otra, aunque no se haya entrenado con etiquetas explícitas.&lt;/p&gt;
+        &lt;p&gt;el espacio latente puede interpretarse como una versión comprimida del &lt;strong&gt;manifold&lt;/strong&gt; de los datos. la idea de manifold indica que datos de alta dimensión pueden vivir cerca de una estructura de menor dimensión. una imagen tiene miles de píxeles, pero no todas las combinaciones de píxeles son imágenes válidas. el autoencoder intenta descubrir esa estructura más baja y significativa.&lt;/p&gt;
+        &lt;p&gt;cuando el espacio latente tiene dos o tres dimensiones, puede visualizarse directamente. si tiene más dimensiones, se pueden usar técnicas como pca, t-sne o umap para proyectarlo. sin embargo, visualizar no significa comprender completamente: una proyección puede deformar distancias o exagerar agrupamientos.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;x ∈ rᴰ  →  z ∈ rᵈ, con d menor que d&lt;/div&gt;
+        &lt;p&gt;&lt;strong&gt;ejemplo:&lt;/strong&gt; en datos de clientes, el espacio latente podría capturar patrones de consumo, frecuencia, monto, estacionalidad o comportamiento digital. dos clientes con variables originales diferentes podrían quedar cerca si tienen una estructura de comportamiento similar.&lt;/p&gt;
+        &lt;p&gt;una buena representación latente sirve para varias tareas: reducción de dimensionalidad, búsqueda de similitud, clustering, detección de anomalías, visualización, preentrenamiento y generación. pero siempre debe evaluarse con criterios del problema. un espacio latente “bonito” visualmente no garantiza utilidad predictiva o interpretabilidad confiable.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="tag mini-tag">Espacio latente</span>
+          <h2>5. ¿Qué es el espacio latente y cómo se interpreta en autoencoders?</h2>
+        </div>
+        <button class="toggle-answer" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>El <strong>espacio latente</strong> es el espacio interno donde el autoencoder representa los datos después de pasar por el encoder. Cada entrada se transforma en un vector latente. Ese vector no es una etiqueta ni una explicación humana directa; es una codificación numérica aprendida por la red.</p>
+        <p>La importancia del espacio latente está en que puede organizar los datos según similitudes profundas. Entradas parecidas tienden a quedar cerca si el modelo aprendió una representación útil. En imágenes de dígitos, por ejemplo, los “1” podrían agruparse en una región, los “0” en otra y los “8” en otra, aunque no se haya entrenado con etiquetas explícitas.</p>
+        <p>El espacio latente puede interpretarse como una versión comprimida del <strong>manifold</strong> de los datos. La idea de manifold indica que datos de alta dimensión pueden vivir cerca de una estructura de menor dimensión. Una imagen tiene miles de píxeles, pero no todas las combinaciones de píxeles son imágenes válidas. El autoencoder intenta descubrir esa estructura más baja y significativa.</p>
+        <p>Cuando el espacio latente tiene dos o tres dimensiones, puede visualizarse directamente. Si tiene más dimensiones, se pueden usar técnicas como PCA, t-SNE o UMAP para proyectarlo. Sin embargo, visualizar no significa comprender completamente: una proyección puede deformar distancias o exagerar agrupamientos.</p>
+        <div class="formula">x ∈ Rᴰ  →  z ∈ Rᵈ, con d menor que D</div>
+        <p><strong>Ejemplo:</strong> en datos de clientes, el espacio latente podría capturar patrones de consumo, frecuencia, monto, estacionalidad o comportamiento digital. Dos clientes con variables originales diferentes podrían quedar cerca si tienen una estructura de comportamiento similar.</p>
+        <p>Una buena representación latente sirve para varias tareas: reducción de dimensionalidad, búsqueda de similitud, clustering, detección de anomalías, visualización, preentrenamiento y generación. Pero siempre debe evaluarse con criterios del problema. Un espacio latente “bonito” visualmente no garantiza utilidad predictiva o interpretabilidad confiable.</p>
+        <div class="study-row">
+          <label class="check">
+            <input type="checkbox" class="done">
+            <span>Marcar como estudiada</span>
+          </label>
+          <a class="next-link" href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" data-cat="Regularización" data-index="6" data-text="6. ¿por qué un autoencoder puede aprender una copia trivial y cómo se evita? regularización &lt;p&gt;un autoencoder puede aprender una copia trivial cuando tiene demasiada capacidad en relación con la dificultad del problema. si el espacio latente es grande, las capas son amplias y no hay restricciones, la red puede comportarse como una función identidad: recibe &lt;strong&gt;x&lt;/strong&gt; y devuelve casi exactamente &lt;strong&gt;x&lt;/strong&gt;, sin aprender patrones generales.&lt;/p&gt;
+        &lt;p&gt;este problema es central porque reconstruir bien no siempre equivale a aprender bien. una copia perfecta puede ser inútil para compresión, anomalías o representación latente. el objetivo es que el modelo capture estructura, no que memorice detalles sin criterio.&lt;/p&gt;
+        &lt;p&gt;para evitar la copia trivial, se utilizan distintas estrategias. la primera es un &lt;strong&gt;bottleneck undercomplete&lt;/strong&gt;, donde el espacio latente tiene menor dimensión que la entrada. la segunda es la &lt;strong&gt;regularización&lt;/strong&gt;, que penaliza soluciones demasiado complejas. la tercera es modificar la tarea, por ejemplo pidiendo al modelo que reconstruya una entrada limpia a partir de una entrada con ruido.&lt;/p&gt;
+        &lt;p&gt;también se puede usar un &lt;strong&gt;sparse autoencoder&lt;/strong&gt;, que permite muchas unidades latentes pero fuerza a que pocas se activen a la vez. otra alternativa es el &lt;strong&gt;contractive autoencoder&lt;/strong&gt;, que penaliza la sensibilidad del encoder ante pequeños cambios de la entrada. en los vae, la estructura probabilística del espacio latente también impone una forma de regularización.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;reconstrucción útil = bajo error + representación generalizable + restricción adecuada&lt;/div&gt;
+        &lt;p&gt;&lt;strong&gt;ejemplo:&lt;/strong&gt; si entrenamos con imágenes normales de máquinas industriales y el modelo copia todo, también reconstruirá bien defectos, lo que perjudica la detección de anomalías. en cambio, si el modelo aprendió solo la estructura normal, una pieza defectuosa producirá mayor error de reconstrucción.&lt;/p&gt;
+        &lt;p&gt;la clave práctica es diseñar una dificultad adecuada. el autoencoder debe tener suficiente capacidad para aprender patrones reales, pero no tanta como para memorizar. la validación, el análisis del error y la inspección del espacio latente son herramientas necesarias para verificarlo.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="tag mini-tag">Regularización</span>
+          <h2>6. ¿Por qué un autoencoder puede aprender una copia trivial y cómo se evita?</h2>
+        </div>
+        <button class="toggle-answer" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>Un autoencoder puede aprender una copia trivial cuando tiene demasiada capacidad en relación con la dificultad del problema. Si el espacio latente es grande, las capas son amplias y no hay restricciones, la red puede comportarse como una función identidad: recibe <strong>x</strong> y devuelve casi exactamente <strong>x</strong>, sin aprender patrones generales.</p>
+        <p>Este problema es central porque reconstruir bien no siempre equivale a aprender bien. Una copia perfecta puede ser inútil para compresión, anomalías o representación latente. El objetivo es que el modelo capture estructura, no que memorice detalles sin criterio.</p>
+        <p>Para evitar la copia trivial, se utilizan distintas estrategias. La primera es un <strong>bottleneck undercomplete</strong>, donde el espacio latente tiene menor dimensión que la entrada. La segunda es la <strong>regularización</strong>, que penaliza soluciones demasiado complejas. La tercera es modificar la tarea, por ejemplo pidiendo al modelo que reconstruya una entrada limpia a partir de una entrada con ruido.</p>
+        <p>También se puede usar un <strong>sparse autoencoder</strong>, que permite muchas unidades latentes pero fuerza a que pocas se activen a la vez. Otra alternativa es el <strong>contractive autoencoder</strong>, que penaliza la sensibilidad del encoder ante pequeños cambios de la entrada. En los VAE, la estructura probabilística del espacio latente también impone una forma de regularización.</p>
+        <div class="formula">Reconstrucción útil = bajo error + representación generalizable + restricción adecuada</div>
+        <p><strong>Ejemplo:</strong> si entrenamos con imágenes normales de máquinas industriales y el modelo copia todo, también reconstruirá bien defectos, lo que perjudica la detección de anomalías. En cambio, si el modelo aprendió solo la estructura normal, una pieza defectuosa producirá mayor error de reconstrucción.</p>
+        <p>La clave práctica es diseñar una dificultad adecuada. El autoencoder debe tener suficiente capacidad para aprender patrones reales, pero no tanta como para memorizar. La validación, el análisis del error y la inspección del espacio latente son herramientas necesarias para verificarlo.</p>
+        <div class="study-row">
+          <label class="check">
+            <input type="checkbox" class="done">
+            <span>Marcar como estudiada</span>
+          </label>
+          <a class="next-link" href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" data-cat="Variantes" data-index="7" data-text="7. ¿qué son los denoising, sparse y contractive autoencoders? variantes &lt;p&gt;los autoencoders tienen variantes que modifican la forma de aprender para lograr representaciones más robustas o útiles. tres variantes importantes son el &lt;strong&gt;denoising autoencoder&lt;/strong&gt;, el &lt;strong&gt;sparse autoencoder&lt;/strong&gt; y el &lt;strong&gt;contractive autoencoder&lt;/strong&gt;.&lt;/p&gt;
+        &lt;p&gt;el &lt;strong&gt;denoising autoencoder&lt;/strong&gt; recibe una entrada corrupta o con ruido, pero debe reconstruir la versión limpia. esto obliga al modelo a aprender estructura estable y no simplemente copiar cada detalle. si una imagen tiene píxeles alterados, el modelo debe recuperar la forma general. esta variante es útil para limpieza de datos, robustez y aprendizaje de rasgos esenciales.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;entrada corrupta x̃ → autoencoder → reconstrucción limpia x̂ ≈ x&lt;/div&gt;
+        &lt;p&gt;el &lt;strong&gt;sparse autoencoder&lt;/strong&gt; introduce una penalización para que pocas neuronas latentes estén activas al mismo tiempo. aunque el espacio latente sea grande, la red no puede usar todas las unidades libremente. esto favorece representaciones más selectivas, donde distintas unidades pueden especializarse en rasgos específicos.&lt;/p&gt;
+        &lt;p&gt;el &lt;strong&gt;contractive autoencoder&lt;/strong&gt; penaliza cambios fuertes en la representación latente ante pequeñas variaciones de la entrada. la idea es que datos similares deberían producir códigos latentes similares. esto mejora la estabilidad de la representación y ayuda a capturar la geometría local del manifold.&lt;/p&gt;
+        &lt;p&gt;&lt;strong&gt;ejemplo comparativo:&lt;/strong&gt; si trabajamos con imágenes de dígitos, el denoising autoencoder aprende a quitar ruido; el sparse autoencoder aprende rasgos activados de manera selectiva, como trazos o curvaturas; el contractive autoencoder aprende que pequeñas variaciones de escritura no deberían cambiar radicalmente el código latente.&lt;/p&gt;
+        &lt;p&gt;estas variantes muestran una idea clave: el autoencoder no es una única arquitectura fija. es una familia de modelos cuyo valor depende de la restricción que se le impone y de la tarea de reconstrucción que se diseña.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="tag mini-tag">Variantes</span>
+          <h2>7. ¿Qué son los denoising, sparse y contractive autoencoders?</h2>
+        </div>
+        <button class="toggle-answer" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>Los autoencoders tienen variantes que modifican la forma de aprender para lograr representaciones más robustas o útiles. Tres variantes importantes son el <strong>denoising autoencoder</strong>, el <strong>sparse autoencoder</strong> y el <strong>contractive autoencoder</strong>.</p>
+        <p>El <strong>denoising autoencoder</strong> recibe una entrada corrupta o con ruido, pero debe reconstruir la versión limpia. Esto obliga al modelo a aprender estructura estable y no simplemente copiar cada detalle. Si una imagen tiene píxeles alterados, el modelo debe recuperar la forma general. Esta variante es útil para limpieza de datos, robustez y aprendizaje de rasgos esenciales.</p>
+        <div class="formula">Entrada corrupta x̃ → Autoencoder → Reconstrucción limpia x̂ ≈ x</div>
+        <p>El <strong>sparse autoencoder</strong> introduce una penalización para que pocas neuronas latentes estén activas al mismo tiempo. Aunque el espacio latente sea grande, la red no puede usar todas las unidades libremente. Esto favorece representaciones más selectivas, donde distintas unidades pueden especializarse en rasgos específicos.</p>
+        <p>El <strong>contractive autoencoder</strong> penaliza cambios fuertes en la representación latente ante pequeñas variaciones de la entrada. La idea es que datos similares deberían producir códigos latentes similares. Esto mejora la estabilidad de la representación y ayuda a capturar la geometría local del manifold.</p>
+        <p><strong>Ejemplo comparativo:</strong> si trabajamos con imágenes de dígitos, el denoising autoencoder aprende a quitar ruido; el sparse autoencoder aprende rasgos activados de manera selectiva, como trazos o curvaturas; el contractive autoencoder aprende que pequeñas variaciones de escritura no deberían cambiar radicalmente el código latente.</p>
+        <p>Estas variantes muestran una idea clave: el autoencoder no es una única arquitectura fija. Es una familia de modelos cuyo valor depende de la restricción que se le impone y de la tarea de reconstrucción que se diseña.</p>
+        <div class="study-row">
+          <label class="check">
+            <input type="checkbox" class="done">
+            <span>Marcar como estudiada</span>
+          </label>
+          <a class="next-link" href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" data-cat="Aplicaciones" data-index="8" data-text="8. ¿cómo se usan los autoencoders para detección de anomalías? aplicaciones &lt;p&gt;la detección de anomalías con autoencoders se basa en una hipótesis: si el modelo fue entrenado principalmente con datos normales, aprenderá a reconstruir bien esos patrones normales, pero reconstruirá peor los casos raros, atípicos o fuera de distribución.&lt;/p&gt;
+        &lt;p&gt;el procedimiento típico comienza entrenando el autoencoder con ejemplos considerados normales. luego se calcula el error de reconstrucción para nuevos datos. si el error supera cierto umbral, el caso se marca como potencial anomalía. este enfoque se usa en fraude, ciberseguridad, mantenimiento predictivo, control de calidad, salud e industria.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;error de reconstrucción = distancia(x, x̂)&lt;/div&gt;
+        &lt;p&gt;la elección del umbral es crítica. no conviene fijarlo de manera arbitraria. puede calibrarse con un conjunto de validación, usando percentiles del error, curvas roc, curvas precision-recall o criterios de costo. en problemas reales, un falso positivo y un falso negativo no tienen el mismo costo. por ejemplo, en fraude financiero, revisar una operación normal es molesto, pero dejar pasar fraude puede ser costoso.&lt;/p&gt;
+        &lt;p&gt;&lt;strong&gt;ejemplo:&lt;/strong&gt; una empresa entrena un autoencoder con vibraciones normales de una máquina. el modelo aprende la estructura habitual de la señal. si aparece un desgaste mecánico, la vibración cambia. como ese patrón no fue aprendido, el error de reconstrucción aumenta y puede anticipar una falla.&lt;/p&gt;
+        &lt;p&gt;sin embargo, hay límites. si el entrenamiento contiene muchas anomalías, el modelo puede aprenderlas como normales. si el autoencoder tiene demasiada capacidad, puede reconstruir bien incluso datos raros. si los datos cambian con el tiempo, el umbral puede quedar desactualizado. por eso se necesita monitoreo, recalibración y análisis de deriva.&lt;/p&gt;
+        &lt;p&gt;en síntesis, el autoencoder no “sabe” qué es una anomalía en sentido conceptual. usa el error de reconstrucción como señal. la interpretación final debe combinar estadística, conocimiento de dominio y validación empírica.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="tag mini-tag">Aplicaciones</span>
+          <h2>8. ¿Cómo se usan los autoencoders para detección de anomalías?</h2>
+        </div>
+        <button class="toggle-answer" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>La detección de anomalías con autoencoders se basa en una hipótesis: si el modelo fue entrenado principalmente con datos normales, aprenderá a reconstruir bien esos patrones normales, pero reconstruirá peor los casos raros, atípicos o fuera de distribución.</p>
+        <p>El procedimiento típico comienza entrenando el autoencoder con ejemplos considerados normales. Luego se calcula el error de reconstrucción para nuevos datos. Si el error supera cierto umbral, el caso se marca como potencial anomalía. Este enfoque se usa en fraude, ciberseguridad, mantenimiento predictivo, control de calidad, salud e industria.</p>
+        <div class="formula">Error de reconstrucción = distancia(x, x̂)</div>
+        <p>La elección del umbral es crítica. No conviene fijarlo de manera arbitraria. Puede calibrarse con un conjunto de validación, usando percentiles del error, curvas ROC, curvas precision-recall o criterios de costo. En problemas reales, un falso positivo y un falso negativo no tienen el mismo costo. Por ejemplo, en fraude financiero, revisar una operación normal es molesto, pero dejar pasar fraude puede ser costoso.</p>
+        <p><strong>Ejemplo:</strong> una empresa entrena un autoencoder con vibraciones normales de una máquina. El modelo aprende la estructura habitual de la señal. Si aparece un desgaste mecánico, la vibración cambia. Como ese patrón no fue aprendido, el error de reconstrucción aumenta y puede anticipar una falla.</p>
+        <p>Sin embargo, hay límites. Si el entrenamiento contiene muchas anomalías, el modelo puede aprenderlas como normales. Si el autoencoder tiene demasiada capacidad, puede reconstruir bien incluso datos raros. Si los datos cambian con el tiempo, el umbral puede quedar desactualizado. Por eso se necesita monitoreo, recalibración y análisis de deriva.</p>
+        <p>En síntesis, el autoencoder no “sabe” qué es una anomalía en sentido conceptual. Usa el error de reconstrucción como señal. La interpretación final debe combinar estadística, conocimiento de dominio y validación empírica.</p>
+        <div class="study-row">
+          <label class="check">
+            <input type="checkbox" class="done">
+            <span>Marcar como estudiada</span>
+          </label>
+          <a class="next-link" href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" data-cat="VAE" data-index="9" data-text="9. ¿qué es un variational autoencoder y en qué se diferencia de un autoencoder clásico? vae &lt;p&gt;un &lt;strong&gt;variational autoencoder&lt;/strong&gt;, o &lt;strong&gt;vae&lt;/strong&gt;, es una variante probabilística y generativa de los autoencoders. mientras un autoencoder clásico codifica cada entrada en un punto latente, un vae codifica cada entrada en una distribución. en lugar de producir solo un vector &lt;strong&gt;z&lt;/strong&gt;, el encoder produce parámetros de una distribución, normalmente una media &lt;strong&gt;μ&lt;/strong&gt; y una desviación estándar &lt;strong&gt;σ&lt;/strong&gt;.&lt;/p&gt;
+        &lt;p&gt;el modelo luego toma una muestra de esa distribución latente y el decoder intenta reconstruir la entrada. esta estructura permite generar datos nuevos: se puede muestrear un punto del espacio latente y pasarlo por el decoder para producir una salida plausible.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;encoder(x) → μ, σ → muestreo z → decoder(z) → x̂&lt;/div&gt;
+        &lt;p&gt;la función de pérdida de un vae combina dos componentes. el primero es el error de reconstrucción, que mide si la salida se parece a la entrada. el segundo es una penalización de divergencia kl, que empuja la distribución latente a parecerse a una distribución de referencia, generalmente una normal estándar. esto ordena el espacio latente y facilita el muestreo.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;pérdida vae = reconstrucción + kl(q(z|x) || p(z))&lt;/div&gt;
+        &lt;p&gt;la diferencia fundamental es que el vae no solo quiere reconstruir; quiere aprender un espacio latente continuo y regular desde el cual se puedan generar nuevos ejemplos. por eso se usa en generación de imágenes, simulación, representación probabilística, interpolación y aprendizaje generativo.&lt;/p&gt;
+        &lt;p&gt;&lt;strong&gt;ejemplo:&lt;/strong&gt; si entrenamos un vae con rostros, el espacio latente puede permitir interpolar entre expresiones, posiciones o rasgos visuales. al movernos suavemente en el espacio latente, el decoder puede generar rostros nuevos con cambios progresivos.&lt;/p&gt;
+        &lt;p&gt;el vae tiene ventajas y límites. su espacio latente suele ser más organizado que el de un autoencoder clásico, pero sus reconstrucciones pueden ser más suaves o menos nítidas. en generación visual moderna, otros modelos como gans y modelos de difusión pueden producir resultados más detallados, aunque los vae siguen siendo muy importantes como fundamento y como componente de sistemas generativos.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="tag mini-tag">VAE</span>
+          <h2>9. ¿Qué es un Variational Autoencoder y en qué se diferencia de un autoencoder clásico?</h2>
+        </div>
+        <button class="toggle-answer" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>Un <strong>Variational Autoencoder</strong>, o <strong>VAE</strong>, es una variante probabilística y generativa de los autoencoders. Mientras un autoencoder clásico codifica cada entrada en un punto latente, un VAE codifica cada entrada en una distribución. En lugar de producir solo un vector <strong>z</strong>, el encoder produce parámetros de una distribución, normalmente una media <strong>μ</strong> y una desviación estándar <strong>σ</strong>.</p>
+        <p>El modelo luego toma una muestra de esa distribución latente y el decoder intenta reconstruir la entrada. Esta estructura permite generar datos nuevos: se puede muestrear un punto del espacio latente y pasarlo por el decoder para producir una salida plausible.</p>
+        <div class="formula">Encoder(x) → μ, σ → muestreo z → Decoder(z) → x̂</div>
+        <p>La función de pérdida de un VAE combina dos componentes. El primero es el error de reconstrucción, que mide si la salida se parece a la entrada. El segundo es una penalización de divergencia KL, que empuja la distribución latente a parecerse a una distribución de referencia, generalmente una normal estándar. Esto ordena el espacio latente y facilita el muestreo.</p>
+        <div class="formula">Pérdida VAE = reconstrucción + KL(q(z|x) || p(z))</div>
+        <p>La diferencia fundamental es que el VAE no solo quiere reconstruir; quiere aprender un espacio latente continuo y regular desde el cual se puedan generar nuevos ejemplos. Por eso se usa en generación de imágenes, simulación, representación probabilística, interpolación y aprendizaje generativo.</p>
+        <p><strong>Ejemplo:</strong> si entrenamos un VAE con rostros, el espacio latente puede permitir interpolar entre expresiones, posiciones o rasgos visuales. Al movernos suavemente en el espacio latente, el decoder puede generar rostros nuevos con cambios progresivos.</p>
+        <p>El VAE tiene ventajas y límites. Su espacio latente suele ser más organizado que el de un autoencoder clásico, pero sus reconstrucciones pueden ser más suaves o menos nítidas. En generación visual moderna, otros modelos como GANs y modelos de difusión pueden producir resultados más detallados, aunque los VAE siguen siendo muy importantes como fundamento y como componente de sistemas generativos.</p>
+        <div class="study-row">
+          <label class="check">
+            <input type="checkbox" class="done">
+            <span>Marcar como estudiada</span>
+          </label>
+          <a class="next-link" href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" data-cat="Evaluación" data-index="10" data-text="10. ¿cómo se evalúa un autoencoder y cuáles son sus principales límites? evaluación &lt;p&gt;evaluar un autoencoder requiere mirar más que la pérdida de reconstrucción. la primera métrica natural es el error entre entrada y salida: mse, mae, binary cross-entropy u otra pérdida adecuada. pero esa métrica por sí sola no siempre indica que el modelo aprendió una representación útil.&lt;/p&gt;
+        &lt;p&gt;una evaluación completa debe considerar el objetivo. si el autoencoder se usa para compresión, interesa la calidad de reconstrucción frente al tamaño del código latente. si se usa para anomalías, importan precision, recall, f1, roc-auc, pr-auc y costos de error. si se usa para representación, conviene evaluar clustering, separación de grupos, utilidad en una tarea posterior o calidad semántica del espacio latente.&lt;/p&gt;
+        &lt;p&gt;también se deben inspeccionar ejemplos. ver reconstrucciones reales permite detectar errores que una métrica promedio oculta. por ejemplo, un mse bajo puede esconder pérdidas importantes de bordes, detalles o patrones minoritarios. en imágenes, dos reconstrucciones pueden tener el mismo error numérico pero distinta calidad visual.&lt;/p&gt;
+        &lt;p&gt;los límites principales son varios. primero, un autoencoder puede copiar sin aprender si tiene demasiada capacidad. segundo, puede fallar ante datos fuera de distribución. tercero, el espacio latente no siempre es interpretable. cuarto, un bajo error de reconstrucción no garantiza buen desempeño en tareas predictivas. quinto, en anomalías, el modelo puede reconstruir bien ciertos casos raros si son parecidos a patrones aprendidos.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;buena evaluación = pérdida + validación + tarea + inspección + conocimiento de dominio&lt;/div&gt;
+        &lt;p&gt;&lt;strong&gt;ejemplo:&lt;/strong&gt; en salud, un autoencoder puede reconstruir imágenes normales con bajo error. pero para usarlo como apoyo diagnóstico no alcanza con mostrar baja pérdida: hay que validar sensibilidad, especificidad, sesgos, estabilidad, errores por subgrupo y consecuencias clínicas.&lt;/p&gt;
+        &lt;p&gt;en conclusión, el autoencoder es una herramienta poderosa para aprendizaje no supervisado, reducción de dimensionalidad, limpieza, anomalías y generación. pero debe diseñarse con restricciones adecuadas, evaluarse según la tarea real y complementarse con análisis experto. su valor no está solo en reconstruir, sino en aprender representaciones que sean útiles, robustas y generalizables.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="tag mini-tag">Evaluación</span>
+          <h2>10. ¿Cómo se evalúa un autoencoder y cuáles son sus principales límites?</h2>
+        </div>
+        <button class="toggle-answer" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>Evaluar un autoencoder requiere mirar más que la pérdida de reconstrucción. La primera métrica natural es el error entre entrada y salida: MSE, MAE, binary cross-entropy u otra pérdida adecuada. Pero esa métrica por sí sola no siempre indica que el modelo aprendió una representación útil.</p>
+        <p>Una evaluación completa debe considerar el objetivo. Si el autoencoder se usa para compresión, interesa la calidad de reconstrucción frente al tamaño del código latente. Si se usa para anomalías, importan precision, recall, F1, ROC-AUC, PR-AUC y costos de error. Si se usa para representación, conviene evaluar clustering, separación de grupos, utilidad en una tarea posterior o calidad semántica del espacio latente.</p>
+        <p>También se deben inspeccionar ejemplos. Ver reconstrucciones reales permite detectar errores que una métrica promedio oculta. Por ejemplo, un MSE bajo puede esconder pérdidas importantes de bordes, detalles o patrones minoritarios. En imágenes, dos reconstrucciones pueden tener el mismo error numérico pero distinta calidad visual.</p>
+        <p>Los límites principales son varios. Primero, un autoencoder puede copiar sin aprender si tiene demasiada capacidad. Segundo, puede fallar ante datos fuera de distribución. Tercero, el espacio latente no siempre es interpretable. Cuarto, un bajo error de reconstrucción no garantiza buen desempeño en tareas predictivas. Quinto, en anomalías, el modelo puede reconstruir bien ciertos casos raros si son parecidos a patrones aprendidos.</p>
+        <div class="formula">Buena evaluación = pérdida + validación + tarea + inspección + conocimiento de dominio</div>
+        <p><strong>Ejemplo:</strong> en salud, un autoencoder puede reconstruir imágenes normales con bajo error. Pero para usarlo como apoyo diagnóstico no alcanza con mostrar baja pérdida: hay que validar sensibilidad, especificidad, sesgos, estabilidad, errores por subgrupo y consecuencias clínicas.</p>
+        <p>En conclusión, el autoencoder es una herramienta poderosa para aprendizaje no supervisado, reducción de dimensionalidad, limpieza, anomalías y generación. Pero debe diseñarse con restricciones adecuadas, evaluarse según la tarea real y complementarse con análisis experto. Su valor no está solo en reconstruir, sino en aprender representaciones que sean útiles, robustas y generalizables.</p>
+        <div class="study-row">
+          <label class="check">
+            <input type="checkbox" class="done">
+            <span>Marcar como estudiada</span>
+          </label>
+          <a class="next-link" href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+  </section>
+
+  <p class="footer"><strong>Material elaborado por el profesor Sergio Gevatschnaider</strong></p>
+</main>
+
+<a class="to-top" href="#top" aria-label="Volver arriba">↑</a>
+
+<script>
+(function(){
+  "use strict";
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+  const html = document.documentElement;
+  const palettes = ["aurora","bosque","uva","carbono"];
+  let paletteIndex = 0;
+
+  function updateProgress(){
+    const total = $$(".done").length;
+    const checked = $$(".done").filter(x => x.checked).length;
+    $("#progressText").textContent = checked + " / " + total;
+    $("#progressBar").style.width = total ? ((checked / total) * 100) + "%" : "0%";
+  }
+
+  function setOpen(card, open){
+    const btn = $(".toggle-answer", card);
+    card.classList.toggle("open", open);
+    btn.classList.toggle("open", open);
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+    btn.textContent = open ? "Ocultar respuesta" : "Ver respuesta";
+  }
+
+  function applyFilters(){
+    const q = ($("#searchInput").value || "").toLowerCase().trim();
+    const cat = $("#catSelect").value;
+    $$(".qa-card").forEach(card => {
+      const matchText = !q || card.dataset.text.includes(q);
+      const matchCat = cat === "all" || card.dataset.cat === cat;
+      card.classList.toggle("hidden", !(matchText && matchCat));
+    });
+    $$(".filter-chip").forEach(b => b.classList.toggle("active", b.dataset.filter === cat));
+  }
+
+  $$(".toggle-answer").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const card = btn.closest(".qa-card");
+      setOpen(card, !card.classList.contains("open"));
+    });
+  });
+
+  $$(".done").forEach(chk => {
+    chk.addEventListener("change", () => {
+      chk.closest(".qa-card").classList.toggle("done-card", chk.checked);
+      updateProgress();
+    });
+  });
+
+  $("#openAll").addEventListener("click", () => $$(".qa-card:not(.hidden)").forEach(c => setOpen(c, true)));
+  $("#closeAll").addEventListener("click", () => $$(".qa-card").forEach(c => setOpen(c, false)));
+  $("#searchInput").addEventListener("input", applyFilters);
+  $("#catSelect").addEventListener("change", applyFilters);
+
+  $$(".filter-chip").forEach(btn => {
+    btn.addEventListener("click", () => {
+      $("#catSelect").value = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+
+  $("#themeBtn").addEventListener("click", () => {
+    const dark = html.getAttribute("data-theme") === "dark";
+    html.setAttribute("data-theme", dark ? "light" : "dark");
+    $("#themeBtn").textContent = dark ? "🌙 Tema oscuro" : "☀️ Tema claro";
+  });
+
+  $("#paletteBtn").addEventListener("click", () => {
+    paletteIndex = (paletteIndex + 1) % palettes.length;
+    html.setAttribute("data-palette", palettes[paletteIndex]);
+  });
+
+  $("#fontRange").addEventListener("input", e => {
+    html.style.setProperty("--reading", e.target.value);
+  });
+
+  $("#examMode").addEventListener("change", e => {
+    document.body.classList.toggle("exam", e.target.checked);
+    if(e.target.checked){
+      $$(".qa-card").forEach(c => setOpen(c, false));
+    }
+  });
+
+  updateProgress();
+})();
+</script>
+</body>
+</html>
