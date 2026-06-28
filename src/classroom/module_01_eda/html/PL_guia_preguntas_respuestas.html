@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light" data-palette="indigo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programación Lineal y Entera · Guía de preguntas</title>
+<style>
+:root{
+  --font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:Consolas,"SFMono-Regular",Menlo,monospace;
+  --bg:#f4f7fb;--card:#ffffff;--card2:#f8fbff;--text:#142033;--muted:#64748b;--line:#d9e4f2;
+  --accent:#2563eb;--accent2:#7c3aed;--accent3:#06b6d4;--good:#059669;--warn:#d97706;--bad:#dc2626;
+  --shadow:0 22px 54px rgba(23,37,84,.14);--soft:0 8px 22px rgba(15,23,42,.08);--radius:28px;--reading:1;
+}
+html[data-theme="dark"]{
+  --bg:#07111f;--card:#111c31;--card2:#0d1729;--text:#eef6ff;--muted:#afbdd2;--line:#263956;
+  --shadow:0 22px 54px rgba(0,0,0,.38);--soft:0 8px 22px rgba(0,0,0,.25);
+}
+html[data-palette="indigo"]{--accent:#2563eb;--accent2:#7c3aed;--accent3:#06b6d4;--good:#059669;--warn:#d97706;--bad:#dc2626;}
+html[data-palette="bosque"]{--accent:#047857;--accent2:#65a30d;--accent3:#0891b2;--good:#16a34a;--warn:#d97706;--bad:#be123c;}
+html[data-palette="ambar"]{--accent:#d97706;--accent2:#b45309;--accent3:#0f766e;--good:#16a34a;--warn:#ca8a04;--bad:#be123c;}
+html[data-palette="carbono"]{--accent:#334155;--accent2:#0f766e;--accent3:#7c2d12;--good:#15803d;--warn:#ca8a04;--bad:#be123c;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:var(--font);color:var(--text);line-height:1.65;
+  background:
+    radial-gradient(circle at top left,color-mix(in srgb,var(--accent) 18%,transparent),transparent 34%),
+    radial-gradient(circle at top right,color-mix(in srgb,var(--accent2) 14%,transparent),transparent 30%),
+    radial-gradient(circle at 50% 110%,color-mix(in srgb,var(--accent3) 16%,transparent),transparent 36%),
+    linear-gradient(135deg,var(--bg),color-mix(in srgb,var(--bg),var(--accent3) 8%));
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.25;
+  background-image:linear-gradient(color-mix(in srgb,var(--line) 58%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--line) 58%,transparent) 1px,transparent 1px);
+  background-size:46px 46px;mask-image:radial-gradient(circle at center,black,transparent 78%);
+}
+a{color:var(--accent);font-weight:850;text-decoration:none}a:hover{text-decoration:underline}
+button,input,select{font:inherit}button{cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:3px}
+.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--card) 86%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav{max-width:1320px;margin:auto;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:950;letter-spacing:-.025em}
+.controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.btn,.chip,.toggle{
+  border:1px solid var(--line);background:var(--card);color:var(--text);padding:10px 14px;border-radius:15px;cursor:pointer;font-weight:900;
+  box-shadow:var(--soft);transition:.18s transform,.18s filter,.18s background;
+}
+.btn:hover,.chip:hover,.toggle:hover{transform:translateY(-1px)}
+.btn.primary,.chip.active,.toggle.open{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+main{max-width:1320px;margin:auto;padding:28px 20px 72px;position:relative}
+.hero{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(340px,.82fr);gap:22px;margin:18px 0 22px}
+.card,.qa-card,.study-panel{background:color-mix(in srgb,var(--card) 96%,transparent);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+h1{font-size:clamp(36px,5vw,66px);line-height:1.02;margin:10px 0 14px;letter-spacing:-.055em}
+h2{font-size:clamp(22px,2.4vw,31px);line-height:1.14;margin:8px 0 0;letter-spacing:-.035em}
+h3{margin:8px 0 12px;font-size:22px}
+.lead{font-size:18px;color:var(--muted);max-width:88ch}
+.tag,.topic-pill{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:6px 11px;margin:4px 6px 4px 0;background:color-mix(in srgb,var(--card),var(--accent) 6%);font-size:13px;font-weight:950;color:var(--muted)}
+.topic-pill{color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--card));}
+.notice{border-left:5px solid var(--accent);padding:15px 17px;border-radius:18px;background:color-mix(in srgb,var(--accent) 8%,var(--card));margin:15px 0;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.stat{border:1px solid var(--line);border-radius:22px;padding:18px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--soft)}
+.stat strong{display:block;font-size:30px;color:var(--accent);line-height:1}.stat span{display:block;margin-top:8px;color:var(--muted);font-size:13px}
+.summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+.summary{border:1px solid var(--line);border-radius:20px;padding:14px;background:var(--card2);color:var(--muted)}
+.summary strong{display:block;color:var(--text);margin-bottom:5px}
+.study-panel{margin:0 0 20px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
+.progress-wrap{display:grid;gap:8px}.progress-label{display:flex;justify-content:space-between;color:var(--muted);font-weight:850;font-size:14px}
+.progress{height:16px;border-radius:999px;background:color-mix(in srgb,var(--card),#000 8%);border:1px solid var(--line);overflow:hidden}
+.progress span{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));transition:.25s}
+.mode{display:flex;align-items:center;gap:10px;white-space:nowrap;color:var(--muted);font-weight:900}
+.switch{position:relative;display:inline-block;width:58px;height:32px}.switch input{display:none}
+.slider{position:absolute;inset:0;background:var(--line);border-radius:999px;transition:.2s}
+.slider::before{content:"";position:absolute;width:26px;height:26px;left:3px;top:3px;border-radius:50%;background:var(--card);box-shadow:var(--soft);transition:.2s}
+.switch input:checked + .slider{background:linear-gradient(135deg,var(--accent),var(--accent2))}.switch input:checked + .slider::before{transform:translateX(26px)}
+.toolbar{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:end;margin:0 0 16px}
+.searchbox{display:grid;grid-template-columns:1fr 230px 230px;gap:10px}
+input[type="search"],select{width:100%;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:16px;padding:12px 14px;box-shadow:var(--soft);min-height:46px}
+.filter-block{display:grid;gap:10px;margin-bottom:18px}
+.filter-row{display:flex;flex-wrap:wrap;gap:9px}
+.qa-list{display:grid;gap:16px}
+.qa-card{scroll-margin-top:96px}
+.qa-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+.answer{display:none;margin-top:18px;border-top:1px solid var(--line);padding-top:18px;font-size:calc(1rem * var(--reading))}
+.answer p{color:var(--muted);margin:0 0 14px}
+.qa-card.open .answer{display:block}
+.qa-card.done-card{border-color:color-mix(in srgb,var(--good) 45%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--good) 7%,var(--card)),var(--card))}
+.formula{margin:15px 0;padding:14px 16px;border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 9%,var(--card)),color-mix(in srgb,var(--accent2) 7%,var(--card)));font-family:var(--mono);color:var(--text);overflow:auto;white-space:pre-wrap}
+.study-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;padding:13px;border-radius:18px;background:var(--card2);border:1px solid var(--line)}
+.check{display:flex;align-items:center;gap:9px;font-weight:900;color:var(--muted)}.check input{width:18px;height:18px;accent-color:var(--good)}
+.range-row{display:flex;align-items:center;gap:10px;min-width:240px}input[type="range"]{width:150px;accent-color:var(--accent)}
+.hidden{display:none!important}
+.exam .answer{display:none!important}.exam .qa-card.open .answer{display:block!important}
+.footer{margin-top:42px;color:var(--muted);font-size:14px;text-align:center;border-top:1px solid var(--line);padding-top:22px}
+.to-top{position:fixed;right:18px;bottom:18px;z-index:60;width:48px;height:48px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:grid;place-items:center;font-weight:950;text-decoration:none;box-shadow:var(--soft)}
+@media(max-width:1040px){
+  .nav,.toolbar,.study-panel{grid-template-columns:1fr;align-items:stretch}.nav{flex-direction:column;align-items:flex-start}
+  .hero,.searchbox{grid-template-columns:1fr}.controls{justify-content:flex-start}.qa-head{flex-direction:column}.toggle{width:100%}.stats,.summary-grid{grid-template-columns:1fr}
+}
+@media print{
+  .topbar,.toolbar,.study-panel,.filter-block,.to-top,.toggle{display:none!important}body{background:white}main{max-width:100%;padding:0}
+  .card,.qa-card{box-shadow:none;break-inside:avoid}.answer{display:block!important}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="nav">
+    <div class="brand">Guía de estudio · PL y Programación Entera</div>
+    <div class="controls">
+      <button class="btn" id="themeBtn" type="button">🌙 Tema oscuro</button>
+      <button class="btn" id="paletteBtn" type="button">🎨 Cambiar paleta</button>
+      <button class="btn" onclick="window.print()" type="button">🖨️ Imprimir</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="card">
+      <span class="tag">Optimización</span>
+      <span class="tag">Programación Lineal</span>
+      <span class="tag">Programación Lineal Entera</span>
+      <span class="tag">Guía de preguntas</span>
+      <h1>Programación Lineal y Entera: 15 preguntas con respuestas desarrolladas</h1>
+      <p class="lead">Material de estudio en HTML autocontenido basado en los dos PDF: introducción a la Programación Lineal y Programación Lineal Entera. Incluye formulación, región factible, holguras, simplex, sensibilidad, supuestos, variables enteras, relajación, ramificación y cota, y planos de corte.</p>
+      <div class="notice"><strong>Idea guía:</strong> la PL optimiza sobre una región continua definida por restricciones lineales; la PLE agrega integridad y transforma la decisión en una búsqueda discreta donde redondear no garantiza optimalidad.</div>
+      <div class="summary-grid">
+        <div class="summary"><strong>PL continua</strong>Variables reales, región factible convexa, óptimo en vértices, simplex y análisis de sensibilidad.</div>
+        <div class="summary"><strong>PLE</strong>Variables enteras o binarias, problema relajado, cotas, ramificación y planos de corte.</div>
+      </div>
+    </div>
+    <aside class="card">
+      <h3>Composición del material</h3>
+      <div class="stats">
+        <div class="stat"><strong>15</strong><span>preguntas con respuestas amplias</span></div>
+        <div class="stat"><strong>10</strong><span>preguntas de Programación Lineal</span></div>
+        <div class="stat"><strong>5</strong><span>preguntas de Programación Lineal Entera</span></div>
+        <div class="stat"><strong>HTML</strong><span>sin dependencias externas</span></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="study-panel">
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Progreso de estudio</span><span id="progressText">0 / 15</span></div>
+      <div class="progress"><span id="progressBar"></span></div>
+    </div>
+    <div class="mode">
+      <span>Estudio</span>
+      <label class="switch" title="Cambiar entre modo estudio y modo examen">
+        <input id="examMode" type="checkbox">
+        <span class="slider"></span>
+      </label>
+      <span>Examen</span>
+    </div>
+  </section>
+
+  <section class="toolbar">
+    <div class="searchbox">
+      <input id="searchInput" type="search" placeholder="Buscar: simplex, holgura, sensibilidad, branch and bound, planos de corte...">
+      <select id="topicSelect" aria-label="Filtrar por tema">
+        <option value="all">Todos los temas</option>
+        <option value="Programación Lineal">Programación Lineal</option>
+        <option value="Programación Lineal Entera">Programación Lineal Entera</option>
+      </select>
+      <select id="catSelect" aria-label="Filtrar por categoría">
+        <option value="all">Todas las categorías</option>
+        <option value="Casos especiales">Casos especiales</option>
+<option value="Formulación">Formulación</option>
+<option value="Fundamentos">Fundamentos</option>
+<option value="Holgura">Holgura</option>
+<option value="Modelización">Modelización</option>
+<option value="Planos de corte">Planos de corte</option>
+<option value="Ramificación y cota">Ramificación y cota</option>
+<option value="Región factible">Región factible</option>
+<option value="Relajación">Relajación</option>
+<option value="Sensibilidad">Sensibilidad</option>
+<option value="Simplex">Simplex</option>
+<option value="Software">Software</option>
+<option value="Supuestos">Supuestos</option>
+<option value="Vértices">Vértices</option>
+      </select>
+    </div>
+    <div class="controls">
+      <button class="btn primary" id="openAll" type="button">Abrir todo</button>
+      <button class="btn" id="closeAll" type="button">Cerrar todo</button>
+      <button class="btn" id="randomBtn" type="button">Pregunta aleatoria</button>
+      <div class="range-row">
+        <span class="tag">Texto</span>
+        <input id="fontRange" type="range" min="0.92" max="1.22" value="1" step="0.02">
+      </div>
+    </div>
+  </section>
+
+  <section class="filter-block">
+    <div class="filter-row">
+      <button class="chip topic-chip active" data-topic="all" type="button">Todos</button>
+      <button class="chip topic-chip" data-topic="Programación Lineal" type="button">Programación Lineal</button>
+      <button class="chip topic-chip" data-topic="Programación Lineal Entera" type="button">Programación Lineal Entera</button>
+    </div>
+    <div class="filter-row">
+      <button class="chip cat-chip active" data-cat="all" type="button">Todas las categorías</button>
+      <button class="chip cat-chip" data-cat="Casos especiales" type="button">Casos especiales</button>
+<button class="chip cat-chip" data-cat="Formulación" type="button">Formulación</button>
+<button class="chip cat-chip" data-cat="Fundamentos" type="button">Fundamentos</button>
+<button class="chip cat-chip" data-cat="Holgura" type="button">Holgura</button>
+<button class="chip cat-chip" data-cat="Modelización" type="button">Modelización</button>
+<button class="chip cat-chip" data-cat="Planos de corte" type="button">Planos de corte</button>
+<button class="chip cat-chip" data-cat="Ramificación y cota" type="button">Ramificación y cota</button>
+<button class="chip cat-chip" data-cat="Región factible" type="button">Región factible</button>
+<button class="chip cat-chip" data-cat="Relajación" type="button">Relajación</button>
+<button class="chip cat-chip" data-cat="Sensibilidad" type="button">Sensibilidad</button>
+<button class="chip cat-chip" data-cat="Simplex" type="button">Simplex</button>
+<button class="chip cat-chip" data-cat="Software" type="button">Software</button>
+<button class="chip cat-chip" data-cat="Supuestos" type="button">Supuestos</button>
+<button class="chip cat-chip" data-cat="Vértices" type="button">Vértices</button>
+    </div>
+  </section>
+
+  <section class="qa-list" id="qaList">
+    
+    <article class="qa-card" id="q1" data-topic="Programación Lineal" data-cat="Fundamentos" data-text="programación lineal fundamentos 1. ¿qué es la programación lineal y qué significa que sea “programación” y “lineal”? 
+        &lt;p&gt;la &lt;strong&gt;programación lineal&lt;/strong&gt; es una técnica de optimización que permite encontrar el mejor valor posible de una función, siempre que las variables que participan en esa función estén sujetas a un conjunto de restricciones. el objetivo puede ser maximizar una utilidad, una producción, una ganancia o una eficiencia; también puede ser minimizar un costo, un desperdicio, una distancia o un tiempo.&lt;/p&gt;
+        &lt;p&gt;la palabra &lt;strong&gt;programación&lt;/strong&gt; no se refiere a programar computadoras. en este contexto significa &lt;strong&gt;planificación&lt;/strong&gt;: decidir cómo asignar recursos escasos entre actividades alternativas. por ejemplo, una empresa debe decidir cuántos lotes fabricar de cada producto, un productor debe decidir cuántas hectáreas sembrar de cada cultivo o una organización debe decidir cómo distribuir horas de trabajo entre tareas.&lt;/p&gt;
+        &lt;p&gt;la palabra &lt;strong&gt;lineal&lt;/strong&gt; indica que tanto la función objetivo como las restricciones se expresan mediante combinaciones lineales de las variables. es decir, las variables aparecen elevadas a la potencia uno, multiplicadas por constantes y sumadas entre sí. no hay productos entre variables, potencias, raíces, logaritmos ni expresiones curvas.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;maximizar o minimizar: z = c₁x₁ + c₂x₂ + ... + cₙxₙ&lt;br&gt;sujeto a restricciones lineales: a₁x₁ + a₂x₂ + ... + aₙxₙ ≤ b&lt;/div&gt;
+        &lt;p&gt;la estructura general de un problema de pl tiene tres componentes: &lt;strong&gt;variables de decisión&lt;/strong&gt;, que representan lo que se quiere decidir; &lt;strong&gt;función objetivo&lt;/strong&gt;, que mide el criterio de optimización; y &lt;strong&gt;restricciones&lt;/strong&gt;, que limitan las decisiones posibles. además, normalmente se incluyen restricciones de no negatividad, porque muchas variables representan cantidades físicas que no pueden ser negativas.&lt;/p&gt;
+        &lt;p&gt;la idea central es que la pl transforma una situación real de decisión en un modelo matemático. ese modelo permite responder preguntas del tipo: ¿cuánto producir?, ¿qué mezcla elegir?, ¿cómo usar recursos limitados?, ¿cuál es la combinación que maximiza el resultado? la potencia del método está en que, bajo supuestos lineales, permite encontrar soluciones óptimas de manera sistemática.&lt;/p&gt;
+        ">
+      <header class="qa-head">
+        <div>
+          <span class="topic-pill">Programación Lineal</span>
+          <span class="tag">Fundamentos</span>
+          <h2>1. ¿Qué es la Programación Lineal y qué significa que sea “programación” y “lineal”?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        
+        <p>La <strong>Programación Lineal</strong> es una técnica de optimización que permite encontrar el mejor valor posible de una función, siempre que las variables que participan en esa función estén sujetas a un conjunto de restricciones. El objetivo puede ser maximizar una utilidad, una producción, una ganancia o una eficiencia; también puede ser minimizar un costo, un desperdicio, una distancia o un tiempo.</p>
+        <p>La palabra <strong>programación</strong> no se refiere a programar computadoras. En este contexto significa <strong>planificación</strong>: decidir cómo asignar recursos escasos entre actividades alternativas. Por ejemplo, una empresa debe decidir cuántos lotes fabricar de cada producto, un productor debe decidir cuántas hectáreas sembrar de cada cultivo o una organización debe decidir cómo distribuir horas de trabajo entre tareas.</p>
+        <p>La palabra <strong>lineal</strong> indica que tanto la función objetivo como las restricciones se expresan mediante combinaciones lineales de las variables. Es decir, las variables aparecen elevadas a la potencia uno, multiplicadas por constantes y sumadas entre sí. No hay productos entre variables, potencias, raíces, logaritmos ni expresiones curvas.</p>
+        <div class="formula">Maximizar o minimizar: Z = c₁x₁ + c₂x₂ + ... + cₙxₙ<br>Sujeto a restricciones lineales: a₁x₁ + a₂x₂ + ... + aₙxₙ ≤ b</div>
+        <p>La estructura general de un problema de PL tiene tres componentes: <strong>variables de decisión</strong>, que representan lo que se quiere decidir; <strong>función objetivo</strong>, que mide el criterio de optimización; y <strong>restricciones</strong>, que limitan las decisiones posibles. Además, normalmente se incluyen restricciones de no negatividad, porque muchas variables representan cantidades físicas que no pueden ser negativas.</p>
+        <p>La idea central es que la PL transforma una situación real de decisión en un modelo matemático. Ese modelo permite responder preguntas del tipo: ¿cuánto producir?, ¿qué mezcla elegir?, ¿cómo usar recursos limitados?, ¿cuál es la combinación que maximiza el resultado? La potencia del método está en que, bajo supuestos lineales, permite encontrar soluciones óptimas de manera sistemática.</p>
+        
+        <div class="study-row">
+          <label class="check"><input type="checkbox" class="done"><span>Marcar como estudiada</span></label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q2" data-topic="Programación Lineal" data-cat="Formulación" data-text="programación lineal formulación 2. ¿cómo se formula un problema de programación lineal a partir de un caso productivo? 
+        &lt;p&gt;formular un problema de programación lineal significa traducir una descripción verbal a un sistema matemático. el punto de partida es identificar qué se decide, qué se quiere optimizar y qué limita esa decisión. en el ejemplo productivo del material, una empresa fabrica dos productos, llamados &lt;strong&gt;base&lt;/strong&gt; y &lt;strong&gt;plus&lt;/strong&gt;, usando equipos con disponibilidad semanal limitada.&lt;/p&gt;
+        &lt;p&gt;las &lt;strong&gt;variables de decisión&lt;/strong&gt; representan las cantidades a fabricar. si llamamos &lt;strong&gt;x₁&lt;/strong&gt; al número de lotes de base y &lt;strong&gt;x₂&lt;/strong&gt; al número de lotes de plus, entonces el modelo decidirá la mezcla productiva óptima. la función objetivo representa la utilidad semanal. en el ejemplo didáctico, se trabaja con una utilidad proporcional de 3 para base y 5 para plus, por lo que se busca maximizar:&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;max z = 3x₁ + 5x₂&lt;/div&gt;
+        &lt;p&gt;luego se formulan las restricciones. cada equipo disponible impone un límite de horas. si el equipo a permite como máximo 4 unidades de uso y base consume 1 unidad de ese equipo, se obtiene &lt;strong&gt;x₁ ≤ 4&lt;/strong&gt;. si el equipo b permite 12 unidades y plus consume 2, aparece &lt;strong&gt;2x₂ ≤ 12&lt;/strong&gt;. si el equipo c permite 18 unidades y base consume 3 mientras plus consume 2, se formula &lt;strong&gt;3x₁ + 2x₂ ≤ 18&lt;/strong&gt;.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;max z = 3x₁ + 5x₂&lt;br&gt;sujeto a:&lt;br&gt;x₁ ≤ 4&lt;br&gt;2x₂ ≤ 12&lt;br&gt;3x₁ + 2x₂ ≤ 18&lt;br&gt;x₁, x₂ ≥ 0&lt;/div&gt;
+        &lt;p&gt;las restricciones de no negatividad son necesarias porque no tendría sentido fabricar una cantidad negativa de lotes. en otros problemas, además de no negatividad, podrían existir cotas mínimas, cotas máximas, proporciones o restricciones de demanda.&lt;/p&gt;
+        &lt;p&gt;la formulación es la etapa más importante del proceso. si se formula mal, el solver puede encontrar una solución matemáticamente correcta pero económicamente equivocada. por eso conviene revisar cada ecuación con la interpretación verbal: ¿la función objetivo mide lo que quiero optimizar?, ¿cada restricción representa un recurso o condición real?, ¿las unidades están correctamente expresadas?&lt;/p&gt;
+        ">
+      <header class="qa-head">
+        <div>
+          <span class="topic-pill">Programación Lineal</span>
+          <span class="tag">Formulación</span>
+          <h2>2. ¿Cómo se formula un problema de Programación Lineal a partir de un caso productivo?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        
+        <p>Formular un problema de Programación Lineal significa traducir una descripción verbal a un sistema matemático. El punto de partida es identificar qué se decide, qué se quiere optimizar y qué limita esa decisión. En el ejemplo productivo del material, una empresa fabrica dos productos, llamados <strong>Base</strong> y <strong>Plus</strong>, usando equipos con disponibilidad semanal limitada.</p>
+        <p>Las <strong>variables de decisión</strong> representan las cantidades a fabricar. Si llamamos <strong>x₁</strong> al número de lotes de Base y <strong>x₂</strong> al número de lotes de Plus, entonces el modelo decidirá la mezcla productiva óptima. La función objetivo representa la utilidad semanal. En el ejemplo didáctico, se trabaja con una utilidad proporcional de 3 para Base y 5 para Plus, por lo que se busca maximizar:</p>
+        <div class="formula">Max Z = 3x₁ + 5x₂</div>
+        <p>Luego se formulan las restricciones. Cada equipo disponible impone un límite de horas. Si el equipo A permite como máximo 4 unidades de uso y Base consume 1 unidad de ese equipo, se obtiene <strong>x₁ ≤ 4</strong>. Si el equipo B permite 12 unidades y Plus consume 2, aparece <strong>2x₂ ≤ 12</strong>. Si el equipo C permite 18 unidades y Base consume 3 mientras Plus consume 2, se formula <strong>3x₁ + 2x₂ ≤ 18</strong>.</p>
+        <div class="formula">Max Z = 3x₁ + 5x₂<br>Sujeto a:<br>x₁ ≤ 4<br>2x₂ ≤ 12<br>3x₁ + 2x₂ ≤ 18<br>x₁, x₂ ≥ 0</div>
+        <p>Las restricciones de no negatividad son necesarias porque no tendría sentido fabricar una cantidad negativa de lotes. En otros problemas, además de no negatividad, podrían existir cotas mínimas, cotas máximas, proporciones o restricciones de demanda.</p>
+        <p>La formulación es la etapa más importante del proceso. Si se formula mal, el solver puede encontrar una solución matemáticamente correcta pero económicamente equivocada. Por eso conviene revisar cada ecuación con la interpretación verbal: ¿la función objetivo mide lo que quiero optimizar?, ¿cada restricción representa un recurso o condición real?, ¿las unidades están correctamente expresadas?</p>
+        
+        <div class="study-row">
+          <label class="check"><input type="checkbox" class="done"><span>Marcar como estudiada</span></label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q3" data-topic="Programación Lineal" data-cat="Región factible" data-text="programación lineal región factible 3. ¿qué es la región factible y por qué el óptimo se encuentra en un vértice? 
+        &lt;p&gt;la &lt;strong&gt;región factible&lt;/strong&gt; es el conjunto de todas las combinaciones de variables que cumplen simultáneamente todas las restricciones del problema. en un modelo con dos variables, puede representarse gráficamente como una zona del plano. cada restricción lineal genera un semiplano, y la intersección de todos esos semiplanos forma la región donde las soluciones son admisibles.&lt;/p&gt;
+        &lt;p&gt;en el ejemplo, una combinación como &lt;strong&gt;(x₁, x₂) = (2, 6)&lt;/strong&gt; es factible si respeta las restricciones de recursos: no supera el límite de x₁, no supera el límite de x₂ y no excede la capacidad combinada del tercer equipo. en cambio, una combinación que viole al menos una restricción queda fuera de la región factible y no puede ser elegida, aunque dé una utilidad alta.&lt;/p&gt;
+        &lt;p&gt;la razón por la cual el óptimo de un problema lineal se encuentra en un vértice se vincula con la geometría de la pl. la función objetivo lineal tiene curvas de nivel que son rectas paralelas. al desplazar esas rectas en la dirección de mejora, el último punto de contacto con la región factible ocurre en un vértice, salvo en el caso especial de múltiples soluciones óptimas sobre un segmento.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;óptimo de pl → algún vértice de la región factible&lt;br&gt;o un segmento de vértices si hay múltiples óptimos&lt;/div&gt;
+        &lt;p&gt;esto no significa que todos los vértices sean óptimos. significa que, si existe una solución óptima finita, alcanza con buscar entre los vértices. en el ejemplo base/plus, los puntos relevantes incluyen combinaciones como &lt;strong&gt;(0,0)&lt;/strong&gt;, &lt;strong&gt;(4,0)&lt;/strong&gt;, &lt;strong&gt;(4,3)&lt;/strong&gt;, &lt;strong&gt;(2,6)&lt;/strong&gt; y &lt;strong&gt;(0,6)&lt;/strong&gt;. al evaluar la función objetivo, se encuentra cuál produce el mayor valor de z.&lt;/p&gt;
+        &lt;p&gt;la interpretación económica es clara: el óptimo aparece en un punto donde algunos recursos quedan completamente utilizados. un vértice suele corresponder a la intersección de restricciones activas. en el punto óptimo, el sistema está “apretado” por ciertos recursos, y por eso el análisis de sensibilidad estudia cuánto valdría relajar esas restricciones.&lt;/p&gt;
+        ">
+      <header class="qa-head">
+        <div>
+          <span class="topic-pill">Programación Lineal</span>
+          <span class="tag">Región factible</span>
+          <h2>3. ¿Qué es la región factible y por qué el óptimo se encuentra en un vértice?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        
+        <p>La <strong>región factible</strong> es el conjunto de todas las combinaciones de variables que cumplen simultáneamente todas las restricciones del problema. En un modelo con dos variables, puede representarse gráficamente como una zona del plano. Cada restricción lineal genera un semiplano, y la intersección de todos esos semiplanos forma la región donde las soluciones son admisibles.</p>
+        <p>En el ejemplo, una combinación como <strong>(x₁, x₂) = (2, 6)</strong> es factible si respeta las restricciones de recursos: no supera el límite de x₁, no supera el límite de x₂ y no excede la capacidad combinada del tercer equipo. En cambio, una combinación que viole al menos una restricción queda fuera de la región factible y no puede ser elegida, aunque dé una utilidad alta.</p>
+        <p>La razón por la cual el óptimo de un problema lineal se encuentra en un vértice se vincula con la geometría de la PL. La función objetivo lineal tiene curvas de nivel que son rectas paralelas. Al desplazar esas rectas en la dirección de mejora, el último punto de contacto con la región factible ocurre en un vértice, salvo en el caso especial de múltiples soluciones óptimas sobre un segmento.</p>
+        <div class="formula">Óptimo de PL → algún vértice de la región factible<br>o un segmento de vértices si hay múltiples óptimos</div>
+        <p>Esto no significa que todos los vértices sean óptimos. Significa que, si existe una solución óptima finita, alcanza con buscar entre los vértices. En el ejemplo Base/Plus, los puntos relevantes incluyen combinaciones como <strong>(0,0)</strong>, <strong>(4,0)</strong>, <strong>(4,3)</strong>, <strong>(2,6)</strong> y <strong>(0,6)</strong>. Al evaluar la función objetivo, se encuentra cuál produce el mayor valor de Z.</p>
+        <p>La interpretación económica es clara: el óptimo aparece en un punto donde algunos recursos quedan completamente utilizados. Un vértice suele corresponder a la intersección de restricciones activas. En el punto óptimo, el sistema está “apretado” por ciertos recursos, y por eso el análisis de sensibilidad estudia cuánto valdría relajar esas restricciones.</p>
+        
+        <div class="study-row">
+          <label class="check"><input type="checkbox" class="done"><span>Marcar como estudiada</span></label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q4" data-topic="Programación Lineal" data-cat="Holgura" data-text="programación lineal holgura 4. ¿qué son las variables de holgura y para qué se transforman inecuaciones en ecuaciones? 
+        &lt;p&gt;las &lt;strong&gt;variables de holgura&lt;/strong&gt;, también llamadas &lt;strong&gt;slack variables&lt;/strong&gt;, se agregan a restricciones del tipo “menor o igual” para convertirlas en ecuaciones. si una restricción dice que el uso de un recurso no puede superar una disponibilidad, la holgura mide cuánto recurso queda sin utilizar.&lt;/p&gt;
+        &lt;p&gt;por ejemplo, si la restricción es &lt;strong&gt;x₁ ≤ 4&lt;/strong&gt;, se puede escribir como &lt;strong&gt;x₁ + s₁ = 4&lt;/strong&gt;, donde &lt;strong&gt;s₁ ≥ 0&lt;/strong&gt;. si x₁ vale 3, entonces s₁ vale 1: queda una unidad de recurso sin usar. si x₁ vale 4, entonces s₁ vale 0: la restricción está activa y el recurso se usa completamente.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;x₁ ≤ 4  →  x₁ + s₁ = 4, con s₁ ≥ 0&lt;br&gt;2x₂ ≤ 12 → 2x₂ + s₂ = 12, con s₂ ≥ 0&lt;br&gt;3x₁ + 2x₂ ≤ 18 → 3x₁ + 2x₂ + s₃ = 18, con s₃ ≥ 0&lt;/div&gt;
+        &lt;p&gt;esta transformación es útil porque permite trabajar algebraicamente con sistemas de ecuaciones. en el método simplex, las variables de holgura ayudan a construir una solución factible inicial. en el origen, donde x₁ = 0 y x₂ = 0, las holguras toman los valores de los recursos disponibles: s₁ = 4, s₂ = 12 y s₃ = 18.&lt;/p&gt;
+        &lt;p&gt;además, las holguras permiten interpretar qué restricciones son activas. una holgura positiva indica que sobra recurso; una holgura igual a cero indica que el recurso está agotado. en el óptimo del ejemplo, la solución &lt;strong&gt;(x₁, x₂) = (2, 6)&lt;/strong&gt; tiene &lt;strong&gt;s₁ = 2&lt;/strong&gt;, &lt;strong&gt;s₂ = 0&lt;/strong&gt; y &lt;strong&gt;s₃ = 0&lt;/strong&gt;. esto significa que el primer recurso no está agotado, pero los recursos asociados a las restricciones 2 y 3 sí lo están.&lt;/p&gt;
+        &lt;p&gt;las variables de holgura no son una formalidad: conectan el modelo matemático con la interpretación económica de capacidad ociosa, recursos escasos y restricciones relevantes.&lt;/p&gt;
+        ">
+      <header class="qa-head">
+        <div>
+          <span class="topic-pill">Programación Lineal</span>
+          <span class="tag">Holgura</span>
+          <h2>4. ¿Qué son las variables de holgura y para qué se transforman inecuaciones en ecuaciones?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        
+        <p>Las <strong>variables de holgura</strong>, también llamadas <strong>slack variables</strong>, se agregan a restricciones del tipo “menor o igual” para convertirlas en ecuaciones. Si una restricción dice que el uso de un recurso no puede superar una disponibilidad, la holgura mide cuánto recurso queda sin utilizar.</p>
+        <p>Por ejemplo, si la restricción es <strong>x₁ ≤ 4</strong>, se puede escribir como <strong>x₁ + s₁ = 4</strong>, donde <strong>s₁ ≥ 0</strong>. Si x₁ vale 3, entonces s₁ vale 1: queda una unidad de recurso sin usar. Si x₁ vale 4, entonces s₁ vale 0: la restricción está activa y el recurso se usa completamente.</p>
+        <div class="formula">x₁ ≤ 4  →  x₁ + s₁ = 4, con s₁ ≥ 0<br>2x₂ ≤ 12 → 2x₂ + s₂ = 12, con s₂ ≥ 0<br>3x₁ + 2x₂ ≤ 18 → 3x₁ + 2x₂ + s₃ = 18, con s₃ ≥ 0</div>
+        <p>Esta transformación es útil porque permite trabajar algebraicamente con sistemas de ecuaciones. En el método simplex, las variables de holgura ayudan a construir una solución factible inicial. En el origen, donde x₁ = 0 y x₂ = 0, las holguras toman los valores de los recursos disponibles: s₁ = 4, s₂ = 12 y s₃ = 18.</p>
+        <p>Además, las holguras permiten interpretar qué restricciones son activas. Una holgura positiva indica que sobra recurso; una holgura igual a cero indica que el recurso está agotado. En el óptimo del ejemplo, la solución <strong>(x₁, x₂) = (2, 6)</strong> tiene <strong>s₁ = 2</strong>, <strong>s₂ = 0</strong> y <strong>s₃ = 0</strong>. Esto significa que el primer recurso no está agotado, pero los recursos asociados a las restricciones 2 y 3 sí lo están.</p>
+        <p>Las variables de holgura no son una formalidad: conectan el modelo matemático con la interpretación económica de capacidad ociosa, recursos escasos y restricciones relevantes.</p>
+        
+        <div class="study-row">
+          <label class="check"><input type="checkbox" class="done"><span>Marcar como estudiada</span></label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q5" data-topic="Programación Lineal" data-cat="Vértices" data-text="programación lineal vértices 5. ¿cómo se identifican soluciones básicas, incompatibles y descartadas por no negatividad? 
+        &lt;p&gt;cuando se transforman las inecuaciones en ecuaciones mediante variables de holgura, el problema queda expresado como un sistema con más variables que ecuaciones. en el ejemplo, hay dos variables de decisión y tres variables de holgura: &lt;strong&gt;x₁, x₂, s₁, s₂, s₃&lt;/strong&gt;. para generar soluciones básicas, se eligen algunas variables como básicas y otras se fijan en cero.&lt;/p&gt;
+        &lt;p&gt;el material muestra que, con &lt;strong&gt;n = 2&lt;/strong&gt; variables de decisión y &lt;strong&gt;m = 3&lt;/strong&gt; restricciones transformadas en ecuaciones, pueden armarse combinaciones de variables a resolver. la cantidad aparece como una combinación:&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;c(m+n, n) = c(3+2, 2) = c(5, 2) = 10&lt;/div&gt;
+        &lt;p&gt;no todas esas combinaciones generan soluciones útiles. algunas son &lt;strong&gt;incompatibles&lt;/strong&gt;, porque el sistema no puede resolverse de forma coherente. otras dan valores negativos para alguna variable, lo que viola la restricción de no negatividad. solo las combinaciones que producen valores no negativos y satisfacen todas las ecuaciones representan soluciones factibles.&lt;/p&gt;
+        &lt;p&gt;en el ejemplo, aparecen candidatos como &lt;strong&gt;(0,0)&lt;/strong&gt; con z = 0, &lt;strong&gt;(0,6)&lt;/strong&gt; con z = 30, &lt;strong&gt;(4,0)&lt;/strong&gt; con z = 12, &lt;strong&gt;(4,3)&lt;/strong&gt; con z = 27 y &lt;strong&gt;(2,6)&lt;/strong&gt; con z = 36. también aparecen combinaciones incompatibles y otras descartadas porque alguna holgura o variable toma valor negativo.&lt;/p&gt;
+        &lt;p&gt;el punto importante es que el algoritmo no evalúa cualquier punto del plano. evalúa soluciones básicas asociadas a vértices de la región factible. la no negatividad funciona como filtro: aunque un sistema algebraico tenga solución, si una variable toma valor negativo, no representa una solución admisible del problema original.&lt;/p&gt;
+        &lt;p&gt;la solución óptima del ejemplo es &lt;strong&gt;x₁ = 2&lt;/strong&gt;, &lt;strong&gt;x₂ = 6&lt;/strong&gt;, con &lt;strong&gt;z = 36&lt;/strong&gt;. esta solución surge porque es factible y además supera el valor de z de los otros vértices evaluados.&lt;/p&gt;
+        ">
+      <header class="qa-head">
+        <div>
+          <span class="topic-pill">Programación Lineal</span>
+          <span class="tag">Vértices</span>
+          <h2>5. ¿Cómo se identifican soluciones básicas, incompatibles y descartadas por no negatividad?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        
+        <p>Cuando se transforman las inecuaciones en ecuaciones mediante variables de holgura, el problema queda expresado como un sistema con más variables que ecuaciones. En el ejemplo, hay dos variables de decisión y tres variables de holgura: <strong>x₁, x₂, s₁, s₂, s₃</strong>. Para generar soluciones básicas, se eligen algunas variables como básicas y otras se fijan en cero.</p>
+        <p>El material muestra que, con <strong>n = 2</strong> variables de decisión y <strong>m = 3</strong> restricciones transformadas en ecuaciones, pueden armarse combinaciones de variables a resolver. La cantidad aparece como una combinación:</p>
+        <div class="formula">C(m+n, n) = C(3+2, 2) = C(5, 2) = 10</div>
+        <p>No todas esas combinaciones generan soluciones útiles. Algunas son <strong>incompatibles</strong>, porque el sistema no puede resolverse de forma coherente. Otras dan valores negativos para alguna variable, lo que viola la restricción de no negatividad. Solo las combinaciones que producen valores no negativos y satisfacen todas las ecuaciones representan soluciones factibles.</p>
+        <p>En el ejemplo, aparecen candidatos como <strong>(0,0)</strong> con Z = 0, <strong>(0,6)</strong> con Z = 30, <strong>(4,0)</strong> con Z = 12, <strong>(4,3)</strong> con Z = 27 y <strong>(2,6)</strong> con Z = 36. También aparecen combinaciones incompatibles y otras descartadas porque alguna holgura o variable toma valor negativo.</p>
+        <p>El punto importante es que el algoritmo no evalúa cualquier punto del plano. Evalúa soluciones básicas asociadas a vértices de la región factible. La no negatividad funciona como filtro: aunque un sistema algebraico tenga solución, si una variable toma valor negativo, no representa una solución admisible del problema original.</p>
+        <p>La solución óptima del ejemplo es <strong>x₁ = 2</strong>, <strong>x₂ = 6</strong>, con <strong>Z = 36</strong>. Esta solución surge porque es factible y además supera el valor de Z de los otros vértices evaluados.</p>
+        
+        <div class="study-row">
+          <label class="check"><input type="checkbox" class="done"><span>Marcar como estudiada</span></label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q6" data-topic="Programación Lineal" data-cat="Simplex" data-text="programación lineal simplex 6. ¿cómo funciona el método simplex y cómo se interpreta en el ejemplo base/plus? 
+        &lt;p&gt;el &lt;strong&gt;método simplex&lt;/strong&gt; es un procedimiento algebraico para resolver problemas de programación lineal. su lógica se basa en una propiedad geométrica: si el óptimo está en un vértice, entonces se puede recorrer la región factible de vértice en vértice, mejorando la función objetivo hasta que ya no sea posible mejorar.&lt;/p&gt;
+        &lt;p&gt;el procedimiento comienza agregando variables de holgura y eligiendo una solución factible inicial. en el ejemplo, la solución inicial natural es &lt;strong&gt;x₁ = 0&lt;/strong&gt;, &lt;strong&gt;x₂ = 0&lt;/strong&gt;, con holguras &lt;strong&gt;s₁ = 4&lt;/strong&gt;, &lt;strong&gt;s₂ = 12&lt;/strong&gt;, &lt;strong&gt;s₃ = 18&lt;/strong&gt; y &lt;strong&gt;z = 0&lt;/strong&gt;. esta solución representa no producir nada, por lo que todos los recursos quedan sin usar.&lt;/p&gt;
+        &lt;p&gt;luego se analiza qué variable conviene aumentar para mejorar la función objetivo. como la función es &lt;strong&gt;z = 3x₁ + 5x₂&lt;/strong&gt;, la variable &lt;strong&gt;x₂&lt;/strong&gt; tiene mayor coeficiente y aumenta más la utilidad por unidad. pero no puede crecer indefinidamente: debe respetar todas las restricciones y mantener no negatividad de las holguras.&lt;/p&gt;
+        &lt;p&gt;al aumentar x₂, las restricciones relevantes indican límites. de &lt;strong&gt;2x₂ + s₂ = 12&lt;/strong&gt; surge que x₂ no puede superar 6. de &lt;strong&gt;3x₁ + 2x₂ + s₃ = 18&lt;/strong&gt;, si x₁ = 0, surge que x₂ no puede superar 9. el límite más restrictivo es x₂ = 6. entonces se avanza al vértice &lt;strong&gt;(0,6)&lt;/strong&gt;, donde z = 30.&lt;/p&gt;
+        &lt;p&gt;desde allí se realiza otro movimiento de mejora. el proceso lleva a la solución &lt;strong&gt;(2,6)&lt;/strong&gt;, con &lt;strong&gt;z = 36&lt;/strong&gt;. en ese punto ya no quedan variables de decisión con coeficientes positivos en la función objetivo transformada, por lo que el método concluye que se llegó al óptimo.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;inicio: (0,0), z = 0&lt;br&gt;primer avance: (0,6), z = 30&lt;br&gt;óptimo: (2,6), z = 36&lt;/div&gt;
+        &lt;p&gt;la interpretación económica es que el simplex no prueba puntos al azar. en cada paso elige una dirección que mejora la función objetivo y se detiene cuando cualquier movimiento factible adicional ya no permite mejorar. es un algoritmo eficiente porque explota la estructura geométrica de la pl.&lt;/p&gt;
+        ">
+      <header class="qa-head">
+        <div>
+          <span class="topic-pill">Programación Lineal</span>
+          <span class="tag">Simplex</span>
+          <h2>6. ¿Cómo funciona el método simplex y cómo se interpreta en el ejemplo Base/Plus?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        
+        <p>El <strong>método simplex</strong> es un procedimiento algebraico para resolver problemas de Programación Lineal. Su lógica se basa en una propiedad geométrica: si el óptimo está en un vértice, entonces se puede recorrer la región factible de vértice en vértice, mejorando la función objetivo hasta que ya no sea posible mejorar.</p>
+        <p>El procedimiento comienza agregando variables de holgura y eligiendo una solución factible inicial. En el ejemplo, la solución inicial natural es <strong>x₁ = 0</strong>, <strong>x₂ = 0</strong>, con holguras <strong>s₁ = 4</strong>, <strong>s₂ = 12</strong>, <strong>s₃ = 18</strong> y <strong>Z = 0</strong>. Esta solución representa no producir nada, por lo que todos los recursos quedan sin usar.</p>
+        <p>Luego se analiza qué variable conviene aumentar para mejorar la función objetivo. Como la función es <strong>Z = 3x₁ + 5x₂</strong>, la variable <strong>x₂</strong> tiene mayor coeficiente y aumenta más la utilidad por unidad. Pero no puede crecer indefinidamente: debe respetar todas las restricciones y mantener no negatividad de las holguras.</p>
+        <p>Al aumentar x₂, las restricciones relevantes indican límites. De <strong>2x₂ + s₂ = 12</strong> surge que x₂ no puede superar 6. De <strong>3x₁ + 2x₂ + s₃ = 18</strong>, si x₁ = 0, surge que x₂ no puede superar 9. El límite más restrictivo es x₂ = 6. Entonces se avanza al vértice <strong>(0,6)</strong>, donde Z = 30.</p>
+        <p>Desde allí se realiza otro movimiento de mejora. El proceso lleva a la solución <strong>(2,6)</strong>, con <strong>Z = 36</strong>. En ese punto ya no quedan variables de decisión con coeficientes positivos en la función objetivo transformada, por lo que el método concluye que se llegó al óptimo.</p>
+        <div class="formula">Inicio: (0,0), Z = 0<br>Primer avance: (0,6), Z = 30<br>Óptimo: (2,6), Z = 36</div>
+        <p>La interpretación económica es que el simplex no prueba puntos al azar. En cada paso elige una dirección que mejora la función objetivo y se detiene cuando cualquier movimiento factible adicional ya no permite mejorar. Es un algoritmo eficiente porque explota la estructura geométrica de la PL.</p>
+        
+        <div class="study-row">
+          <label class="check"><input type="checkbox" class="done"><span>Marcar como estudiada</span></label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q7" data-topic="Programación Lineal" data-cat="Casos especiales" data-text="programación lineal casos especiales 7. ¿qué casos característicos pueden aparecer en un problema de programación lineal? 
+        &lt;p&gt;no todo problema de programación lineal tiene una solución óptima única y bien definida. el material presenta varios casos característicos que conviene identificar porque cambian la interpretación del resultado.&lt;/p&gt;
+        &lt;p&gt;el primer caso es el de &lt;strong&gt;problema sin solución&lt;/strong&gt; o &lt;strong&gt;in factible&lt;/strong&gt;. ocurre cuando las restricciones se contradicen entre sí y no existe ningún conjunto de valores que las cumpla simultáneamente. gráficamente, la región factible está vacía. en términos prácticos, significa que las condiciones impuestas son imposibles de satisfacer al mismo tiempo.&lt;/p&gt;
+        &lt;p&gt;el segundo caso es el de &lt;strong&gt;restricción redundante&lt;/strong&gt;. una restricción es redundante cuando no modifica la región factible ni afecta la solución óptima. puede estar incluida lógicamente dentro de otras restricciones. aunque no cambia el resultado, puede complicar el modelo o el análisis.&lt;/p&gt;
+        &lt;p&gt;el tercer caso es el de &lt;strong&gt;problema no acotado&lt;/strong&gt;. ocurre cuando la función objetivo puede mejorar indefinidamente sin violar restricciones. en un problema de maximización, z puede crecer sin límite; en uno de minimización, puede decrecer sin límite. esto suele indicar que falta una restricción importante o que el modelo fue formulado incorrectamente.&lt;/p&gt;
+        &lt;p&gt;el cuarto caso es el de &lt;strong&gt;múltiples soluciones óptimas&lt;/strong&gt;. aparece cuando la función objetivo es paralela a una arista de la región factible y todos los puntos de ese segmento producen el mismo valor óptimo. en ese caso, no hay un único plan óptimo, sino un conjunto de combinaciones igualmente buenas.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;casos: región vacía · restricción redundante · no acotado · múltiples óptimos&lt;/div&gt;
+        &lt;p&gt;reconocer estos casos es parte del trabajo de modelización. un solver puede informar que no hay solución o que el problema es no acotado, pero el analista debe interpretar qué significa eso en el problema real. muchas veces no es un “resultado final”, sino una señal de que hay que revisar supuestos, restricciones, unidades o datos de entrada.&lt;/p&gt;
+        ">
+      <header class="qa-head">
+        <div>
+          <span class="topic-pill">Programación Lineal</span>
+          <span class="tag">Casos especiales</span>
+          <h2>7. ¿Qué casos característicos pueden aparecer en un problema de Programación Lineal?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        
+        <p>No todo problema de Programación Lineal tiene una solución óptima única y bien definida. El material presenta varios casos característicos que conviene identificar porque cambian la interpretación del resultado.</p>
+        <p>El primer caso es el de <strong>problema sin solución</strong> o <strong>in factible</strong>. Ocurre cuando las restricciones se contradicen entre sí y no existe ningún conjunto de valores que las cumpla simultáneamente. Gráficamente, la región factible está vacía. En términos prácticos, significa que las condiciones impuestas son imposibles de satisfacer al mismo tiempo.</p>
+        <p>El segundo caso es el de <strong>restricción redundante</strong>. Una restricción es redundante cuando no modifica la región factible ni afecta la solución óptima. Puede estar incluida lógicamente dentro de otras restricciones. Aunque no cambia el resultado, puede complicar el modelo o el análisis.</p>
+        <p>El tercer caso es el de <strong>problema no acotado</strong>. Ocurre cuando la función objetivo puede mejorar indefinidamente sin violar restricciones. En un problema de maximización, Z puede crecer sin límite; en uno de minimización, puede decrecer sin límite. Esto suele indicar que falta una restricción importante o que el modelo fue formulado incorrectamente.</p>
+        <p>El cuarto caso es el de <strong>múltiples soluciones óptimas</strong>. Aparece cuando la función objetivo es paralela a una arista de la región factible y todos los puntos de ese segmento producen el mismo valor óptimo. En ese caso, no hay un único plan óptimo, sino un conjunto de combinaciones igualmente buenas.</p>
+        <div class="formula">Casos: región vacía · restricción redundante · no acotado · múltiples óptimos</div>
+        <p>Reconocer estos casos es parte del trabajo de modelización. Un solver puede informar que no hay solución o que el problema es no acotado, pero el analista debe interpretar qué significa eso en el problema real. Muchas veces no es un “resultado final”, sino una señal de que hay que revisar supuestos, restricciones, unidades o datos de entrada.</p>
+        
+        <div class="study-row">
+          <label class="check"><input type="checkbox" class="done"><span>Marcar como estudiada</span></label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q8" data-topic="Programación Lineal" data-cat="Sensibilidad" data-text="programación lineal sensibilidad 8. ¿qué es el análisis de sensibilidad y para qué sirve en programación lineal? 
+        &lt;p&gt;el &lt;strong&gt;análisis de sensibilidad&lt;/strong&gt; estudia cómo cambia la solución óptima cuando se modifican los parámetros del modelo. en programación lineal, esos parámetros pueden ser los lados derechos de las restricciones, los coeficientes de la función objetivo o los coeficientes tecnológicos de la matriz de restricciones.&lt;/p&gt;
+        &lt;p&gt;el análisis es importante porque los datos de un modelo rara vez son exactos o permanentes. las horas disponibles pueden cambiar, los costos pueden variar, la utilidad por producto puede modificarse y los requerimientos técnicos pueden actualizarse. la sensibilidad permite responder: ¿la solución óptima sigue siendo la misma?, ¿cuánto cambia el valor de z?, ¿qué recurso conviene ampliar?, ¿cuál restricción es realmente valiosa?&lt;/p&gt;
+        &lt;p&gt;en el ejemplo, una variación en una restricción que no está activa puede no cambiar la solución óptima ni el valor de z. si una holgura es positiva, significa que sobra recurso; aumentar un recurso que ya sobra no mejora la utilidad. en cambio, si se modifica el lado derecho de una restricción activa, el valor de z puede cambiar. el material muestra la idea de que aumentar ciertas horas disponibles puede incrementar la utilidad.&lt;/p&gt;
+        &lt;p&gt;un concepto asociado es el &lt;strong&gt;precio sombra&lt;/strong&gt;. el precio sombra mide cuánto cambia el valor óptimo de la función objetivo ante un aumento marginal del lado derecho de una restricción, dentro de un rango válido. si el precio sombra de una restricción es positivo en un problema de maximización, ese recurso es escaso y tiene valor económico.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;precio sombra ≈ variación de z óptimo / variación del recurso disponible&lt;/div&gt;
+        &lt;p&gt;también puede analizarse qué ocurre si cambian los coeficientes de la función objetivo. por ejemplo, si aumenta la utilidad del producto base, puede mantenerse la misma mezcla óptima hasta cierto rango. superado ese rango, puede cambiar el vértice óptimo.&lt;/p&gt;
+        &lt;p&gt;la utilidad práctica del análisis de sensibilidad es que convierte al modelo en una herramienta de decisión, no solo en una calculadora de una solución. permite evaluar escenarios, negociar recursos, comparar costos de ampliación y entender qué restricciones realmente gobiernan el resultado.&lt;/p&gt;
+        ">
+      <header class="qa-head">
+        <div>
+          <span class="topic-pill">Programación Lineal</span>
+          <span class="tag">Sensibilidad</span>
+          <h2>8. ¿Qué es el análisis de sensibilidad y para qué sirve en Programación Lineal?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        
+        <p>El <strong>análisis de sensibilidad</strong> estudia cómo cambia la solución óptima cuando se modifican los parámetros del modelo. En Programación Lineal, esos parámetros pueden ser los lados derechos de las restricciones, los coeficientes de la función objetivo o los coeficientes tecnológicos de la matriz de restricciones.</p>
+        <p>El análisis es importante porque los datos de un modelo rara vez son exactos o permanentes. Las horas disponibles pueden cambiar, los costos pueden variar, la utilidad por producto puede modificarse y los requerimientos técnicos pueden actualizarse. La sensibilidad permite responder: ¿la solución óptima sigue siendo la misma?, ¿cuánto cambia el valor de Z?, ¿qué recurso conviene ampliar?, ¿cuál restricción es realmente valiosa?</p>
+        <p>En el ejemplo, una variación en una restricción que no está activa puede no cambiar la solución óptima ni el valor de Z. Si una holgura es positiva, significa que sobra recurso; aumentar un recurso que ya sobra no mejora la utilidad. En cambio, si se modifica el lado derecho de una restricción activa, el valor de Z puede cambiar. El material muestra la idea de que aumentar ciertas horas disponibles puede incrementar la utilidad.</p>
+        <p>Un concepto asociado es el <strong>precio sombra</strong>. El precio sombra mide cuánto cambia el valor óptimo de la función objetivo ante un aumento marginal del lado derecho de una restricción, dentro de un rango válido. Si el precio sombra de una restricción es positivo en un problema de maximización, ese recurso es escaso y tiene valor económico.</p>
+        <div class="formula">Precio sombra ≈ variación de Z óptimo / variación del recurso disponible</div>
+        <p>También puede analizarse qué ocurre si cambian los coeficientes de la función objetivo. Por ejemplo, si aumenta la utilidad del producto Base, puede mantenerse la misma mezcla óptima hasta cierto rango. Superado ese rango, puede cambiar el vértice óptimo.</p>
+        <p>La utilidad práctica del análisis de sensibilidad es que convierte al modelo en una herramienta de decisión, no solo en una calculadora de una solución. Permite evaluar escenarios, negociar recursos, comparar costos de ampliación y entender qué restricciones realmente gobiernan el resultado.</p>
+        
+        <div class="study-row">
+          <label class="check"><input type="checkbox" class="done"><span>Marcar como estudiada</span></label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q9" data-topic="Programación Lineal" data-cat="Software" data-text="programación lineal software 9. ¿qué aporta un solver como lp-solve y cómo debe interpretarse su salida? 
+        &lt;p&gt;un solver como &lt;strong&gt;lp-solve&lt;/strong&gt; permite resolver problemas de programación matemática de manera computacional. el usuario ingresa la función objetivo, las restricciones y las condiciones sobre las variables, y el programa devuelve una solución óptima cuando el problema está bien formulado y tiene solución.&lt;/p&gt;
+        &lt;p&gt;la ventaja del solver es que evita resolver manualmente sistemas grandes. en problemas con muchas variables y restricciones, el método gráfico deja de ser posible y el cálculo manual se vuelve impracticable. el solver implementa algoritmos como simplex o variantes adecuadas para encontrar la solución de forma eficiente.&lt;/p&gt;
+        &lt;p&gt;sin embargo, usar un solver no reemplaza la comprensión del modelo. la salida debe interpretarse cuidadosamente. normalmente se observa el valor óptimo de la función objetivo, los valores de las variables de decisión, la evaluación del lado izquierdo de cada restricción, las holguras y, cuando corresponde, información de sensibilidad.&lt;/p&gt;
+        &lt;p&gt;si una restricción aparece con holgura cero, está activa. si tiene holgura positiva, no está agotando el recurso. si una variable de decisión vale cero, puede indicar que no conviene producir o seleccionar esa actividad en el óptimo, dadas las condiciones actuales.&lt;/p&gt;
+        &lt;p&gt;la salida de sensibilidad puede incluir rangos de variación de coeficientes de la función objetivo, rangos de variación del lado derecho y precios sombra. esta información permite responder preguntas de gestión: cuánto vale aumentar un recurso, hasta qué punto se mantiene la solución actual y qué parámetros son críticos.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;solver ≠ pensamiento automático&lt;br&gt;solver = cálculo óptimo + interpretación del analista&lt;/div&gt;
+        &lt;p&gt;un error común es creer que si el solver devuelve un número, la decisión está resuelta. en realidad, el resultado depende de la formulación. si falta una restricción, si una unidad está mal expresada o si los datos son incorrectos, el solver optimizará un modelo equivocado. por eso la etapa de validación conceptual es tan importante como la ejecución computacional.&lt;/p&gt;
+        ">
+      <header class="qa-head">
+        <div>
+          <span class="topic-pill">Programación Lineal</span>
+          <span class="tag">Software</span>
+          <h2>9. ¿Qué aporta un solver como LP-Solve y cómo debe interpretarse su salida?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        
+        <p>Un solver como <strong>LP-Solve</strong> permite resolver problemas de programación matemática de manera computacional. El usuario ingresa la función objetivo, las restricciones y las condiciones sobre las variables, y el programa devuelve una solución óptima cuando el problema está bien formulado y tiene solución.</p>
+        <p>La ventaja del solver es que evita resolver manualmente sistemas grandes. En problemas con muchas variables y restricciones, el método gráfico deja de ser posible y el cálculo manual se vuelve impracticable. El solver implementa algoritmos como simplex o variantes adecuadas para encontrar la solución de forma eficiente.</p>
+        <p>Sin embargo, usar un solver no reemplaza la comprensión del modelo. La salida debe interpretarse cuidadosamente. Normalmente se observa el valor óptimo de la función objetivo, los valores de las variables de decisión, la evaluación del lado izquierdo de cada restricción, las holguras y, cuando corresponde, información de sensibilidad.</p>
+        <p>Si una restricción aparece con holgura cero, está activa. Si tiene holgura positiva, no está agotando el recurso. Si una variable de decisión vale cero, puede indicar que no conviene producir o seleccionar esa actividad en el óptimo, dadas las condiciones actuales.</p>
+        <p>La salida de sensibilidad puede incluir rangos de variación de coeficientes de la función objetivo, rangos de variación del lado derecho y precios sombra. Esta información permite responder preguntas de gestión: cuánto vale aumentar un recurso, hasta qué punto se mantiene la solución actual y qué parámetros son críticos.</p>
+        <div class="formula">Solver ≠ pensamiento automático<br>Solver = cálculo óptimo + interpretación del analista</div>
+        <p>Un error común es creer que si el solver devuelve un número, la decisión está resuelta. En realidad, el resultado depende de la formulación. Si falta una restricción, si una unidad está mal expresada o si los datos son incorrectos, el solver optimizará un modelo equivocado. Por eso la etapa de validación conceptual es tan importante como la ejecución computacional.</p>
+        
+        <div class="study-row">
+          <label class="check"><input type="checkbox" class="done"><span>Marcar como estudiada</span></label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q10" data-topic="Programación Lineal" data-cat="Supuestos" data-text="programación lineal supuestos 10. ¿cuáles son los supuestos de la programación lineal y por qué importan? 
+        &lt;p&gt;los supuestos de la programación lineal explican cuándo el modelo lineal es una representación razonable del problema real. el material destaca cuatro supuestos principales: &lt;strong&gt;proporcionalidad&lt;/strong&gt;, &lt;strong&gt;aditividad&lt;/strong&gt;, &lt;strong&gt;divisibilidad&lt;/strong&gt; y &lt;strong&gt;certeza&lt;/strong&gt;.&lt;/p&gt;
+        &lt;p&gt;la &lt;strong&gt;proporcionalidad&lt;/strong&gt; significa que la contribución de cada actividad a la función objetivo y al consumo de recursos es proporcional al nivel de esa actividad. si producir un lote aporta 3 unidades de utilidad, producir dos lotes aporta 6, producir tres aporta 9, y así sucesivamente. no hay descuentos por escala, costos fijos ni rendimientos crecientes o decrecientes.&lt;/p&gt;
+        &lt;p&gt;la &lt;strong&gt;aditividad&lt;/strong&gt; indica que el efecto total se obtiene sumando los efectos individuales. si el producto base usa cierto recurso y plus usa otro, el consumo total es la suma de ambos consumos. no existen interacciones no lineales entre actividades.&lt;/p&gt;
+        &lt;p&gt;la &lt;strong&gt;divisibilidad&lt;/strong&gt; permite que las variables tomen cualquier valor real. en pl pura, una variable puede valer 2,5 o 6,75. esto es razonable si se modelan litros, toneladas, horas o proporciones, pero puede ser problemático si se modelan objetos indivisibles como máquinas, locales, personas o camiones. cuando se necesita integridad, se pasa a programación lineal entera.&lt;/p&gt;
+        &lt;p&gt;la &lt;strong&gt;certeza&lt;/strong&gt; supone que los coeficientes del modelo son conocidos y fijos. es decir, la utilidad por unidad, el consumo de recursos y la disponibilidad se tratan como datos ciertos. en la realidad puede haber incertidumbre, por lo que a veces se complementa la pl con escenarios, sensibilidad, optimización robusta o modelos estocásticos.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;pl clásica = proporcionalidad + aditividad + divisibilidad + certeza&lt;/div&gt;
+        &lt;p&gt;estos supuestos importan porque determinan la validez del modelo. si se violan fuertemente, la solución óptima puede ser matemáticamente correcta pero operativamente inadecuada. el analista debe saber cuándo la linealidad es una simplificación aceptable y cuándo se necesita un modelo más complejo.&lt;/p&gt;
+        ">
+      <header class="qa-head">
+        <div>
+          <span class="topic-pill">Programación Lineal</span>
+          <span class="tag">Supuestos</span>
+          <h2>10. ¿Cuáles son los supuestos de la Programación Lineal y por qué importan?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        
+        <p>Los supuestos de la Programación Lineal explican cuándo el modelo lineal es una representación razonable del problema real. El material destaca cuatro supuestos principales: <strong>proporcionalidad</strong>, <strong>aditividad</strong>, <strong>divisibilidad</strong> y <strong>certeza</strong>.</p>
+        <p>La <strong>proporcionalidad</strong> significa que la contribución de cada actividad a la función objetivo y al consumo de recursos es proporcional al nivel de esa actividad. Si producir un lote aporta 3 unidades de utilidad, producir dos lotes aporta 6, producir tres aporta 9, y así sucesivamente. No hay descuentos por escala, costos fijos ni rendimientos crecientes o decrecientes.</p>
+        <p>La <strong>aditividad</strong> indica que el efecto total se obtiene sumando los efectos individuales. Si el producto Base usa cierto recurso y Plus usa otro, el consumo total es la suma de ambos consumos. No existen interacciones no lineales entre actividades.</p>
+        <p>La <strong>divisibilidad</strong> permite que las variables tomen cualquier valor real. En PL pura, una variable puede valer 2,5 o 6,75. Esto es razonable si se modelan litros, toneladas, horas o proporciones, pero puede ser problemático si se modelan objetos indivisibles como máquinas, locales, personas o camiones. Cuando se necesita integridad, se pasa a Programación Lineal Entera.</p>
+        <p>La <strong>certeza</strong> supone que los coeficientes del modelo son conocidos y fijos. Es decir, la utilidad por unidad, el consumo de recursos y la disponibilidad se tratan como datos ciertos. En la realidad puede haber incertidumbre, por lo que a veces se complementa la PL con escenarios, sensibilidad, optimización robusta o modelos estocásticos.</p>
+        <div class="formula">PL clásica = proporcionalidad + aditividad + divisibilidad + certeza</div>
+        <p>Estos supuestos importan porque determinan la validez del modelo. Si se violan fuertemente, la solución óptima puede ser matemáticamente correcta pero operativamente inadecuada. El analista debe saber cuándo la linealidad es una simplificación aceptable y cuándo se necesita un modelo más complejo.</p>
+        
+        <div class="study-row">
+          <label class="check"><input type="checkbox" class="done"><span>Marcar como estudiada</span></label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q11" data-topic="Programación Lineal Entera" data-cat="Fundamentos" data-text="programación lineal entera fundamentos 11. ¿qué es la programación lineal entera y en qué se diferencia de la programación lineal continua? 
+        &lt;p&gt;la &lt;strong&gt;programación lineal entera&lt;/strong&gt; es una extensión de la programación lineal en la que algunas o todas las variables deben tomar valores enteros. si todas las variables relevantes son enteras, se habla de &lt;strong&gt;ip&lt;/strong&gt;. si algunas son enteras y otras continuas, se habla de &lt;strong&gt;mip&lt;/strong&gt;. si las variables enteras solo pueden valer 0 o 1, se habla de &lt;strong&gt;bip&lt;/strong&gt; o programación binaria.&lt;/p&gt;
+        &lt;p&gt;la diferencia conceptual es muy importante. en pl continua, una variable puede tomar valores fraccionarios. esto es aceptable si representa toneladas, litros, horas o proporciones. pero si la variable representa número de locales, camiones, personas, máquinas, proyectos o decisiones sí/no, los valores fraccionarios no tienen sentido operativo.&lt;/p&gt;
+        &lt;p&gt;por ejemplo, abrir &lt;strong&gt;5,4375&lt;/strong&gt; locales express y &lt;strong&gt;2,6875&lt;/strong&gt; locales full puede ser una solución válida del problema relajado, pero no una decisión real. una empresa puede abrir 5 o 6 locales, no 5,4375. la restricción de integridad transforma el problema en una búsqueda sobre puntos discretos.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;pl continua: x ≥ 0, x puede ser real&lt;br&gt;ple: x ≥ 0 y x ∈ z&lt;br&gt;bip: x ∈ {0,1}&lt;/div&gt;
+        &lt;p&gt;desde el punto de vista computacional, la ple es más difícil. en pl existen algoritmos eficientes para encontrar óptimos continuos. en ple, el espacio de soluciones es discreto y puede crecer de manera explosiva. por eso los solvers pueden tardar más y, en problemas grandes, entregar soluciones aproximadas junto con un &lt;strong&gt;gap de integralidad&lt;/strong&gt;.&lt;/p&gt;
+        &lt;p&gt;la ple permite representar decisiones muy ricas: selección de proyectos, apertura de plantas, asignación de turnos, rutas, inversiones indivisibles, relaciones lógicas entre actividades y decisiones binarias. su valor está en que acerca el modelo matemático a decisiones reales que no admiten fracciones.&lt;/p&gt;
+        ">
+      <header class="qa-head">
+        <div>
+          <span class="topic-pill">Programación Lineal Entera</span>
+          <span class="tag">Fundamentos</span>
+          <h2>11. ¿Qué es la Programación Lineal Entera y en qué se diferencia de la Programación Lineal continua?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        
+        <p>La <strong>Programación Lineal Entera</strong> es una extensión de la Programación Lineal en la que algunas o todas las variables deben tomar valores enteros. Si todas las variables relevantes son enteras, se habla de <strong>IP</strong>. Si algunas son enteras y otras continuas, se habla de <strong>MIP</strong>. Si las variables enteras solo pueden valer 0 o 1, se habla de <strong>BIP</strong> o programación binaria.</p>
+        <p>La diferencia conceptual es muy importante. En PL continua, una variable puede tomar valores fraccionarios. Esto es aceptable si representa toneladas, litros, horas o proporciones. Pero si la variable representa número de locales, camiones, personas, máquinas, proyectos o decisiones sí/no, los valores fraccionarios no tienen sentido operativo.</p>
+        <p>Por ejemplo, abrir <strong>5,4375</strong> locales express y <strong>2,6875</strong> locales full puede ser una solución válida del problema relajado, pero no una decisión real. Una empresa puede abrir 5 o 6 locales, no 5,4375. La restricción de integridad transforma el problema en una búsqueda sobre puntos discretos.</p>
+        <div class="formula">PL continua: x ≥ 0, x puede ser real<br>PLE: x ≥ 0 y x ∈ Z<br>BIP: x ∈ {0,1}</div>
+        <p>Desde el punto de vista computacional, la PLE es más difícil. En PL existen algoritmos eficientes para encontrar óptimos continuos. En PLE, el espacio de soluciones es discreto y puede crecer de manera explosiva. Por eso los solvers pueden tardar más y, en problemas grandes, entregar soluciones aproximadas junto con un <strong>gap de integralidad</strong>.</p>
+        <p>La PLE permite representar decisiones muy ricas: selección de proyectos, apertura de plantas, asignación de turnos, rutas, inversiones indivisibles, relaciones lógicas entre actividades y decisiones binarias. Su valor está en que acerca el modelo matemático a decisiones reales que no admiten fracciones.</p>
+        
+        <div class="study-row">
+          <label class="check"><input type="checkbox" class="done"><span>Marcar como estudiada</span></label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q12" data-topic="Programación Lineal Entera" data-cat="Modelización" data-text="programación lineal entera modelización 12. ¿cómo se modelan decisiones binarias y relaciones lógicas en programación lineal entera? 
+        &lt;p&gt;las variables binarias permiten representar decisiones de tipo sí/no. una variable &lt;strong&gt;xᵢ&lt;/strong&gt; puede valer 1 si una actividad se realiza y 0 si no se realiza. esta estructura permite traducir reglas lógicas a restricciones lineales.&lt;/p&gt;
+        &lt;p&gt;un caso típico es elegir a lo sumo una actividad entre varias. si hay n actividades y cada variable binaria indica si se realiza una de ellas, la restricción se escribe:&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;x₁ + x₂ + ... + xₙ ≤ 1&lt;/div&gt;
+        &lt;p&gt;esta restricción obliga a que como máximo una variable valga 1. si se quisiera elegir exactamente una, se usaría igualdad: &lt;strong&gt;x₁ + x₂ + ... + xₙ = 1&lt;/strong&gt;. si se quisiera permitir al menos una, se usaría &lt;strong&gt;≥ 1&lt;/strong&gt;.&lt;/p&gt;
+        &lt;p&gt;otra relación frecuente es la obligatoriedad. si realizar la actividad 1 obliga a realizar la actividad 2, se formula:&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;x₁ ≤ x₂&lt;/div&gt;
+        &lt;p&gt;la lógica es directa: si x₁ = 1, entonces x₂ debe ser 1. si x₁ = 0, x₂ puede ser 0 o 1. también puede modelarse una relación donde si se realizan las actividades 1 y 2, entonces debe realizarse la actividad 3:&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;x₁ + x₂ ≤ 1 + x₃&lt;/div&gt;
+        &lt;p&gt;si x₁ = 1 y x₂ = 1, el lado izquierdo vale 2, por lo que x₃ debe ser 1 para que la desigualdad se cumpla. si alguna de las dos primeras no se realiza, la restricción no obliga a x₃.&lt;/p&gt;
+        &lt;p&gt;también se pueden vincular variables continuas con binarias. si &lt;strong&gt;xᵢ&lt;/strong&gt; representa hectáreas sembradas y &lt;strong&gt;yᵢ&lt;/strong&gt; indica si se sembró una parcela, una restricción como &lt;strong&gt;xᵢ ≤ yᵢsᵢ&lt;/strong&gt; impide sembrar superficie positiva si yᵢ = 0. cuando yᵢ = 1, la superficie sembrada puede llegar hasta la superficie disponible sᵢ.&lt;/p&gt;
+        &lt;p&gt;estas formulaciones muestran que la ple no solo sirve para “hacer variables enteras”. sirve para introducir lógica decisional dentro de un modelo lineal.&lt;/p&gt;
+        ">
+      <header class="qa-head">
+        <div>
+          <span class="topic-pill">Programación Lineal Entera</span>
+          <span class="tag">Modelización</span>
+          <h2>12. ¿Cómo se modelan decisiones binarias y relaciones lógicas en Programación Lineal Entera?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        
+        <p>Las variables binarias permiten representar decisiones de tipo sí/no. Una variable <strong>xᵢ</strong> puede valer 1 si una actividad se realiza y 0 si no se realiza. Esta estructura permite traducir reglas lógicas a restricciones lineales.</p>
+        <p>Un caso típico es elegir a lo sumo una actividad entre varias. Si hay n actividades y cada variable binaria indica si se realiza una de ellas, la restricción se escribe:</p>
+        <div class="formula">x₁ + x₂ + ... + xₙ ≤ 1</div>
+        <p>Esta restricción obliga a que como máximo una variable valga 1. Si se quisiera elegir exactamente una, se usaría igualdad: <strong>x₁ + x₂ + ... + xₙ = 1</strong>. Si se quisiera permitir al menos una, se usaría <strong>≥ 1</strong>.</p>
+        <p>Otra relación frecuente es la obligatoriedad. Si realizar la actividad 1 obliga a realizar la actividad 2, se formula:</p>
+        <div class="formula">x₁ ≤ x₂</div>
+        <p>La lógica es directa: si x₁ = 1, entonces x₂ debe ser 1. Si x₁ = 0, x₂ puede ser 0 o 1. También puede modelarse una relación donde si se realizan las actividades 1 y 2, entonces debe realizarse la actividad 3:</p>
+        <div class="formula">x₁ + x₂ ≤ 1 + x₃</div>
+        <p>Si x₁ = 1 y x₂ = 1, el lado izquierdo vale 2, por lo que x₃ debe ser 1 para que la desigualdad se cumpla. Si alguna de las dos primeras no se realiza, la restricción no obliga a x₃.</p>
+        <p>También se pueden vincular variables continuas con binarias. Si <strong>xᵢ</strong> representa hectáreas sembradas y <strong>yᵢ</strong> indica si se sembró una parcela, una restricción como <strong>xᵢ ≤ yᵢsᵢ</strong> impide sembrar superficie positiva si yᵢ = 0. Cuando yᵢ = 1, la superficie sembrada puede llegar hasta la superficie disponible sᵢ.</p>
+        <p>Estas formulaciones muestran que la PLE no solo sirve para “hacer variables enteras”. Sirve para introducir lógica decisional dentro de un modelo lineal.</p>
+        
+        <div class="study-row">
+          <label class="check"><input type="checkbox" class="done"><span>Marcar como estudiada</span></label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q13" data-topic="Programación Lineal Entera" data-cat="Relajación" data-text="programación lineal entera relajación 13. ¿qué es el problema lineal relajado y por qué no alcanza con redondear su solución? 
+        &lt;p&gt;el &lt;strong&gt;problema lineal relajado&lt;/strong&gt;, o &lt;strong&gt;plr&lt;/strong&gt;, se obtiene quitando temporalmente las restricciones de integridad. es decir, se resuelve el problema como si las variables pudieran tomar valores reales. esta solución sirve como referencia, pero no necesariamente es una solución válida para el problema entero.&lt;/p&gt;
+        &lt;p&gt;en el ejemplo de “comidas z”, la empresa decide cuántos locales express y full abrir. los locales express requieren menor inversión pero más supervisores; los full requieren más inversión, menor cantidad de supervisores por local y se exige abrir al menos 2. el modelo entero busca maximizar:&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;max z = 12xₑ + 20x𝒻&lt;br&gt;0,2xₑ + 0,6x𝒻 ≤ 2,7&lt;br&gt;3xₑ + x𝒻 ≤ 19&lt;br&gt;x𝒻 ≥ 2&lt;br&gt;xₑ, x𝒻 ≥ 0 y enteras&lt;/div&gt;
+        &lt;p&gt;al resolver el problema relajado sin integridad, el óptimo es fraccionario: &lt;strong&gt;xₑ = 5,4375&lt;/strong&gt;, &lt;strong&gt;x𝒻 = 2,6875&lt;/strong&gt;, con &lt;strong&gt;z = 119&lt;/strong&gt;. ese valor es una cota superior para un problema de maximización, porque el plr permite más soluciones que el problema entero.&lt;/p&gt;
+        &lt;p&gt;la tentación natural es redondear. pero redondear puede fallar por dos razones. primero, puede producir una solución infeasible que viola inversión, supervisores o mínimos. segundo, aunque sea factible, puede no ser óptima. en problemas enteros, la geometría discreta hace que el mejor punto entero no sea necesariamente el entero más cercano al óptimo continuo.&lt;/p&gt;
+        &lt;p&gt;por ejemplo, una combinación redondeada hacia abajo puede dar &lt;strong&gt;z = 100&lt;/strong&gt;, mientras que otra combinación entera factible puede dar &lt;strong&gt;z = 108&lt;/strong&gt;. el redondeo no explora sistemáticamente el espacio entero ni garantiza optimalidad.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;óptimo plr fraccionario ≠ óptimo entero&lt;br&gt;redondear puede ser infeasible o subóptimo&lt;/div&gt;
+        &lt;p&gt;por eso se usan métodos específicos como &lt;strong&gt;ramificación y cota&lt;/strong&gt; o &lt;strong&gt;planos de corte&lt;/strong&gt;. el plr sigue siendo fundamental porque aporta cotas y guía la búsqueda, pero no reemplaza la resolución entera.&lt;/p&gt;
+        ">
+      <header class="qa-head">
+        <div>
+          <span class="topic-pill">Programación Lineal Entera</span>
+          <span class="tag">Relajación</span>
+          <h2>13. ¿Qué es el problema lineal relajado y por qué no alcanza con redondear su solución?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        
+        <p>El <strong>problema lineal relajado</strong>, o <strong>PLR</strong>, se obtiene quitando temporalmente las restricciones de integridad. Es decir, se resuelve el problema como si las variables pudieran tomar valores reales. Esta solución sirve como referencia, pero no necesariamente es una solución válida para el problema entero.</p>
+        <p>En el ejemplo de “Comidas Z”, la empresa decide cuántos locales express y full abrir. Los locales express requieren menor inversión pero más supervisores; los full requieren más inversión, menor cantidad de supervisores por local y se exige abrir al menos 2. El modelo entero busca maximizar:</p>
+        <div class="formula">Max Z = 12xₑ + 20x𝒻<br>0,2xₑ + 0,6x𝒻 ≤ 2,7<br>3xₑ + x𝒻 ≤ 19<br>x𝒻 ≥ 2<br>xₑ, x𝒻 ≥ 0 y enteras</div>
+        <p>Al resolver el problema relajado sin integridad, el óptimo es fraccionario: <strong>xₑ = 5,4375</strong>, <strong>x𝒻 = 2,6875</strong>, con <strong>Z = 119</strong>. Ese valor es una cota superior para un problema de maximización, porque el PLR permite más soluciones que el problema entero.</p>
+        <p>La tentación natural es redondear. Pero redondear puede fallar por dos razones. Primero, puede producir una solución infeasible que viola inversión, supervisores o mínimos. Segundo, aunque sea factible, puede no ser óptima. En problemas enteros, la geometría discreta hace que el mejor punto entero no sea necesariamente el entero más cercano al óptimo continuo.</p>
+        <p>Por ejemplo, una combinación redondeada hacia abajo puede dar <strong>Z = 100</strong>, mientras que otra combinación entera factible puede dar <strong>Z = 108</strong>. El redondeo no explora sistemáticamente el espacio entero ni garantiza optimalidad.</p>
+        <div class="formula">Óptimo PLR fraccionario ≠ óptimo entero<br>Redondear puede ser infeasible o subóptimo</div>
+        <p>Por eso se usan métodos específicos como <strong>ramificación y cota</strong> o <strong>planos de corte</strong>. El PLR sigue siendo fundamental porque aporta cotas y guía la búsqueda, pero no reemplaza la resolución entera.</p>
+        
+        <div class="study-row">
+          <label class="check"><input type="checkbox" class="done"><span>Marcar como estudiada</span></label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q14" data-topic="Programación Lineal Entera" data-cat="Ramificación y cota" data-text="programación lineal entera ramificación y cota 14. ¿cómo funciona el método de ramificación y cota en programación lineal entera? 
+        &lt;p&gt;el método de &lt;strong&gt;ramificación y cota&lt;/strong&gt;, o &lt;strong&gt;branch and bound&lt;/strong&gt;, resuelve problemas enteros dividiéndolos en subproblemas más pequeños y usando cotas para descartar ramas que no pueden mejorar la mejor solución entera encontrada.&lt;/p&gt;
+        &lt;p&gt;el proceso comienza resolviendo el problema lineal relajado. si la solución es entera, se encontró el óptimo. si no es entera, se elige una variable fraccionaria y se crean dos subproblemas que eliminan la fracción. si una variable tiene valor &lt;strong&gt;xⱼ* = 5,4375&lt;/strong&gt;, se crean dos ramas:&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;xⱼ ≤ piso(xⱼ*)  →  xⱼ ≤ 5&lt;br&gt;xⱼ ≥ piso(xⱼ*) + 1 → xⱼ ≥ 6&lt;/div&gt;
+        &lt;p&gt;en el ejemplo de comidas z, se ramifica primero sobre &lt;strong&gt;xₑ = 5,4375&lt;/strong&gt;. la rama &lt;strong&gt;xₑ ≥ 6&lt;/strong&gt; no tiene solución factible. la rama &lt;strong&gt;xₑ ≤ 5&lt;/strong&gt; sigue siendo factible, pero produce una solución relajada con &lt;strong&gt;xₑ = 5&lt;/strong&gt;, &lt;strong&gt;x𝒻 = 2,833...&lt;/strong&gt; y &lt;strong&gt;z = 116,66...&lt;/strong&gt;. como x𝒻 no es entero, se vuelve a ramificar.&lt;/p&gt;
+        &lt;p&gt;cuando se explora la rama &lt;strong&gt;x𝒻 ≤ 2&lt;/strong&gt;, se obtiene una solución entera &lt;strong&gt;xₑ = 5&lt;/strong&gt;, &lt;strong&gt;x𝒻 = 2&lt;/strong&gt;, con &lt;strong&gt;z = 100&lt;/strong&gt;. esa solución establece una primera cota inferior para maximización: ya se sabe que existe una solución entera con valor 100.&lt;/p&gt;
+        &lt;p&gt;luego se exploran otras ramas. en una rama se obtiene &lt;strong&gt;xₑ = 4&lt;/strong&gt;, &lt;strong&gt;x𝒻 = 3&lt;/strong&gt;, con &lt;strong&gt;z = 108&lt;/strong&gt;. como mejora la mejor solución entera conocida, se actualiza la cota. otras ramas se descartan porque no tienen solución o porque su cota no puede superar 108.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;solución entera final del ejemplo:&lt;br&gt;xₑ = 4, x𝒻 = 3, z = 108&lt;/div&gt;
+        &lt;p&gt;la idea clave es que el método no enumera todas las combinaciones enteras de forma bruta. usa soluciones relajadas para saber qué ramas pueden contener mejores soluciones y cuáles se pueden descartar. por eso combina búsqueda discreta con información continua.&lt;/p&gt;
+        ">
+      <header class="qa-head">
+        <div>
+          <span class="topic-pill">Programación Lineal Entera</span>
+          <span class="tag">Ramificación y cota</span>
+          <h2>14. ¿Cómo funciona el método de ramificación y cota en Programación Lineal Entera?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        
+        <p>El método de <strong>ramificación y cota</strong>, o <strong>branch and bound</strong>, resuelve problemas enteros dividiéndolos en subproblemas más pequeños y usando cotas para descartar ramas que no pueden mejorar la mejor solución entera encontrada.</p>
+        <p>El proceso comienza resolviendo el problema lineal relajado. Si la solución es entera, se encontró el óptimo. Si no es entera, se elige una variable fraccionaria y se crean dos subproblemas que eliminan la fracción. Si una variable tiene valor <strong>xⱼ* = 5,4375</strong>, se crean dos ramas:</p>
+        <div class="formula">xⱼ ≤ piso(xⱼ*)  →  xⱼ ≤ 5<br>xⱼ ≥ piso(xⱼ*) + 1 → xⱼ ≥ 6</div>
+        <p>En el ejemplo de Comidas Z, se ramifica primero sobre <strong>xₑ = 5,4375</strong>. La rama <strong>xₑ ≥ 6</strong> no tiene solución factible. La rama <strong>xₑ ≤ 5</strong> sigue siendo factible, pero produce una solución relajada con <strong>xₑ = 5</strong>, <strong>x𝒻 = 2,833...</strong> y <strong>Z = 116,66...</strong>. Como x𝒻 no es entero, se vuelve a ramificar.</p>
+        <p>Cuando se explora la rama <strong>x𝒻 ≤ 2</strong>, se obtiene una solución entera <strong>xₑ = 5</strong>, <strong>x𝒻 = 2</strong>, con <strong>Z = 100</strong>. Esa solución establece una primera cota inferior para maximización: ya se sabe que existe una solución entera con valor 100.</p>
+        <p>Luego se exploran otras ramas. En una rama se obtiene <strong>xₑ = 4</strong>, <strong>x𝒻 = 3</strong>, con <strong>Z = 108</strong>. Como mejora la mejor solución entera conocida, se actualiza la cota. Otras ramas se descartan porque no tienen solución o porque su cota no puede superar 108.</p>
+        <div class="formula">Solución entera final del ejemplo:<br>xₑ = 4, x𝒻 = 3, Z = 108</div>
+        <p>La idea clave es que el método no enumera todas las combinaciones enteras de forma bruta. Usa soluciones relajadas para saber qué ramas pueden contener mejores soluciones y cuáles se pueden descartar. Por eso combina búsqueda discreta con información continua.</p>
+        
+        <div class="study-row">
+          <label class="check"><input type="checkbox" class="done"><span>Marcar como estudiada</span></label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q15" data-topic="Programación Lineal Entera" data-cat="Planos de corte" data-text="programación lineal entera planos de corte 15. ¿qué son los planos de corte y cómo se diferencian de ramificación y cota? 
+        &lt;p&gt;los &lt;strong&gt;planos de corte&lt;/strong&gt; son restricciones adicionales que se agregan al problema relajado para eliminar soluciones fraccionarias sin eliminar soluciones enteras factibles. la idea es aislar progresivamente el óptimo entero recortando partes de la región factible continua que no contienen puntos enteros relevantes.&lt;/p&gt;
+        &lt;p&gt;un algoritmo básico de planos de corte sigue esta lógica: primero se resuelve el problema lineal relajado. si la solución óptima es entera, se terminó. si la solución es fraccionaria, se agrega una restricción válida para todas las soluciones enteras, pero que excluye la solución fraccionaria actual. luego se vuelve a resolver el plr y se repite el proceso.&lt;/p&gt;
+        &lt;div class=&quot;formula&quot;&gt;1. resolver plr&lt;br&gt;2. si x* es entero → óptimo&lt;br&gt;3. si x* es fraccionario → agregar corte válido&lt;br&gt;4. repetir&lt;/div&gt;
+        &lt;p&gt;la diferencia con ramificación y cota es que branch and bound divide el problema en ramas, mientras que los planos de corte fortalecen el modelo agregando restricciones. en ramificación, se crean subproblemas como &lt;strong&gt;x ≤ 5&lt;/strong&gt; y &lt;strong&gt;x ≥ 6&lt;/strong&gt;. en cortes, se mantiene un único problema relajado pero se le agregan desigualdades que recortan la región fraccionaria.&lt;/p&gt;
+        &lt;p&gt;en el material de ple, el bloque de planos de corte muestra cómo se agregan restricciones al problema hasta obtener una solución entera definitiva. la idea central es que el corte debe cumplir dos condiciones: debe eliminar el óptimo relajado fraccionario actual y no debe eliminar ninguna solución entera factible.&lt;/p&gt;
+        &lt;p&gt;los métodos modernos de optimización entera suelen combinar ambas estrategias. muchos solvers usan &lt;strong&gt;branch and cut&lt;/strong&gt;: generan cortes para mejorar las relajaciones y usan ramificación para manejar la integridad. esta combinación es poderosa porque las cotas se vuelven más ajustadas y la búsqueda puede reducirse.&lt;/p&gt;
+        &lt;p&gt;desde el punto de vista didáctico, los planos de corte ayudan a entender que el problema entero no se resuelve “redondeando”, sino modificando cuidadosamente la región factible continua hasta aproximarla mejor al conjunto discreto de soluciones enteras.&lt;/p&gt;
+        ">
+      <header class="qa-head">
+        <div>
+          <span class="topic-pill">Programación Lineal Entera</span>
+          <span class="tag">Planos de corte</span>
+          <h2>15. ¿Qué son los planos de corte y cómo se diferencian de ramificación y cota?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        
+        <p>Los <strong>planos de corte</strong> son restricciones adicionales que se agregan al problema relajado para eliminar soluciones fraccionarias sin eliminar soluciones enteras factibles. La idea es aislar progresivamente el óptimo entero recortando partes de la región factible continua que no contienen puntos enteros relevantes.</p>
+        <p>Un algoritmo básico de planos de corte sigue esta lógica: primero se resuelve el problema lineal relajado. Si la solución óptima es entera, se terminó. Si la solución es fraccionaria, se agrega una restricción válida para todas las soluciones enteras, pero que excluye la solución fraccionaria actual. Luego se vuelve a resolver el PLR y se repite el proceso.</p>
+        <div class="formula">1. Resolver PLR<br>2. Si x* es entero → óptimo<br>3. Si x* es fraccionario → agregar corte válido<br>4. Repetir</div>
+        <p>La diferencia con ramificación y cota es que branch and bound divide el problema en ramas, mientras que los planos de corte fortalecen el modelo agregando restricciones. En ramificación, se crean subproblemas como <strong>x ≤ 5</strong> y <strong>x ≥ 6</strong>. En cortes, se mantiene un único problema relajado pero se le agregan desigualdades que recortan la región fraccionaria.</p>
+        <p>En el material de PLE, el bloque de planos de corte muestra cómo se agregan restricciones al problema hasta obtener una solución entera definitiva. La idea central es que el corte debe cumplir dos condiciones: debe eliminar el óptimo relajado fraccionario actual y no debe eliminar ninguna solución entera factible.</p>
+        <p>Los métodos modernos de optimización entera suelen combinar ambas estrategias. Muchos solvers usan <strong>branch and cut</strong>: generan cortes para mejorar las relajaciones y usan ramificación para manejar la integridad. Esta combinación es poderosa porque las cotas se vuelven más ajustadas y la búsqueda puede reducirse.</p>
+        <p>Desde el punto de vista didáctico, los planos de corte ayudan a entender que el problema entero no se resuelve “redondeando”, sino modificando cuidadosamente la región factible continua hasta aproximarla mejor al conjunto discreto de soluciones enteras.</p>
+        
+        <div class="study-row">
+          <label class="check"><input type="checkbox" class="done"><span>Marcar como estudiada</span></label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+  </section>
+
+  <p class="footer"><strong>Material elaborado por el profesor Sergio Gevatschnaider</strong></p>
+</main>
+
+<a class="to-top" href="#top" aria-label="Volver arriba">↑</a>
+
+<script>
+(function(){
+  "use strict";
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+  const root = document.documentElement;
+  const palettes = ["indigo","bosque","ambar","carbono"];
+  let paletteIndex = 0;
+
+  function updateProgress(){
+    const total = $$(".done").length;
+    const checked = $$(".done").filter(x => x.checked).length;
+    $("#progressText").textContent = checked + " / " + total;
+    $("#progressBar").style.width = total ? ((checked / total) * 100) + "%" : "0%";
+  }
+
+  function setOpen(card, open){
+    const btn = $(".toggle", card);
+    card.classList.toggle("open", open);
+    btn.classList.toggle("open", open);
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+    btn.textContent = open ? "Ocultar respuesta" : "Ver respuesta";
+  }
+
+  function applyFilters(){
+    const q = ($("#searchInput").value || "").toLowerCase().trim();
+    const topic = $("#topicSelect").value;
+    const cat = $("#catSelect").value;
+    $$(".qa-card").forEach(card => {
+      const matchText = !q || card.dataset.text.includes(q);
+      const matchTopic = topic === "all" || card.dataset.topic === topic;
+      const matchCat = cat === "all" || card.dataset.cat === cat;
+      card.classList.toggle("hidden", !(matchText && matchTopic && matchCat));
+    });
+    $$(".topic-chip").forEach(b => b.classList.toggle("active", b.dataset.topic === topic));
+    $$(".cat-chip").forEach(b => b.classList.toggle("active", b.dataset.cat === cat));
+  }
+
+  $$(".toggle").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const card = btn.closest(".qa-card");
+      setOpen(card, !card.classList.contains("open"));
+    });
+  });
+
+  $$(".done").forEach(chk => {
+    chk.addEventListener("change", () => {
+      chk.closest(".qa-card").classList.toggle("done-card", chk.checked);
+      updateProgress();
+    });
+  });
+
+  $("#openAll").addEventListener("click", () => $$(".qa-card:not(.hidden)").forEach(c => setOpen(c, true)));
+  $("#closeAll").addEventListener("click", () => $$(".qa-card").forEach(c => setOpen(c, false)));
+  $("#searchInput").addEventListener("input", applyFilters);
+  $("#topicSelect").addEventListener("change", applyFilters);
+  $("#catSelect").addEventListener("change", applyFilters);
+
+  $$(".topic-chip").forEach(btn => {
+    btn.addEventListener("click", () => {
+      $("#topicSelect").value = btn.dataset.topic;
+      applyFilters();
+    });
+  });
+
+  $$(".cat-chip").forEach(btn => {
+    btn.addEventListener("click", () => {
+      $("#catSelect").value = btn.dataset.cat;
+      applyFilters();
+    });
+  });
+
+  $("#randomBtn").addEventListener("click", () => {
+    const visible = $$(".qa-card:not(.hidden)");
+    if(!visible.length) return;
+    const card = visible[Math.floor(Math.random() * visible.length)];
+    setOpen(card, true);
+    card.scrollIntoView({behavior:"smooth", block:"center"});
+  });
+
+  $("#themeBtn").addEventListener("click", () => {
+    const dark = root.getAttribute("data-theme") === "dark";
+    root.setAttribute("data-theme", dark ? "light" : "dark");
+    $("#themeBtn").textContent = dark ? "🌙 Tema oscuro" : "☀️ Tema claro";
+  });
+
+  $("#paletteBtn").addEventListener("click", () => {
+    paletteIndex = (paletteIndex + 1) % palettes.length;
+    root.setAttribute("data-palette", palettes[paletteIndex]);
+  });
+
+  $("#fontRange").addEventListener("input", e => {
+    root.style.setProperty("--reading", e.target.value);
+  });
+
+  $("#examMode").addEventListener("change", e => {
+    document.body.classList.toggle("exam", e.target.checked);
+    if(e.target.checked) $$(".qa-card").forEach(c => setOpen(c, false));
+  });
+
+  updateProgress();
+})();
+</script>
+</body>
+</html>
