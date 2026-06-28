@@ -3565,6 +3565,7 @@ La finalidad es que el estudiante pueda comprender que un autoencoder no es una 
 
 ---
 
+
 ## Recursos interactivos
 
 | Orden | Recurso | Propósito didáctico | Abrir recurso |
@@ -3581,8 +3582,11 @@ La finalidad es que el estudiante pueda comprender que un autoencoder no es una 
 | **7** | **Guía práctica en HTML** | Ordena el flujo práctico para implementar autoencoders en Google Colab. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Gu%C3%ADa%20Colab-f59e0b?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/07_guia_practica_colab_autoencoders.html) |
 | **7.1** | **Notebook ejecutable en Google Colab** | Permite ejecutar la práctica completa con Python, TensorFlow, MNIST, autoencoder básico, visualizaciones, espacio latente y detección de anomalías. | [![Abrir Colab](https://img.shields.io/badge/Abrir%20Colab-Notebook%20ejecutable-f9ab00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/drive/1xhbUTI9ERdXGWIQJ7a9mnlnlx5bbqPDj?usp=sharing) |
 | **8** | **Autoencoder fijo 784 → z=32** | Versión fija para clase: entrada 784, espacio latente 32 y visualización estable de compresión. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Fijo%20784%20z32-0f766e?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/08_Simulacion_autoencoder_fija_entrada_784_z32.html) |
+| **9** | **Autoencoders: cuestionario con preguntas y respuestas** | Reúne 10 preguntas desarrolladas para repasar arquitectura, encoder, decoder, bottleneck, espacio latente, entrenamiento, regularización, denoising, anomalías, VAE y evaluación. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Cuestionario%20Autoencoders-7c3aed?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Autoencoders_guia_preguntas_respuestas.html) |
+| **10** | **Autoencoders: glosario completo interactivo** | Desarrolla 131 términos técnicos organizados por categorías para estudiar fundamentos, arquitectura, entrenamiento, regularización, variantes, VAE, anomalías, aplicaciones, evaluación y despliegue. | [![Abrir HTML](https://img.shields.io/badge/Abrir%20HTML-Glosario%20Autoencoders-059669?style=for-the-badge&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/sgevatschnaider/data-science-for-business-models/blob/main/src/classroom/module_01_eda/html/Autoencoders_glosario.html) |
 
----
+
+
 
 ## Acceso directo a los recursos
 
