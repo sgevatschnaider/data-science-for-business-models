@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light" data-palette="aurora" data-mode="study">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Transformer · Guía de preguntas desarrolladas</title>
+<style>
+:root{
+  --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --bg-1:#f5f7ff;
+  --bg-2:#ecfeff;
+  --bg-3:#f8fafc;
+  --text:#102033;
+  --muted:#64748b;
+  --line:#d8e3f2;
+  --card:#ffffff;
+  --card-2:#f7fbff;
+  --glass:rgba(255,255,255,.82);
+  --accent:#2563eb;
+  --accent-2:#7c3aed;
+  --accent-3:#06b6d4;
+  --good:#10b981;
+  --warn:#f59e0b;
+  --danger:#e11d48;
+  --shadow:0 24px 70px rgba(15,23,42,.14);
+  --shadow-soft:0 14px 36px rgba(15,23,42,.10);
+  --radius-xl:30px;
+  --radius-lg:22px;
+  --radius-md:16px;
+  --reading-size:17px;
+}
+html[data-theme="dark"]{
+  --bg-1:#06111f;
+  --bg-2:#0b1729;
+  --bg-3:#111827;
+  --text:#eef6ff;
+  --muted:#a7b8ce;
+  --line:#263952;
+  --card:#101c2f;
+  --card-2:#0b1627;
+  --glass:rgba(15,23,42,.82);
+  --shadow:0 24px 70px rgba(0,0,0,.35);
+  --shadow-soft:0 14px 36px rgba(0,0,0,.24);
+}
+html[data-palette="aurora"]{--accent:#2563eb;--accent-2:#7c3aed;--accent-3:#06b6d4;--good:#10b981;--warn:#f59e0b;--danger:#e11d48;}
+html[data-palette="salmon"]{--accent:#e76f73;--accent-2:#b75d69;--accent-3:#6d9dc5;--good:#2a9d8f;--warn:#f4a261;--danger:#d62828;}
+html[data-palette="bosque"]{--accent:#047857;--accent-2:#65a30d;--accent-3:#0891b2;--good:#16a34a;--warn:#d97706;--danger:#be123c;}
+html[data-palette="carbono"]{--accent:#334155;--accent-2:#0f766e;--accent-3:#7c2d12;--good:#15803d;--warn:#ca8a04;--danger:#be123c;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:var(--font);
+  color:var(--text);
+  background:
+    radial-gradient(circle at 8% 5%, color-mix(in srgb,var(--accent) 24%,transparent), transparent 30%),
+    radial-gradient(circle at 95% 8%, color-mix(in srgb,var(--accent-2) 20%,transparent), transparent 32%),
+    radial-gradient(circle at 48% 105%, color-mix(in srgb,var(--accent-3) 18%,transparent), transparent 38%),
+    linear-gradient(135deg,var(--bg-1),var(--bg-2) 48%,var(--bg-3));
+  line-height:1.58;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.30;
+  background-image:
+    linear-gradient(color-mix(in srgb,var(--line) 56%,transparent) 1px, transparent 1px),
+    linear-gradient(90deg,color-mix(in srgb,var(--line) 56%,transparent) 1px, transparent 1px);
+  background-size:42px 42px;
+  mask-image:radial-gradient(circle at center, black, transparent 78%);
+}
+button,input{font:inherit}
+button{border:0;cursor:pointer}
+a{color:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:3px}
+main{width:min(1320px,100%);margin:auto;padding:28px 18px 74px;position:relative}
+.panel{background:var(--glass);border:1px solid var(--line);border-radius:var(--radius-xl);box-shadow:var(--shadow);backdrop-filter:blur(18px)}
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);gap:18px;margin-bottom:18px}
+.hero-copy{padding:34px;position:relative;overflow:hidden}
+.hero-copy::after{content:"";position:absolute;width:340px;height:340px;right:-135px;bottom:-165px;border-radius:999px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 20%,transparent),color-mix(in srgb,var(--accent-2) 20%,transparent));opacity:.86}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border-radius:999px;background:color-mix(in srgb,var(--accent) 12%,var(--card));border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));color:var(--accent);font-size:12px;letter-spacing:.10em;text-transform:uppercase;font-weight:950}
+h1{position:relative;z-index:1;margin:18px 0 14px;max-width:950px;font-size:clamp(38px,5.2vw,76px);line-height:.96;letter-spacing:-.065em}
+.lead{position:relative;z-index:1;margin:0;max-width:86ch;font-size:18px;color:var(--muted)}
+.hero-actions{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:9px 14px;border-radius:15px;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent-2));font-weight:950;box-shadow:0 12px 26px color-mix(in srgb,var(--accent) 26%,transparent);transition:.18s transform,.18s filter,.18s box-shadow;text-decoration:none}
+.btn:hover{transform:translateY(-1px);filter:saturate(1.08)}
+.btn.secondary{color:var(--text);background:var(--card-2);border:1px solid var(--line);box-shadow:none}
+.btn.good{background:linear-gradient(135deg,var(--good),var(--accent-3))}
+.btn.warn{background:linear-gradient(135deg,var(--warn),var(--danger))}
+.btn.small{min-height:34px;padding:7px 10px;border-radius:999px;font-size:13px}
+.hero-side{padding:20px;display:flex;flex-direction:column;gap:13px}
+.stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.stat{background:var(--card-2);border:1px solid var(--line);border-radius:22px;padding:16px;min-height:108px}
+.stat strong{display:block;font-size:30px;line-height:1;letter-spacing:-.045em;color:var(--accent)}
+.stat span{display:block;margin-top:9px;color:var(--muted);font-size:13px}
+.callout{padding:16px;border:1px solid color-mix(in srgb,var(--accent-3) 34%,var(--line));border-radius:22px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent-3) 10%,var(--card)),var(--card-2));color:var(--muted);font-size:14px}
+.toolbar{position:sticky;top:8px;z-index:50;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px;margin:0 0 18px}
+.nav{display:flex;gap:8px;overflow:auto;padding-bottom:2px;scrollbar-width:thin}
+.nav a{white-space:nowrap;text-decoration:none;color:var(--text);background:var(--card-2);border:1px solid var(--line);border-radius:999px;padding:9px 12px;font-weight:900;font-size:13px;transition:.18s transform,.18s background,.18s color}
+.nav a:hover,.nav a.active{transform:translateY(-1px);color:#fff;border-color:transparent;background:linear-gradient(135deg,var(--accent),var(--accent-2))}
+.tool-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.controls{display:grid;grid-template-columns:1.2fr .8fr auto;gap:12px;align-items:center;padding:16px;margin-bottom:18px}
+.searchbox{position:relative}
+.searchbox input{width:100%;min-height:44px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--text);padding:9px 13px 9px 42px}
+.searchbox span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:950}
+.slider-group{display:grid;gap:6px;color:var(--muted);font-size:13px;font-weight:900}
+.slider-group input{accent-color:var(--accent);width:100%}
+.switch-wrap{display:flex;align-items:center;gap:10px;white-space:nowrap;font-weight:950;color:var(--muted)}
+.switch{position:relative;width:62px;height:34px;border-radius:999px;background:var(--card-2);border:1px solid var(--line);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 60%,transparent)}
+.switch::after{content:"";position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent-2));transition:.22s transform}
+html[data-mode="exam"] .switch::after{transform:translateX(28px)}
+.progress-panel{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:16px;margin-bottom:18px}
+.progress-track{height:14px;border-radius:999px;background:var(--card-2);border:1px solid var(--line);overflow:hidden}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2),var(--accent-3));transition:.25s width}
+.progress-label{font-weight:950;color:var(--muted);font-size:13px;white-space:nowrap}
+.guide-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:start}
+.qa-list{display:flex;flex-direction:column;gap:14px}
+.qa-card{scroll-margin-top:116px;overflow:hidden;border-radius:var(--radius-xl);border:1px solid var(--line);background:var(--glass);box-shadow:var(--shadow-soft);backdrop-filter:blur(18px);transition:.22s transform,.22s border-color,.22s background}
+.qa-card:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--accent) 38%,var(--line))}
+.qa-card.studied{border-color:color-mix(in srgb,var(--good) 48%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--good) 8%,var(--glass)),var(--glass))}
+.qa-head{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:13px;align-items:center;text-align:left;color:var(--text);background:transparent;padding:20px 22px}
+.number{display:grid;place-items:center;width:48px;height:48px;border-radius:17px;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent-2));font-weight:950;box-shadow:0 12px 26px color-mix(in srgb,var(--accent) 20%,transparent)}
+.qa-title{margin:0;font-size:clamp(19px,2.2vw,28px);line-height:1.08;letter-spacing:-.035em}
+.qa-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;color:var(--muted);font-size:12px;font-weight:900}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;background:var(--card-2);border:1px solid var(--line)}
+.chevron{width:38px;height:38px;border-radius:999px;display:grid;place-items:center;background:var(--card-2);border:1px solid var(--line);color:var(--accent);font-weight:950;transition:.2s transform}
+.qa-card.open .chevron{transform:rotate(180deg)}
+.qa-body{max-height:0;overflow:hidden;transition:max-height .35s ease;border-top:1px solid transparent}
+.qa-card.open .qa-body{max-height:3600px;border-top-color:var(--line)}
+.qa-content{padding:22px;font-size:var(--reading-size)}
+html[data-mode="exam"] .qa-card:not(.open) .qa-title::after{content:"  — respondé mentalmente antes de abrir";color:var(--muted);font-size:13px;font-weight:800;letter-spacing:0}
+.answer-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,.42fr);gap:16px;align-items:start}
+.answer-main p{margin:0 0 13px;color:var(--muted)}
+.answer-main strong{color:var(--text)}
+.answer-main ul,.answer-main ol{margin:10px 0 14px 22px;color:var(--muted)}
+.answer-main li{margin:7px 0}
+.formula{margin:14px 0;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 11%,var(--card)),color-mix(in srgb,var(--accent-2) 9%,var(--card)));border:1px solid color-mix(in srgb,var(--accent) 24%,var(--line));font-family:var(--mono);color:var(--text);overflow:auto;white-space:pre-wrap;font-size:14px}
+.study-box{border:1px solid var(--line);background:var(--card-2);border-radius:20px;padding:15px;position:sticky;top:100px}
+.study-box h4{margin:0 0 8px;font-size:16px;letter-spacing:-.02em}
+.study-box p{margin:0 0 10px;color:var(--muted);font-size:14px}
+.key-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.key{display:inline-flex;padding:6px 8px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--muted);font-size:12px;font-weight:900}
+.card-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.side-index{position:sticky;top:92px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.side-index h3{margin:0;font-size:22px;letter-spacing:-.035em}
+.side-index p{margin:0;color:var(--muted);font-size:14px}
+.mini-nav{display:flex;flex-direction:column;gap:8px;max-height:58vh;overflow:auto;padding-right:4px}
+.mini-nav a{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;text-decoration:none;padding:9px;border-radius:15px;border:1px solid var(--line);background:var(--card-2);font-size:13px;color:var(--muted);font-weight:850}
+.mini-nav a:hover,.mini-nav a.active{color:#fff;border-color:transparent;background:linear-gradient(135deg,var(--accent),var(--accent-2))}
+.dot{width:26px;height:26px;border-radius:999px;display:grid;place-items:center;background:var(--card);border:1px solid var(--line);font-size:11px;color:var(--accent);font-weight:950}
+.mini-nav a:hover .dot,.mini-nav a.active .dot{color:#fff;background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.25)}
+.check{color:var(--good);font-weight:950}
+.recap{padding:18px;margin-top:18px}
+.recap h2{margin:0 0 10px;font-size:30px;letter-spacing:-.045em}
+.recap-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}
+.recap-card{border:1px solid var(--line);background:var(--card-2);border-radius:20px;padding:15px;min-height:130px}
+.recap-card strong{display:block;color:var(--accent);font-size:22px;margin-bottom:6px}
+.recap-card span{color:var(--muted);font-size:14px}
+.footer{text-align:center;color:var(--muted);font-size:13px;margin-top:20px}
+.to-top{position:fixed;right:18px;bottom:18px;z-index:60;width:46px;height:46px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-weight:950;box-shadow:var(--shadow-soft);display:grid;place-items:center;text-decoration:none}
+.hidden{display:none!important}
+@media (max-width:1120px){.hero,.guide-grid{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr;position:relative;top:auto}.tool-actions{justify-content:flex-start}.side-index{position:relative;top:auto}.mini-nav{max-height:none}.controls{grid-template-columns:1fr}.progress-panel{grid-template-columns:1fr}.answer-grid{grid-template-columns:1fr}.study-box{position:relative;top:auto}.recap-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:720px){main{padding:20px 12px 58px}.hero-copy{padding:22px}.hero-side{padding:16px}.stat-grid,.recap-grid{grid-template-columns:1fr}.qa-head{grid-template-columns:auto 1fr;padding:17px}.chevron{grid-column:1 / -1;width:100%}.qa-content{padding:18px}.tool-actions{gap:6px}.btn{width:auto}.number{width:42px;height:42px}.controls{padding:13px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media print{body{background:#fff;color:#111}body::before,.toolbar,.controls,.progress-panel,.side-index,.to-top,.card-actions{display:none}.panel,.qa-card{box-shadow:none;border:1px solid #bbb;background:#fff}.hero,.guide-grid,.answer-grid{grid-template-columns:1fr}.qa-body{max-height:none!important;border-top:1px solid #bbb}.qa-card{break-inside:avoid}.qa-content{font-size:14px}}
+</style>
+</head>
+<body>
+<main id="top">
+  <section class="hero" aria-label="Portada">
+    <div class="panel hero-copy">
+      <span class="eyebrow">Transformer · guía interactiva</span>
+      <h1>10 preguntas desarrolladas para estudiar Transformers</h1>
+      <p class="lead">Una página HTML autocontenida para repasar arquitectura Transformer con explicaciones completas, fórmulas, ejemplos, claves de examen, modo estudio/examen, buscador, navegación interna y controles visuales.</p>
+      <div class="hero-actions">
+        <a class="btn" href="#q1">Comenzar guía</a>
+        <button class="btn secondary" id="themeBtn" type="button">Tema oscuro</button>
+        <button class="btn secondary" id="paletteBtn" type="button">Cambiar paleta</button>
+        <button class="btn secondary" id="openAllBtn" type="button">Abrir todas</button>
+      </div>
+    </div>
+    <aside class="panel hero-side">
+      <div class="stat-grid">
+        <div class="stat"><strong>10</strong><span>preguntas con respuestas desarrolladas</span></div>
+        <div class="stat"><strong>1</strong><span>archivo HTML listo para GitHub o aula virtual</span></div>
+        <div class="stat"><strong>Q·K·V</strong><span>self-attention explicada paso a paso</span></div>
+        <div class="stat"><strong>0</strong><span>dependencias externas</span></div>
+      </div>
+      <div class="callout"><strong>Objetivo de estudio:</strong> que el alumno pueda explicar qué hace un Transformer, cómo calcula atención, cómo se organiza en encoder/decoder y qué límites debe considerar al aplicarlo.</div>
+    </aside>
+  </section>
+
+  <section class="panel toolbar" aria-label="Navegación principal">
+    <nav class="nav" id="topNav">
+      <a href="#q1">1. Concepto</a>
+      <a href="#q2">2. Tokens</a>
+      <a href="#q3">3. Posición</a>
+      <a href="#q4">4. Q/K/V</a>
+      <a href="#q5">5. Atención</a>
+      <a href="#q6">6. Multi-head</a>
+      <a href="#q7">7. Encoder</a>
+      <a href="#q8">8. Decoder</a>
+      <a href="#q9">9. Generación</a>
+      <a href="#q10">10. Límites</a>
+    </nav>
+    <div class="tool-actions">
+      <button class="btn secondary small" id="closeAllBtn" type="button">Cerrar todas</button>
+      <button class="btn warn small" id="resetBtn" type="button">Reiniciar progreso</button>
+    </div>
+  </section>
+
+  <section class="panel controls" aria-label="Controles de lectura">
+    <div class="searchbox"><span>⌕</span><input id="searchInput" type="search" placeholder="Buscar dentro de las preguntas y respuestas: atención, decoder, embeddings, softmax..." /></div>
+    <label class="slider-group">Tamaño de lectura <input id="fontRange" type="range" min="15" max="22" step="1" value="17" /></label>
+    <button class="switch-wrap" id="modeBtn" type="button" aria-pressed="false"><span>Modo estudio</span><span class="switch" aria-hidden="true"></span><span>Modo examen</span></button>
+  </section>
+
+  <section class="panel progress-panel" aria-label="Progreso de estudio">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">0 de 10 estudiadas</div>
+  </section>
+
+  <div class="guide-grid">
+    <section class="qa-list" id="qaList">
+
+      <article class="qa-card open" id="q1" data-q="1" data-keywords="transformer arquitectura atención paralelización rnn cnn contexto secuencia">
+        <button class="qa-head" type="button" aria-expanded="true">
+          <span class="number">01</span>
+          <span><h2 class="qa-title">¿Qué es un Transformer y por qué cambió el procesamiento del lenguaje natural?</h2><span class="qa-meta"><span class="badge">Concepto general</span><span class="badge">Arquitectura neuronal</span><span class="badge">Contexto</span></span></span>
+          <span class="chevron">⌄</span>
+        </button>
+        <div class="qa-body"><div class="qa-content"><div class="answer-grid"><div class="answer-main">
+          <p>Un <strong>Transformer</strong> es una arquitectura de red neuronal diseñada para trabajar con secuencias, especialmente texto, aunque también se usa en imágenes, audio, series temporales y datos multimodales. Su idea central es que cada elemento de la secuencia pueda construir una representación propia mirando a otros elementos relevantes mediante un mecanismo llamado <strong>atención</strong>.</p>
+          <p>Antes de los Transformers, muchas tareas de lenguaje se resolvían con redes recurrentes, como RNN, LSTM o GRU. Esas arquitecturas procesaban la secuencia en orden: primero una palabra, luego la siguiente, y así sucesivamente. El problema era que esa lectura secuencial dificultaba la paralelización y podía perder relaciones lejanas. Por ejemplo, en una oración larga, una palabra del inicio puede ser importante para interpretar otra del final.</p>
+          <p>El Transformer propuso una solución diferente: en lugar de leer palabra por palabra como una cadena obligatoria, permite comparar todos los tokens entre sí. De este modo, el modelo puede aprender que en una frase como <strong>“el banco aprobó el crédito para la empresa”</strong>, la palabra “banco” debe interpretarse como institución financiera porque se relaciona con “aprobó”, “crédito” y “empresa”.</p>
+          <p>La importancia del Transformer se resume en tres puntos. Primero, mejora la captura de <strong>dependencias contextuales</strong>. Segundo, permite mayor <strong>paralelización</strong> durante el entrenamiento. Tercero, se convirtió en la base de modelos modernos como BERT, GPT, T5 y muchas arquitecturas generativas actuales.</p>
+          <div class="formula">Idea central:
+representación contextual = token + posición + relaciones de atención con otros tokens</div>
+          <p>Para estudiar, conviene recordarlo así: un Transformer no “entiende” una palabra de forma aislada; construye su significado operativo observando cómo esa palabra se vincula con las demás dentro de una secuencia.</p>
+        </div><aside class="study-box"><h4>Clave para examen</h4><p>El Transformer reemplaza la dependencia recurrente por atención, lo que facilita aprender relaciones de largo alcance y entrenar en paralelo.</p><div class="key-list"><span class="key">self-attention</span><span class="key">paralelización</span><span class="key">contexto</span></div></aside></div><div class="card-actions"><button class="btn good small markBtn" type="button">Marcar estudiada</button><button class="btn secondary small nextBtn" type="button">Siguiente</button></div></div></div>
+      </article>
+
+      <article class="qa-card" id="q2" data-q="2" data-keywords="tokenización embeddings vectores subpalabras vocabulario representación">
+        <button class="qa-head" type="button" aria-expanded="false"><span class="number">02</span><span><h2 class="qa-title">¿Qué son la tokenización y los embeddings dentro de un Transformer?</h2><span class="qa-meta"><span class="badge">Entrada</span><span class="badge">Vectores</span><span class="badge">Vocabulario</span></span></span><span class="chevron">⌄</span></button>
+        <div class="qa-body"><div class="qa-content"><div class="answer-grid"><div class="answer-main">
+          <p>La <strong>tokenización</strong> es el proceso por el cual un texto se divide en unidades que el modelo puede procesar. Esas unidades se llaman <strong>tokens</strong>. Un token puede ser una palabra completa, una parte de una palabra, un signo de puntuación o incluso un fragmento frecuente. En modelos modernos es común usar subpalabras, porque esto permite representar términos raros, nombres propios y palabras nuevas sin necesitar un vocabulario infinito.</p>
+          <p>Por ejemplo, la frase <strong>“servicios exportables digitales”</strong> podría dividirse como palabras completas: “servicios”, “exportables”, “digitales”. Pero también podría dividirse en subpalabras: “servicio”, “##s”, “export”, “##ables”, “digital”, “##es”. Esta segunda forma ayuda a que el modelo aproveche partes conocidas de palabras desconocidas.</p>
+          <p>Después de tokenizar, cada token se convierte en un número identificador dentro de un vocabulario. Sin embargo, el modelo no trabaja directamente con esos identificadores, porque un número de índice no contiene significado semántico. Por eso cada token se transforma en un <strong>embedding</strong>: un vector denso de números que representa propiedades aprendidas durante el entrenamiento.</p>
+          <p>Un embedding no es una definición de diccionario, sino una representación matemática. Tokens usados en contextos parecidos tienden a tener vectores más cercanos. Por ejemplo, “crédito”, “préstamo” y “banco” pueden aparecer próximos en un espacio financiero, mientras que “río”, “orilla” y “banco” pueden aparecer próximos en un contexto geográfico.</p>
+          <div class="formula">Texto → tokens → IDs → embeddings
+"El modelo predice ventas" → [El, modelo, predice, ventas] → vectores</div>
+          <p>La clave es que el embedding inicial todavía no resuelve completamente el significado contextual. La palabra “banco” puede ser financiera o geográfica. Recién con la atención y las capas posteriores el modelo ajusta su representación según la frase completa.</p>
+        </div><aside class="study-box"><h4>Clave para examen</h4><p>Tokenizar prepara el texto; embeber transforma tokens en vectores. La comprensión contextual aparece después, no en el índice del token.</p><div class="key-list"><span class="key">token</span><span class="key">subpalabra</span><span class="key">embedding</span></div></aside></div><div class="card-actions"><button class="btn good small markBtn" type="button">Marcar estudiada</button><button class="btn secondary small nextBtn" type="button">Siguiente</button></div></div></div>
+      </article>
+
+      <article class="qa-card" id="q3" data-q="3" data-keywords="codificación posicional orden posición seno coseno secuencia">
+        <button class="qa-head" type="button" aria-expanded="false"><span class="number">03</span><span><h2 class="qa-title">¿Por qué un Transformer necesita codificación posicional?</h2><span class="qa-meta"><span class="badge">Orden</span><span class="badge">Secuencia</span><span class="badge">Positional encoding</span></span></span><span class="chevron">⌄</span></button>
+        <div class="qa-body"><div class="qa-content"><div class="answer-grid"><div class="answer-main">
+          <p>El Transformer procesa los tokens de manera paralela. Esta es una gran ventaja computacional, pero genera un problema: si todos los tokens se procesan al mismo tiempo, el modelo necesita alguna forma de saber en qué posición aparece cada uno. Sin posición, las frases <strong>“el modelo predice ventas”</strong> y <strong>“ventas predice el modelo”</strong> podrían parecer una simple bolsa de palabras con los mismos elementos.</p>
+          <p>La <strong>codificación posicional</strong> agrega información sobre el orden de los tokens. Puede hacerse con vectores fijos, como funciones seno y coseno, o con posiciones aprendidas durante el entrenamiento. En ambos casos, la idea es sumar o combinar una señal de posición con el embedding del token.</p>
+          <div class="formula">representación inicial del token i:
+z_i = embedding(token_i) + posición_i</div>
+          <p>Esta suma permite que el modelo distinga no solo qué palabras aparecen, sino también dónde aparecen. El orden es fundamental para interpretar sujeto, verbo, objeto, modificadores, negaciones y referencias. Por ejemplo, <strong>“no aprobó el crédito”</strong> y <strong>“aprobó el crédito”</strong> tienen una diferencia semántica crítica causada por una palabra y su posición.</p>
+          <p>La codificación posicional también ayuda a manejar relaciones a distintas distancias. Algunas dependencias son locales, como artículo-sustantivo; otras son más largas, como una referencia que aparece varias palabras después. El Transformer puede atender a ambas, pero necesita saber la estructura de posición para no tratar todas las palabras como intercambiables.</p>
+          <p>En síntesis, la posición convierte una colección de tokens en una secuencia organizada. Sin ella, el modelo tendría mucha más dificultad para capturar gramática, temporalidad y relaciones lógicas.</p>
+        </div><aside class="study-box"><h4>Clave para examen</h4><p>Como la atención es paralela, el modelo necesita una señal externa de orden. Posición + embedding forman la entrada real del bloque Transformer.</p><div class="key-list"><span class="key">orden</span><span class="key">posición</span><span class="key">secuencia</span></div></aside></div><div class="card-actions"><button class="btn good small markBtn" type="button">Marcar estudiada</button><button class="btn secondary small nextBtn" type="button">Siguiente</button></div></div></div>
+      </article>
+
+      <article class="qa-card" id="q4" data-q="4" data-keywords="query key value q k v proyecciones atención pesos">
+        <button class="qa-head" type="button" aria-expanded="false"><span class="number">04</span><span><h2 class="qa-title">¿Qué significan Query, Key y Value en self-attention?</h2><span class="qa-meta"><span class="badge">Q/K/V</span><span class="badge">Proyecciones</span><span class="badge">Atención</span></span></span><span class="chevron">⌄</span></button>
+        <div class="qa-body"><div class="qa-content"><div class="answer-grid"><div class="answer-main">
+          <p>En self-attention, cada token se transforma en tres vectores distintos: <strong>Query</strong>, <strong>Key</strong> y <strong>Value</strong>. Estos vectores no son ingresados manualmente; se obtienen multiplicando las representaciones de entrada por matrices aprendidas durante el entrenamiento.</p>
+          <div class="formula">Q = XW_Q
+K = XW_K
+V = XW_V</div>
+          <p>La <strong>Query</strong> representa lo que un token está buscando en el contexto. Puede pensarse como una pregunta: “¿qué información necesito mirar para entenderme mejor?”. La <strong>Key</strong> representa cómo cada token se ofrece para ser encontrado; es una especie de firma o etiqueta aprendida. El <strong>Value</strong> representa el contenido que será transferido si ese token recibe atención.</p>
+          <p>Supongamos la frase <strong>“la médica revisó la imagen con IA”</strong>. Para interpretar “imagen”, el modelo puede necesitar mirar “revisó”, “médica” e “IA”. La Query de “imagen” se compara con las Keys de todos los tokens. Si la Key de “revisó” es compatible, recibirá un peso alto. Luego el Value de “revisó” aportará información sobre la acción vinculada a la imagen.</p>
+          <p>La distinción Q/K/V permite separar tres funciones: buscar, ser encontrado y aportar contenido. Esta separación hace que el modelo no dependa de coincidencias literales entre palabras, sino de relaciones aprendidas en espacios vectoriales.</p>
+          <p>Es importante no interpretar Q, K y V como reglas lingüísticas fijas. Son transformaciones numéricas. Pueden capturar relaciones sintácticas, semánticas, de correferencia o de proximidad, pero lo hacen porque esas relaciones ayudan a reducir el error durante el entrenamiento.</p>
+        </div><aside class="study-box"><h4>Clave para examen</h4><p>Query pregunta, Key permite comparar y Value aporta el contenido combinado. La atención surge de comparar Q con K y mezclar V.</p><div class="key-list"><span class="key">Query</span><span class="key">Key</span><span class="key">Value</span></div></aside></div><div class="card-actions"><button class="btn good small markBtn" type="button">Marcar estudiada</button><button class="btn secondary small nextBtn" type="button">Siguiente</button></div></div></div>
+      </article>
+
+      <article class="qa-card" id="q5" data-q="5" data-keywords="self-attention softmax matriz atención escala producto punto dk pesos value contexto">
+        <button class="qa-head" type="button" aria-expanded="false"><span class="number">05</span><span><h2 class="qa-title">¿Cómo se calcula self-attention paso a paso?</h2><span class="qa-meta"><span class="badge">Fórmula</span><span class="badge">Softmax</span><span class="badge">Matriz de atención</span></span></span><span class="chevron">⌄</span></button>
+        <div class="qa-body"><div class="qa-content"><div class="answer-grid"><div class="answer-main">
+          <p>El cálculo de self-attention puede entenderse como una secuencia de operaciones. Primero se generan Q, K y V para todos los tokens. Luego se comparan las Queries con las Keys mediante producto punto. Esa comparación produce puntajes: cuanto más compatibles sean la Query de un token y la Key de otro, mayor será el puntaje.</p>
+          <p>Después, los puntajes se dividen por la raíz cuadrada de la dimensión de las Keys. Esta escala evita que los productos punto crezcan demasiado cuando los vectores tienen muchas dimensiones, lo que podría saturar el softmax y volver inestable el entrenamiento.</p>
+          <div class="formula">Attention(Q,K,V) = softmax((QKᵀ) / √d_k) V</div>
+          <p>El <strong>softmax</strong> convierte los puntajes en pesos positivos que suman 1. Esos pesos forman una fila de la matriz de atención. Cada fila responde a una pregunta: para este token, ¿a qué otros tokens debe mirar y con qué intensidad?</p>
+          <p>Finalmente, los pesos de atención se usan para construir una combinación ponderada de los Values. Si un token presta mucha atención a otro, el Value de ese otro token influye más en la representación final. Así, cada token sale del bloque con una versión enriquecida por el contexto.</p>
+          <p>Ejemplo: en <strong>“el banco aprobó el crédito”</strong>, la fila correspondiente a “banco” puede asignar peso alto a “aprobó” y “crédito”. Entonces la representación de “banco” se desplaza hacia el sentido financiero, no hacia el sentido de banco de plaza o banco de río.</p>
+          <p>La matriz de atención es útil para enseñar porque permite visualizar relaciones. Sin embargo, debe interpretarse con cuidado: un peso alto indica influencia en la mezcla de Values, no una explicación psicológica completa del razonamiento del modelo.</p>
+        </div><aside class="study-box"><h4>Clave para examen</h4><p>Self-attention compara Q con K, normaliza con softmax y mezcla V. La salida es una representación contextual por token.</p><div class="key-list"><span class="key">QKᵀ</span><span class="key">√d_k</span><span class="key">softmax</span><span class="key">V</span></div></aside></div><div class="card-actions"><button class="btn good small markBtn" type="button">Marcar estudiada</button><button class="btn secondary small nextBtn" type="button">Siguiente</button></div></div></div>
+      </article>
+
+      <article class="qa-card" id="q6" data-q="6" data-keywords="multi-head attention cabezas atención paralela semántica sintaxis concat wo">
+        <button class="qa-head" type="button" aria-expanded="false"><span class="number">06</span><span><h2 class="qa-title">¿Para qué sirve la multi-head attention?</h2><span class="qa-meta"><span class="badge">Varias cabezas</span><span class="badge">Lecturas paralelas</span><span class="badge">Patrones</span></span></span><span class="chevron">⌄</span></button>
+        <div class="qa-body"><div class="qa-content"><div class="answer-grid"><div class="answer-main">
+          <p>La <strong>multi-head attention</strong> consiste en ejecutar varias atenciones en paralelo. Cada cabeza tiene sus propias matrices de proyección para Q, K y V. Esto permite que el modelo observe la misma frase desde distintos subespacios de representación.</p>
+          <div class="formula">head_i = Attention(QW_i^Q, KW_i^K, VW_i^V)
+MultiHead = Concat(head_1, ..., head_h) W_O</div>
+          <p>Una sola cabeza podría concentrarse en una relación dominante y dejar de lado otras. Con varias cabezas, el Transformer puede distribuir funciones. Una cabeza puede atender relaciones semánticas, otra relaciones sintácticas, otra dependencia local entre palabras cercanas y otra referencias más largas.</p>
+          <p>Por ejemplo, en <strong>“el ministerio publicó datos sobre empleo”</strong>, una cabeza podría vincular “ministerio” con “publicó”, otra “datos” con “empleo”, y otra “sobre” con el complemento que introduce. Ninguna cabeza necesita resolver toda la frase por sí sola.</p>
+          <p>Luego, las salidas de las cabezas se concatenan y se proyectan con una matriz final. Esto integra las distintas lecturas en una representación común. La riqueza del mecanismo está en que no obliga al modelo a elegir una única forma de relación contextual.</p>
+          <p>Desde el punto de vista didáctico, conviene explicar multi-head attention como <strong>varios lectores especializados leyendo la misma oración al mismo tiempo</strong>. Cada lector observa aspectos distintos, y la capa final combina esas miradas.</p>
+        </div><aside class="study-box"><h4>Clave para examen</h4><p>Varias cabezas permiten capturar relaciones complementarias. La salida final combina esas lecturas mediante concatenación y proyección.</p><div class="key-list"><span class="key">cabezas</span><span class="key">Concat</span><span class="key">W_O</span></div></aside></div><div class="card-actions"><button class="btn good small markBtn" type="button">Marcar estudiada</button><button class="btn secondary small nextBtn" type="button">Siguiente</button></div></div></div>
+      </article>
+
+      <article class="qa-card" id="q7" data-q="7" data-keywords="encoder residual layer normalization feed-forward ffn clasificación bert comprensión">
+        <button class="qa-head" type="button" aria-expanded="false"><span class="number">07</span><span><h2 class="qa-title">¿Cómo funciona un bloque encoder de Transformer?</h2><span class="qa-meta"><span class="badge">Encoder</span><span class="badge">FFN</span><span class="badge">LayerNorm</span></span></span><span class="chevron">⌄</span></button>
+        <div class="qa-body"><div class="qa-content"><div class="answer-grid"><div class="answer-main">
+          <p>El <strong>encoder</strong> es la parte del Transformer orientada a construir representaciones contextuales de la entrada. Un bloque encoder típico contiene dos subcomponentes principales: self-attention multi-cabeza y una red feed-forward aplicada posición por posición. Entre esos componentes aparecen conexiones residuales y normalización.</p>
+          <p>Primero, la entrada pasa por multi-head self-attention. Allí cada token mira a los demás tokens de la misma secuencia y actualiza su representación. Luego se suma una <strong>conexión residual</strong>, que agrega la entrada original a la salida de la atención. Esto facilita el flujo del gradiente y evita que la red pierda información útil.</p>
+          <p>Después aparece <strong>Layer Normalization</strong>, que estabiliza las activaciones. La normalización ayuda a que el entrenamiento sea más controlable, especialmente en arquitecturas profundas con muchas capas apiladas.</p>
+          <p>Luego, cada posición pasa por una <strong>feed-forward network</strong>, que generalmente expande la dimensión, aplica una no linealidad y vuelve a proyectar. Esta parte permite transformar la información de cada token después de haber incorporado contexto mediante atención.</p>
+          <div class="formula">Y = LayerNorm(X + MultiHeadAttention(X))
+Z = LayerNorm(Y + FFN(Y))</div>
+          <p>Los encoders son especialmente útiles para tareas donde se necesita comprender una entrada completa: clasificación de texto, análisis de sentimiento, extracción de entidades, búsqueda semántica o preguntas sobre un documento. Modelos como BERT se basan en la lógica encoder.</p>
+        </div><aside class="study-box"><h4>Clave para examen</h4><p>El encoder contextualiza la entrada: atención para relaciones, residual para conservar información, normalización para estabilizar y FFN para transformar.</p><div class="key-list"><span class="key">MHA</span><span class="key">residual</span><span class="key">LayerNorm</span><span class="key">FFN</span></div></aside></div><div class="card-actions"><button class="btn good small markBtn" type="button">Marcar estudiada</button><button class="btn secondary small nextBtn" type="button">Siguiente</button></div></div></div>
+      </article>
+
+      <article class="qa-card" id="q8" data-q="8" data-keywords="decoder máscara causal masked self-attention cross-attention traducción generación encoder-decoder">
+        <button class="qa-head" type="button" aria-expanded="false"><span class="number">08</span><span><h2 class="qa-title">¿Qué diferencia al decoder del encoder?</h2><span class="qa-meta"><span class="badge">Decoder</span><span class="badge">Máscara causal</span><span class="badge">Cross-attention</span></span></span><span class="chevron">⌄</span></button>
+        <div class="qa-body"><div class="qa-content"><div class="answer-grid"><div class="answer-main">
+          <p>El <strong>decoder</strong> está orientado a generar una salida secuencial. A diferencia del encoder, no puede mirar libremente todos los tokens de salida durante generación, porque debe predecir el próximo token usando solo lo que ya está disponible.</p>
+          <p>Por eso utiliza <strong>masked self-attention</strong> o atención enmascarada. La máscara causal bloquea las posiciones futuras. Si el modelo está generando el quinto token, puede mirar los tokens 1 a 5, pero no los tokens posteriores. Esto evita una trampa durante entrenamiento: que el modelo aprenda mirando la respuesta futura que debería predecir.</p>
+          <div class="formula">masked_score(i,j) = -∞ si j &gt; i</div>
+          <p>En arquitecturas encoder-decoder, el decoder también incluye <strong>cross-attention</strong>. En esa capa, las Queries vienen del decoder y las Keys/Values vienen del encoder. Esto permite que la salida generada consulte la entrada original. Por ejemplo, en traducción, al generar “ventas”, el decoder puede atender al token “sales” de la frase fuente.</p>
+          <p>La diferencia central es funcional. El encoder construye una representación de comprensión de la entrada. El decoder construye una salida paso a paso. En modelos tipo GPT, se usa una arquitectura basada en decoder con máscara causal para generación autoregresiva. En modelos de traducción o resumen clásico, puede haber encoder y decoder juntos.</p>
+          <p>Para recordar: el encoder mira la entrada completa; el decoder mira su pasado generado y, si existe un encoder, consulta además la entrada codificada.</p>
+        </div><aside class="study-box"><h4>Clave para examen</h4><p>El decoder genera secuencias. Usa máscara causal para no mirar el futuro y cross-attention para consultar al encoder cuando la tarea lo requiere.</p><div class="key-list"><span class="key">masked attention</span><span class="key">autoregresivo</span><span class="key">cross-attention</span></div></aside></div><div class="card-actions"><button class="btn good small markBtn" type="button">Marcar estudiada</button><button class="btn secondary small nextBtn" type="button">Siguiente</button></div></div></div>
+      </article>
+
+      <article class="qa-card" id="q9" data-q="9" data-keywords="entrenamiento inferencia next token softmax temperatura top-k top-p pérdida cross entropy">
+        <button class="qa-head" type="button" aria-expanded="false"><span class="number">09</span><span><h2 class="qa-title">¿Cómo se entrena y cómo genera texto un Transformer?</h2><span class="qa-meta"><span class="badge">Entrenamiento</span><span class="badge">Inferencia</span><span class="badge">Próximo token</span></span></span><span class="chevron">⌄</span></button>
+        <div class="qa-body"><div class="qa-content"><div class="answer-grid"><div class="answer-main">
+          <p>El entrenamiento depende del tipo de Transformer y de la tarea. En modelos generativos autoregresivos, el objetivo común es predecir el <strong>próximo token</strong>. El modelo recibe una secuencia parcial y aprende a asignar alta probabilidad al token correcto que sigue.</p>
+          <p>La salida final del modelo se proyecta al tamaño del vocabulario. Luego se aplica softmax para obtener una distribución de probabilidades sobre posibles tokens. Durante entrenamiento, se compara esa distribución con el token real mediante una función de pérdida, típicamente <strong>cross-entropy</strong>.</p>
+          <div class="formula">p(token siguiente) = softmax(logits)
+loss = - log p(token correcto)</div>
+          <p>En inferencia, el modelo ya entrenado genera texto paso a paso. Dado un prompt, calcula probabilidades para el siguiente token. Luego se elige un token usando una estrategia de decodificación. La opción más simple es elegir el token de mayor probabilidad, pero eso puede producir salidas repetitivas. También se puede muestrear con temperatura, top-k o top-p.</p>
+          <p>La <strong>temperatura</strong> modifica la concentración de la distribución. Una temperatura baja vuelve la salida más conservadora: el modelo elige opciones muy probables. Una temperatura alta aumenta diversidad, pero también puede aumentar errores o incoherencias. Top-k limita la elección a los k tokens más probables. Top-p selecciona el conjunto mínimo de tokens cuya probabilidad acumulada supera un umbral.</p>
+          <p>Un punto clave es que el modelo no “recita” una respuesta fija. Calcula distribuciones condicionadas por el contexto. Por eso pequeñas variaciones en el prompt, la temperatura o la estrategia de muestreo pueden cambiar la salida final.</p>
+        </div><aside class="study-box"><h4>Clave para examen</h4><p>Entrenar es ajustar pesos para predecir mejor; generar es elegir tokens desde una distribución condicionada por el contexto.</p><div class="key-list"><span class="key">softmax</span><span class="key">cross-entropy</span><span class="key">temperatura</span><span class="key">top-p</span></div></aside></div><div class="card-actions"><button class="btn good small markBtn" type="button">Marcar estudiada</button><button class="btn secondary small nextBtn" type="button">Siguiente</button></div></div></div>
+      </article>
+
+      <article class="qa-card" id="q10" data-q="10" data-keywords="limitaciones alucinación sesgo contexto interpretabilidad evaluación responsable atención explicación">
+        <button class="qa-head" type="button" aria-expanded="false"><span class="number">10</span><span><h2 class="qa-title">¿Cuáles son los límites y cuidados al interpretar o usar Transformers?</h2><span class="qa-meta"><span class="badge">Lectura crítica</span><span class="badge">Evaluación</span><span class="badge">Uso responsable</span></span></span><span class="chevron">⌄</span></button>
+        <div class="qa-body"><div class="qa-content"><div class="answer-grid"><div class="answer-main">
+          <p>Los Transformers son muy potentes, pero no deben interpretarse como sistemas infalibles. Su salida depende de patrones aprendidos en datos, de la arquitectura, del prompt, de la ventana de contexto y de la estrategia de generación. Por eso pueden producir respuestas convincentes pero incorrectas.</p>
+          <p>Uno de los límites más conocidos es la <strong>alucinación</strong>: el modelo genera información que parece plausible pero no está verificada o directamente es falsa. Esto ocurre porque el objetivo de generación suele ser producir una continuación probable, no comprobar automáticamente la verdad de cada afirmación.</p>
+          <p>Otro límite es el <strong>sesgo</strong>. Si los datos de entrenamiento contienen sesgos sociales, lingüísticos, geográficos o profesionales, el modelo puede reproducirlos. Además, puede funcionar mejor en dominios muy representados y peor en contextos raros o especializados.</p>
+          <p>También existe una limitación de <strong>contexto</strong>. El modelo trabaja dentro de una ventana determinada. Si información importante queda fuera de esa ventana, puede ignorarla. Aunque las ventanas modernas sean grandes, no equivalen a memoria perfecta ni a comprensión completa de todos los documentos.</p>
+          <p>En interpretabilidad, las matrices de atención son útiles para enseñar, pero no son una explicación total. Un peso de atención alto indica que cierto Value influyó en una combinación, pero no prueba intención, causalidad humana ni razonamiento consciente.</p>
+          <p>Por eso, en aplicaciones serias, los Transformers deben evaluarse con métricas, pruebas de error, validación externa, revisión humana y criterios del dominio. En salud, derecho, finanzas o educación, no basta con que la respuesta “suene bien”: debe ser verificable y adecuada al contexto.</p>
+          <div class="formula">Uso responsable = comprensión técnica + evaluación + verificación + criterio de dominio</div>
+        </div><aside class="study-box"><h4>Clave para examen</h4><p>No confundir fluidez con verdad. Atención ayuda a visualizar, pero la evaluación real exige pruebas, métricas y validación externa.</p><div class="key-list"><span class="key">alucinación</span><span class="key">sesgo</span><span class="key">contexto</span><span class="key">evaluación</span></div></aside></div><div class="card-actions"><button class="btn good small markBtn" type="button">Marcar estudiada</button><a class="btn secondary small" href="#top">Volver arriba</a></div></div></div>
+      </article>
+
+    </section>
+
+    <aside class="panel side-index" aria-label="Índice lateral">
+      <h3>Índice de estudio</h3>
+      <p>Usá los botones para navegar. El tilde aparece cuando marcás una pregunta como estudiada.</p>
+      <nav class="mini-nav" id="miniNav"></nav>
+      <div class="callout"><strong>Sugerencia:</strong> activá “Modo examen”, intentá responder mentalmente y luego abrí cada tarjeta para comparar tu respuesta.</div>
+    </aside>
+  </div>
+
+  <section class="panel recap" id="recap">
+    <h2>Mapa final para repasar</h2>
+    <p class="lead">El Transformer puede estudiarse como una cadena conceptual: texto → tokens → embeddings + posición → Q/K/V → atención → capas encoder/decoder → distribución de salida → evaluación crítica.</p>
+    <div class="recap-grid">
+      <div class="recap-card"><strong>Entrada</strong><span>Tokenización, IDs, embeddings y codificación posicional.</span></div>
+      <div class="recap-card"><strong>Contexto</strong><span>Self-attention calcula relaciones entre tokens y mezcla Values.</span></div>
+      <div class="recap-card"><strong>Arquitectura</strong><span>Encoder comprende; decoder genera con máscara causal y posible cross-attention.</span></div>
+      <div class="recap-card"><strong>Criterio</strong><span>La salida debe evaluarse: fluidez no equivale a verdad.</span></div>
+    </div>
+  </section>
+
+  <p class="footer">Material elaborado por el profesor Sergio Gevatschnaider</p>
+</main>
+<a class="to-top" href="#top" aria-label="Volver arriba">↑</a>
+
+<script>
+(function(){
+  'use strict';
+  const root = document.documentElement;
+  const cards = Array.from(document.querySelectorAll('.qa-card'));
+  const palettes = ['aurora','salmon','bosque','carbono'];
+  let paletteIndex = 0;
+
+  function $(sel, base=document){ return base.querySelector(sel); }
+  function $$(sel, base=document){ return Array.from(base.querySelectorAll(sel)); }
+
+  function setOpen(card, open){
+    card.classList.toggle('open', open);
+    const btn = $('.qa-head', card);
+    if(btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  function updateProgress(){
+    const studied = cards.filter(c => c.classList.contains('studied')).length;
+    const pct = Math.round((studied / cards.length) * 100);
+    $('#progressFill').style.width = pct + '%';
+    $('#progressLabel').textContent = studied + ' de ' + cards.length + ' estudiadas';
+    $$('#miniNav a').forEach(a => {
+      const id = a.getAttribute('href').replace('#','');
+      const card = document.getElementById(id);
+      const check = $('.check', a);
+      if(check) check.textContent = card && card.classList.contains('studied') ? '✓' : '';
+    });
+  }
+
+  function buildMiniNav(){
+    const nav = $('#miniNav');
+    nav.innerHTML = cards.map(card => {
+      const n = card.dataset.q.padStart(2,'0');
+      const title = $('.qa-title', card).textContent.replace(/^¿|\?$/g,'');
+      return '<a href="#' + card.id + '"><span class="dot">' + n + '</span><span>' + title + '</span><span class="check"></span></a>';
+    }).join('');
+  }
+
+  function filterCards(term){
+    const value = term.trim().toLowerCase();
+    cards.forEach(card => {
+      const haystack = (card.textContent + ' ' + card.dataset.keywords).toLowerCase();
+      card.classList.toggle('hidden', value && !haystack.includes(value));
+    });
+  }
+
+  function setActiveNav(){
+    let current = cards[0].id;
+    for(const card of cards){
+      const rect = card.getBoundingClientRect();
+      if(rect.top <= 140) current = card.id;
+    }
+    [...$$('#topNav a'), ...$$('#miniNav a')].forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }
+
+  function resetProgress(){
+    cards.forEach((card, idx) => {
+      card.classList.remove('studied');
+      setOpen(card, idx === 0);
+    });
+    $('#searchInput').value = '';
+    filterCards('');
+    updateProgress();
+    location.hash = '#q1';
+  }
+
+  cards.forEach((card, idx) => {
+    const head = $('.qa-head', card);
+    head.addEventListener('click', () => setOpen(card, !card.classList.contains('open')));
+    const mark = $('.markBtn', card);
+    if(mark){
+      mark.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        card.classList.toggle('studied');
+        mark.textContent = card.classList.contains('studied') ? 'Estudiada ✓' : 'Marcar estudiada';
+        updateProgress();
+      });
+    }
+    const next = $('.nextBtn', card);
+    if(next){
+      next.addEventListener('click', () => {
+        const nextCard = cards[idx + 1];
+        if(nextCard){
+          setOpen(nextCard, true);
+          nextCard.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+      });
+    }
+  });
+
+  $('#themeBtn').addEventListener('click', () => {
+    const dark = root.getAttribute('data-theme') !== 'dark';
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    $('#themeBtn').textContent = dark ? 'Tema claro' : 'Tema oscuro';
+  });
+
+  $('#paletteBtn').addEventListener('click', () => {
+    paletteIndex = (paletteIndex + 1) % palettes.length;
+    root.setAttribute('data-palette', palettes[paletteIndex]);
+  });
+
+  $('#openAllBtn').addEventListener('click', () => cards.forEach(c => setOpen(c, true)));
+  $('#closeAllBtn').addEventListener('click', () => cards.forEach(c => setOpen(c, false)));
+  $('#resetBtn').addEventListener('click', resetProgress);
+
+  $('#searchInput').addEventListener('input', ev => filterCards(ev.target.value));
+  $('#fontRange').addEventListener('input', ev => root.style.setProperty('--reading-size', ev.target.value + 'px'));
+
+  $('#modeBtn').addEventListener('click', () => {
+    const exam = root.getAttribute('data-mode') !== 'exam';
+    root.setAttribute('data-mode', exam ? 'exam' : 'study');
+    $('#modeBtn').setAttribute('aria-pressed', exam ? 'true' : 'false');
+    if(exam){ cards.forEach(c => setOpen(c, false)); }
+  });
+
+  window.addEventListener('scroll', setActiveNav, {passive:true});
+  buildMiniNav();
+  updateProgress();
+  setActiveNav();
+})();
+</script>
+</body>
+</html>
