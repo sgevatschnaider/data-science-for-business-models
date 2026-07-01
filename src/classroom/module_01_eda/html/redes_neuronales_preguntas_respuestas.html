@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light" data-palette="aurora">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redes neuronales · Preguntas y respuestas desarrolladas</title>
+<style>
+:root{--font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;--mono:Consolas,"SFMono-Regular",Menlo,monospace;--bg:#f4f7fb;--card:#fff;--card2:#f8fbff;--text:#142033;--muted:#64748b;--line:#d9e4f2;--accent:#2563eb;--accent2:#7c3aed;--accent3:#06b6d4;--good:#059669;--warn:#d97706;--bad:#dc2626;--shadow:0 22px 58px rgba(23,37,84,.14);--soft:0 8px 24px rgba(15,23,42,.08);--radius:28px;--reading:1}
+html[data-theme="dark"]{--bg:#07111f;--card:#111c31;--card2:#0d1729;--text:#eef6ff;--muted:#afbdd2;--line:#263956;--shadow:0 22px 58px rgba(0,0,0,.38);--soft:0 8px 24px rgba(0,0,0,.25)}
+html[data-palette="aurora"]{--accent:#2563eb;--accent2:#7c3aed;--accent3:#06b6d4;--good:#059669;--warn:#d97706;--bad:#dc2626}
+html[data-palette="bosque"]{--accent:#047857;--accent2:#65a30d;--accent3:#0891b2;--good:#16a34a;--warn:#d97706;--bad:#be123c}
+html[data-palette="uva"]{--accent:#7c3aed;--accent2:#db2777;--accent3:#06b6d4;--good:#10b981;--warn:#f59e0b;--bad:#e11d48}
+html[data-palette="carbono"]{--accent:#334155;--accent2:#0f766e;--accent3:#7c2d12;--good:#15803d;--warn:#ca8a04;--bad:#be123c}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:var(--font);color:var(--text);line-height:1.65;background:radial-gradient(circle at top left,color-mix(in srgb,var(--accent) 19%,transparent),transparent 34%),radial-gradient(circle at top right,color-mix(in srgb,var(--accent2) 14%,transparent),transparent 30%),radial-gradient(circle at 50% 110%,color-mix(in srgb,var(--accent3) 16%,transparent),transparent 36%),linear-gradient(135deg,var(--bg),color-mix(in srgb,var(--bg),var(--accent3) 8%))}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.26;background-image:linear-gradient(color-mix(in srgb,var(--line) 58%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--line) 58%,transparent) 1px,transparent 1px);background-size:46px 46px;mask-image:radial-gradient(circle at center,black,transparent 78%)}
+a{color:var(--accent);text-decoration:none;font-weight:850}a:hover{text-decoration:underline}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:3px}
+.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--card) 86%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}.nav{max-width:1320px;margin:auto;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:950;letter-spacing:-.025em;display:flex;align-items:center;gap:10px}.brand span:first-child{width:38px;height:38px;border-radius:15px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:var(--soft)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.btn,.chip,.toggle{border:1px solid var(--line);background:var(--card);color:var(--text);padding:10px 14px;border-radius:15px;cursor:pointer;font-weight:900;box-shadow:var(--soft);transition:.18s transform,.18s filter,.18s background}.btn:hover,.chip:hover,.toggle:hover{transform:translateY(-1px)}.btn.primary,.chip.active,.toggle.open{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+main{max-width:1320px;margin:auto;padding:28px 20px 72px;position:relative}.hero{display:grid;grid-template-columns:minmax(0,1.16fr) minmax(330px,.84fr);gap:22px;margin:18px 0 22px}.card,.qa-card,.study-panel{background:color-mix(in srgb,var(--card) 96%,transparent);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);backdrop-filter:blur(12px)}
+h1{font-size:clamp(36px,5vw,66px);line-height:1.02;margin:10px 0 14px;letter-spacing:-.055em}h2{font-size:clamp(22px,2.25vw,30px);line-height:1.14;margin:10px 0 0;letter-spacing:-.035em}h3{margin:8px 0 12px;font-size:22px}.lead{font-size:18px;color:var(--muted);max-width:88ch}
+.tag,.badge{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:6px 11px;margin:4px 6px 4px 0;background:color-mix(in srgb,var(--card),var(--accent) 6%);font-size:13px;font-weight:950;color:var(--muted)}.notice{border-left:5px solid var(--accent);padding:15px 17px;border-radius:18px;background:color-mix(in srgb,var(--accent) 8%,var(--card));margin:15px 0;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.stat{border:1px solid var(--line);border-radius:22px;padding:18px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--soft)}.stat strong{display:block;font-size:30px;color:var(--accent);line-height:1}.stat span{display:block;margin-top:8px;color:var(--muted);font-size:13px}
+.summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}.summary{border:1px solid var(--line);border-radius:20px;padding:14px;background:var(--card2);color:var(--muted)}.summary strong{display:block;color:var(--text);margin-bottom:5px}
+.study-panel{margin:0 0 20px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}.progress-wrap{display:grid;gap:8px}.progress-label{display:flex;justify-content:space-between;color:var(--muted);font-weight:850;font-size:14px}.progress{height:16px;border-radius:999px;background:color-mix(in srgb,var(--card),#000 8%);border:1px solid var(--line);overflow:hidden}.progress span{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));transition:.25s}.mode{display:flex;align-items:center;gap:10px;white-space:nowrap;color:var(--muted);font-weight:900}.switch{position:relative;display:inline-block;width:58px;height:32px}.switch input{display:none}.slider{position:absolute;inset:0;background:var(--line);border-radius:999px;transition:.2s}.slider::before{content:"";position:absolute;width:26px;height:26px;left:3px;top:3px;border-radius:50%;background:var(--card);box-shadow:var(--soft);transition:.2s}.switch input:checked+.slider{background:linear-gradient(135deg,var(--accent),var(--accent2))}.switch input:checked+.slider::before{transform:translateX(26px)}
+.toolbar{display:grid;grid-template-columns:1fr 230px auto;gap:14px;align-items:end;margin:0 0 16px}input[type="search"],select{width:100%;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:16px;padding:12px 14px;box-shadow:var(--soft);min-height:46px}.filter-row{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 18px}.qa-list{display:grid;gap:16px}.qa-card{scroll-margin-top:96px}.qa-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}.num{display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:32px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:950;margin-right:8px}
+.answer{display:none;margin-top:18px;border-top:1px solid var(--line);padding-top:18px;font-size:calc(1rem * var(--reading))}.answer p{color:var(--muted);margin:0 0 14px}.answer strong{color:var(--text)}.qa-card.open .answer{display:block}.qa-card.done-card{border-color:color-mix(in srgb,var(--good) 45%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--good) 7%,var(--card)),var(--card))}.formula{margin:15px 0;padding:14px 16px;border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 9%,var(--card)),color-mix(in srgb,var(--accent2) 7%,var(--card)));font-family:var(--mono);color:var(--text);overflow:auto;white-space:pre-wrap}.study-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;padding:13px;border-radius:18px;background:var(--card2);border:1px solid var(--line)}.study-row label{display:flex;align-items:center;gap:9px;font-weight:900;color:var(--muted)}.study-row input{width:18px;height:18px;accent-color:var(--good)}
+.range-row{display:flex;align-items:center;gap:10px;min-width:220px}input[type="range"]{width:150px;accent-color:var(--accent)}.hidden{display:none!important}.exam .answer{display:none!important}.exam .qa-card.open .answer{display:block!important}.empty{display:none;text-align:center;padding:26px;color:var(--muted)}.empty.show{display:block}.footer{margin-top:42px;color:var(--muted);font-size:14px;text-align:center;border-top:1px solid var(--line);padding-top:22px}.to-top{position:fixed;right:18px;bottom:18px;z-index:60;width:48px;height:48px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:grid;place-items:center;font-weight:950;text-decoration:none;box-shadow:var(--soft)}
+@media(max-width:1040px){.nav,.toolbar,.study-panel{grid-template-columns:1fr;align-items:stretch}.nav{flex-direction:column;align-items:flex-start}.hero{grid-template-columns:1fr}.controls{justify-content:flex-start}.qa-head{flex-direction:column}.toggle{width:100%}.stats,.summary-grid{grid-template-columns:1fr}}
+@media print{.topbar,.toolbar,.study-panel,.filter-row,.to-top,.toggle{display:none!important}body{background:white}body::before{display:none}main{max-width:100%;padding:0}.card,.qa-card{box-shadow:none;break-inside:avoid}.answer{display:block!important}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="nav"><div class="brand"><span>NN</span><span>Guía de estudio · Redes neuronales</span></div><div class="controls"><button class="btn" id="themeBtn" type="button">🌙 Tema oscuro</button><button class="btn" id="paletteBtn" type="button">🎨 Cambiar paleta</button><button class="btn" onclick="window.print()" type="button">🖨️ Imprimir</button></div></div></header>
+<main id="top">
+<section class="hero"><div class="card"><span class="tag">Deep Learning</span><span class="tag">Neurona artificial</span><span class="tag">Backpropagation</span><span class="tag">Generalización</span><h1>Redes neuronales: 15 preguntas con respuestas desarrolladas</h1><p class="lead">Material de estudio autocontenido para comprender los fundamentos de una red neuronal: pesos, sesgo, activaciones, fronteras de decisión, XOR, función de pérdida, gradiente, learning rate, forward propagation, backpropagation, regla de la cadena, overfitting, validación y regularización.</p><div class="notice"><strong>Idea guía:</strong> una red neuronal aprende ajustando parámetros internos para transformar entradas en predicciones. Su potencia surge de combinar operaciones lineales, activaciones no lineales y un proceso de entrenamiento basado en gradientes.</div><div class="summary-grid"><div class="summary"><strong>Neurona</strong>Pesos, sesgo y activación explican cómo una unidad transforma entradas en una salida.</div><div class="summary"><strong>Entrenamiento</strong>La pérdida, el gradiente y backpropagation permiten ajustar parámetros para reducir errores.</div><div class="summary"><strong>Generalización</strong>Validación, regularización y control del overfitting permiten aprender patrones útiles y no memorizar.</div></div></div><aside class="card"><h3>Composición del material</h3><div class="stats"><div class="stat"><strong>15</strong><span>preguntas desarrolladas</span></div><div class="stat"><strong>6</strong><span>categorías de repaso</span></div><div class="stat"><strong>HTML</strong><span>autocontenido y listo para aula virtual</span></div><div class="stat"><strong>0</strong><span>dependencias externas</span></div></div></aside></section>
+<section class="study-panel"><div class="progress-wrap"><div class="progress-label"><span>Progreso de estudio</span><span id="progressText">0 / 15</span></div><div class="progress"><span id="progressBar"></span></div></div><div class="mode"><span>Estudio</span><label class="switch" title="Cambiar entre modo estudio y modo examen"><input id="examMode" type="checkbox"><span class="slider"></span></label><span>Examen</span></div></section>
+<section class="toolbar"><input id="searchInput" type="search" placeholder="Buscar: peso, sesgo, activación, XOR, pérdida, gradiente, backpropagation, overfitting..."><select id="catSelect" aria-label="Filtrar por categoría"><option value="all">Todas las categorías</option><option value="Neurona artificial">Neurona artificial</option><option value="Activación">Activación</option><option value="Decisión">Decisión</option><option value="Pérdida y optimización">Pérdida y optimización</option><option value="Propagación">Propagación</option><option value="Generalización">Generalización</option></select><div class="controls"><button class="btn primary" id="openAll" type="button">Abrir todo</button><button class="btn" id="closeAll" type="button">Cerrar todo</button><div class="range-row"><span class="tag">Texto</span><input id="fontRange" type="range" min="0.92" max="1.22" value="1" step="0.02"></div></div></section>
+<nav class="filter-row" aria-label="Filtros por categoría"><button class="chip active" data-cat="all" type="button">Todas</button><button class="chip" data-cat="Neurona artificial" type="button">Neurona artificial</button><button class="chip" data-cat="Activación" type="button">Activación</button><button class="chip" data-cat="Decisión" type="button">Decisión</button><button class="chip" data-cat="Pérdida y optimización" type="button">Pérdida y optimización</button><button class="chip" data-cat="Propagación" type="button">Propagación</button><button class="chip" data-cat="Generalización" type="button">Generalización</button></nav>
+<div id="empty" class="card empty">No hay preguntas que coincidan con la búsqueda o el filtro seleccionado.</div>
+<section class="qa-list" id="qaList">
+    <article class="qa-card" id="q1" data-cat="Neurona artificial" data-text="neurona artificial ¿qué representa un peso en una neurona artificial? &lt;p&gt;un &lt;strong&gt;peso&lt;/strong&gt; representa la intensidad y la dirección de la influencia que una entrada ejerce sobre la salida de una neurona artificial. cada variable de entrada se multiplica por un peso. si el peso tiene un valor absoluto grande, esa entrada tiene mayor capacidad de afectar el resultado. si el peso es pequeño o cercano a cero, su influencia es reducida.&lt;/p&gt;
+&lt;p&gt;el signo del peso también importa. un peso positivo indica que, cuando aumenta esa entrada, tiende a aumentar la activación de la neurona. un peso negativo indica lo contrario: cuando la entrada aumenta, tiende a reducir la activación. por eso, los pesos pueden entenderse como los parámetros que la red aprende para decidir qué características son relevantes y en qué sentido influyen.&lt;/p&gt;
+&lt;div class=&quot;formula&quot;&gt;z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b&lt;/div&gt;
+&lt;p&gt;durante el entrenamiento, los pesos se ajustan automáticamente para reducir el error del modelo. al principio suelen inicializarse con valores pequeños y aleatorios. luego, mediante backpropagation y descenso por gradiente, se modifican de forma gradual.&lt;/p&gt;
+&lt;p&gt;en síntesis, un peso es un parámetro aprendible que determina cuánto importa una entrada para la decisión de la neurona.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="num">01</span>
+          <span class="badge">Neurona artificial</span>
+          <h2>¿Qué representa un peso en una neurona artificial?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>Un <strong>peso</strong> representa la intensidad y la dirección de la influencia que una entrada ejerce sobre la salida de una neurona artificial. Cada variable de entrada se multiplica por un peso. Si el peso tiene un valor absoluto grande, esa entrada tiene mayor capacidad de afectar el resultado. Si el peso es pequeño o cercano a cero, su influencia es reducida.</p>
+<p>El signo del peso también importa. Un peso positivo indica que, cuando aumenta esa entrada, tiende a aumentar la activación de la neurona. Un peso negativo indica lo contrario: cuando la entrada aumenta, tiende a reducir la activación. Por eso, los pesos pueden entenderse como los parámetros que la red aprende para decidir qué características son relevantes y en qué sentido influyen.</p>
+<div class="formula">z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b</div>
+<p>Durante el entrenamiento, los pesos se ajustan automáticamente para reducir el error del modelo. Al principio suelen inicializarse con valores pequeños y aleatorios. Luego, mediante backpropagation y descenso por gradiente, se modifican de forma gradual.</p>
+<p>En síntesis, un peso es un parámetro aprendible que determina cuánto importa una entrada para la decisión de la neurona.</p>
+        <div class="study-row">
+          <label><input type="checkbox" class="done"> Marcar como estudiada</label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q2" data-cat="Neurona artificial" data-text="neurona artificial ¿qué función cumple el sesgo? &lt;p&gt;el &lt;strong&gt;sesgo&lt;/strong&gt;, o &lt;strong&gt;bias&lt;/strong&gt;, es un parámetro adicional que permite desplazar la función de activación de una neurona. mientras los pesos determinan la inclinación o dirección de la combinación de entradas, el sesgo permite mover la frontera de decisión sin depender exclusivamente de los valores de entrada.&lt;/p&gt;
+&lt;div class=&quot;formula&quot;&gt;z = w · x + b&lt;/div&gt;
+&lt;p&gt;el sesgo cumple un papel parecido al intercepto en una recta. en una función lineal simple, &lt;code&gt;y = mx + b&lt;/code&gt;, el término &lt;code&gt;b&lt;/code&gt; permite que la recta no tenga que pasar necesariamente por el origen. del mismo modo, en una neurona artificial, el sesgo permite que la activación ocurra aunque las entradas sean cero o que se requiera un umbral más alto para activar la neurona.&lt;/p&gt;
+&lt;p&gt;sin sesgo, el modelo sería más rígido. muchas fronteras de decisión quedarían obligadas a pasar por el origen, lo cual limitaría la capacidad de ajuste. gracias al sesgo, una red neuronal puede representar patrones más flexibles y adaptar mejor sus decisiones a los datos.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="num">02</span>
+          <span class="badge">Neurona artificial</span>
+          <h2>¿Qué función cumple el sesgo?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>El <strong>sesgo</strong>, o <strong>bias</strong>, es un parámetro adicional que permite desplazar la función de activación de una neurona. Mientras los pesos determinan la inclinación o dirección de la combinación de entradas, el sesgo permite mover la frontera de decisión sin depender exclusivamente de los valores de entrada.</p>
+<div class="formula">z = w · x + b</div>
+<p>El sesgo cumple un papel parecido al intercepto en una recta. En una función lineal simple, <code>y = mx + b</code>, el término <code>b</code> permite que la recta no tenga que pasar necesariamente por el origen. Del mismo modo, en una neurona artificial, el sesgo permite que la activación ocurra aunque las entradas sean cero o que se requiera un umbral más alto para activar la neurona.</p>
+<p>Sin sesgo, el modelo sería más rígido. Muchas fronteras de decisión quedarían obligadas a pasar por el origen, lo cual limitaría la capacidad de ajuste. Gracias al sesgo, una red neuronal puede representar patrones más flexibles y adaptar mejor sus decisiones a los datos.</p>
+        <div class="study-row">
+          <label><input type="checkbox" class="done"> Marcar como estudiada</label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q3" data-cat="Activación" data-text="activación ¿por qué una función de activación es necesaria? &lt;p&gt;una &lt;strong&gt;función de activación&lt;/strong&gt; es necesaria porque introduce &lt;strong&gt;no linealidad&lt;/strong&gt; en la red neuronal. sin funciones de activación no lineales, una red con muchas capas equivaldría matemáticamente a una sola transformación lineal. es decir, por más profunda que fuera la red, no podría aprender relaciones complejas entre las variables.&lt;/p&gt;
+&lt;div class=&quot;formula&quot;&gt;z = w · x + b&lt;br&gt;a = φ(z)&lt;/div&gt;
+&lt;p&gt;la función &lt;code&gt;φ&lt;/code&gt; puede ser relu, sigmoid, tanh, gelu u otra variante. su tarea es transformar la señal de entrada para permitir que la red capture patrones curvos, interacciones, cambios de régimen y fronteras de decisión complejas.&lt;/p&gt;
+&lt;p&gt;por ejemplo, una red sin activaciones no lineales no podría resolver correctamente problemas como xor, donde las clases no pueden separarse mediante una única recta. en cambio, al introducir activaciones no lineales y combinar varias neuronas, la red puede construir representaciones intermedias donde el problema se vuelve separable.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="num">03</span>
+          <span class="badge">Activación</span>
+          <h2>¿Por qué una función de activación es necesaria?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>Una <strong>función de activación</strong> es necesaria porque introduce <strong>no linealidad</strong> en la red neuronal. Sin funciones de activación no lineales, una red con muchas capas equivaldría matemáticamente a una sola transformación lineal. Es decir, por más profunda que fuera la red, no podría aprender relaciones complejas entre las variables.</p>
+<div class="formula">z = w · x + b<br>a = φ(z)</div>
+<p>La función <code>φ</code> puede ser ReLU, sigmoid, tanh, GELU u otra variante. Su tarea es transformar la señal de entrada para permitir que la red capture patrones curvos, interacciones, cambios de régimen y fronteras de decisión complejas.</p>
+<p>Por ejemplo, una red sin activaciones no lineales no podría resolver correctamente problemas como XOR, donde las clases no pueden separarse mediante una única recta. En cambio, al introducir activaciones no lineales y combinar varias neuronas, la red puede construir representaciones intermedias donde el problema se vuelve separable.</p>
+        <div class="study-row">
+          <label><input type="checkbox" class="done"> Marcar como estudiada</label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q4" data-cat="Activación" data-text="activación ¿qué diferencia hay entre una función lineal y una no lineal? &lt;p&gt;una &lt;strong&gt;función lineal&lt;/strong&gt; es aquella en la que la salida cambia de manera proporcional a las entradas. en modelos lineales, las variables se combinan mediante sumas y multiplicaciones por constantes. su forma general es una recta en dos dimensiones, un plano en tres dimensiones o un hiperplano en dimensiones mayores.&lt;/p&gt;
+&lt;div class=&quot;formula&quot;&gt;f(x) = w · x + b&lt;/div&gt;
+&lt;p&gt;una &lt;strong&gt;función no lineal&lt;/strong&gt;, en cambio, puede representar relaciones curvas, umbrales, saturaciones, interacciones y cambios de comportamiento. no se limita a una recta o a un plano. puede doblar el espacio de representación y permitir que el modelo separe patrones que no son linealmente separables.&lt;/p&gt;
+&lt;div class=&quot;formula&quot;&gt;lineal(lineal(lineal(x))) = otra función lineal de x&lt;/div&gt;
+&lt;p&gt;por eso se usan activaciones no lineales. relu, sigmoid y tanh permiten que la red construya fronteras de decisión flexibles. la diferencia fundamental es que una función lineal modela relaciones simples y proporcionales, mientras que una función no lineal permite capturar estructuras más complejas.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="num">04</span>
+          <span class="badge">Activación</span>
+          <h2>¿Qué diferencia hay entre una función lineal y una no lineal?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>Una <strong>función lineal</strong> es aquella en la que la salida cambia de manera proporcional a las entradas. En modelos lineales, las variables se combinan mediante sumas y multiplicaciones por constantes. Su forma general es una recta en dos dimensiones, un plano en tres dimensiones o un hiperplano en dimensiones mayores.</p>
+<div class="formula">f(x) = w · x + b</div>
+<p>Una <strong>función no lineal</strong>, en cambio, puede representar relaciones curvas, umbrales, saturaciones, interacciones y cambios de comportamiento. No se limita a una recta o a un plano. Puede doblar el espacio de representación y permitir que el modelo separe patrones que no son linealmente separables.</p>
+<div class="formula">Lineal(Lineal(Lineal(x))) = otra función lineal de x</div>
+<p>Por eso se usan activaciones no lineales. ReLU, sigmoid y tanh permiten que la red construya fronteras de decisión flexibles. La diferencia fundamental es que una función lineal modela relaciones simples y proporcionales, mientras que una función no lineal permite capturar estructuras más complejas.</p>
+        <div class="study-row">
+          <label><input type="checkbox" class="done"> Marcar como estudiada</label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q5" data-cat="Decisión" data-text="decisión ¿qué es una frontera de decisión? &lt;p&gt;una &lt;strong&gt;frontera de decisión&lt;/strong&gt; es la separación que un modelo aprende para distinguir entre clases. en un problema de clasificación binaria, la frontera divide el espacio de datos en regiones: de un lado el modelo predice una clase, y del otro lado predice otra.&lt;/p&gt;
+&lt;p&gt;en un modelo lineal simple, la frontera de decisión suele ser una recta, un plano o un hiperplano. por ejemplo, si una neurona calcula una combinación lineal y luego aplica una regla de decisión, la frontera aparece donde la salida cambia de clase.&lt;/p&gt;
+&lt;div class=&quot;formula&quot;&gt;w · x + b = 0&lt;/div&gt;
+&lt;p&gt;si el resultado de &lt;code&gt;w · x + b&lt;/code&gt; es positivo, el modelo puede asignar la clase 1. si es negativo, puede asignar la clase 0. en redes neuronales profundas, las fronteras de decisión pueden ser mucho más complejas gracias a las funciones de activación no lineales y a la combinación de múltiples capas.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="num">05</span>
+          <span class="badge">Decisión</span>
+          <h2>¿Qué es una frontera de decisión?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>Una <strong>frontera de decisión</strong> es la separación que un modelo aprende para distinguir entre clases. En un problema de clasificación binaria, la frontera divide el espacio de datos en regiones: de un lado el modelo predice una clase, y del otro lado predice otra.</p>
+<p>En un modelo lineal simple, la frontera de decisión suele ser una recta, un plano o un hiperplano. Por ejemplo, si una neurona calcula una combinación lineal y luego aplica una regla de decisión, la frontera aparece donde la salida cambia de clase.</p>
+<div class="formula">w · x + b = 0</div>
+<p>Si el resultado de <code>w · x + b</code> es positivo, el modelo puede asignar la clase 1. Si es negativo, puede asignar la clase 0. En redes neuronales profundas, las fronteras de decisión pueden ser mucho más complejas gracias a las funciones de activación no lineales y a la combinación de múltiples capas.</p>
+        <div class="study-row">
+          <label><input type="checkbox" class="done"> Marcar como estudiada</label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q6" data-cat="Decisión" data-text="decisión ¿por qué xor no puede resolverse con un perceptrón simple? &lt;p&gt;el problema &lt;strong&gt;xor&lt;/strong&gt; no puede resolverse con un perceptrón simple porque sus clases no son &lt;strong&gt;linealmente separables&lt;/strong&gt;. un perceptrón simple solo puede construir una frontera de decisión lineal: una recta en dos dimensiones. si los puntos de una clase no pueden separarse de los de la otra mediante una sola recta, el perceptrón no puede resolver el problema.&lt;/p&gt;
+&lt;div class=&quot;formula&quot;&gt;xor(0,0)=0&lt;br&gt;xor(0,1)=1&lt;br&gt;xor(1,0)=1&lt;br&gt;xor(1,1)=0&lt;/div&gt;
+&lt;p&gt;si se representan estos cuatro puntos en el plano, los puntos con salida 1 quedan en esquinas opuestas, y los puntos con salida 0 quedan en las otras dos esquinas. no existe una única recta que separe correctamente ambos grupos.&lt;/p&gt;
+&lt;p&gt;para resolver xor se necesita al menos una capa oculta con funciones de activación no lineales. esa capa oculta transforma el espacio original en una nueva representación donde las clases sí pueden separarse. xor muestra la limitación de los modelos lineales simples y la necesidad de redes multicapa.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="num">06</span>
+          <span class="badge">Decisión</span>
+          <h2>¿Por qué XOR no puede resolverse con un perceptrón simple?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>El problema <strong>XOR</strong> no puede resolverse con un perceptrón simple porque sus clases no son <strong>linealmente separables</strong>. Un perceptrón simple solo puede construir una frontera de decisión lineal: una recta en dos dimensiones. Si los puntos de una clase no pueden separarse de los de la otra mediante una sola recta, el perceptrón no puede resolver el problema.</p>
+<div class="formula">XOR(0,0)=0<br>XOR(0,1)=1<br>XOR(1,0)=1<br>XOR(1,1)=0</div>
+<p>Si se representan estos cuatro puntos en el plano, los puntos con salida 1 quedan en esquinas opuestas, y los puntos con salida 0 quedan en las otras dos esquinas. No existe una única recta que separe correctamente ambos grupos.</p>
+<p>Para resolver XOR se necesita al menos una capa oculta con funciones de activación no lineales. Esa capa oculta transforma el espacio original en una nueva representación donde las clases sí pueden separarse. XOR muestra la limitación de los modelos lineales simples y la necesidad de redes multicapa.</p>
+        <div class="study-row">
+          <label><input type="checkbox" class="done"> Marcar como estudiada</label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q7" data-cat="Pérdida y optimización" data-text="pérdida y optimización ¿qué mide una función de pérdida? &lt;p&gt;una &lt;strong&gt;función de pérdida&lt;/strong&gt; mide qué tan lejos está la predicción del modelo respecto del valor correcto. es una forma matemática de cuantificar el error. durante el entrenamiento, la red busca minimizar esa pérdida ajustando sus pesos y sesgos.&lt;/p&gt;
+&lt;p&gt;en un problema de regresión, una pérdida frecuente es el error cuadrático medio:&lt;/p&gt;
+&lt;div class=&quot;formula&quot;&gt;mse = promedio((y - ŷ)²)&lt;/div&gt;
+&lt;p&gt;en clasificación, se suelen usar pérdidas como la entropía cruzada, que penaliza predicciones con alta confianza cuando están equivocadas. por ejemplo, si la clase correcta es “perro” y el modelo asigna alta probabilidad a “gato”, la pérdida será elevada.&lt;/p&gt;
+&lt;p&gt;la función de pérdida cumple dos funciones: sirve como indicador de desempeño durante el entrenamiento y proporciona la señal para calcular gradientes. la pérdida traduce el objetivo de aprendizaje en una cantidad optimizable.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="num">07</span>
+          <span class="badge">Pérdida y optimización</span>
+          <h2>¿Qué mide una función de pérdida?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>Una <strong>función de pérdida</strong> mide qué tan lejos está la predicción del modelo respecto del valor correcto. Es una forma matemática de cuantificar el error. Durante el entrenamiento, la red busca minimizar esa pérdida ajustando sus pesos y sesgos.</p>
+<p>En un problema de regresión, una pérdida frecuente es el error cuadrático medio:</p>
+<div class="formula">MSE = promedio((y - ŷ)²)</div>
+<p>En clasificación, se suelen usar pérdidas como la entropía cruzada, que penaliza predicciones con alta confianza cuando están equivocadas. Por ejemplo, si la clase correcta es “perro” y el modelo asigna alta probabilidad a “gato”, la pérdida será elevada.</p>
+<p>La función de pérdida cumple dos funciones: sirve como indicador de desempeño durante el entrenamiento y proporciona la señal para calcular gradientes. La pérdida traduce el objetivo de aprendizaje en una cantidad optimizable.</p>
+        <div class="study-row">
+          <label><input type="checkbox" class="done"> Marcar como estudiada</label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q8" data-cat="Pérdida y optimización" data-text="pérdida y optimización ¿qué indica el gradiente? &lt;p&gt;el &lt;strong&gt;gradiente&lt;/strong&gt; indica la dirección y la magnitud en la que una función cambia más rápidamente. en el entrenamiento de redes neuronales, el gradiente de la función de pérdida respecto de los parámetros indica cómo debe modificarse cada peso o sesgo para aumentar o reducir el error.&lt;/p&gt;
+&lt;p&gt;como el objetivo es minimizar la pérdida, el modelo se mueve en la dirección opuesta al gradiente. esta idea se conoce como &lt;strong&gt;descenso por gradiente&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class=&quot;formula&quot;&gt;parámetro nuevo = parámetro actual - learning_rate × gradiente&lt;/div&gt;
+&lt;p&gt;si el gradiente es grande, pequeños cambios en ese parámetro pueden producir cambios importantes en la pérdida. si el gradiente es cercano a cero, la pérdida cambia poco en esa dirección. el gradiente es, por lo tanto, la señal de aprendizaje que permite ajustar la red.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="num">08</span>
+          <span class="badge">Pérdida y optimización</span>
+          <h2>¿Qué indica el gradiente?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>El <strong>gradiente</strong> indica la dirección y la magnitud en la que una función cambia más rápidamente. En el entrenamiento de redes neuronales, el gradiente de la función de pérdida respecto de los parámetros indica cómo debe modificarse cada peso o sesgo para aumentar o reducir el error.</p>
+<p>Como el objetivo es minimizar la pérdida, el modelo se mueve en la dirección opuesta al gradiente. Esta idea se conoce como <strong>descenso por gradiente</strong>:</p>
+<div class="formula">parámetro nuevo = parámetro actual - learning_rate × gradiente</div>
+<p>Si el gradiente es grande, pequeños cambios en ese parámetro pueden producir cambios importantes en la pérdida. Si el gradiente es cercano a cero, la pérdida cambia poco en esa dirección. El gradiente es, por lo tanto, la señal de aprendizaje que permite ajustar la red.</p>
+        <div class="study-row">
+          <label><input type="checkbox" class="done"> Marcar como estudiada</label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q9" data-cat="Pérdida y optimización" data-text="pérdida y optimización ¿qué ocurre si el learning rate es demasiado alto? &lt;p&gt;el &lt;strong&gt;learning rate&lt;/strong&gt; o tasa de aprendizaje controla el tamaño de los pasos que da el algoritmo al actualizar los parámetros. si es demasiado alto, el entrenamiento puede volverse inestable. en lugar de acercarse progresivamente a un mínimo de la función de pérdida, el modelo puede saltar de un lado a otro y no converger.&lt;/p&gt;
+&lt;div class=&quot;formula&quot;&gt;θ nuevo = θ actual - α × ∇l(θ)&lt;/div&gt;
+&lt;p&gt;donde &lt;code&gt;α&lt;/code&gt; es el learning rate. si &lt;code&gt;α&lt;/code&gt; es excesivo, cada actualización puede ser demasiado grande. esto puede provocar oscilaciones, aumento de la pérdida o incluso divergencia.&lt;/p&gt;
+&lt;p&gt;un learning rate demasiado alto puede hacer que el modelo nunca encuentre una buena solución, aunque la arquitectura y los datos sean adecuados. por eso se usan técnicas como reducción gradual del learning rate, optimizadores adaptativos, warm-up o búsqueda de hiperparámetros.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="num">09</span>
+          <span class="badge">Pérdida y optimización</span>
+          <h2>¿Qué ocurre si el learning rate es demasiado alto?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>El <strong>learning rate</strong> o tasa de aprendizaje controla el tamaño de los pasos que da el algoritmo al actualizar los parámetros. Si es demasiado alto, el entrenamiento puede volverse inestable. En lugar de acercarse progresivamente a un mínimo de la función de pérdida, el modelo puede saltar de un lado a otro y no converger.</p>
+<div class="formula">θ nuevo = θ actual - α × ∇L(θ)</div>
+<p>Donde <code>α</code> es el learning rate. Si <code>α</code> es excesivo, cada actualización puede ser demasiado grande. Esto puede provocar oscilaciones, aumento de la pérdida o incluso divergencia.</p>
+<p>Un learning rate demasiado alto puede hacer que el modelo nunca encuentre una buena solución, aunque la arquitectura y los datos sean adecuados. Por eso se usan técnicas como reducción gradual del learning rate, optimizadores adaptativos, warm-up o búsqueda de hiperparámetros.</p>
+        <div class="study-row">
+          <label><input type="checkbox" class="done"> Marcar como estudiada</label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q10" data-cat="Propagación" data-text="propagación ¿qué calcula forward propagation? &lt;p&gt;&lt;strong&gt;forward propagation&lt;/strong&gt;, o propagación hacia adelante, calcula la salida del modelo a partir de una entrada. es el proceso por el cual los datos atraviesan la red capa por capa hasta generar una predicción.&lt;/p&gt;
+&lt;div class=&quot;formula&quot;&gt;z = w · x + b&lt;br&gt;a = φ(z)&lt;/div&gt;
+&lt;p&gt;la salida de una capa se convierte en la entrada de la siguiente. en una red de clasificación de imágenes, por ejemplo, la imagen inicial se transforma progresivamente en representaciones intermedias y finalmente en probabilidades de clase.&lt;/p&gt;
+&lt;p&gt;forward propagation no ajusta los pesos. solo usa los parámetros actuales del modelo para producir una predicción. luego, esa predicción se compara con el valor real mediante una función de pérdida.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="num">10</span>
+          <span class="badge">Propagación</span>
+          <h2>¿Qué calcula forward propagation?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p><strong>Forward propagation</strong>, o propagación hacia adelante, calcula la salida del modelo a partir de una entrada. Es el proceso por el cual los datos atraviesan la red capa por capa hasta generar una predicción.</p>
+<div class="formula">z = w · x + b<br>a = φ(z)</div>
+<p>La salida de una capa se convierte en la entrada de la siguiente. En una red de clasificación de imágenes, por ejemplo, la imagen inicial se transforma progresivamente en representaciones intermedias y finalmente en probabilidades de clase.</p>
+<p>Forward propagation no ajusta los pesos. Solo usa los parámetros actuales del modelo para producir una predicción. Luego, esa predicción se compara con el valor real mediante una función de pérdida.</p>
+        <div class="study-row">
+          <label><input type="checkbox" class="done"> Marcar como estudiada</label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q11" data-cat="Propagación" data-text="propagación ¿qué calcula backpropagation? &lt;p&gt;&lt;strong&gt;backpropagation&lt;/strong&gt;, o propagación hacia atrás, calcula los gradientes de la función de pérdida respecto de los pesos y sesgos de la red. es el procedimiento que permite saber cómo debe ajustarse cada parámetro para reducir el error.&lt;/p&gt;
+&lt;p&gt;después de forward propagation, el modelo obtiene una predicción. esa predicción se compara con el valor real y se calcula la pérdida. backpropagation toma esa pérdida y la propaga hacia atrás, desde la salida hasta las capas iniciales, aplicando la regla de la cadena.&lt;/p&gt;
+&lt;div class=&quot;formula&quot;&gt;∂l/∂w, ∂l/∂b&lt;/div&gt;
+&lt;p&gt;estas derivadas indican cuánto cambia la pérdida cuando cambia cada peso o sesgo. luego, un optimizador usa esa información para actualizar los parámetros. backpropagation es esencial porque permite entrenar redes profundas de manera eficiente.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="num">11</span>
+          <span class="badge">Propagación</span>
+          <h2>¿Qué calcula backpropagation?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p><strong>Backpropagation</strong>, o propagación hacia atrás, calcula los gradientes de la función de pérdida respecto de los pesos y sesgos de la red. Es el procedimiento que permite saber cómo debe ajustarse cada parámetro para reducir el error.</p>
+<p>Después de forward propagation, el modelo obtiene una predicción. Esa predicción se compara con el valor real y se calcula la pérdida. Backpropagation toma esa pérdida y la propaga hacia atrás, desde la salida hasta las capas iniciales, aplicando la regla de la cadena.</p>
+<div class="formula">∂L/∂w, ∂L/∂b</div>
+<p>Estas derivadas indican cuánto cambia la pérdida cuando cambia cada peso o sesgo. Luego, un optimizador usa esa información para actualizar los parámetros. Backpropagation es esencial porque permite entrenar redes profundas de manera eficiente.</p>
+        <div class="study-row">
+          <label><input type="checkbox" class="done"> Marcar como estudiada</label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q12" data-cat="Propagación" data-text="propagación ¿por qué se usa la regla de la cadena? &lt;p&gt;se usa la &lt;strong&gt;regla de la cadena&lt;/strong&gt; porque una red neuronal es una composición de muchas funciones. cada capa transforma la salida de la capa anterior, de modo que la pérdida final depende indirectamente de todos los pesos de la red.&lt;/p&gt;
+&lt;p&gt;si una función depende de otra función, y esta depende de una variable, la regla de la cadena permite calcular cómo cambia el resultado final cuando cambia esa variable. en redes neuronales, esto permite calcular cómo cambia la pérdida cuando se modifica un peso de una capa interna.&lt;/p&gt;
+&lt;div class=&quot;formula&quot;&gt;si l depende de a, y a depende de z, y z depende de w:&lt;br&gt;∂l/∂w = ∂l/∂a × ∂a/∂z × ∂z/∂w&lt;/div&gt;
+&lt;p&gt;backpropagation aplica esta idea desde la salida hacia la entrada. la regla de la cadena conecta el error final con cada parámetro interno, incluso en capas que no tienen una etiqueta directa asociada.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="num">12</span>
+          <span class="badge">Propagación</span>
+          <h2>¿Por qué se usa la regla de la cadena?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>Se usa la <strong>regla de la cadena</strong> porque una red neuronal es una composición de muchas funciones. Cada capa transforma la salida de la capa anterior, de modo que la pérdida final depende indirectamente de todos los pesos de la red.</p>
+<p>Si una función depende de otra función, y esta depende de una variable, la regla de la cadena permite calcular cómo cambia el resultado final cuando cambia esa variable. En redes neuronales, esto permite calcular cómo cambia la pérdida cuando se modifica un peso de una capa interna.</p>
+<div class="formula">Si L depende de a, y a depende de z, y z depende de w:<br>∂L/∂w = ∂L/∂a × ∂a/∂z × ∂z/∂w</div>
+<p>Backpropagation aplica esta idea desde la salida hacia la entrada. La regla de la cadena conecta el error final con cada parámetro interno, incluso en capas que no tienen una etiqueta directa asociada.</p>
+        <div class="study-row">
+          <label><input type="checkbox" class="done"> Marcar como estudiada</label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q13" data-cat="Generalización" data-text="generalización ¿qué es overfitting? &lt;p&gt;&lt;strong&gt;overfitting&lt;/strong&gt;, o sobreajuste, ocurre cuando un modelo aprende demasiado bien los datos de entrenamiento, incluyendo ruido, excepciones y patrones accidentales, pero no generaliza correctamente a datos nuevos.&lt;/p&gt;
+&lt;p&gt;un modelo con overfitting suele mostrar bajo error de entrenamiento y alto error de validación o prueba. es decir, parece funcionar muy bien con los datos que ya vio, pero falla cuando recibe ejemplos nuevos.&lt;/p&gt;
+&lt;p&gt;esto puede ocurrir cuando el modelo es demasiado complejo para la cantidad de datos disponible, cuando entrena durante demasiadas épocas, cuando los datos son ruidosos o cuando no se usan mecanismos de regularización.&lt;/p&gt;
+&lt;p&gt;un ejemplo simple sería un estudiante que memoriza exactamente las respuestas de un examen anterior, pero no comprende el tema. si el nuevo examen cambia ligeramente las preguntas, su desempeño cae. del mismo modo, una red sobreajustada memoriza patrones específicos del conjunto de entrenamiento sin aprender regularidades generales.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="num">13</span>
+          <span class="badge">Generalización</span>
+          <h2>¿Qué es overfitting?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p><strong>Overfitting</strong>, o sobreajuste, ocurre cuando un modelo aprende demasiado bien los datos de entrenamiento, incluyendo ruido, excepciones y patrones accidentales, pero no generaliza correctamente a datos nuevos.</p>
+<p>Un modelo con overfitting suele mostrar bajo error de entrenamiento y alto error de validación o prueba. Es decir, parece funcionar muy bien con los datos que ya vio, pero falla cuando recibe ejemplos nuevos.</p>
+<p>Esto puede ocurrir cuando el modelo es demasiado complejo para la cantidad de datos disponible, cuando entrena durante demasiadas épocas, cuando los datos son ruidosos o cuando no se usan mecanismos de regularización.</p>
+<p>Un ejemplo simple sería un estudiante que memoriza exactamente las respuestas de un examen anterior, pero no comprende el tema. Si el nuevo examen cambia ligeramente las preguntas, su desempeño cae. Del mismo modo, una red sobreajustada memoriza patrones específicos del conjunto de entrenamiento sin aprender regularidades generales.</p>
+        <div class="study-row">
+          <label><input type="checkbox" class="done"> Marcar como estudiada</label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q14" data-cat="Generalización" data-text="generalización ¿qué diferencia hay entre error de entrenamiento y error de validación? &lt;p&gt;el &lt;strong&gt;error de entrenamiento&lt;/strong&gt; mide el desempeño del modelo sobre los datos usados para ajustar sus parámetros. el &lt;strong&gt;error de validación&lt;/strong&gt; mide el desempeño sobre datos separados, que el modelo no utiliza directamente para aprender los pesos.&lt;/p&gt;
+&lt;p&gt;esta diferencia es fundamental para evaluar generalización. si el error de entrenamiento baja, significa que el modelo está aprendiendo a representar los datos que ve durante el entrenamiento. pero eso no garantiza que funcione bien sobre datos nuevos.&lt;/p&gt;
+&lt;div class=&quot;formula&quot;&gt;buen ajuste: error entrenamiento bajo + error validación bajo&lt;br&gt;overfitting: error entrenamiento bajo + error validación alto&lt;br&gt;underfitting: ambos errores altos&lt;/div&gt;
+&lt;p&gt;por eso se separan los datos en entrenamiento, validación y prueba. la validación ayuda a tomar decisiones sobre arquitectura, regularización, learning rate y cantidad de épocas sin evaluar directamente sobre el conjunto final de test.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="num">14</span>
+          <span class="badge">Generalización</span>
+          <h2>¿Qué diferencia hay entre error de entrenamiento y error de validación?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>El <strong>error de entrenamiento</strong> mide el desempeño del modelo sobre los datos usados para ajustar sus parámetros. El <strong>error de validación</strong> mide el desempeño sobre datos separados, que el modelo no utiliza directamente para aprender los pesos.</p>
+<p>Esta diferencia es fundamental para evaluar generalización. Si el error de entrenamiento baja, significa que el modelo está aprendiendo a representar los datos que ve durante el entrenamiento. Pero eso no garantiza que funcione bien sobre datos nuevos.</p>
+<div class="formula">Buen ajuste: error entrenamiento bajo + error validación bajo<br>Overfitting: error entrenamiento bajo + error validación alto<br>Underfitting: ambos errores altos</div>
+<p>Por eso se separan los datos en entrenamiento, validación y prueba. La validación ayuda a tomar decisiones sobre arquitectura, regularización, learning rate y cantidad de épocas sin evaluar directamente sobre el conjunto final de test.</p>
+        <div class="study-row">
+          <label><input type="checkbox" class="done"> Marcar como estudiada</label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    
+    <article class="qa-card" id="q15" data-cat="Generalización" data-text="generalización ¿cómo ayuda la regularización a mejorar la generalización? &lt;p&gt;la &lt;strong&gt;regularización&lt;/strong&gt; ayuda a mejorar la generalización porque limita la capacidad del modelo de ajustarse excesivamente a detalles específicos del conjunto de entrenamiento. su objetivo es favorecer soluciones más simples, estables y robustas.&lt;/p&gt;
+&lt;p&gt;una red neuronal con muchos parámetros puede aprender patrones útiles, pero también puede memorizar ruido. la regularización introduce restricciones o penalizaciones para evitar que el modelo dependa demasiado de combinaciones frágiles de pesos.&lt;/p&gt;
+&lt;div class=&quot;formula&quot;&gt;pérdida total = pérdida original + λ × suma(w²)&lt;/div&gt;
+&lt;p&gt;también existen otras técnicas: dropout, que apaga neuronas aleatoriamente durante el entrenamiento; early stopping, que detiene el entrenamiento cuando la validación deja de mejorar; aumento de datos, que expone al modelo a variaciones; y reducción de complejidad, que usa arquitecturas más simples.&lt;/p&gt;
+&lt;p&gt;la regularización no busca que el modelo memorice perfectamente el entrenamiento, sino que aprenda patrones transferibles. puede aumentar un poco el error de entrenamiento, pero reducir el error de validación o prueba.&lt;/p&gt;">
+      <header class="qa-head">
+        <div>
+          <span class="num">15</span>
+          <span class="badge">Generalización</span>
+          <h2>¿Cómo ayuda la regularización a mejorar la generalización?</h2>
+        </div>
+        <button class="toggle" type="button" aria-expanded="false">Ver respuesta</button>
+      </header>
+      <section class="answer">
+        <p>La <strong>regularización</strong> ayuda a mejorar la generalización porque limita la capacidad del modelo de ajustarse excesivamente a detalles específicos del conjunto de entrenamiento. Su objetivo es favorecer soluciones más simples, estables y robustas.</p>
+<p>Una red neuronal con muchos parámetros puede aprender patrones útiles, pero también puede memorizar ruido. La regularización introduce restricciones o penalizaciones para evitar que el modelo dependa demasiado de combinaciones frágiles de pesos.</p>
+<div class="formula">Pérdida total = pérdida original + λ × suma(w²)</div>
+<p>También existen otras técnicas: dropout, que apaga neuronas aleatoriamente durante el entrenamiento; early stopping, que detiene el entrenamiento cuando la validación deja de mejorar; aumento de datos, que expone al modelo a variaciones; y reducción de complejidad, que usa arquitecturas más simples.</p>
+<p>La regularización no busca que el modelo memorice perfectamente el entrenamiento, sino que aprenda patrones transferibles. Puede aumentar un poco el error de entrenamiento, pero reducir el error de validación o prueba.</p>
+        <div class="study-row">
+          <label><input type="checkbox" class="done"> Marcar como estudiada</label>
+          <a href="#top">Volver arriba</a>
+        </div>
+      </section>
+    </article>
+    </section>
+<footer class="footer">Material elaborado para estudiar fundamentos de redes neuronales artificiales. Archivo HTML autocontenido.</footer>
+</main><a class="to-top" href="#top" aria-label="Volver arriba">↑</a>
+<script>
+const root=document.documentElement,body=document.body;
+const cards=[...document.querySelectorAll('.qa-card')],searchInput=document.getElementById('searchInput'),catSelect=document.getElementById('catSelect'),chips=[...document.querySelectorAll('.chip')],progressText=document.getElementById('progressText'),progressBar=document.getElementById('progressBar'),empty=document.getElementById('empty');
+const palettes=['aurora','bosque','uva','carbono'];let paletteIndex=0,currentCat='all';
+function updateProgress(){const done=cards.filter(c=>c.querySelector('.done').checked).length;progressText.textContent=`${done} / ${cards.length}`;progressBar.style.width=`${(done/cards.length)*100}%`;cards.forEach(c=>c.classList.toggle('done-card',c.querySelector('.done').checked))}
+function applyFilters(){const q=searchInput.value.trim().toLowerCase(),cat=currentCat;let visible=0;cards.forEach(card=>{const show=(!q||card.dataset.text.includes(q))&&(cat==='all'||card.dataset.cat===cat);card.classList.toggle('hidden',!show);if(show)visible++});empty.classList.toggle('show',visible===0)}
+document.querySelectorAll('.toggle').forEach(btn=>btn.addEventListener('click',()=>{const card=btn.closest('.qa-card'),isOpen=card.classList.toggle('open');btn.classList.toggle('open',isOpen);btn.textContent=isOpen?'Ocultar respuesta':'Ver respuesta';btn.setAttribute('aria-expanded',isOpen?'true':'false')}));
+document.querySelectorAll('.done').forEach(cb=>cb.addEventListener('change',updateProgress));
+document.getElementById('openAll').addEventListener('click',()=>cards.forEach(card=>{card.classList.add('open');const btn=card.querySelector('.toggle');btn.classList.add('open');btn.textContent='Ocultar respuesta';btn.setAttribute('aria-expanded','true')}));
+document.getElementById('closeAll').addEventListener('click',()=>cards.forEach(card=>{card.classList.remove('open');const btn=card.querySelector('.toggle');btn.classList.remove('open');btn.textContent='Ver respuesta';btn.setAttribute('aria-expanded','false')}));
+document.getElementById('themeBtn').addEventListener('click',()=>{const dark=root.dataset.theme==='dark';root.dataset.theme=dark?'light':'dark';document.getElementById('themeBtn').textContent=dark?'🌙 Tema oscuro':'☀️ Tema claro'});
+document.getElementById('paletteBtn').addEventListener('click',()=>{paletteIndex=(paletteIndex+1)%palettes.length;root.dataset.palette=palettes[paletteIndex]});
+document.getElementById('examMode').addEventListener('change',e=>body.classList.toggle('exam',e.target.checked));
+document.getElementById('fontRange').addEventListener('input',e=>root.style.setProperty('--reading',e.target.value));
+searchInput.addEventListener('input',applyFilters);
+catSelect.addEventListener('change',e=>{currentCat=e.target.value;chips.forEach(chip=>chip.classList.toggle('active',chip.dataset.cat===currentCat));applyFilters()});
+chips.forEach(chip=>chip.addEventListener('click',()=>{currentCat=chip.dataset.cat;catSelect.value=currentCat;chips.forEach(c=>c.classList.toggle('active',c===chip));applyFilters()}));
+updateProgress();applyFilters();
+</script>
+</body></html>

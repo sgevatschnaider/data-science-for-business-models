@@ -1,0 +1,2376 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light" data-palette="aurora">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Redes neuronales · Glosario completo interactivo</title>
+<style>
+:root{
+  --font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:Consolas,"SFMono-Regular",Menlo,monospace;
+  --bg:#f4f7fb;--card:#ffffff;--card2:#f8fbff;--text:#142033;--muted:#64748b;--line:#d9e4f2;
+  --accent:#2563eb;--accent2:#7c3aed;--accent3:#06b6d4;--good:#059669;--warn:#d97706;--bad:#dc2626;
+  --shadow:0 22px 58px rgba(23,37,84,.14);--soft:0 8px 24px rgba(15,23,42,.08);--radius:28px;--reading:1;
+}
+html[data-theme="dark"]{
+  --bg:#07111f;--card:#111c31;--card2:#0d1729;--text:#eef6ff;--muted:#afbdd2;--line:#263956;
+  --shadow:0 22px 58px rgba(0,0,0,.38);--soft:0 8px 24px rgba(0,0,0,.25);
+}
+html[data-palette="aurora"]{--accent:#2563eb;--accent2:#7c3aed;--accent3:#06b6d4;--good:#059669;--warn:#d97706;--bad:#dc2626;}
+html[data-palette="bosque"]{--accent:#047857;--accent2:#65a30d;--accent3:#0891b2;--good:#16a34a;--warn:#d97706;--bad:#be123c;}
+html[data-palette="uva"]{--accent:#7c3aed;--accent2:#db2777;--accent3:#06b6d4;--good:#10b981;--warn:#f59e0b;--bad:#e11d48;}
+html[data-palette="carbono"]{--accent:#334155;--accent2:#0f766e;--accent3:#7c2d12;--good:#15803d;--warn:#ca8a04;--bad:#be123c;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:var(--font);color:var(--text);line-height:1.64;
+  background:
+    radial-gradient(circle at top left,color-mix(in srgb,var(--accent) 18%,transparent),transparent 34%),
+    radial-gradient(circle at top right,color-mix(in srgb,var(--accent2) 14%,transparent),transparent 30%),
+    radial-gradient(circle at 50% 110%,color-mix(in srgb,var(--accent3) 16%,transparent),transparent 36%),
+    linear-gradient(135deg,var(--bg),color-mix(in srgb,var(--bg),var(--accent3) 8%));
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.25;
+  background-image:linear-gradient(color-mix(in srgb,var(--line) 58%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--line) 58%,transparent) 1px,transparent 1px);
+  background-size:46px 46px;mask-image:radial-gradient(circle at center,black,transparent 78%);
+}
+a{color:var(--accent);font-weight:850;text-decoration:none}a:hover{text-decoration:underline}
+button,input,select{font:inherit}button{cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:3px}
+.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--card) 86%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav{max-width:1320px;margin:auto;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:950;letter-spacing:-.025em;display:flex;align-items:center;gap:10px}
+.brand span:first-child{width:38px;height:38px;border-radius:15px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:var(--soft)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.btn,.chip,.letter,.toggle,.icon-btn{
+  border:1px solid var(--line);background:var(--card);color:var(--text);padding:10px 14px;border-radius:15px;cursor:pointer;font-weight:900;
+  box-shadow:var(--soft);transition:.18s transform,.18s filter,.18s background;
+}
+.btn:hover,.chip:hover,.letter:hover,.toggle:hover,.icon-btn:hover{transform:translateY(-1px)}
+.btn.primary,.chip.active,.letter.active,.toggle.open{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+main{max-width:1320px;margin:auto;padding:28px 20px 72px;position:relative}
+.hero{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(340px,.82fr);gap:22px;margin:18px 0 22px}
+.card,.term-card,.study-panel{background:color-mix(in srgb,var(--card) 96%,transparent);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);backdrop-filter:blur(12px)}
+h1{font-size:clamp(36px,5vw,66px);line-height:1.02;margin:10px 0 14px;letter-spacing:-.055em}
+h2{font-size:clamp(23px,2.4vw,31px);line-height:1.12;margin:8px 0 0;letter-spacing:-.035em}
+h3{margin:8px 0 12px;font-size:22px}
+.lead{font-size:18px;color:var(--muted);max-width:88ch}
+.tag,.pill{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:6px 11px;margin:4px 6px 4px 0;background:color-mix(in srgb,var(--card),var(--accent) 6%);font-size:13px;font-weight:950;color:var(--muted)}
+.pill{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;min-width:48px;justify-content:center}
+.notice{border-left:5px solid var(--accent);padding:15px 17px;border-radius:18px;background:color-mix(in srgb,var(--accent) 8%,var(--card));margin:15px 0;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.stat{border:1px solid var(--line);border-radius:22px;padding:18px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--soft)}
+.stat strong{display:block;font-size:30px;color:var(--accent);line-height:1}.stat span{display:block;margin-top:8px;color:var(--muted);font-size:13px}
+.summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.summary{border:1px solid var(--line);border-radius:20px;padding:14px;background:var(--card2);color:var(--muted)}.summary strong{display:block;color:var(--text);margin-bottom:5px}
+.study-panel{margin:0 0 20px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
+.progress-wrap{display:grid;gap:8px}.progress-label{display:flex;justify-content:space-between;color:var(--muted);font-weight:850;font-size:14px}
+.progress{height:16px;border-radius:999px;background:color-mix(in srgb,var(--card),#000 8%);border:1px solid var(--line);overflow:hidden}
+.progress span{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));transition:.25s}
+.mode{display:flex;align-items:center;gap:10px;white-space:nowrap;color:var(--muted);font-weight:900}
+.switch{position:relative;display:inline-block;width:58px;height:32px}.switch input{display:none}
+.slider{position:absolute;inset:0;background:var(--line);border-radius:999px;transition:.2s}
+.slider::before{content:"";position:absolute;width:26px;height:26px;left:3px;top:3px;border-radius:50%;background:var(--card);box-shadow:var(--soft);transition:.2s}
+.switch input:checked + .slider{background:linear-gradient(135deg,var(--accent),var(--accent2))}.switch input:checked + .slider::before{transform:translateX(26px)}
+.toolbar{display:grid;grid-template-columns:1fr 230px auto;gap:14px;align-items:end;margin:0 0 16px}
+input[type="search"],select{width:100%;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:16px;padding:12px 14px;box-shadow:var(--soft);min-height:46px}
+.filter-block{display:grid;gap:10px;margin-bottom:18px}
+.filter-row,.letters{display:flex;flex-wrap:wrap;gap:9px}
+.letter{min-width:42px;padding:8px 10px;border-radius:12px}
+.term-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.term-card{scroll-margin-top:96px}
+.term-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+.short{margin:10px 0 0;color:var(--muted);font-size:calc(1rem * var(--reading))}
+.term-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.icon-btn{width:42px;height:42px;display:grid;place-items:center;padding:0}
+.icon-btn.marked{background:linear-gradient(135deg,var(--good),var(--accent3));color:#fff;border-color:transparent}
+.definition{display:none;margin-top:18px;border-top:1px solid var(--line);padding-top:18px;font-size:calc(1rem * var(--reading))}
+.term-card.open .definition{display:block}
+.term-card.done-card{border-color:color-mix(in srgb,var(--good) 45%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--good) 7%,var(--card)),var(--card))}
+.block{margin:12px 0;padding:14px;border-radius:18px;background:var(--card2);border:1px solid var(--line)}
+.block strong{display:block;color:var(--accent);font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.block p{margin:0;color:var(--muted)}
+.formula{margin:15px 0;padding:14px 16px;border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 9%,var(--card)),color-mix(in srgb,var(--accent2) 7%,var(--card)));font-family:var(--mono);color:var(--text);overflow:auto;white-space:pre-wrap}
+.study-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;padding:13px;border-radius:18px;background:var(--card2);border:1px solid var(--line);color:var(--muted)}
+.range-row{display:flex;align-items:center;gap:10px;min-width:220px}input[type="range"]{width:150px;accent-color:var(--accent)}
+.hidden{display:none!important}
+.exam .definition{display:none!important}.exam .term-card.open .definition{display:block!important}
+.empty{display:none;text-align:center;padding:26px;color:var(--muted)}.empty.show{display:block}
+.footer{margin-top:42px;color:var(--muted);font-size:14px;text-align:center;border-top:1px solid var(--line);padding-top:22px}
+.to-top{position:fixed;right:18px;bottom:18px;z-index:60;width:48px;height:48px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:grid;place-items:center;font-weight:950;text-decoration:none;box-shadow:var(--soft)}
+@media(max-width:1040px){
+  .nav,.toolbar,.study-panel{grid-template-columns:1fr;align-items:stretch}.nav{flex-direction:column;align-items:flex-start}
+  .hero{grid-template-columns:1fr}.controls{justify-content:flex-start}.term-head{flex-direction:column}.toggle{width:100%}.stats,.summary-grid,.term-list{grid-template-columns:1fr}
+}
+@media print{
+  .topbar,.toolbar,.study-panel,.filter-block,.to-top,.toggle,.icon-btn{display:none!important}body{background:white}body::before{display:none}main{max-width:100%;padding:0}
+  .card,.term-card{box-shadow:none;break-inside:avoid}.definition{display:block!important}.term-list{display:block}.term-card{margin-bottom:12px}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="nav">
+    <div class="brand"><span>NN</span><span>Glosario de estudio · Redes neuronales</span></div>
+    <div class="controls">
+      <button class="btn" id="themeBtn" type="button">🌙 Tema oscuro</button>
+      <button class="btn" id="paletteBtn" type="button">🎨 Cambiar paleta</button>
+      <button class="btn" onclick="window.print()" type="button">🖨️ Imprimir</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="card">
+      <span class="tag">Deep Learning</span>
+      <span class="tag">Redes neuronales</span>
+      <span class="tag">Backpropagation</span>
+      <span class="tag">Generalización</span>
+      <h1>Glosario completo de redes neuronales</h1>
+      <p class="lead">Material interactivo para estudiar conceptos fundamentales y aplicados de redes neuronales artificiales: neurona, pesos, sesgo, activaciones, fronteras de decisión, entrenamiento, pérdida, gradientes, backpropagation, optimización, evaluación, regularización y generalización.</p>
+      <div class="notice"><strong>Idea guía:</strong> una red neuronal aprende ajustando pesos y sesgos para reducir una función de pérdida. Su capacidad surge de combinar transformaciones lineales, activaciones no lineales y entrenamiento basado en gradientes.</div>
+      <div class="summary-grid">
+        <div class="summary"><strong>Base conceptual</strong>Neurona artificial, pesos, sesgo, entrada, salida y activación.</div>
+        <div class="summary"><strong>Entrenamiento</strong>Forward propagation, pérdida, backpropagation, gradiente y optimización.</div>
+        <div class="summary"><strong>Uso crítico</strong>Overfitting, validación, regularización, métricas y generalización.</div>
+      </div>
+    </div>
+    <aside class="card">
+      <h3>Resumen del glosario</h3>
+      <div class="stats">
+        <div class="stat"><strong>80</strong><span>términos desarrollados</span></div>
+        <div class="stat"><strong>11</strong><span>categorías de estudio</span></div>
+        <div class="stat"><strong>HTML</strong><span>autocontenido y listo para aula virtual</span></div>
+        <div class="stat"><strong>0</strong><span>dependencias externas</span></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="study-panel">
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Progreso de estudio</span><span id="progressText">0 / 80</span></div>
+      <div class="progress"><span id="progressBar"></span></div>
+    </div>
+    <div class="mode">
+      <span>Estudio</span>
+      <label class="switch" title="Cambiar entre modo estudio y modo examen">
+        <input id="examMode" type="checkbox">
+        <span class="slider"></span>
+      </label>
+      <span>Examen</span>
+    </div>
+  </section>
+
+  <section class="toolbar">
+    <input id="searchInput" type="search" placeholder="Buscar: peso, sesgo, ReLU, XOR, pérdida, gradiente, backpropagation, overfitting...">
+    <select id="catSelect" aria-label="Filtrar por categoría">
+      <option value="all">Todas las categorías</option>
+      <option value="Activación">Activación</option>
+<option value="Arquitectura">Arquitectura</option>
+<option value="Clasificación">Clasificación</option>
+<option value="Conceptos avanzados">Conceptos avanzados</option>
+<option value="Entrenamiento">Entrenamiento</option>
+<option value="Evaluación">Evaluación</option>
+<option value="Fundamentos">Fundamentos</option>
+<option value="Generalización">Generalización</option>
+<option value="Optimización">Optimización</option>
+<option value="Preprocesamiento">Preprocesamiento</option>
+<option value="Propagación">Propagación</option>
+    </select>
+    <div class="controls">
+      <button class="btn primary" id="openAll" type="button">Abrir todo</button>
+      <button class="btn" id="closeAll" type="button">Cerrar todo</button>
+      <button class="btn" id="randomBtn" type="button">Término aleatorio</button>
+      <div class="range-row"><span class="tag">Texto</span><input id="fontRange" type="range" min="0.92" max="1.22" value="1" step="0.02"></div>
+    </div>
+  </section>
+
+  <section class="filter-block">
+    <div class="filter-row">
+      <button class="chip cat-chip active" data-cat="all" type="button">Todas</button>
+      <button class="chip cat-chip" data-cat="Activación" type="button">Activación</button>
+<button class="chip cat-chip" data-cat="Arquitectura" type="button">Arquitectura</button>
+<button class="chip cat-chip" data-cat="Clasificación" type="button">Clasificación</button>
+<button class="chip cat-chip" data-cat="Conceptos avanzados" type="button">Conceptos avanzados</button>
+<button class="chip cat-chip" data-cat="Entrenamiento" type="button">Entrenamiento</button>
+<button class="chip cat-chip" data-cat="Evaluación" type="button">Evaluación</button>
+<button class="chip cat-chip" data-cat="Fundamentos" type="button">Fundamentos</button>
+<button class="chip cat-chip" data-cat="Generalización" type="button">Generalización</button>
+<button class="chip cat-chip" data-cat="Optimización" type="button">Optimización</button>
+<button class="chip cat-chip" data-cat="Preprocesamiento" type="button">Preprocesamiento</button>
+<button class="chip cat-chip" data-cat="Propagación" type="button">Propagación</button>
+    </div>
+    <div class="letters">
+      <button class="letter active" data-letter="all" type="button">Todas</button>
+      <button class="letter" data-letter="A" type="button">A</button>
+<button class="letter" data-letter="B" type="button">B</button>
+<button class="letter" data-letter="C" type="button">C</button>
+<button class="letter" data-letter="D" type="button">D</button>
+<button class="letter" data-letter="E" type="button">E</button>
+<button class="letter" data-letter="F" type="button">F</button>
+<button class="letter" data-letter="G" type="button">G</button>
+<button class="letter" data-letter="H" type="button">H</button>
+<button class="letter" data-letter="I" type="button">I</button>
+<button class="letter" data-letter="L" type="button">L</button>
+<button class="letter" data-letter="M" type="button">M</button>
+<button class="letter" data-letter="N" type="button">N</button>
+<button class="letter" data-letter="O" type="button">O</button>
+<button class="letter" data-letter="P" type="button">P</button>
+<button class="letter" data-letter="R" type="button">R</button>
+<button class="letter" data-letter="S" type="button">S</button>
+<button class="letter" data-letter="T" type="button">T</button>
+<button class="letter" data-letter="U" type="button">U</button>
+<button class="letter" data-letter="V" type="button">V</button>
+<button class="letter" data-letter="X" type="button">X</button>
+<button class="letter" data-letter="É" type="button">É</button>
+    </div>
+  </section>
+
+  <div id="empty" class="card empty">No hay términos que coincidan con la búsqueda o el filtro seleccionado.</div>
+
+  <section class="term-list" id="termList">
+    
+      <article class="term-card" id="term-1" data-cat="Fundamentos" data-letter="N" data-search="neurona artificial fundamentos unidad básica de una red neuronal que recibe entradas, calcula una combinación ponderada y produce una salida. una neurona artificial es un modelo matemático inspirado de forma abstracta en la idea de una neurona biológica. recibe un conjunto de entradas numéricas, multiplica cada una por un peso, suma esos valores, agrega un sesgo y aplica una función de activación. su objetivo es transformar información de entrada en una señal útil para la siguiente capa o para la salida del modelo. en una red neuronal, miles o millones de neuronas artificiales se organizan en capas. cada neurona aprende a responder ante ciertos patrones de los datos. en capas iniciales puede captar relaciones simples; en capas profundas, combinaciones más abstractas. si una neurona recibe variables como edad, ingreso y antigüedad laboral, puede aprender una combinación que ayude a estimar probabilidad de incumplimiento crediticio. z = w·x + b ; a = φ(z)">
+        <header class="term-head">
+          <div>
+            <span class="pill">01</span>
+            <span class="tag">Fundamentos</span>
+            <h2>Neurona artificial</h2>
+            <p class="short">Unidad básica de una red neuronal que recibe entradas, calcula una combinación ponderada y produce una salida.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Una neurona artificial es un modelo matemático inspirado de forma abstracta en la idea de una neurona biológica. Recibe un conjunto de entradas numéricas, multiplica cada una por un peso, suma esos valores, agrega un sesgo y aplica una función de activación. Su objetivo es transformar información de entrada en una señal útil para la siguiente capa o para la salida del modelo.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>En una red neuronal, miles o millones de neuronas artificiales se organizan en capas. Cada neurona aprende a responder ante ciertos patrones de los datos. En capas iniciales puede captar relaciones simples; en capas profundas, combinaciones más abstractas.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si una neurona recibe variables como edad, ingreso y antigüedad laboral, puede aprender una combinación que ayude a estimar probabilidad de incumplimiento crediticio.</p></div>
+          <div class="formula">z = w·x + b ; a = φ(z)</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-2" data-cat="Fundamentos" data-letter="E" data-search="entrada fundamentos dato o vector que ingresa a la red para ser procesado. la entrada es la información inicial que recibe el modelo. puede ser una fila de datos tabulares, una imagen convertida en matriz de píxeles, una secuencia de texto transformada en tokens o cualquier representación numérica que la red pueda procesar. la entrada define la primera capa de cálculo. su escala, calidad y representación influyen fuertemente en el aprendizaje. datos mal normalizados, incompletos o ruidosos pueden dificultar el entrenamiento. una imagen de 28×28 píxeles puede convertirse en un vector de 784 valores antes de ingresar a una red densa. x = [x₁, x₂, ..., xₙ]">
+        <header class="term-head">
+          <div>
+            <span class="pill">02</span>
+            <span class="tag">Fundamentos</span>
+            <h2>Entrada</h2>
+            <p class="short">Dato o vector que ingresa a la red para ser procesado.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La entrada es la información inicial que recibe el modelo. Puede ser una fila de datos tabulares, una imagen convertida en matriz de píxeles, una secuencia de texto transformada en tokens o cualquier representación numérica que la red pueda procesar.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>La entrada define la primera capa de cálculo. Su escala, calidad y representación influyen fuertemente en el aprendizaje. Datos mal normalizados, incompletos o ruidosos pueden dificultar el entrenamiento.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Una imagen de 28×28 píxeles puede convertirse en un vector de 784 valores antes de ingresar a una red densa.</p></div>
+          <div class="formula">x = [x₁, x₂, ..., xₙ]</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-3" data-cat="Fundamentos" data-letter="S" data-search="salida fundamentos resultado producido por la red después de procesar una entrada. la salida es la predicción o representación final generada por la red neuronal. su interpretación depende del problema: puede ser un valor continuo, una probabilidad, una clase, una reconstrucción, una puntuación o una distribución sobre varias alternativas. la capa de salida debe diseñarse según la tarea. en regresión suele usarse salida lineal; en clasificación binaria, sigmoid; en clasificación multiclase, softmax. en un clasificador de correos, la salida puede ser la probabilidad de que un mensaje sea spam. ŷ = modelo(x)">
+        <header class="term-head">
+          <div>
+            <span class="pill">03</span>
+            <span class="tag">Fundamentos</span>
+            <h2>Salida</h2>
+            <p class="short">Resultado producido por la red después de procesar una entrada.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La salida es la predicción o representación final generada por la red neuronal. Su interpretación depende del problema: puede ser un valor continuo, una probabilidad, una clase, una reconstrucción, una puntuación o una distribución sobre varias alternativas.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>La capa de salida debe diseñarse según la tarea. En regresión suele usarse salida lineal; en clasificación binaria, sigmoid; en clasificación multiclase, softmax.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>En un clasificador de correos, la salida puede ser la probabilidad de que un mensaje sea spam.</p></div>
+          <div class="formula">ŷ = modelo(x)</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-4" data-cat="Fundamentos" data-letter="P" data-search="peso fundamentos parámetro que mide la influencia de una entrada sobre una neurona. un peso indica cuánto y en qué dirección influye una entrada en la activación de una neurona. si el peso es positivo, la entrada tiende a aumentar la activación; si es negativo, tiende a reducirla. su magnitud indica la fuerza de esa influencia. los pesos son los principales parámetros aprendibles de la red. se inicializan y luego se ajustan durante el entrenamiento para reducir la función de pérdida. en un modelo de riesgo, un peso positivo asociado al nivel de deuda puede indicar que mayor deuda incrementa la probabilidad estimada de incumplimiento. z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b">
+        <header class="term-head">
+          <div>
+            <span class="pill">04</span>
+            <span class="tag">Fundamentos</span>
+            <h2>Peso</h2>
+            <p class="short">Parámetro que mide la influencia de una entrada sobre una neurona.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Un peso indica cuánto y en qué dirección influye una entrada en la activación de una neurona. Si el peso es positivo, la entrada tiende a aumentar la activación; si es negativo, tiende a reducirla. Su magnitud indica la fuerza de esa influencia.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Los pesos son los principales parámetros aprendibles de la red. Se inicializan y luego se ajustan durante el entrenamiento para reducir la función de pérdida.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>En un modelo de riesgo, un peso positivo asociado al nivel de deuda puede indicar que mayor deuda incrementa la probabilidad estimada de incumplimiento.</p></div>
+          <div class="formula">z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-5" data-cat="Fundamentos" data-letter="S" data-search="sesgo fundamentos parámetro independiente que desplaza la activación de una neurona. el sesgo, o bias, permite que una neurona active su respuesta sin depender únicamente de las entradas. funciona como el intercepto en una recta: desplaza la frontera de decisión y otorga flexibilidad al modelo. sin sesgo, muchas neuronas quedarían obligadas a generar fronteras de decisión que pasan por el origen, lo que limitaría la capacidad de ajuste. una neurona puede requerir cierto umbral antes de activarse. el sesgo ayuda a definir ese umbral. z = w·x + b">
+        <header class="term-head">
+          <div>
+            <span class="pill">05</span>
+            <span class="tag">Fundamentos</span>
+            <h2>Sesgo</h2>
+            <p class="short">Parámetro independiente que desplaza la activación de una neurona.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>El sesgo, o bias, permite que una neurona active su respuesta sin depender únicamente de las entradas. Funciona como el intercepto en una recta: desplaza la frontera de decisión y otorga flexibilidad al modelo.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Sin sesgo, muchas neuronas quedarían obligadas a generar fronteras de decisión que pasan por el origen, lo que limitaría la capacidad de ajuste.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Una neurona puede requerir cierto umbral antes de activarse. El sesgo ayuda a definir ese umbral.</p></div>
+          <div class="formula">z = w·x + b</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-6" data-cat="Fundamentos" data-letter="C" data-search="combinación lineal fundamentos suma ponderada de entradas más un sesgo. la combinación lineal es el cálculo inicial que realiza una neurona antes de aplicar la activación. consiste en multiplicar cada entrada por un peso, sumar todos los productos y agregar un sesgo. es la parte lineal de la neurona. por sí sola solo puede representar relaciones lineales; por eso luego se aplica una función de activación no lineal. en una neurona con dos entradas, el cálculo puede ser z = 0,8x₁ - 0,4x₂ + 0,2. z = σ wᵢxᵢ + b">
+        <header class="term-head">
+          <div>
+            <span class="pill">06</span>
+            <span class="tag">Fundamentos</span>
+            <h2>Combinación lineal</h2>
+            <p class="short">Suma ponderada de entradas más un sesgo.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La combinación lineal es el cálculo inicial que realiza una neurona antes de aplicar la activación. Consiste en multiplicar cada entrada por un peso, sumar todos los productos y agregar un sesgo.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Es la parte lineal de la neurona. Por sí sola solo puede representar relaciones lineales; por eso luego se aplica una función de activación no lineal.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>En una neurona con dos entradas, el cálculo puede ser z = 0,8x₁ - 0,4x₂ + 0,2.</p></div>
+          <div class="formula">z = Σ wᵢxᵢ + b</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-7" data-cat="Activación" data-letter="F" data-search="función de activación activación transformación aplicada a la salida lineal de una neurona. la función de activación transforma el valor lineal calculado por una neurona. su importancia principal es introducir no linealidad, permitiendo que la red aprenda relaciones complejas. sin funciones de activación no lineales, una red profunda se reduciría a una única transformación lineal. activaciones como relu, sigmoid o tanh permiten construir fronteras de decisión más flexibles. relu devuelve cero si el valor es negativo y deja pasar el valor si es positivo. a = φ(z)">
+        <header class="term-head">
+          <div>
+            <span class="pill">07</span>
+            <span class="tag">Activación</span>
+            <h2>Función de activación</h2>
+            <p class="short">Transformación aplicada a la salida lineal de una neurona.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La función de activación transforma el valor lineal calculado por una neurona. Su importancia principal es introducir no linealidad, permitiendo que la red aprenda relaciones complejas.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Sin funciones de activación no lineales, una red profunda se reduciría a una única transformación lineal. Activaciones como ReLU, sigmoid o tanh permiten construir fronteras de decisión más flexibles.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>ReLU devuelve cero si el valor es negativo y deja pasar el valor si es positivo.</p></div>
+          <div class="formula">a = φ(z)</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-8" data-cat="Activación" data-letter="R" data-search="relu activación función de activación que devuelve max(0, x). relu, o rectified linear unit, es una de las activaciones más usadas en redes profundas. su regla es simple: si la entrada es negativa devuelve cero; si es positiva, devuelve el mismo valor. ayuda a entrenar redes profundas porque es computacionalmente simple y reduce problemas de saturación presentes en sigmoid o tanh. sin embargo, puede generar neuronas muertas si muchas activaciones quedan permanentemente en cero. relu(-3)=0 y relu(5)=5. relu(x)=max(0,x)">
+        <header class="term-head">
+          <div>
+            <span class="pill">08</span>
+            <span class="tag">Activación</span>
+            <h2>ReLU</h2>
+            <p class="short">Función de activación que devuelve max(0, x).</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>ReLU, o Rectified Linear Unit, es una de las activaciones más usadas en redes profundas. Su regla es simple: si la entrada es negativa devuelve cero; si es positiva, devuelve el mismo valor.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Ayuda a entrenar redes profundas porque es computacionalmente simple y reduce problemas de saturación presentes en sigmoid o tanh. Sin embargo, puede generar neuronas muertas si muchas activaciones quedan permanentemente en cero.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>ReLU(-3)=0 y ReLU(5)=5.</p></div>
+          <div class="formula">ReLU(x)=max(0,x)</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-9" data-cat="Activación" data-letter="S" data-search="sigmoid activación función que comprime valores reales al intervalo entre 0 y 1. la función sigmoid transforma cualquier valor real en un número entre 0 y 1. por eso se usa frecuentemente en salidas de clasificación binaria, donde el resultado puede interpretarse como probabilidad. en capas ocultas profundas puede saturarse, produciendo gradientes muy pequeños. en capas de salida sigue siendo útil para problemas binarios. si una red predice 0,87 con sigmoid, puede interpretarse como 87% de probabilidad estimada para la clase positiva. σ(x)=1/(1+e^(-x))">
+        <header class="term-head">
+          <div>
+            <span class="pill">09</span>
+            <span class="tag">Activación</span>
+            <h2>Sigmoid</h2>
+            <p class="short">Función que comprime valores reales al intervalo entre 0 y 1.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La función sigmoid transforma cualquier valor real en un número entre 0 y 1. Por eso se usa frecuentemente en salidas de clasificación binaria, donde el resultado puede interpretarse como probabilidad.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>En capas ocultas profundas puede saturarse, produciendo gradientes muy pequeños. En capas de salida sigue siendo útil para problemas binarios.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si una red predice 0,87 con sigmoid, puede interpretarse como 87% de probabilidad estimada para la clase positiva.</p></div>
+          <div class="formula">σ(x)=1/(1+e^(-x))</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-10" data-cat="Activación" data-letter="T" data-search="tanh activación función que comprime valores reales entre -1 y 1. tanh es una función no lineal similar a sigmoid, pero centrada en cero. sus salidas van de -1 a 1, lo que puede ayudar a representar señales positivas y negativas. fue muy usada en redes recurrentes y capas ocultas. puede saturarse para valores muy grandes o muy pequeños, generando gradientes reducidos. una activación tanh cercana a 1 indica señal positiva fuerte; cercana a -1 indica señal negativa fuerte. tanh(x) ∈ [-1,1]">
+        <header class="term-head">
+          <div>
+            <span class="pill">10</span>
+            <span class="tag">Activación</span>
+            <h2>Tanh</h2>
+            <p class="short">Función que comprime valores reales entre -1 y 1.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Tanh es una función no lineal similar a sigmoid, pero centrada en cero. Sus salidas van de -1 a 1, lo que puede ayudar a representar señales positivas y negativas.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Fue muy usada en redes recurrentes y capas ocultas. Puede saturarse para valores muy grandes o muy pequeños, generando gradientes reducidos.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Una activación tanh cercana a 1 indica señal positiva fuerte; cercana a -1 indica señal negativa fuerte.</p></div>
+          <div class="formula">tanh(x) ∈ [-1,1]</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-11" data-cat="Activación" data-letter="N" data-search="no linealidad activación capacidad de representar relaciones que no pueden expresarse como una recta o hiperplano. la no linealidad permite que una red neuronal modele patrones complejos, curvas, interacciones y separaciones que no pueden representarse mediante una única función lineal. las activaciones no lineales son la razón por la que las redes profundas pueden aprender representaciones complejas. sin ellas, varias capas lineales equivaldrían a una sola capa lineal. el problema xor requiere no linealidad porque no puede resolverse con una única recta. lineal + activación no lineal + capas = mayor expresividad">
+        <header class="term-head">
+          <div>
+            <span class="pill">11</span>
+            <span class="tag">Activación</span>
+            <h2>No linealidad</h2>
+            <p class="short">Capacidad de representar relaciones que no pueden expresarse como una recta o hiperplano.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La no linealidad permite que una red neuronal modele patrones complejos, curvas, interacciones y separaciones que no pueden representarse mediante una única función lineal.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Las activaciones no lineales son la razón por la que las redes profundas pueden aprender representaciones complejas. Sin ellas, varias capas lineales equivaldrían a una sola capa lineal.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>El problema XOR requiere no linealidad porque no puede resolverse con una única recta.</p></div>
+          <div class="formula">Lineal + activación no lineal + capas = mayor expresividad</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-12" data-cat="Activación" data-letter="F" data-search="función lineal activación función que combina variables mediante sumas y multiplicaciones por constantes. una función lineal produce salidas proporcionales a las entradas. en clasificación, genera fronteras de decisión rectas, planas o hiperplanas. es útil para problemas simples y como componente interno de una neurona. pero necesita combinarse con activaciones no lineales para resolver problemas complejos. una recta y = 2x + 1 es una función lineal afín. f(x)=w·x+b">
+        <header class="term-head">
+          <div>
+            <span class="pill">12</span>
+            <span class="tag">Activación</span>
+            <h2>Función lineal</h2>
+            <p class="short">Función que combina variables mediante sumas y multiplicaciones por constantes.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Una función lineal produce salidas proporcionales a las entradas. En clasificación, genera fronteras de decisión rectas, planas o hiperplanas.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Es útil para problemas simples y como componente interno de una neurona. Pero necesita combinarse con activaciones no lineales para resolver problemas complejos.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Una recta y = 2x + 1 es una función lineal afín.</p></div>
+          <div class="formula">f(x)=w·x+b</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-13" data-cat="Activación" data-letter="F" data-search="función no lineal activación función capaz de representar curvas, umbrales y relaciones complejas. una función no lineal no se limita a una suma proporcional de entradas. puede doblar el espacio de representación y permitir separaciones más complejas entre clases. en redes neuronales, las funciones no lineales permiten que cada capa transforme el problema en una representación más útil para la siguiente. relu, sigmoid y tanh son funciones no lineales. φ(w·x+b)">
+        <header class="term-head">
+          <div>
+            <span class="pill">13</span>
+            <span class="tag">Activación</span>
+            <h2>Función no lineal</h2>
+            <p class="short">Función capaz de representar curvas, umbrales y relaciones complejas.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Una función no lineal no se limita a una suma proporcional de entradas. Puede doblar el espacio de representación y permitir separaciones más complejas entre clases.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>En redes neuronales, las funciones no lineales permiten que cada capa transforme el problema en una representación más útil para la siguiente.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>ReLU, sigmoid y tanh son funciones no lineales.</p></div>
+          <div class="formula">φ(w·x+b)</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-14" data-cat="Arquitectura" data-letter="P" data-search="perceptrón arquitectura modelo neuronal simple que clasifica mediante una combinación lineal y una regla de activación. el perceptrón es uno de los modelos más simples de neurona artificial. calcula una suma ponderada de entradas y decide una clase según si el resultado supera o no un umbral. sirve para entender la clasificación lineal. puede resolver problemas linealmente separables, pero no problemas como xor. puede separar dos grupos si existe una recta que los divida correctamente. clase = 1 si w·x+b ≥ 0">
+        <header class="term-head">
+          <div>
+            <span class="pill">14</span>
+            <span class="tag">Arquitectura</span>
+            <h2>Perceptrón</h2>
+            <p class="short">Modelo neuronal simple que clasifica mediante una combinación lineal y una regla de activación.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>El perceptrón es uno de los modelos más simples de neurona artificial. Calcula una suma ponderada de entradas y decide una clase según si el resultado supera o no un umbral.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Sirve para entender la clasificación lineal. Puede resolver problemas linealmente separables, pero no problemas como XOR.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Puede separar dos grupos si existe una recta que los divida correctamente.</p></div>
+          <div class="formula">clase = 1 si w·x+b ≥ 0</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-15" data-cat="Arquitectura" data-letter="P" data-search="perceptrón multicapa arquitectura red neuronal formada por capas de neuronas densamente conectadas. un perceptrón multicapa, o mlp, contiene una capa de entrada, una o más capas ocultas y una capa de salida. cada capa transforma la representación anterior mediante pesos, sesgos y activaciones. permite resolver problemas no lineales porque las capas ocultas construyen representaciones intermedias. un mlp puede aprender una frontera curva para clasificar clientes según múltiples variables. entrada → capas ocultas → salida">
+        <header class="term-head">
+          <div>
+            <span class="pill">15</span>
+            <span class="tag">Arquitectura</span>
+            <h2>Perceptrón multicapa</h2>
+            <p class="short">Red neuronal formada por capas de neuronas densamente conectadas.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Un perceptrón multicapa, o MLP, contiene una capa de entrada, una o más capas ocultas y una capa de salida. Cada capa transforma la representación anterior mediante pesos, sesgos y activaciones.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Permite resolver problemas no lineales porque las capas ocultas construyen representaciones intermedias.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Un MLP puede aprender una frontera curva para clasificar clientes según múltiples variables.</p></div>
+          <div class="formula">entrada → capas ocultas → salida</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-16" data-cat="Arquitectura" data-letter="C" data-search="capa de entrada arquitectura primera parte de la red, donde ingresan las variables del problema. la capa de entrada representa la forma en que los datos entran al modelo. no siempre realiza cálculos complejos; suele actuar como estructura receptora de los valores iniciales. su tamaño depende del número de características. si hay 20 variables explicativas, la entrada puede tener 20 unidades. en mnist, una imagen 28×28 puede representarse como 784 entradas. dimensión de entrada = número de features">
+        <header class="term-head">
+          <div>
+            <span class="pill">16</span>
+            <span class="tag">Arquitectura</span>
+            <h2>Capa de entrada</h2>
+            <p class="short">Primera parte de la red, donde ingresan las variables del problema.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La capa de entrada representa la forma en que los datos entran al modelo. No siempre realiza cálculos complejos; suele actuar como estructura receptora de los valores iniciales.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Su tamaño depende del número de características. Si hay 20 variables explicativas, la entrada puede tener 20 unidades.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>En MNIST, una imagen 28×28 puede representarse como 784 entradas.</p></div>
+          <div class="formula">dimensión de entrada = número de features</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-17" data-cat="Arquitectura" data-letter="C" data-search="capa oculta arquitectura capa intermedia que aprende representaciones internas. una capa oculta recibe señales de la capa anterior y produce una nueva representación. se llama oculta porque sus valores no son la entrada original ni la salida final observable. las capas ocultas permiten que la red aprenda patrones gradualmente. en problemas complejos, varias capas ocultas pueden construir jerarquías de representación. en visión, capas tempranas pueden detectar bordes y capas posteriores patrones más abstractos. h = φ(wx+b)">
+        <header class="term-head">
+          <div>
+            <span class="pill">17</span>
+            <span class="tag">Arquitectura</span>
+            <h2>Capa oculta</h2>
+            <p class="short">Capa intermedia que aprende representaciones internas.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Una capa oculta recibe señales de la capa anterior y produce una nueva representación. Se llama oculta porque sus valores no son la entrada original ni la salida final observable.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Las capas ocultas permiten que la red aprenda patrones gradualmente. En problemas complejos, varias capas ocultas pueden construir jerarquías de representación.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>En visión, capas tempranas pueden detectar bordes y capas posteriores patrones más abstractos.</p></div>
+          <div class="formula">h = φ(Wx+b)</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-18" data-cat="Arquitectura" data-letter="C" data-search="capa de salida arquitectura última capa de la red, encargada de producir la predicción final. la capa de salida transforma la última representación interna en un resultado interpretable para la tarea. su estructura depende del tipo de problema. en regresión puede tener una neurona lineal; en clasificación binaria, una sigmoid; en clasificación multiclase, una softmax. para clasificar entre 10 dígitos, la capa de salida puede tener 10 neuronas. ŷ = salida final">
+        <header class="term-head">
+          <div>
+            <span class="pill">18</span>
+            <span class="tag">Arquitectura</span>
+            <h2>Capa de salida</h2>
+            <p class="short">Última capa de la red, encargada de producir la predicción final.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La capa de salida transforma la última representación interna en un resultado interpretable para la tarea. Su estructura depende del tipo de problema.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>En regresión puede tener una neurona lineal; en clasificación binaria, una sigmoid; en clasificación multiclase, una softmax.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Para clasificar entre 10 dígitos, la capa de salida puede tener 10 neuronas.</p></div>
+          <div class="formula">ŷ = salida final</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-19" data-cat="Arquitectura" data-letter="R" data-search="red profunda arquitectura red neuronal con múltiples capas ocultas. una red profunda es una red neuronal con varias capas de transformación. su profundidad permite aprender representaciones jerárquicas y patrones complejos. es la base del deep learning. requiere datos, regularización y técnicas de entrenamiento adecuadas para evitar problemas como overfitting o gradientes inestables. una red de reconocimiento de imágenes puede tener decenas o cientos de capas. profundidad = número de capas aprendibles">
+        <header class="term-head">
+          <div>
+            <span class="pill">19</span>
+            <span class="tag">Arquitectura</span>
+            <h2>Red profunda</h2>
+            <p class="short">Red neuronal con múltiples capas ocultas.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Una red profunda es una red neuronal con varias capas de transformación. Su profundidad permite aprender representaciones jerárquicas y patrones complejos.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Es la base del deep learning. Requiere datos, regularización y técnicas de entrenamiento adecuadas para evitar problemas como overfitting o gradientes inestables.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Una red de reconocimiento de imágenes puede tener decenas o cientos de capas.</p></div>
+          <div class="formula">profundidad = número de capas aprendibles</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-20" data-cat="Clasificación" data-letter="F" data-search="frontera de decisión clasificación separación que divide el espacio de datos en regiones de clase. la frontera de decisión es el límite donde el modelo cambia su predicción de una clase a otra. en modelos lineales es una recta, plano o hiperplano; en redes no lineales puede ser curva o compleja. permite interpretar cómo el modelo separa categorías. en clasificación binaria, la frontera suele ubicarse donde la probabilidad estimada equivale al umbral de decisión. en un gráfico de dos variables, una línea que separa clientes aprobados y rechazados es una frontera de decisión. w·x+b=0">
+        <header class="term-head">
+          <div>
+            <span class="pill">20</span>
+            <span class="tag">Clasificación</span>
+            <h2>Frontera de decisión</h2>
+            <p class="short">Separación que divide el espacio de datos en regiones de clase.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La frontera de decisión es el límite donde el modelo cambia su predicción de una clase a otra. En modelos lineales es una recta, plano o hiperplano; en redes no lineales puede ser curva o compleja.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Permite interpretar cómo el modelo separa categorías. En clasificación binaria, la frontera suele ubicarse donde la probabilidad estimada equivale al umbral de decisión.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>En un gráfico de dos variables, una línea que separa clientes aprobados y rechazados es una frontera de decisión.</p></div>
+          <div class="formula">w·x+b=0</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-21" data-cat="Clasificación" data-letter="S" data-search="separabilidad lineal clasificación situación en la que dos clases pueden separarse mediante una única frontera lineal. un conjunto de datos es linealmente separable cuando existe una recta, plano o hiperplano que divide correctamente las clases. los perceptrones simples solo pueden resolver problemas linealmente separables. si el patrón requiere una frontera curva, se necesitan modelos no lineales. and y or pueden separarse linealmente; xor no. existe w,b tal que y(w·x+b)&gt;0">
+        <header class="term-head">
+          <div>
+            <span class="pill">21</span>
+            <span class="tag">Clasificación</span>
+            <h2>Separabilidad lineal</h2>
+            <p class="short">Situación en la que dos clases pueden separarse mediante una única frontera lineal.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Un conjunto de datos es linealmente separable cuando existe una recta, plano o hiperplano que divide correctamente las clases.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Los perceptrones simples solo pueden resolver problemas linealmente separables. Si el patrón requiere una frontera curva, se necesitan modelos no lineales.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>AND y OR pueden separarse linealmente; XOR no.</p></div>
+          <div class="formula">existe w,b tal que y(w·x+b)&gt;0</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-22" data-cat="Clasificación" data-letter="X" data-search="xor clasificación problema lógico no linealmente separable. xor devuelve 1 cuando sus entradas son diferentes y 0 cuando son iguales. es un ejemplo clásico porque muestra la limitación del perceptrón simple. para resolver xor se requiere una capa oculta con activación no lineal. esa capa transforma el espacio para que la salida pueda separarse. xor(0,1)=1 y xor(1,0)=1, pero xor(0,0)=0 y xor(1,1)=0. xor requiere no linealidad">
+        <header class="term-head">
+          <div>
+            <span class="pill">22</span>
+            <span class="tag">Clasificación</span>
+            <h2>XOR</h2>
+            <p class="short">Problema lógico no linealmente separable.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>XOR devuelve 1 cuando sus entradas son diferentes y 0 cuando son iguales. Es un ejemplo clásico porque muestra la limitación del perceptrón simple.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Para resolver XOR se requiere una capa oculta con activación no lineal. Esa capa transforma el espacio para que la salida pueda separarse.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>XOR(0,1)=1 y XOR(1,0)=1, pero XOR(0,0)=0 y XOR(1,1)=0.</p></div>
+          <div class="formula">XOR requiere no linealidad</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-23" data-cat="Clasificación" data-letter="C" data-search="clasificación binaria clasificación tarea donde el modelo debe elegir entre dos clases. la clasificación binaria consiste en asignar cada observación a una de dos categorías posibles. la red suele producir una probabilidad asociada a la clase positiva. se utiliza en problemas como fraude/no fraude, spam/no spam, aprobado/rechazado o enfermedad/no enfermedad. un modelo puede estimar si un cliente abandonará o no un servicio. ŷ ∈ [0,1]">
+        <header class="term-head">
+          <div>
+            <span class="pill">23</span>
+            <span class="tag">Clasificación</span>
+            <h2>Clasificación binaria</h2>
+            <p class="short">Tarea donde el modelo debe elegir entre dos clases.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La clasificación binaria consiste en asignar cada observación a una de dos categorías posibles. La red suele producir una probabilidad asociada a la clase positiva.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Se utiliza en problemas como fraude/no fraude, spam/no spam, aprobado/rechazado o enfermedad/no enfermedad.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Un modelo puede estimar si un cliente abandonará o no un servicio.</p></div>
+          <div class="formula">ŷ ∈ [0,1]</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-24" data-cat="Clasificación" data-letter="C" data-search="clasificación multiclase clasificación tarea donde el modelo elige una clase entre varias alternativas excluyentes. en clasificación multiclase, cada observación pertenece a una sola clase entre varias. la red suele producir una distribución de probabilidades mediante softmax. la clase predicha es la que recibe mayor probabilidad. se usa para reconocer dígitos, tipos de productos, especies o categorías de documentos. clasificar una imagen como gato, perro, caballo o ave. softmax(zᵢ)=e^zᵢ/σe^zⱼ">
+        <header class="term-head">
+          <div>
+            <span class="pill">24</span>
+            <span class="tag">Clasificación</span>
+            <h2>Clasificación multiclase</h2>
+            <p class="short">Tarea donde el modelo elige una clase entre varias alternativas excluyentes.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>En clasificación multiclase, cada observación pertenece a una sola clase entre varias. La red suele producir una distribución de probabilidades mediante softmax.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>La clase predicha es la que recibe mayor probabilidad. Se usa para reconocer dígitos, tipos de productos, especies o categorías de documentos.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Clasificar una imagen como gato, perro, caballo o ave.</p></div>
+          <div class="formula">softmax(zᵢ)=e^zᵢ/Σe^zⱼ</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-25" data-cat="Clasificación" data-letter="R" data-search="regresión clasificación tarea donde el modelo predice un valor numérico continuo. la regresión busca estimar una cantidad, no una categoría. la salida puede ser precio, demanda, temperatura, ingreso, riesgo esperado o cualquier variable continua. la capa de salida suele ser lineal y la función de pérdida puede ser mse o mae. predecir ventas mensuales a partir de precio, publicidad y estacionalidad. ŷ ∈ r">
+        <header class="term-head">
+          <div>
+            <span class="pill">25</span>
+            <span class="tag">Clasificación</span>
+            <h2>Regresión</h2>
+            <p class="short">Tarea donde el modelo predice un valor numérico continuo.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La regresión busca estimar una cantidad, no una categoría. La salida puede ser precio, demanda, temperatura, ingreso, riesgo esperado o cualquier variable continua.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>La capa de salida suele ser lineal y la función de pérdida puede ser MSE o MAE.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Predecir ventas mensuales a partir de precio, publicidad y estacionalidad.</p></div>
+          <div class="formula">ŷ ∈ R</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-26" data-cat="Entrenamiento" data-letter="F" data-search="función de pérdida entrenamiento medida del error entre la predicción del modelo y el valor real. la función de pérdida cuantifica qué tan equivocada es una predicción. durante el entrenamiento, el modelo busca minimizar esta pérdida ajustando sus parámetros. proporciona la señal que se deriva para calcular gradientes. debe elegirse según la tarea: mse para regresión, entropía cruzada para clasificación, entre otras. si una red predice 80 y el valor real es 100, la pérdida mide esa discrepancia. l(y,ŷ)">
+        <header class="term-head">
+          <div>
+            <span class="pill">26</span>
+            <span class="tag">Entrenamiento</span>
+            <h2>Función de pérdida</h2>
+            <p class="short">Medida del error entre la predicción del modelo y el valor real.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La función de pérdida cuantifica qué tan equivocada es una predicción. Durante el entrenamiento, el modelo busca minimizar esta pérdida ajustando sus parámetros.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Proporciona la señal que se deriva para calcular gradientes. Debe elegirse según la tarea: MSE para regresión, entropía cruzada para clasificación, entre otras.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si una red predice 80 y el valor real es 100, la pérdida mide esa discrepancia.</p></div>
+          <div class="formula">L(y,ŷ)</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-27" data-cat="Entrenamiento" data-letter="E" data-search="error cuadrático medio entrenamiento pérdida que promedia los cuadrados de los errores. el error cuadrático medio, o mse, mide la diferencia promedio al cuadrado entre valores reales y predichos. penaliza más los errores grandes porque se elevan al cuadrado. es común en regresión. puede ser sensible a valores extremos, porque errores grandes reciben peso elevado. si los errores son 1, 2 y 3, el mse es (1²+2²+3²)/3. mse = promedio((y-ŷ)²)">
+        <header class="term-head">
+          <div>
+            <span class="pill">27</span>
+            <span class="tag">Entrenamiento</span>
+            <h2>Error cuadrático medio</h2>
+            <p class="short">Pérdida que promedia los cuadrados de los errores.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>El error cuadrático medio, o MSE, mide la diferencia promedio al cuadrado entre valores reales y predichos. Penaliza más los errores grandes porque se elevan al cuadrado.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Es común en regresión. Puede ser sensible a valores extremos, porque errores grandes reciben peso elevado.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si los errores son 1, 2 y 3, el MSE es (1²+2²+3²)/3.</p></div>
+          <div class="formula">MSE = promedio((y-ŷ)²)</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-28" data-cat="Entrenamiento" data-letter="E" data-search="entropía cruzada entrenamiento función de pérdida usada en clasificación probabilística. la entropía cruzada penaliza predicciones probabilísticas alejadas de la clase correcta. es especialmente severa cuando el modelo asigna alta confianza a una clase equivocada. se usa en clasificación binaria y multiclase. en binaria suele combinarse con sigmoid; en multiclase con softmax. si la clase correcta es perro y el modelo asigna 0,02 a perro, la pérdida será alta. ce = -σ yᵢ log(ŷᵢ)">
+        <header class="term-head">
+          <div>
+            <span class="pill">28</span>
+            <span class="tag">Entrenamiento</span>
+            <h2>Entropía cruzada</h2>
+            <p class="short">Función de pérdida usada en clasificación probabilística.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La entropía cruzada penaliza predicciones probabilísticas alejadas de la clase correcta. Es especialmente severa cuando el modelo asigna alta confianza a una clase equivocada.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Se usa en clasificación binaria y multiclase. En binaria suele combinarse con sigmoid; en multiclase con softmax.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si la clase correcta es perro y el modelo asigna 0,02 a perro, la pérdida será alta.</p></div>
+          <div class="formula">CE = -Σ yᵢ log(ŷᵢ)</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-29" data-cat="Entrenamiento" data-letter="G" data-search="gradiente entrenamiento vector de derivadas que indica cómo cambia la pérdida respecto de los parámetros. el gradiente señala la dirección de mayor aumento de una función. en aprendizaje, se usa la dirección opuesta para reducir la pérdida. permite saber cómo modificar pesos y sesgos. backpropagation calcula estos gradientes de manera eficiente. si el gradiente respecto de un peso es positivo, reducir ese peso puede disminuir la pérdida, según el tamaño del paso. ∇l(θ)">
+        <header class="term-head">
+          <div>
+            <span class="pill">29</span>
+            <span class="tag">Entrenamiento</span>
+            <h2>Gradiente</h2>
+            <p class="short">Vector de derivadas que indica cómo cambia la pérdida respecto de los parámetros.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>El gradiente señala la dirección de mayor aumento de una función. En aprendizaje, se usa la dirección opuesta para reducir la pérdida.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Permite saber cómo modificar pesos y sesgos. Backpropagation calcula estos gradientes de manera eficiente.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si el gradiente respecto de un peso es positivo, reducir ese peso puede disminuir la pérdida, según el tamaño del paso.</p></div>
+          <div class="formula">∇L(θ)</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-30" data-cat="Entrenamiento" data-letter="D" data-search="descenso por gradiente entrenamiento algoritmo que actualiza parámetros en dirección opuesta al gradiente. el descenso por gradiente es un método de optimización que busca minimizar una función de pérdida. ajusta los parámetros dando pasos pequeños en la dirección contraria al gradiente. es la base de muchos algoritmos de entrenamiento. sus variantes incluyen sgd, mini-batch gradient descent y optimizadores adaptativos. si una superficie de pérdida es una montaña, el descenso por gradiente intenta bajar hacia un valle. θ ← θ - α∇l(θ)">
+        <header class="term-head">
+          <div>
+            <span class="pill">30</span>
+            <span class="tag">Entrenamiento</span>
+            <h2>Descenso por gradiente</h2>
+            <p class="short">Algoritmo que actualiza parámetros en dirección opuesta al gradiente.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>El descenso por gradiente es un método de optimización que busca minimizar una función de pérdida. Ajusta los parámetros dando pasos pequeños en la dirección contraria al gradiente.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Es la base de muchos algoritmos de entrenamiento. Sus variantes incluyen SGD, mini-batch gradient descent y optimizadores adaptativos.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si una superficie de pérdida es una montaña, el descenso por gradiente intenta bajar hacia un valle.</p></div>
+          <div class="formula">θ ← θ - α∇L(θ)</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-31" data-cat="Entrenamiento" data-letter="L" data-search="learning rate entrenamiento tasa que controla el tamaño de los pasos de actualización. el learning rate determina cuánto se modifican los parámetros en cada actualización. es uno de los hiperparámetros más importantes del entrenamiento. si es demasiado alto, el entrenamiento puede divergir; si es demasiado bajo, puede ser muy lento o quedar atrapado en soluciones pobres. un learning rate de 0,001 suele ser un punto de partida común en optimizadores como adam. α en θ ← θ - α∇l">
+        <header class="term-head">
+          <div>
+            <span class="pill">31</span>
+            <span class="tag">Entrenamiento</span>
+            <h2>Learning rate</h2>
+            <p class="short">Tasa que controla el tamaño de los pasos de actualización.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>El learning rate determina cuánto se modifican los parámetros en cada actualización. Es uno de los hiperparámetros más importantes del entrenamiento.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Si es demasiado alto, el entrenamiento puede divergir; si es demasiado bajo, puede ser muy lento o quedar atrapado en soluciones pobres.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Un learning rate de 0,001 suele ser un punto de partida común en optimizadores como Adam.</p></div>
+          <div class="formula">α en θ ← θ - α∇L</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-32" data-cat="Entrenamiento" data-letter="É" data-search="época entrenamiento una pasada completa del modelo por todo el conjunto de entrenamiento. una época ocurre cuando el algoritmo ha usado todos los ejemplos de entrenamiento una vez. entrenar varias épocas permite ajustar progresivamente los parámetros. demasiadas épocas pueden producir overfitting; muy pocas pueden dejar el modelo subentrenado. si hay 10.000 ejemplos y batch size 100, una época contiene 100 actualizaciones. 1 época = dataset completo procesado una vez">
+        <header class="term-head">
+          <div>
+            <span class="pill">32</span>
+            <span class="tag">Entrenamiento</span>
+            <h2>Época</h2>
+            <p class="short">Una pasada completa del modelo por todo el conjunto de entrenamiento.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Una época ocurre cuando el algoritmo ha usado todos los ejemplos de entrenamiento una vez. Entrenar varias épocas permite ajustar progresivamente los parámetros.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Demasiadas épocas pueden producir overfitting; muy pocas pueden dejar el modelo subentrenado.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si hay 10.000 ejemplos y batch size 100, una época contiene 100 actualizaciones.</p></div>
+          <div class="formula">1 época = dataset completo procesado una vez</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-33" data-cat="Entrenamiento" data-letter="B" data-search="batch entrenamiento subconjunto de ejemplos procesados antes de actualizar parámetros. un batch es un grupo de observaciones usado para calcular una estimación del gradiente. permite entrenar de forma eficiente sin usar todo el dataset en cada paso. el tamaño del batch afecta memoria, estabilidad y velocidad de entrenamiento. con batch size 32, la red procesa 32 ejemplos antes de actualizar los pesos. mini-batch = subconjunto de entrenamiento">
+        <header class="term-head">
+          <div>
+            <span class="pill">33</span>
+            <span class="tag">Entrenamiento</span>
+            <h2>Batch</h2>
+            <p class="short">Subconjunto de ejemplos procesados antes de actualizar parámetros.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Un batch es un grupo de observaciones usado para calcular una estimación del gradiente. Permite entrenar de forma eficiente sin usar todo el dataset en cada paso.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>El tamaño del batch afecta memoria, estabilidad y velocidad de entrenamiento.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Con batch size 32, la red procesa 32 ejemplos antes de actualizar los pesos.</p></div>
+          <div class="formula">mini-batch = subconjunto de entrenamiento</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-34" data-cat="Entrenamiento" data-letter="O" data-search="optimizador entrenamiento algoritmo que actualiza los parámetros usando gradientes. el optimizador decide cómo aplicar los gradientes para modificar pesos y sesgos. puede usar solo el gradiente actual o incorporar información acumulada. sgd, adam, rmsprop y adagrad son optimizadores frecuentes. la elección afecta velocidad, estabilidad y calidad del entrenamiento. adam adapta la tasa de aprendizaje para cada parámetro usando momentos de los gradientes. θ nuevo = optimizador(θ, ∇l)">
+        <header class="term-head">
+          <div>
+            <span class="pill">34</span>
+            <span class="tag">Entrenamiento</span>
+            <h2>Optimizador</h2>
+            <p class="short">Algoritmo que actualiza los parámetros usando gradientes.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>El optimizador decide cómo aplicar los gradientes para modificar pesos y sesgos. Puede usar solo el gradiente actual o incorporar información acumulada.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>SGD, Adam, RMSProp y Adagrad son optimizadores frecuentes. La elección afecta velocidad, estabilidad y calidad del entrenamiento.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Adam adapta la tasa de aprendizaje para cada parámetro usando momentos de los gradientes.</p></div>
+          <div class="formula">θ nuevo = optimizador(θ, ∇L)</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-35" data-cat="Propagación" data-letter="F" data-search="forward propagation propagación proceso que calcula la salida de la red a partir de una entrada. forward propagation consiste en pasar los datos por la red desde la entrada hasta la salida. cada capa calcula una transformación y entrega su resultado a la siguiente. sirve para producir predicciones con los parámetros actuales. luego esas predicciones se comparan con los valores reales para calcular la pérdida. una imagen ingresa a la red y se transforma capa por capa hasta obtener probabilidades de clase. x → capa 1 → capa 2 → ŷ">
+        <header class="term-head">
+          <div>
+            <span class="pill">35</span>
+            <span class="tag">Propagación</span>
+            <h2>Forward propagation</h2>
+            <p class="short">Proceso que calcula la salida de la red a partir de una entrada.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Forward propagation consiste en pasar los datos por la red desde la entrada hasta la salida. Cada capa calcula una transformación y entrega su resultado a la siguiente.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Sirve para producir predicciones con los parámetros actuales. Luego esas predicciones se comparan con los valores reales para calcular la pérdida.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Una imagen ingresa a la red y se transforma capa por capa hasta obtener probabilidades de clase.</p></div>
+          <div class="formula">x → capa 1 → capa 2 → ŷ</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-36" data-cat="Propagación" data-letter="B" data-search="backpropagation propagación algoritmo que calcula gradientes propagando el error hacia atrás. backpropagation calcula cómo cambia la pérdida respecto de cada parámetro de la red. lo hace desde la capa de salida hacia las capas iniciales usando la regla de la cadena. es el mecanismo central que permite entrenar redes profundas. produce los gradientes que luego utiliza el optimizador. si una red clasifica mal una imagen, backpropagation calcula qué filtros o pesos contribuyeron al error. ∂l/∂w, ∂l/∂b">
+        <header class="term-head">
+          <div>
+            <span class="pill">36</span>
+            <span class="tag">Propagación</span>
+            <h2>Backpropagation</h2>
+            <p class="short">Algoritmo que calcula gradientes propagando el error hacia atrás.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Backpropagation calcula cómo cambia la pérdida respecto de cada parámetro de la red. Lo hace desde la capa de salida hacia las capas iniciales usando la regla de la cadena.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Es el mecanismo central que permite entrenar redes profundas. Produce los gradientes que luego utiliza el optimizador.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si una red clasifica mal una imagen, backpropagation calcula qué filtros o pesos contribuyeron al error.</p></div>
+          <div class="formula">∂L/∂w, ∂L/∂b</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-37" data-cat="Propagación" data-letter="R" data-search="regla de la cadena propagación regla de cálculo diferencial usada para derivar funciones compuestas. la regla de la cadena permite calcular la derivada de una función que depende de otra función. como una red neuronal es una composición de capas, esta regla permite conectar la pérdida final con parámetros internos. backpropagation es una aplicación organizada de la regla de la cadena. si l depende de a, a depende de z y z depende de w, entonces ∂l/∂w se obtiene multiplicando derivadas parciales intermedias. ∂l/∂w = ∂l/∂a · ∂a/∂z · ∂z/∂w">
+        <header class="term-head">
+          <div>
+            <span class="pill">37</span>
+            <span class="tag">Propagación</span>
+            <h2>Regla de la cadena</h2>
+            <p class="short">Regla de cálculo diferencial usada para derivar funciones compuestas.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La regla de la cadena permite calcular la derivada de una función que depende de otra función. Como una red neuronal es una composición de capas, esta regla permite conectar la pérdida final con parámetros internos.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Backpropagation es una aplicación organizada de la regla de la cadena.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si L depende de a, a depende de z y z depende de w, entonces ∂L/∂w se obtiene multiplicando derivadas parciales intermedias.</p></div>
+          <div class="formula">∂L/∂w = ∂L/∂a · ∂a/∂z · ∂z/∂w</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-38" data-cat="Propagación" data-letter="D" data-search="derivada parcial propagación medida de cambio de una función respecto de una variable, manteniendo las demás constantes. una derivada parcial indica cómo cambia una función cuando se modifica una variable específica. en redes neuronales, permite medir el efecto de cada peso o sesgo sobre la pérdida. los gradientes están formados por derivadas parciales. cada una orienta la actualización de un parámetro. ∂l/∂w indica cuánto cambia la pérdida si se modifica el peso w. ∂l/∂θᵢ">
+        <header class="term-head">
+          <div>
+            <span class="pill">38</span>
+            <span class="tag">Propagación</span>
+            <h2>Derivada parcial</h2>
+            <p class="short">Medida de cambio de una función respecto de una variable, manteniendo las demás constantes.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Una derivada parcial indica cómo cambia una función cuando se modifica una variable específica. En redes neuronales, permite medir el efecto de cada peso o sesgo sobre la pérdida.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Los gradientes están formados por derivadas parciales. Cada una orienta la actualización de un parámetro.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>∂L/∂w indica cuánto cambia la pérdida si se modifica el peso w.</p></div>
+          <div class="formula">∂L/∂θᵢ</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-39" data-cat="Propagación" data-letter="A" data-search="actualización de parámetros propagación cambio aplicado a pesos y sesgos durante el entrenamiento. la actualización de parámetros modifica los pesos y sesgos para reducir la función de pérdida. se realiza usando gradientes y una regla definida por el optimizador. es el paso que convierte el cálculo de gradientes en aprendizaje efectivo. después de calcular el gradiente, un peso puede pasar de 0,42 a 0,417. θ ← θ - α∇l">
+        <header class="term-head">
+          <div>
+            <span class="pill">39</span>
+            <span class="tag">Propagación</span>
+            <h2>Actualización de parámetros</h2>
+            <p class="short">Cambio aplicado a pesos y sesgos durante el entrenamiento.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La actualización de parámetros modifica los pesos y sesgos para reducir la función de pérdida. Se realiza usando gradientes y una regla definida por el optimizador.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Es el paso que convierte el cálculo de gradientes en aprendizaje efectivo.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Después de calcular el gradiente, un peso puede pasar de 0,42 a 0,417.</p></div>
+          <div class="formula">θ ← θ - α∇L</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-40" data-cat="Propagación" data-letter="I" data-search="inicialización de pesos propagación asignación inicial de valores a los parámetros antes del entrenamiento. la inicialización de pesos define el punto de partida del entrenamiento. una mala inicialización puede producir aprendizaje lento, simetrías indeseadas o gradientes problemáticos. se suelen usar métodos aleatorios controlados como xavier o he, según la activación y arquitectura. con relu, la inicialización he puede ayudar a mantener estable la varianza de activaciones. w inicial ≠ todos iguales">
+        <header class="term-head">
+          <div>
+            <span class="pill">40</span>
+            <span class="tag">Propagación</span>
+            <h2>Inicialización de pesos</h2>
+            <p class="short">Asignación inicial de valores a los parámetros antes del entrenamiento.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La inicialización de pesos define el punto de partida del entrenamiento. Una mala inicialización puede producir aprendizaje lento, simetrías indeseadas o gradientes problemáticos.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Se suelen usar métodos aleatorios controlados como Xavier o He, según la activación y arquitectura.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Con ReLU, la inicialización He puede ayudar a mantener estable la varianza de activaciones.</p></div>
+          <div class="formula">W inicial ≠ todos iguales</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-41" data-cat="Optimización" data-letter="M" data-search="mínimo local optimización punto donde la pérdida es menor que en su vecindad cercana. un mínimo local es una solución que parece óptima en una zona cercana, aunque puede no ser la mejor solución global. en redes profundas, la superficie de pérdida puede contener muchos valles, mesetas y puntos silla. los optimizadores buscan regiones de baja pérdida, aunque no siempre garantizan encontrar el mínimo global. una red puede converger a una solución buena pero no necesariamente perfecta. l(θ*) ≤ l(θ cercano)">
+        <header class="term-head">
+          <div>
+            <span class="pill">41</span>
+            <span class="tag">Optimización</span>
+            <h2>Mínimo local</h2>
+            <p class="short">Punto donde la pérdida es menor que en su vecindad cercana.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Un mínimo local es una solución que parece óptima en una zona cercana, aunque puede no ser la mejor solución global. En redes profundas, la superficie de pérdida puede contener muchos valles, mesetas y puntos silla.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Los optimizadores buscan regiones de baja pérdida, aunque no siempre garantizan encontrar el mínimo global.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Una red puede converger a una solución buena pero no necesariamente perfecta.</p></div>
+          <div class="formula">L(θ*) ≤ L(θ cercano)</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-42" data-cat="Optimización" data-letter="P" data-search="punto silla optimización punto donde el gradiente puede ser cercano a cero, pero no corresponde a un mínimo. un punto silla es una zona de la superficie de pérdida que puede parecer plana en algunas direcciones, pero subir en unas y bajar en otras. en redes profundas, los puntos silla son comunes y pueden ralentizar el entrenamiento si el optimizador no logra escapar. como una silla de montar: curva hacia arriba en una dirección y hacia abajo en otra. ∇l≈0 pero no es mínimo">
+        <header class="term-head">
+          <div>
+            <span class="pill">42</span>
+            <span class="tag">Optimización</span>
+            <h2>Punto silla</h2>
+            <p class="short">Punto donde el gradiente puede ser cercano a cero, pero no corresponde a un mínimo.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Un punto silla es una zona de la superficie de pérdida que puede parecer plana en algunas direcciones, pero subir en unas y bajar en otras.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>En redes profundas, los puntos silla son comunes y pueden ralentizar el entrenamiento si el optimizador no logra escapar.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Como una silla de montar: curva hacia arriba en una dirección y hacia abajo en otra.</p></div>
+          <div class="formula">∇L≈0 pero no es mínimo</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-43" data-cat="Optimización" data-letter="C" data-search="convergencia optimización proceso por el cual el entrenamiento se estabiliza hacia una solución. la convergencia ocurre cuando la pérdida deja de cambiar significativamente y los parámetros se acercan a una configuración estable. una buena convergencia no implica necesariamente buena generalización. por eso se monitorean entrenamiento y validación. la pérdida baja durante varias épocas y luego se estabiliza. l(t) tiende a estabilizarse">
+        <header class="term-head">
+          <div>
+            <span class="pill">43</span>
+            <span class="tag">Optimización</span>
+            <h2>Convergencia</h2>
+            <p class="short">Proceso por el cual el entrenamiento se estabiliza hacia una solución.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La convergencia ocurre cuando la pérdida deja de cambiar significativamente y los parámetros se acercan a una configuración estable.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Una buena convergencia no implica necesariamente buena generalización. Por eso se monitorean entrenamiento y validación.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>La pérdida baja durante varias épocas y luego se estabiliza.</p></div>
+          <div class="formula">L(t) tiende a estabilizarse</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-44" data-cat="Optimización" data-letter="D" data-search="divergencia optimización situación en la que el entrenamiento se vuelve inestable y la pérdida aumenta. la divergencia ocurre cuando las actualizaciones alejan al modelo de soluciones razonables. puede deberse a learning rate alto, datos mal escalados o gradientes explosivos. se identifica cuando la pérdida crece, oscila violentamente o produce valores no numéricos. un learning rate excesivo puede hacer que la pérdida pase de 1 a 1000 en pocas iteraciones. l aumenta o se vuelve nan">
+        <header class="term-head">
+          <div>
+            <span class="pill">44</span>
+            <span class="tag">Optimización</span>
+            <h2>Divergencia</h2>
+            <p class="short">Situación en la que el entrenamiento se vuelve inestable y la pérdida aumenta.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La divergencia ocurre cuando las actualizaciones alejan al modelo de soluciones razonables. Puede deberse a learning rate alto, datos mal escalados o gradientes explosivos.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Se identifica cuando la pérdida crece, oscila violentamente o produce valores no numéricos.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Un learning rate excesivo puede hacer que la pérdida pase de 1 a 1000 en pocas iteraciones.</p></div>
+          <div class="formula">L aumenta o se vuelve NaN</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-45" data-cat="Generalización" data-letter="O" data-search="overfitting generalización sobreajuste: el modelo aprende demasiado los datos de entrenamiento y generaliza mal. overfitting ocurre cuando el modelo memoriza patrones específicos, ruido o excepciones del conjunto de entrenamiento en lugar de aprender regularidades transferibles. se observa cuando el error de entrenamiento es bajo pero el error de validación o prueba es alto. un alumno memoriza respuestas exactas de un examen anterior pero falla ante preguntas reformuladas. error train bajo + error validación alto">
+        <header class="term-head">
+          <div>
+            <span class="pill">45</span>
+            <span class="tag">Generalización</span>
+            <h2>Overfitting</h2>
+            <p class="short">Sobreajuste: el modelo aprende demasiado los datos de entrenamiento y generaliza mal.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Overfitting ocurre cuando el modelo memoriza patrones específicos, ruido o excepciones del conjunto de entrenamiento en lugar de aprender regularidades transferibles.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Se observa cuando el error de entrenamiento es bajo pero el error de validación o prueba es alto.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Un alumno memoriza respuestas exactas de un examen anterior pero falla ante preguntas reformuladas.</p></div>
+          <div class="formula">error train bajo + error validación alto</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-46" data-cat="Generalización" data-letter="U" data-search="underfitting generalización subajuste: el modelo es demasiado simple o no aprende suficientemente. underfitting ocurre cuando el modelo no logra capturar los patrones relevantes de los datos. puede deberse a una arquitectura muy simple, pocas épocas, mala representación o regularización excesiva. se observa cuando tanto el error de entrenamiento como el de validación son altos. usar una recta para modelar una relación claramente curva puede generar underfitting. error train alto + error validación alto">
+        <header class="term-head">
+          <div>
+            <span class="pill">46</span>
+            <span class="tag">Generalización</span>
+            <h2>Underfitting</h2>
+            <p class="short">Subajuste: el modelo es demasiado simple o no aprende suficientemente.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Underfitting ocurre cuando el modelo no logra capturar los patrones relevantes de los datos. Puede deberse a una arquitectura muy simple, pocas épocas, mala representación o regularización excesiva.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Se observa cuando tanto el error de entrenamiento como el de validación son altos.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Usar una recta para modelar una relación claramente curva puede generar underfitting.</p></div>
+          <div class="formula">error train alto + error validación alto</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-47" data-cat="Generalización" data-letter="G" data-search="generalización generalización capacidad del modelo para funcionar bien con datos no vistos. generalizar significa aprender patrones útiles que se mantienen fuera del conjunto de entrenamiento. es el objetivo central del aprendizaje automático. se evalúa mediante validación y prueba. un modelo que solo memoriza no generaliza. un clasificador entrenado con imágenes de gatos debe reconocer gatos nuevos, no solo los vistos durante el entrenamiento. buen desempeño fuera de muestra">
+        <header class="term-head">
+          <div>
+            <span class="pill">47</span>
+            <span class="tag">Generalización</span>
+            <h2>Generalización</h2>
+            <p class="short">Capacidad del modelo para funcionar bien con datos no vistos.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Generalizar significa aprender patrones útiles que se mantienen fuera del conjunto de entrenamiento. Es el objetivo central del aprendizaje automático.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Se evalúa mediante validación y prueba. Un modelo que solo memoriza no generaliza.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Un clasificador entrenado con imágenes de gatos debe reconocer gatos nuevos, no solo los vistos durante el entrenamiento.</p></div>
+          <div class="formula">buen desempeño fuera de muestra</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-48" data-cat="Generalización" data-letter="E" data-search="error de entrenamiento generalización error medido sobre los datos usados para ajustar los parámetros. el error de entrenamiento mide qué tan bien el modelo se ajusta a los datos con los que aprende. es útil, pero no suficiente para evaluar el desempeño real. si baja mucho pero el error de validación sube, puede existir overfitting. una red puede tener 99% de accuracy en entrenamiento y solo 70% en validación. evaluación sobre datos vistos">
+        <header class="term-head">
+          <div>
+            <span class="pill">48</span>
+            <span class="tag">Generalización</span>
+            <h2>Error de entrenamiento</h2>
+            <p class="short">Error medido sobre los datos usados para ajustar los parámetros.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>El error de entrenamiento mide qué tan bien el modelo se ajusta a los datos con los que aprende. Es útil, pero no suficiente para evaluar el desempeño real.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Si baja mucho pero el error de validación sube, puede existir overfitting.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Una red puede tener 99% de accuracy en entrenamiento y solo 70% en validación.</p></div>
+          <div class="formula">evaluación sobre datos vistos</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-49" data-cat="Generalización" data-letter="E" data-search="error de validación generalización error medido sobre datos no usados directamente para entrenar pesos. el error de validación evalúa cómo se comporta el modelo en datos separados. permite tomar decisiones sobre hiperparámetros, arquitectura y regularización. es clave para detectar overfitting y decidir cuándo detener el entrenamiento. si la validación deja de mejorar durante varias épocas, puede aplicarse early stopping. evaluación sobre datos no vistos durante ajuste">
+        <header class="term-head">
+          <div>
+            <span class="pill">49</span>
+            <span class="tag">Generalización</span>
+            <h2>Error de validación</h2>
+            <p class="short">Error medido sobre datos no usados directamente para entrenar pesos.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>El error de validación evalúa cómo se comporta el modelo en datos separados. Permite tomar decisiones sobre hiperparámetros, arquitectura y regularización.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Es clave para detectar overfitting y decidir cuándo detener el entrenamiento.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si la validación deja de mejorar durante varias épocas, puede aplicarse early stopping.</p></div>
+          <div class="formula">evaluación sobre datos no vistos durante ajuste</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-50" data-cat="Generalización" data-letter="C" data-search="conjunto de prueba generalización datos reservados para evaluar el modelo al final del proceso. el conjunto de prueba, o test set, se usa para estimar el desempeño final del modelo una vez tomadas las decisiones de diseño y ajuste. no debe usarse repetidamente para seleccionar hiperparámetros, porque eso contaminaría la evaluación. después de elegir la mejor arquitectura con validación, se reporta el resultado final en test. test = evaluación final">
+        <header class="term-head">
+          <div>
+            <span class="pill">50</span>
+            <span class="tag">Generalización</span>
+            <h2>Conjunto de prueba</h2>
+            <p class="short">Datos reservados para evaluar el modelo al final del proceso.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>El conjunto de prueba, o test set, se usa para estimar el desempeño final del modelo una vez tomadas las decisiones de diseño y ajuste.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>No debe usarse repetidamente para seleccionar hiperparámetros, porque eso contaminaría la evaluación.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Después de elegir la mejor arquitectura con validación, se reporta el resultado final en test.</p></div>
+          <div class="formula">test = evaluación final</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-51" data-cat="Generalización" data-letter="R" data-search="regularización generalización conjunto de técnicas para reducir overfitting y mejorar generalización. la regularización limita la capacidad del modelo de memorizar detalles accidentales. favorece soluciones más simples, estables y transferibles. puede aplicarse mediante penalizaciones l1/l2, dropout, early stopping, aumento de datos o reducción de complejidad. agregar una penalización l2 evita que los pesos crezcan excesivamente. pérdida total = pérdida + penalización">
+        <header class="term-head">
+          <div>
+            <span class="pill">51</span>
+            <span class="tag">Generalización</span>
+            <h2>Regularización</h2>
+            <p class="short">Conjunto de técnicas para reducir overfitting y mejorar generalización.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La regularización limita la capacidad del modelo de memorizar detalles accidentales. Favorece soluciones más simples, estables y transferibles.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Puede aplicarse mediante penalizaciones L1/L2, dropout, early stopping, aumento de datos o reducción de complejidad.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Agregar una penalización L2 evita que los pesos crezcan excesivamente.</p></div>
+          <div class="formula">pérdida total = pérdida + penalización</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-52" data-cat="Generalización" data-letter="R" data-search="regularización l2 generalización penalización que castiga pesos grandes mediante la suma de cuadrados. la regularización l2 agrega a la pérdida un término proporcional a la suma de los cuadrados de los pesos. esto desalienta soluciones con parámetros demasiado grandes. ayuda a suavizar el modelo y reducir overfitting. también se conoce como weight decay en muchos contextos. si un peso crece mucho para memorizar un caso particular, l2 aumenta la pérdida y desincentiva ese comportamiento. l_total = l + λσw²">
+        <header class="term-head">
+          <div>
+            <span class="pill">52</span>
+            <span class="tag">Generalización</span>
+            <h2>Regularización L2</h2>
+            <p class="short">Penalización que castiga pesos grandes mediante la suma de cuadrados.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La regularización L2 agrega a la pérdida un término proporcional a la suma de los cuadrados de los pesos. Esto desalienta soluciones con parámetros demasiado grandes.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Ayuda a suavizar el modelo y reducir overfitting. También se conoce como weight decay en muchos contextos.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si un peso crece mucho para memorizar un caso particular, L2 aumenta la pérdida y desincentiva ese comportamiento.</p></div>
+          <div class="formula">L_total = L + λΣw²</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-53" data-cat="Generalización" data-letter="R" data-search="regularización l1 generalización penalización que usa la suma de valores absolutos de los pesos. la regularización l1 penaliza la magnitud absoluta de los pesos y puede inducir soluciones esparsas, donde algunos parámetros se acercan a cero. es útil cuando se desea selección de características o modelos más interpretables. en datos tabulares, l1 puede reducir la influencia de variables poco relevantes. l_total = l + λς|w|">
+        <header class="term-head">
+          <div>
+            <span class="pill">53</span>
+            <span class="tag">Generalización</span>
+            <h2>Regularización L1</h2>
+            <p class="short">Penalización que usa la suma de valores absolutos de los pesos.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La regularización L1 penaliza la magnitud absoluta de los pesos y puede inducir soluciones esparsas, donde algunos parámetros se acercan a cero.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Es útil cuando se desea selección de características o modelos más interpretables.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>En datos tabulares, L1 puede reducir la influencia de variables poco relevantes.</p></div>
+          <div class="formula">L_total = L + λΣ|w|</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-54" data-cat="Generalización" data-letter="D" data-search="dropout generalización técnica que desactiva aleatoriamente neuronas durante el entrenamiento. dropout apaga una proporción de neuronas en cada paso de entrenamiento. esto obliga a la red a no depender excesivamente de rutas específicas. reduce overfitting y promueve representaciones más robustas. en inferencia, se usan todas las neuronas ajustando la escala correspondiente. con dropout 0,5, aproximadamente la mitad de las neuronas se desactivan durante cada actualización. apagar neuronas al azar durante training">
+        <header class="term-head">
+          <div>
+            <span class="pill">54</span>
+            <span class="tag">Generalización</span>
+            <h2>Dropout</h2>
+            <p class="short">Técnica que desactiva aleatoriamente neuronas durante el entrenamiento.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Dropout apaga una proporción de neuronas en cada paso de entrenamiento. Esto obliga a la red a no depender excesivamente de rutas específicas.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Reduce overfitting y promueve representaciones más robustas. En inferencia, se usan todas las neuronas ajustando la escala correspondiente.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Con dropout 0,5, aproximadamente la mitad de las neuronas se desactivan durante cada actualización.</p></div>
+          <div class="formula">apagar neuronas al azar durante training</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-55" data-cat="Generalización" data-letter="E" data-search="early stopping generalización detención del entrenamiento cuando la validación deja de mejorar. early stopping evita entrenar demasiadas épocas. monitorea una métrica de validación y detiene el proceso cuando ya no mejora durante cierta paciencia. es una forma práctica de regularización porque evita que el modelo siga ajustándose al ruido del entrenamiento. si la pérdida de validación no mejora en 10 épocas, se detiene el entrenamiento. parar antes del sobreajuste">
+        <header class="term-head">
+          <div>
+            <span class="pill">55</span>
+            <span class="tag">Generalización</span>
+            <h2>Early stopping</h2>
+            <p class="short">Detención del entrenamiento cuando la validación deja de mejorar.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Early stopping evita entrenar demasiadas épocas. Monitorea una métrica de validación y detiene el proceso cuando ya no mejora durante cierta paciencia.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Es una forma práctica de regularización porque evita que el modelo siga ajustándose al ruido del entrenamiento.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si la pérdida de validación no mejora en 10 épocas, se detiene el entrenamiento.</p></div>
+          <div class="formula">parar antes del sobreajuste</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-56" data-cat="Generalización" data-letter="A" data-search="aumento de datos generalización generación de variantes artificiales de los datos de entrenamiento. el aumento de datos crea ejemplos modificados que conservan el significado original. mejora la robustez y reduce overfitting. es común en imágenes, audio y texto. las transformaciones deben ser coherentes con el dominio. rotar levemente una imagen de un gato sigue siendo una imagen de gato. más variabilidad sin nuevas etiquetas">
+        <header class="term-head">
+          <div>
+            <span class="pill">56</span>
+            <span class="tag">Generalización</span>
+            <h2>Aumento de datos</h2>
+            <p class="short">Generación de variantes artificiales de los datos de entrenamiento.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>El aumento de datos crea ejemplos modificados que conservan el significado original. Mejora la robustez y reduce overfitting.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Es común en imágenes, audio y texto. Las transformaciones deben ser coherentes con el dominio.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Rotar levemente una imagen de un gato sigue siendo una imagen de gato.</p></div>
+          <div class="formula">más variabilidad sin nuevas etiquetas</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-57" data-cat="Generalización" data-letter="H" data-search="hiperparámetro generalización configuración elegida antes o durante el entrenamiento que no se aprende directamente como peso. un hiperparámetro controla el proceso de aprendizaje o la arquitectura. a diferencia de los pesos, no se ajusta automáticamente mediante backpropagation. learning rate, batch size, número de capas, neuronas, dropout y regularización son hiperparámetros. elegir 3 capas ocultas y learning rate 0,001 es definir hiperparámetros. configuración externa al ajuste de pesos">
+        <header class="term-head">
+          <div>
+            <span class="pill">57</span>
+            <span class="tag">Generalización</span>
+            <h2>Hiperparámetro</h2>
+            <p class="short">Configuración elegida antes o durante el entrenamiento que no se aprende directamente como peso.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Un hiperparámetro controla el proceso de aprendizaje o la arquitectura. A diferencia de los pesos, no se ajusta automáticamente mediante backpropagation.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Learning rate, batch size, número de capas, neuronas, dropout y regularización son hiperparámetros.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Elegir 3 capas ocultas y learning rate 0,001 es definir hiperparámetros.</p></div>
+          <div class="formula">configuración externa al ajuste de pesos</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-58" data-cat="Generalización" data-letter="V" data-search="validación cruzada generalización método para evaluar modelos usando particiones múltiples de los datos. la validación cruzada divide los datos en varios folds. el modelo se entrena y valida varias veces usando distintas particiones, obteniendo una estimación más estable del desempeño. es muy útil con datasets pequeños. en deep learning puede ser costosa computacionalmente, pero sigue siendo conceptualmente importante. en k-fold cross-validation con k=5, se realizan cinco entrenamientos y validaciones. promedio de desempeño en varios folds">
+        <header class="term-head">
+          <div>
+            <span class="pill">58</span>
+            <span class="tag">Generalización</span>
+            <h2>Validación cruzada</h2>
+            <p class="short">Método para evaluar modelos usando particiones múltiples de los datos.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La validación cruzada divide los datos en varios folds. El modelo se entrena y valida varias veces usando distintas particiones, obteniendo una estimación más estable del desempeño.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Es muy útil con datasets pequeños. En deep learning puede ser costosa computacionalmente, pero sigue siendo conceptualmente importante.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>En k-fold cross-validation con k=5, se realizan cinco entrenamientos y validaciones.</p></div>
+          <div class="formula">promedio de desempeño en varios folds</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-59" data-cat="Evaluación" data-letter="M" data-search="matriz de confusión evaluación tabla que compara clases reales con clases predichas. la matriz de confusión muestra aciertos y errores por clase. permite ver qué clases se confunden entre sí y no solo una métrica global. es fundamental en clasificación, especialmente cuando las clases están desbalanceadas. puede mostrar que el modelo confunde pacientes enfermos como sanos, un error más grave que el inverso. tp, fp, tn, fn">
+        <header class="term-head">
+          <div>
+            <span class="pill">59</span>
+            <span class="tag">Evaluación</span>
+            <h2>Matriz de confusión</h2>
+            <p class="short">Tabla que compara clases reales con clases predichas.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La matriz de confusión muestra aciertos y errores por clase. Permite ver qué clases se confunden entre sí y no solo una métrica global.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Es fundamental en clasificación, especialmente cuando las clases están desbalanceadas.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Puede mostrar que el modelo confunde pacientes enfermos como sanos, un error más grave que el inverso.</p></div>
+          <div class="formula">TP, FP, TN, FN</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-60" data-cat="Evaluación" data-letter="A" data-search="accuracy evaluación proporción de predicciones correctas sobre el total. accuracy mide cuántas predicciones fueron correctas. es intuitiva pero puede ser engañosa si hay desbalance de clases. debe complementarse con precision, recall y f1 cuando los errores tienen costos distintos. si acierta 90 de 100 casos, la accuracy es 90%. accuracy = aciertos / total">
+        <header class="term-head">
+          <div>
+            <span class="pill">60</span>
+            <span class="tag">Evaluación</span>
+            <h2>Accuracy</h2>
+            <p class="short">Proporción de predicciones correctas sobre el total.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Accuracy mide cuántas predicciones fueron correctas. Es intuitiva pero puede ser engañosa si hay desbalance de clases.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Debe complementarse con precision, recall y F1 cuando los errores tienen costos distintos.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si acierta 90 de 100 casos, la accuracy es 90%.</p></div>
+          <div class="formula">accuracy = aciertos / total</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-61" data-cat="Evaluación" data-letter="P" data-search="precision evaluación proporción de predicciones positivas que fueron realmente positivas. precision mide la confiabilidad de las predicciones positivas. es importante cuando los falsos positivos son costosos. se usa en detección de fraude, alertas médicas o sistemas donde no se quiere acusar incorrectamente. si el modelo marca 100 casos como fraude y 80 lo son, precision = 80%. precision = tp/(tp+fp)">
+        <header class="term-head">
+          <div>
+            <span class="pill">61</span>
+            <span class="tag">Evaluación</span>
+            <h2>Precision</h2>
+            <p class="short">Proporción de predicciones positivas que fueron realmente positivas.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Precision mide la confiabilidad de las predicciones positivas. Es importante cuando los falsos positivos son costosos.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Se usa en detección de fraude, alertas médicas o sistemas donde no se quiere acusar incorrectamente.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si el modelo marca 100 casos como fraude y 80 lo son, precision = 80%.</p></div>
+          <div class="formula">precision = TP/(TP+FP)</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-62" data-cat="Evaluación" data-letter="R" data-search="recall evaluación proporción de positivos reales que el modelo logra detectar. recall mide la capacidad del modelo para encontrar casos positivos. es importante cuando los falsos negativos son costosos. en salud, seguridad o fraude, puede ser prioritario detectar la mayor cantidad posible de casos relevantes. si hay 100 fraudes reales y el modelo detecta 85, recall = 85%. recall = tp/(tp+fn)">
+        <header class="term-head">
+          <div>
+            <span class="pill">62</span>
+            <span class="tag">Evaluación</span>
+            <h2>Recall</h2>
+            <p class="short">Proporción de positivos reales que el modelo logra detectar.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Recall mide la capacidad del modelo para encontrar casos positivos. Es importante cuando los falsos negativos son costosos.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>En salud, seguridad o fraude, puede ser prioritario detectar la mayor cantidad posible de casos relevantes.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si hay 100 fraudes reales y el modelo detecta 85, recall = 85%.</p></div>
+          <div class="formula">recall = TP/(TP+FN)</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-63" data-cat="Evaluación" data-letter="F" data-search="f1-score evaluación media armónica entre precision y recall. f1 combina precision y recall en una sola métrica. es útil cuando se busca equilibrio entre falsos positivos y falsos negativos. se usa especialmente en problemas con clases desbalanceadas. un modelo con precision alta pero recall bajo puede tener f1 moderado. f1 = 2·precision·recall/(precision+recall)">
+        <header class="term-head">
+          <div>
+            <span class="pill">63</span>
+            <span class="tag">Evaluación</span>
+            <h2>F1-score</h2>
+            <p class="short">Media armónica entre precision y recall.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>F1 combina precision y recall en una sola métrica. Es útil cuando se busca equilibrio entre falsos positivos y falsos negativos.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Se usa especialmente en problemas con clases desbalanceadas.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Un modelo con precision alta pero recall bajo puede tener F1 moderado.</p></div>
+          <div class="formula">F1 = 2·precision·recall/(precision+recall)</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-64" data-cat="Evaluación" data-letter="S" data-search="softmax evaluación función que convierte logits en probabilidades que suman 1. softmax transforma un vector de valores reales en una distribución de probabilidad sobre clases mutuamente excluyentes. se usa en la capa de salida de clasificación multiclase. la clase con mayor probabilidad suele ser la predicción final. para dígitos del 0 al 9, softmax genera 10 probabilidades que suman 1. softmax(zᵢ)=e^zᵢ/σe^zⱼ">
+        <header class="term-head">
+          <div>
+            <span class="pill">64</span>
+            <span class="tag">Evaluación</span>
+            <h2>Softmax</h2>
+            <p class="short">Función que convierte logits en probabilidades que suman 1.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Softmax transforma un vector de valores reales en una distribución de probabilidad sobre clases mutuamente excluyentes.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Se usa en la capa de salida de clasificación multiclase. La clase con mayor probabilidad suele ser la predicción final.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Para dígitos del 0 al 9, softmax genera 10 probabilidades que suman 1.</p></div>
+          <div class="formula">softmax(zᵢ)=e^zᵢ/Σe^zⱼ</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-65" data-cat="Evaluación" data-letter="L" data-search="logit evaluación valor bruto producido antes de aplicar sigmoid o softmax. un logit es una salida no normalizada de la red. no es todavía una probabilidad, pero puede transformarse en una mediante funciones como sigmoid o softmax. muchos modelos producen logits en la última capa y luego aplican una función de salida adecuada. en clasificación binaria, un logit positivo alto se convierte en una probabilidad cercana a 1 mediante sigmoid. logit → probabilidad">
+        <header class="term-head">
+          <div>
+            <span class="pill">65</span>
+            <span class="tag">Evaluación</span>
+            <h2>Logit</h2>
+            <p class="short">Valor bruto producido antes de aplicar sigmoid o softmax.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Un logit es una salida no normalizada de la red. No es todavía una probabilidad, pero puede transformarse en una mediante funciones como sigmoid o softmax.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Muchos modelos producen logits en la última capa y luego aplican una función de salida adecuada.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>En clasificación binaria, un logit positivo alto se convierte en una probabilidad cercana a 1 mediante sigmoid.</p></div>
+          <div class="formula">logit → probabilidad</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-66" data-cat="Preprocesamiento" data-letter="N" data-search="normalización preprocesamiento transformación de datos para llevarlos a una escala adecuada. la normalización ajusta los valores de entrada para que tengan escalas comparables. esto facilita el entrenamiento y evita que variables grandes dominen los gradientes. es especialmente importante en redes neuronales, porque el entrenamiento basado en gradientes es sensible a la escala. dividir píxeles entre 255 lleva valores de imagen al rango [0,1]. x_norm = (x - media)/desvío">
+        <header class="term-head">
+          <div>
+            <span class="pill">66</span>
+            <span class="tag">Preprocesamiento</span>
+            <h2>Normalización</h2>
+            <p class="short">Transformación de datos para llevarlos a una escala adecuada.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La normalización ajusta los valores de entrada para que tengan escalas comparables. Esto facilita el entrenamiento y evita que variables grandes dominen los gradientes.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Es especialmente importante en redes neuronales, porque el entrenamiento basado en gradientes es sensible a la escala.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Dividir píxeles entre 255 lleva valores de imagen al rango [0,1].</p></div>
+          <div class="formula">x_norm = (x - media)/desvío</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-67" data-cat="Preprocesamiento" data-letter="E" data-search="estandarización preprocesamiento transformación que centra una variable en media cero y desvío estándar uno. la estandarización resta la media y divide por el desvío estándar. produce variables comparables y centradas. ayuda a que el entrenamiento sea más estable, especialmente con datos tabulares. una variable ingreso puede estandarizarse para evitar que su escala domine frente a otras variables. z = (x-μ)/σ">
+        <header class="term-head">
+          <div>
+            <span class="pill">67</span>
+            <span class="tag">Preprocesamiento</span>
+            <h2>Estandarización</h2>
+            <p class="short">Transformación que centra una variable en media cero y desvío estándar uno.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La estandarización resta la media y divide por el desvío estándar. Produce variables comparables y centradas.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Ayuda a que el entrenamiento sea más estable, especialmente con datos tabulares.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Una variable ingreso puede estandarizarse para evitar que su escala domine frente a otras variables.</p></div>
+          <div class="formula">z = (x-μ)/σ</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-68" data-cat="Preprocesamiento" data-letter="F" data-search="feature preprocesamiento variable o característica usada como entrada del modelo. una feature es una dimensión de información que el modelo utiliza para aprender. puede ser una variable original o una transformación construida. la calidad de las features afecta directamente el desempeño. en deep learning, muchas features se aprenden automáticamente en capas ocultas. edad, precio, antigüedad y cantidad de compras pueden ser features en un modelo comercial. xᵢ = característica de entrada">
+        <header class="term-head">
+          <div>
+            <span class="pill">68</span>
+            <span class="tag">Preprocesamiento</span>
+            <h2>Feature</h2>
+            <p class="short">Variable o característica usada como entrada del modelo.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Una feature es una dimensión de información que el modelo utiliza para aprender. Puede ser una variable original o una transformación construida.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>La calidad de las features afecta directamente el desempeño. En deep learning, muchas features se aprenden automáticamente en capas ocultas.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Edad, precio, antigüedad y cantidad de compras pueden ser features en un modelo comercial.</p></div>
+          <div class="formula">xᵢ = característica de entrada</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-69" data-cat="Preprocesamiento" data-letter="R" data-search="representación preprocesamiento forma interna en que la red codifica los datos. una representación es una transformación de los datos que captura información útil para la tarea. las redes profundas aprenden representaciones sucesivas en sus capas ocultas. una buena representación simplifica la clasificación o predicción final. una imagen puede transformarse en vectores que representan bordes, formas y objetos. datos → representación útil">
+        <header class="term-head">
+          <div>
+            <span class="pill">69</span>
+            <span class="tag">Preprocesamiento</span>
+            <h2>Representación</h2>
+            <p class="short">Forma interna en que la red codifica los datos.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Una representación es una transformación de los datos que captura información útil para la tarea. Las redes profundas aprenden representaciones sucesivas en sus capas ocultas.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Una buena representación simplifica la clasificación o predicción final.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Una imagen puede transformarse en vectores que representan bordes, formas y objetos.</p></div>
+          <div class="formula">datos → representación útil</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-70" data-cat="Preprocesamiento" data-letter="E" data-search="embedding preprocesamiento vector denso que representa una entidad en un espacio numérico. un embedding codifica objetos como palabras, productos, usuarios o categorías en vectores numéricos. la cercanía entre vectores puede reflejar similitud semántica o funcional. se usa en nlp, recomendación, búsqueda y representación de variables categóricas. palabras similares pueden tener embeddings cercanos en el espacio vectorial. objeto → vector denso">
+        <header class="term-head">
+          <div>
+            <span class="pill">70</span>
+            <span class="tag">Preprocesamiento</span>
+            <h2>Embedding</h2>
+            <p class="short">Vector denso que representa una entidad en un espacio numérico.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Un embedding codifica objetos como palabras, productos, usuarios o categorías en vectores numéricos. La cercanía entre vectores puede reflejar similitud semántica o funcional.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Se usa en NLP, recomendación, búsqueda y representación de variables categóricas.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Palabras similares pueden tener embeddings cercanos en el espacio vectorial.</p></div>
+          <div class="formula">objeto → vector denso</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-71" data-cat="Conceptos avanzados" data-letter="C" data-search="capacidad del modelo conceptos avanzados grado de complejidad que un modelo puede representar. la capacidad del modelo indica cuán flexibles son las funciones que puede aprender. modelos con muchas capas y parámetros tienen mayor capacidad. alta capacidad permite resolver problemas complejos, pero también aumenta el riesgo de overfitting. una red profunda tiene mayor capacidad que una regresión lineal simple. más parámetros → más capacidad">
+        <header class="term-head">
+          <div>
+            <span class="pill">71</span>
+            <span class="tag">Conceptos avanzados</span>
+            <h2>Capacidad del modelo</h2>
+            <p class="short">Grado de complejidad que un modelo puede representar.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La capacidad del modelo indica cuán flexibles son las funciones que puede aprender. Modelos con muchas capas y parámetros tienen mayor capacidad.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Alta capacidad permite resolver problemas complejos, pero también aumenta el riesgo de overfitting.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Una red profunda tiene mayor capacidad que una regresión lineal simple.</p></div>
+          <div class="formula">más parámetros → más capacidad</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-72" data-cat="Conceptos avanzados" data-letter="P" data-search="parámetro conceptos avanzados valor aprendido por el modelo durante el entrenamiento. los parámetros son los valores internos ajustados mediante aprendizaje. en redes neuronales, los principales son pesos y sesgos. el entrenamiento consiste en encontrar parámetros que reduzcan la pérdida y generalicen bien. un mlp puede tener miles o millones de pesos. θ = {w,b}">
+        <header class="term-head">
+          <div>
+            <span class="pill">72</span>
+            <span class="tag">Conceptos avanzados</span>
+            <h2>Parámetro</h2>
+            <p class="short">Valor aprendido por el modelo durante el entrenamiento.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Los parámetros son los valores internos ajustados mediante aprendizaje. En redes neuronales, los principales son pesos y sesgos.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>El entrenamiento consiste en encontrar parámetros que reduzcan la pérdida y generalicen bien.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Un MLP puede tener miles o millones de pesos.</p></div>
+          <div class="formula">θ = {W,b}</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-73" data-cat="Conceptos avanzados" data-letter="H" data-search="hiperplano conceptos avanzados generalización de una recta o plano a dimensiones mayores. un hiperplano es una frontera lineal en un espacio multidimensional. en clasificación lineal, separa regiones de decisión. un perceptrón simple define un hiperplano como frontera de decisión. en dos dimensiones es una recta; en tres, un plano; en más dimensiones, un hiperplano. w·x+b=0">
+        <header class="term-head">
+          <div>
+            <span class="pill">73</span>
+            <span class="tag">Conceptos avanzados</span>
+            <h2>Hiperplano</h2>
+            <p class="short">Generalización de una recta o plano a dimensiones mayores.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Un hiperplano es una frontera lineal en un espacio multidimensional. En clasificación lineal, separa regiones de decisión.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Un perceptrón simple define un hiperplano como frontera de decisión.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>En dos dimensiones es una recta; en tres, un plano; en más dimensiones, un hiperplano.</p></div>
+          <div class="formula">w·x+b=0</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-74" data-cat="Conceptos avanzados" data-letter="U" data-search="universal approximation conceptos avanzados propiedad según la cual ciertas redes pueden aproximar funciones complejas bajo condiciones adecuadas. el teorema de aproximación universal indica que una red con activaciones no lineales y suficientes neuronas puede aproximar una amplia familia de funciones continuas. no significa que cualquier red aprenda automáticamente cualquier función; hacen falta datos, optimización y buena arquitectura. una red suficientemente grande puede aproximar curvas no lineales complejas. red no lineal suficientemente amplia ≈ función compleja">
+        <header class="term-head">
+          <div>
+            <span class="pill">74</span>
+            <span class="tag">Conceptos avanzados</span>
+            <h2>Universal approximation</h2>
+            <p class="short">Propiedad según la cual ciertas redes pueden aproximar funciones complejas bajo condiciones adecuadas.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>El teorema de aproximación universal indica que una red con activaciones no lineales y suficientes neuronas puede aproximar una amplia familia de funciones continuas.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>No significa que cualquier red aprenda automáticamente cualquier función; hacen falta datos, optimización y buena arquitectura.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Una red suficientemente grande puede aproximar curvas no lineales complejas.</p></div>
+          <div class="formula">red no lineal suficientemente amplia ≈ función compleja</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-75" data-cat="Conceptos avanzados" data-letter="V" data-search="vanishing gradient conceptos avanzados problema donde los gradientes se vuelven muy pequeños en capas iniciales. el gradiente desvaneciente ocurre cuando, al retropropagarse, las derivadas se multiplican y se hacen cada vez menores. esto dificulta que las primeras capas aprendan. afectó especialmente a redes profundas con sigmoid o tanh. relu, normalización y arquitecturas modernas ayudan a mitigarlo. una capa inicial casi no cambia sus pesos porque recibe gradientes cercanos a cero. ∂l/∂w ≈ 0">
+        <header class="term-head">
+          <div>
+            <span class="pill">75</span>
+            <span class="tag">Conceptos avanzados</span>
+            <h2>Vanishing gradient</h2>
+            <p class="short">Problema donde los gradientes se vuelven muy pequeños en capas iniciales.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>El gradiente desvaneciente ocurre cuando, al retropropagarse, las derivadas se multiplican y se hacen cada vez menores. Esto dificulta que las primeras capas aprendan.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Afectó especialmente a redes profundas con sigmoid o tanh. ReLU, normalización y arquitecturas modernas ayudan a mitigarlo.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Una capa inicial casi no cambia sus pesos porque recibe gradientes cercanos a cero.</p></div>
+          <div class="formula">∂L/∂w ≈ 0</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-76" data-cat="Conceptos avanzados" data-letter="E" data-search="exploding gradient conceptos avanzados problema donde los gradientes crecen demasiado y desestabilizan el entrenamiento. el gradiente explosivo ocurre cuando las derivadas acumuladas se vuelven muy grandes, provocando actualizaciones excesivas. puede generar divergencia o valores no numéricos. se mitiga con gradient clipping, normalización y elección cuidadosa del learning rate. la pérdida se vuelve nan después de pocas iteraciones. ∂l/∂w muy grande">
+        <header class="term-head">
+          <div>
+            <span class="pill">76</span>
+            <span class="tag">Conceptos avanzados</span>
+            <h2>Exploding gradient</h2>
+            <p class="short">Problema donde los gradientes crecen demasiado y desestabilizan el entrenamiento.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>El gradiente explosivo ocurre cuando las derivadas acumuladas se vuelven muy grandes, provocando actualizaciones excesivas.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Puede generar divergencia o valores no numéricos. Se mitiga con gradient clipping, normalización y elección cuidadosa del learning rate.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>La pérdida se vuelve NaN después de pocas iteraciones.</p></div>
+          <div class="formula">∂L/∂w muy grande</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-77" data-cat="Conceptos avanzados" data-letter="G" data-search="gradient clipping conceptos avanzados técnica que limita la magnitud de los gradientes. gradient clipping recorta o reescala gradientes cuando superan un umbral. evita actualizaciones demasiado grandes. es común en redes recurrentes y modelos profundos sensibles a gradientes explosivos. si la norma del gradiente supera 1, se reescala para que valga 1. limitar ||∇l||">
+        <header class="term-head">
+          <div>
+            <span class="pill">77</span>
+            <span class="tag">Conceptos avanzados</span>
+            <h2>Gradient clipping</h2>
+            <p class="short">Técnica que limita la magnitud de los gradientes.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Gradient clipping recorta o reescala gradientes cuando superan un umbral. Evita actualizaciones demasiado grandes.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Es común en redes recurrentes y modelos profundos sensibles a gradientes explosivos.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Si la norma del gradiente supera 1, se reescala para que valga 1.</p></div>
+          <div class="formula">limitar ||∇L||</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-78" data-cat="Conceptos avanzados" data-letter="B" data-search="batch normalization conceptos avanzados técnica que normaliza activaciones dentro de una red. batch normalization normaliza activaciones usando estadísticas del batch y aprende parámetros de escala y desplazamiento. ayuda a estabilizar y acelerar el entrenamiento. su comportamiento difiere entre entrenamiento e inferencia. una capa puede seguir el patrón dense → batchnorm → relu. normalizar activaciones intermedias">
+        <header class="term-head">
+          <div>
+            <span class="pill">78</span>
+            <span class="tag">Conceptos avanzados</span>
+            <h2>Batch normalization</h2>
+            <p class="short">Técnica que normaliza activaciones dentro de una red.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>Batch normalization normaliza activaciones usando estadísticas del batch y aprende parámetros de escala y desplazamiento.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Ayuda a estabilizar y acelerar el entrenamiento. Su comportamiento difiere entre entrenamiento e inferencia.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Una capa puede seguir el patrón Dense → BatchNorm → ReLU.</p></div>
+          <div class="formula">normalizar activaciones intermedias</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-79" data-cat="Conceptos avanzados" data-letter="I" data-search="inferencia conceptos avanzados uso del modelo entrenado para producir predicciones. la inferencia ocurre después del entrenamiento, cuando el modelo recibe datos nuevos y genera salidas usando los parámetros aprendidos. en inferencia no se actualizan pesos; solo se calcula forward propagation. un sistema de scoring aplica el modelo entrenado a un nuevo cliente. modelo entrenado + dato nuevo → predicción">
+        <header class="term-head">
+          <div>
+            <span class="pill">79</span>
+            <span class="tag">Conceptos avanzados</span>
+            <h2>Inferencia</h2>
+            <p class="short">Uso del modelo entrenado para producir predicciones.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>La inferencia ocurre después del entrenamiento, cuando el modelo recibe datos nuevos y genera salidas usando los parámetros aprendidos.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>En inferencia no se actualizan pesos; solo se calcula forward propagation.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Un sistema de scoring aplica el modelo entrenado a un nuevo cliente.</p></div>
+          <div class="formula">modelo entrenado + dato nuevo → predicción</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+      <article class="term-card" id="term-80" data-cat="Conceptos avanzados" data-letter="E" data-search="entrenamiento conceptos avanzados proceso de ajuste de parámetros para minimizar una pérdida. el entrenamiento consiste en presentar datos al modelo, calcular predicciones, medir la pérdida, calcular gradientes y actualizar parámetros. es un ciclo repetitivo que ocurre durante muchas iteraciones y épocas. forward propagation, pérdida, backpropagation y actualización forman una iteración de entrenamiento. predecir → medir error → ajustar">
+        <header class="term-head">
+          <div>
+            <span class="pill">80</span>
+            <span class="tag">Conceptos avanzados</span>
+            <h2>Entrenamiento</h2>
+            <p class="short">Proceso de ajuste de parámetros para minimizar una pérdida.</p>
+          </div>
+          <div class="term-actions">
+            <button class="icon-btn done-btn" type="button" title="Marcar como estudiado">✓</button>
+            <button class="toggle" type="button" aria-expanded="false">Ver definición</button>
+          </div>
+        </header>
+        <section class="definition">
+          <div class="block"><strong>Definición desarrollada</strong><p>El entrenamiento consiste en presentar datos al modelo, calcular predicciones, medir la pérdida, calcular gradientes y actualizar parámetros.</p></div>
+          <div class="block"><strong>Cómo aparece en redes neuronales</strong><p>Es un ciclo repetitivo que ocurre durante muchas iteraciones y épocas.</p></div>
+          <div class="block"><strong>Ejemplo de estudio</strong><p>Forward propagation, pérdida, backpropagation y actualización forman una iteración de entrenamiento.</p></div>
+          <div class="formula">predecir → medir error → ajustar</div>
+          <div class="study-row">
+            <span>Usá este término para repasar antes del modo examen.</span>
+            <a href="#top">Volver arriba</a>
+          </div>
+        </section>
+      </article>
+    
+  </section>
+
+  <footer class="footer">
+    Material elaborado para estudiar fundamentos de redes neuronales artificiales. Archivo HTML autocontenido.
+  </footer>
+</main>
+
+<a class="to-top" href="#top" aria-label="Volver arriba">↑</a>
+
+<script>
+const root = document.documentElement;
+const body = document.body;
+const cards = Array.from(document.querySelectorAll('.term-card'));
+const searchInput = document.getElementById('searchInput');
+const catSelect = document.getElementById('catSelect');
+const catChips = Array.from(document.querySelectorAll('.cat-chip'));
+const letters = Array.from(document.querySelectorAll('.letter'));
+const progressText = document.getElementById('progressText');
+const progressBar = document.getElementById('progressBar');
+const empty = document.getElementById('empty');
+const palettes = ['aurora','bosque','uva','carbono'];
+let paletteIndex = 0;
+let currentCat = 'all';
+let currentLetter = 'all';
+
+function updateProgress(){
+  const done = cards.filter(c => c.classList.contains('done-card')).length;
+  progressText.textContent = `${done} / ${cards.length}`;
+  progressBar.style.width = `${(done / cards.length) * 100}%`;
+}
+
+function applyFilters(){
+  const q = searchInput.value.trim().toLowerCase();
+  let visible = 0;
+  cards.forEach(card => {
+    const matchesText = !q || card.dataset.search.includes(q);
+    const matchesCat = currentCat === 'all' || card.dataset.cat === currentCat;
+    const matchesLetter = currentLetter === 'all' || card.dataset.letter === currentLetter;
+    const show = matchesText && matchesCat && matchesLetter;
+    card.classList.toggle('hidden', !show);
+    if(show) visible++;
+  });
+  empty.classList.toggle('show', visible === 0);
+}
+
+document.querySelectorAll('.toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const card = btn.closest('.term-card');
+    const isOpen = card.classList.toggle('open');
+    btn.classList.toggle('open', isOpen);
+    btn.textContent = isOpen ? 'Ocultar definición' : 'Ver definición';
+    btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+});
+
+document.querySelectorAll('.done-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const card = btn.closest('.term-card');
+    const marked = card.classList.toggle('done-card');
+    btn.classList.toggle('marked', marked);
+    updateProgress();
+  });
+});
+
+document.getElementById('openAll').addEventListener('click', () => {
+  cards.forEach(card => {
+    card.classList.add('open');
+    const btn = card.querySelector('.toggle');
+    btn.classList.add('open');
+    btn.textContent = 'Ocultar definición';
+    btn.setAttribute('aria-expanded','true');
+  });
+});
+
+document.getElementById('closeAll').addEventListener('click', () => {
+  cards.forEach(card => {
+    card.classList.remove('open');
+    const btn = card.querySelector('.toggle');
+    btn.classList.remove('open');
+    btn.textContent = 'Ver definición';
+    btn.setAttribute('aria-expanded','false');
+  });
+});
+
+document.getElementById('randomBtn').addEventListener('click', () => {
+  const visible = cards.filter(c => !c.classList.contains('hidden'));
+  const pool = visible.length ? visible : cards;
+  const card = pool[Math.floor(Math.random() * pool.length)];
+  card.scrollIntoView({behavior:'smooth', block:'center'});
+  card.classList.add('open');
+  const btn = card.querySelector('.toggle');
+  btn.classList.add('open');
+  btn.textContent = 'Ocultar definición';
+  btn.setAttribute('aria-expanded','true');
+});
+
+document.getElementById('themeBtn').addEventListener('click', () => {
+  const dark = root.dataset.theme === 'dark';
+  root.dataset.theme = dark ? 'light' : 'dark';
+  document.getElementById('themeBtn').textContent = dark ? '🌙 Tema oscuro' : '☀️ Tema claro';
+});
+
+document.getElementById('paletteBtn').addEventListener('click', () => {
+  paletteIndex = (paletteIndex + 1) % palettes.length;
+  root.dataset.palette = palettes[paletteIndex];
+});
+
+document.getElementById('examMode').addEventListener('change', e => {
+  body.classList.toggle('exam', e.target.checked);
+});
+
+document.getElementById('fontRange').addEventListener('input', e => {
+  root.style.setProperty('--reading', e.target.value);
+});
+
+searchInput.addEventListener('input', applyFilters);
+catSelect.addEventListener('change', e => {
+  currentCat = e.target.value;
+  catChips.forEach(chip => chip.classList.toggle('active', chip.dataset.cat === currentCat));
+  applyFilters();
+});
+catChips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    currentCat = chip.dataset.cat;
+    catSelect.value = currentCat;
+    catChips.forEach(c => c.classList.toggle('active', c === chip));
+    applyFilters();
+  });
+});
+letters.forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentLetter = btn.dataset.letter;
+    letters.forEach(l => l.classList.toggle('active', l === btn));
+    applyFilters();
+  });
+});
+
+updateProgress();
+applyFilters();
+</script>
+</body>
+</html>
