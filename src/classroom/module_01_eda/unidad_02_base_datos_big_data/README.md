@@ -35,9 +35,9 @@ IA, Machine Learning, aprendizaje supervisado, no supervisado y por refuerzo. In
 
 | Recurso | Objetivo | Acceso |
 |---|---|---|
-| **Fuente → formato → arquitectura** | Explorar cómo fuente, tipo de dato, frecuencia y uso cambian la arquitectura sugerida. | [Abrir simulación](html/01_simulacion_fuentes_tipos_datos.html) |
-| **¿IaaS, PaaS, SaaS o DaaS?** | Comparar modelos cloud según necesidad de control, desarrollo, software listo y consumo de datos. | [Abrir simulación](html/02_simulacion_modelos_cloud.html) |
-| **Elegir paradigma de Machine Learning** | Relacionar variable objetivo y tipo de problema con supervisado, no supervisado o refuerzo. | [Abrir simulación](html/03_simulacion_paradigmas_ml.html) |
+| **Fuente → formato → arquitectura** | Explorar cómo fuente, tipo de dato, frecuencia y uso cambian la arquitectura sugerida. | [Abrir simulación](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sgevatschnaider/data-science-for-business-models/main/src/classroom/module_01_eda/unidad_02_base_datos_big_data/html/01_simulacion_fuentes_tipos_datos.html) |
+| **¿IaaS, PaaS, SaaS o DaaS?** | Comparar modelos cloud según necesidad de control, desarrollo, software listo y consumo de datos. | [Abrir simulación](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sgevatschnaider/data-science-for-business-models/main/src/classroom/module_01_eda/unidad_02_base_datos_big_data/html/02_simulacion_modelos_cloud.html) |
+| **Elegir paradigma de Machine Learning** | Relacionar variable objetivo y tipo de problema con supervisado, no supervisado o refuerzo. | [Abrir simulación](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sgevatschnaider/data-science-for-business-models/main/src/classroom/module_01_eda/unidad_02_base_datos_big_data/html/03_simulacion_paradigmas_ml.html) |
 
 ---
 
