@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simulación · Elegir paradigma ML</title><style>
+body{margin:0;font-family:Inter,system-ui;background:linear-gradient(135deg,#071426,#111437);color:#f7f9fc}.wrap{max-width:1100px;margin:auto;padding:32px}
+h1{font-size:48px}.lead{color:#b7c7dc;max-width:830px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.p{background:#0d2038;border:1px solid #31506f;border-radius:18px;padding:22px}
+select,button{width:100%;padding:13px;margin:8px 0 14px;border-radius:12px;background:#071727;border:1px solid #385d7e;color:white;font-size:16px}
+button{background:linear-gradient(90deg,#7b5eea,#168da5);font-weight:700}.answer{font-size:42px;font-weight:800;color:#5ae1df}.tag{display:inline-block;padding:7px 11px;border-radius:999px;background:#32285c;color:#d9d0ff;margin:4px}
+.call{margin-top:16px;padding:14px;border-left:4px solid #f2b34e;background:#17273b}
+</style></head><body><main class="wrap"><p style="color:#59e0df;font-weight:700">LABORATORIO INTERACTIVO · UNIDAD 2</p>
+<h1>Elegir el paradigma de Machine Learning</h1><p class="lead">Partí de la pregunta, no del algoritmo. Indicá qué información tenés y qué querés obtener.</p>
+<div class="grid"><section class="p">
+<label>¿Existe una variable objetivo conocida?</label><select id="target"><option>Sí</option><option>No</option><option>No aplica: hay interacción con un entorno</option></select>
+<label>¿Qué querés obtener?</label><select id="goal"><option>Un valor numérico</option><option>Una categoría</option><option>Grupos naturales</option><option>Menos dimensiones</option><option>Una secuencia de acciones</option></select>
+<label>¿El problema es secuencial y hay recompensas/castigos?</label><select id="reward"><option>No</option><option>Sí</option></select>
+<button onclick="run()">Recomendar paradigma</button></section><section class="p" id="out"></section></div></main>
+<script>
+function run(){let t=target.value,g=goal.value,r=reward.value;let a="",sub="",tags=[];
+if(r==="Sí"||g==="Una secuencia de acciones"||t.includes("interacción")){a="Aprendizaje por refuerzo";sub="El agente aprende mediante interacción, acciones y recompensas.";tags=["estado","acción","recompensa","política"];}
+else if(t==="Sí"&&g==="Un valor numérico"){a="Supervisado · Regresión";sub="Hay ejemplos etiquetados y la salida es continua.";tags=["X","y continua","predicción"];}
+else if(t==="Sí"&&g==="Una categoría"){a="Supervisado · Clasificación";sub="Hay ejemplos etiquetados y la salida es categórica.";tags=["X","y categórica","clases"];}
+else if(t==="No"&&g==="Grupos naturales"){a="No supervisado · Clustering";sub="No hay etiqueta objetivo; se busca estructura de grupos.";tags=["distancia","segmentación","clusters"];}
+else if(t==="No"&&g==="Menos dimensiones"){a="No supervisado · Reducción dimensional";sub="Se busca representar la información con menos variables.";tags=["componentes","representación","estructura"];}
+else{a="Revisar formulación";sub="La combinación elegida es inconsistente: redefiní objetivo y evidencia disponible.";tags=["pregunta","datos","métrica"];}
+out.innerHTML=`<div class="answer">${a}</div><p>${sub}</p><div>${tags.map(x=>`<span class="tag">${x}</span>`).join("")}</div><div class="call"><b>Regla docente:</b> primero se define la decisión, luego el tipo de salida, después el paradigma y recién entonces el algoritmo.</div>`;}
+run();</script></body></html>
