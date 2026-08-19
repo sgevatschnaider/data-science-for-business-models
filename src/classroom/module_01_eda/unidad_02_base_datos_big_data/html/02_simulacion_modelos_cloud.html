@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simulación · Cloud</title><style>
+body{margin:0;font-family:Inter,system-ui;background:#071426;color:#f6f9fc}.wrap{max-width:1100px;margin:auto;padding:32px}
+h1{font-size:48px}.lead{color:#b4cad9;max-width:800px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.p{background:#0e253d;border:1px solid #28506d;border-radius:18px;padding:22px}
+input[type=range]{width:100%}.metric{display:flex;justify-content:space-between;margin:15px 0;color:#c6d6e2}.big{font-size:54px;font-weight:800;color:#3dd5df}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.card{padding:16px;border:1px solid #2c6685;border-radius:14px;background:#0a1b2e}.sel{outline:3px solid #f2b34e}
+small{color:#a9c0d0}.note{margin-top:15px;padding:14px;border-left:4px solid #f2b34e;background:#15283c}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}}</style></head>
+<body><main class="wrap"><p style="color:#3dd5df;font-weight:700">LABORATORIO INTERACTIVO · UNIDAD 2</p>
+<h1>¿IaaS, PaaS, SaaS o DaaS?</h1><p class="lead">Mové los controles según la necesidad del negocio. El laboratorio propone el modelo de servicio más coherente con el nivel de control, desarrollo y activo requerido.</p>
+<div class="grid"><section class="p">
+<div class="metric"><span>Necesidad de controlar infraestructura</span><b id="v1">50</b></div><input id="infra" type="range" min="0" max="100" value="50" oninput="run()">
+<div class="metric"><span>Necesidad de desarrollar código propio</span><b id="v2">50</b></div><input id="code" type="range" min="0" max="100" value="50" oninput="run()">
+<div class="metric"><span>Necesidad de software listo para usar</span><b id="v3">50</b></div><input id="ready" type="range" min="0" max="100" value="50" oninput="run()">
+<div class="metric"><span>Necesidad de consumir datos externos</span><b id="v4">50</b></div><input id="data" type="range" min="0" max="100" value="50" oninput="run()">
+</section><section class="p"><div class="big" id="choice">PaaS</div><p id="explain"></p><div class="note">Más control técnico suele implicar más responsabilidad operativa. Menos gestión propia suele implicar mayor abstracción y dependencia del proveedor.</div></section></div>
+<div class="cards"><div class="card" id="IaaS"><b>IaaS</b><br><small>Servidores, redes, almacenamiento, VMs.</small></div><div class="card" id="PaaS"><b>PaaS</b><br><small>Plataforma para desarrollar y desplegar.</small></div><div class="card" id="SaaS"><b>SaaS</b><br><small>Aplicación terminada vía Internet.</small></div><div class="card" id="DaaS"><b>DaaS</b><br><small>Datos disponibles como servicio.</small></div></div>
+</main><script>
+function run(){let a=+infra.value,b=+code.value,c=+ready.value,d=+data.value;v1.textContent=a;v2.textContent=b;v3.textContent=c;v4.textContent=d;
+let scores={IaaS:a*.7+b*.2+(100-c)*.1,PaaS:b*.65+(100-a)*.2+(100-c)*.15,SaaS:c*.8+(100-b)*.1+(100-a)*.1,DaaS:d*.85+(100-a)*.1+(100-b)*.05};
+let k=Object.keys(scores).sort((x,y)=>scores[y]-scores[x])[0];choice.textContent=k;
+let desc={IaaS:"Conviene cuando el equipo necesita controlar infraestructura y configuración.",PaaS:"Conviene cuando el foco es desarrollar aplicaciones sin administrar servidores.",SaaS:"Conviene cuando el objetivo es usar una aplicación lista y delegar operación.",DaaS:"Conviene cuando el activo principal requerido es un conjunto de datos externo preparado."};explain.textContent=desc[k];
+["IaaS","PaaS","SaaS","DaaS"].forEach(x=>document.getElementById(x).classList.toggle("sel",x===k));}
+run();</script></body></html>
